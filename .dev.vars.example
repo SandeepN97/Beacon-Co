@@ -1,0 +1,4 @@
+# Copy to .dev.vars (gitignored) for local `wrangler dev` testing.
+# In production, set these as secrets: wrangler secret put TURNSTILE_SECRET_KEY
+TURNSTILE_SECRET_KEY=your-turnstile-secret-key
+RESEND_API_KEY=your-resend-api-key

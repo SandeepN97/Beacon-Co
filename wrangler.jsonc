@@ -1,9 +1,15 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "beaconco9",
+	"main": "src/worker.ts",
 	"compatibility_date": "2026-07-26",
 	"assets": {
 		"directory": "./dist",
+		"binding": "ASSETS",
 		"not_found_handling": "404-page"
+	},
+	"vars": {
+		"CONTACT_TO_EMAIL": "beaconco57@gmail.com",
+		"ALLOWED_ORIGIN": "https://beaconco9.beaconco57.workers.dev"
 	}
 }
