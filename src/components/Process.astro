@@ -1,0 +1,66 @@
+<section class="process" id="process">
+	<div class="process-inner">
+		<div class="proc-step">
+			<div class="proc-arr" data-tip="Next step">→</div>
+			<div class="proc-n">01</div>
+			<span class="proc-icon">🔍</span>
+			<div class="proc-title">Free audit in 24h</div>
+			<p class="proc-desc">
+				A written report showing every gap in your online presence and what it's costing you. Plus
+				a demo site concept — no pitch attached.
+			</p>
+			<span class="proc-time">24 hours</span>
+		</div>
+		<div class="proc-step">
+			<div class="proc-arr" data-tip="Next step">→</div>
+			<div class="proc-n">02</div>
+			<span class="proc-icon">☕</span>
+			<div class="proc-title">15-min call with me</div>
+			<p class="proc-desc">
+				We talk goals, budget, and what will actually move the needle. I'll tell you honestly if you
+				don't need something I offer. No upselling.
+			</p>
+			<span class="proc-time">Your schedule</span>
+		</div>
+		<div class="proc-step">
+			<div class="proc-arr" data-tip="Next step">→</div>
+			<div class="proc-n">03</div>
+			<span class="proc-icon">🔨</span>
+			<div class="proc-title">I build, you approve</div>
+			<p class="proc-desc">
+				Google listings live in 48 hours. Websites in 2–3 weeks. Nothing goes live without your
+				sign-off. I handle copy, design, and all the tech.
+			</p>
+			<span class="proc-time">48h – 3 weeks</span>
+		</div>
+		<div class="proc-step">
+			<div class="proc-n">04</div>
+			<span class="proc-icon">📈</span>
+			<div class="proc-title">You have my number</div>
+			<p class="proc-desc">
+				Monthly plain-English reports. If something isn't working, I tell you and fix it. Call or
+				text me directly — no ticket system.
+			</p>
+			<span class="proc-time">Ongoing</span>
+		</div>
+	</div>
+</section>
+
+<script>
+	const obs = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((e) => {
+				if (e.isIntersecting) {
+					const delay = Number((e.target as HTMLElement).dataset.d) || 0;
+					setTimeout(() => e.target.classList.add("in"), delay);
+					obs.unobserve(e.target);
+				}
+			});
+		},
+		{ threshold: 0.1 }
+	);
+	document.querySelectorAll<HTMLElement>(".process .proc-step").forEach((el, i) => {
+		el.dataset.d = String((i % 4) * 80);
+		obs.observe(el);
+	});
+</script>
