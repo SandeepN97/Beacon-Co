@@ -1,0 +1,114 @@
+<svg viewBox="0 0 1400 1180" xmlns="http://www.w3.org/2000/svg">
+<rect width="1400" height="1180" fill="#fdfcf8"/>
+
+<!-- ═══ HERO: the mark alone, large ═══ -->
+<text x="90" y="60" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="3" fill="#8a8578">THE MARK, ALONE</text>
+<g transform="translate(150,90)"><circle cx="120" cy="130" r="12.075000000000001" fill="#c49a48"/>
+  <path d="M145.86 96.90 A42.00 42.00 0 0 1 161.59 135.85" fill="none" stroke="#2a4228" stroke-width="283.50" stroke-linecap="round" opacity="0.5"/>
+  <path d="M162.67 75.39 A69.30 69.30 0 0 1 188.63 139.64" fill="none" stroke="#2a4228" stroke-width="241.50" stroke-linecap="round" opacity="0.78"/>
+  <path d="M182.06 50.57 A100.80 100.80 0 0 1 219.82 144.03" fill="none" stroke="#2a4228" stroke-width="194.25" stroke-linecap="round" opacity="1.0"/></g>
+
+<!-- full lockup, large -->
+<text x="500" y="60" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="3" fill="#8a8578">THE FULL LOCKUP</text>
+<g transform="translate(500,130) scale(2.4)">
+  <circle cx="38" cy="42" r="4.6000000000000005" fill="#c49a48"/>
+  <path d="M47.85 29.39 A16.00 16.00 0 0 1 53.84 44.23" fill="none" stroke="#2a4228" stroke-width="108.00" stroke-linecap="round" opacity="0.5"/>
+  <path d="M54.25 21.20 A26.40 26.40 0 0 1 64.14 45.67" fill="none" stroke="#2a4228" stroke-width="92.00" stroke-linecap="round" opacity="0.78"/>
+  <path d="M61.64 11.74 A38.40 38.40 0 0 1 76.03 47.34" fill="none" stroke="#2a4228" stroke-width="74.00" stroke-linecap="round" opacity="1.0"/>
+  <text x="100" y="14" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="3.5" fill="#c49a48">EST. WAYNESBORO, VA</text>
+  <text x="97" y="62" font-family="'Playfair Display',Georgia,serif" font-size="46" font-weight="700" fill="#1a1712" letter-spacing="-1">Beacon <tspan font-style="italic" font-weight="600" fill="#7a9e72" font-size="31">&amp; Co.</tspan></text>
+  </g>
+
+<!-- ═══ divider ═══ -->
+<line x1="90" y1="400" x2="1310" y2="400" stroke="#e2ddcf" stroke-width="1.5"/>
+<text x="90" y="440" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="3" fill="#8a8578">HOW IT ACTUALLY SITS — REAL CONTEXTS, NOT A STYLE SHEET</text>
+
+<!-- ═══ 1. Website nav bar ═══ -->
+<g transform="translate(90,470)">
+  <rect width="560" height="64" rx="0" fill="#fdfcf8" stroke="#e2ddcf"/>
+  <g transform="translate(20,10)"><circle cx="20" cy="22" r="2.3000000000000003" fill="#c49a48"/>
+  <path d="M24.93 15.70 A8.00 8.00 0 0 1 27.92 23.11" fill="none" stroke="#2a4228" stroke-width="54.00" stroke-linecap="round" opacity="0.5"/>
+  <path d="M28.13 11.60 A13.20 13.20 0 0 1 33.07 23.84" fill="none" stroke="#2a4228" stroke-width="46.00" stroke-linecap="round" opacity="0.78"/>
+  <path d="M31.82 6.87 A19.20 19.20 0 0 1 39.01 24.67" fill="none" stroke="#2a4228" stroke-width="37.00" stroke-linecap="round" opacity="1.0"/></g>
+  <text x="70" y="30" font-family="'Playfair Display',serif" font-size="19" font-weight="700" fill="#1a1712">Beacon <tspan font-style="italic" fill="#7a9e72" font-size="13">&amp; Co.</tspan></text>
+  <text x="330" y="26" font-family="'DM Sans',sans-serif" font-size="11" fill="#8a8578">Services</text>
+  <text x="400" y="26" font-family="'DM Sans',sans-serif" font-size="11" fill="#8a8578">Work</text>
+  <rect x="460" y="14" width="80" height="34" rx="17" fill="#2a4228"/>
+  <text x="500" y="35" font-family="'DM Sans',sans-serif" font-size="11" font-weight="600" fill="#fdfcf8" text-anchor="middle">Contact</text>
+  <text x="0" y="90" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="1.5" fill="#8a8578">WEBSITE NAV BAR — 64PX HEIGHT</text>
+</g>
+
+<!-- ═══ 2. Favicon / app icon / social avatar ═══ -->
+<g transform="translate(700,470)">
+  <rect width="64" height="64" rx="14" fill="#2a4228"/>
+  <g transform="translate(32,34)"><circle cx="0" cy="0" r="2.99" fill="#c49a48"/>
+  <path d="M6.40 -8.20 A10.40 10.40 0 0 1 10.30 1.45" fill="none" stroke="#fdfcf8" stroke-width="70.20" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10.56 -13.52 A17.16 17.16 0 0 1 16.99 2.39" fill="none" stroke="#fdfcf8" stroke-width="59.80" stroke-linecap="round" opacity="0.78"/>
+  <path d="M15.37 -19.67 A24.96 24.96 0 0 1 24.72 3.47" fill="none" stroke="#fdfcf8" stroke-width="48.10" stroke-linecap="round" opacity="1.0"/></g>
+  <rect x="90" y="0" width="64" height="64" rx="32" fill="#fdfcf8" stroke="#e2ddcf" stroke-width="2"/>
+  <g transform="translate(122,34)"><circle cx="0" cy="0" r="2.7600000000000002" fill="#c49a48"/>
+  <path d="M5.91 -7.56 A9.60 9.60 0 0 1 9.51 1.34" fill="none" stroke="#2a4228" stroke-width="64.80" stroke-linecap="round" opacity="0.5"/>
+  <path d="M9.75 -12.48 A15.84 15.84 0 0 1 15.69 2.20" fill="none" stroke="#2a4228" stroke-width="55.20" stroke-linecap="round" opacity="0.78"/>
+  <path d="M14.18 -18.16 A23.04 23.04 0 0 1 22.82 3.21" fill="none" stroke="#2a4228" stroke-width="44.40" stroke-linecap="round" opacity="1.0"/></g>
+  <text x="0" y="90" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="1.5" fill="#8a8578">FAVICON · APP TILE · SOCIAL AVATAR</text>
+</g>
+
+<!-- ═══ 3. Business card ═══ -->
+<g transform="translate(90,610)">
+  <rect width="350" height="200" rx="10" fill="#2a4228"/>
+  <g transform="translate(30,30)"><circle cx="24" cy="26" r="2.99" fill="#c49a48"/>
+  <path d="M30.40 17.80 A10.40 10.40 0 0 1 34.30 27.45" fill="none" stroke="#fdfcf8" stroke-width="70.20" stroke-linecap="round" opacity="0.5"/>
+  <path d="M34.56 12.48 A17.16 17.16 0 0 1 40.99 28.39" fill="none" stroke="#fdfcf8" stroke-width="59.80" stroke-linecap="round" opacity="0.78"/>
+  <path d="M39.37 6.33 A24.96 24.96 0 0 1 48.72 29.47" fill="none" stroke="#fdfcf8" stroke-width="48.10" stroke-linecap="round" opacity="1.0"/></g>
+  <text x="88" y="42" font-family="'Playfair Display',serif" font-size="21" font-weight="700" fill="#fdfcf8">Beacon <tspan font-style="italic" fill="#9fc296" font-size="14">&amp; Co.</tspan></text>
+  <text x="30" y="150" font-family="'DM Sans',sans-serif" font-size="13" font-weight="600" fill="#fdfcf8">Minjoon Kim</text>
+  <text x="30" y="168" font-family="'DM Sans',sans-serif" font-size="10" fill="#c9d4c4">Founder · hello@beaconandco.com</text>
+  <text x="30" y="184" font-family="'DM Sans',sans-serif" font-size="10" fill="#c9d4c4">Waynesboro, VA</text>
+  <text x="0" y="225" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="1.5" fill="#8a8578">BUSINESS CARD, 3.5×2"</text>
+</g>
+
+<!-- ═══ 4. Storefront / signage ═══ -->
+<g transform="translate(500,610)">
+  <rect width="700" height="200" rx="6" fill="#4a4636"/>
+  <rect x="16" y="16" width="668" height="168" rx="4" fill="#2a4228" stroke="#c49a48" stroke-width="3"/>
+  <g transform="translate(300,72)"><circle cx="0" cy="0" r="4.83" fill="#c49a48"/>
+  <path d="M10.34 -13.24 A16.80 16.80 0 0 1 16.64 2.34" fill="none" stroke="#fdfcf8" stroke-width="113.40" stroke-linecap="round" opacity="0.5"/>
+  <path d="M17.07 -21.84 A27.72 27.72 0 0 1 27.45 3.86" fill="none" stroke="#fdfcf8" stroke-width="96.60" stroke-linecap="round" opacity="0.78"/>
+  <path d="M24.82 -31.77 A40.32 40.32 0 0 1 39.93 5.61" fill="none" stroke="#fdfcf8" stroke-width="77.70" stroke-linecap="round" opacity="1.0"/></g>
+  <text x="350" y="150" font-family="'Playfair Display',serif" font-size="34" font-weight="700" fill="#fdfcf8" text-anchor="middle">Beacon <tspan font-style="italic" fill="#9fc296" font-size="24">&amp; Co.</tspan></text>
+  <text x="0" y="225" font-family="'Geist Mono',monospace" font-size="10" letter-spacing="1.5" fill="#8a8578">SIGNAGE — READS CLEARLY AT DISTANCE, HIGH CONTRAST</text>
+</g>
+
+<!-- ═══ 5. Minimum size stress test ═══ -->
+<g transform="translate(90,880)">
+  <text font-family="'Geist Mono',monospace" font-size="12" letter-spacing="3" fill="#8a8578">MINIMUM SIZE — DOES IT SURVIVE GETTING SMALL?</text>
+  <g transform="translate(0,30)">
+    <rect width="128" height="128" rx="24" fill="#2a4228"/><g transform="translate(64,68)"><circle cx="0" cy="0" r="5.75" fill="#c49a48"/>
+  <path d="M12.31 -15.76 A20.00 20.00 0 0 1 19.81 2.78" fill="none" stroke="#fdfcf8" stroke-width="135.00" stroke-linecap="round" opacity="0.5"/>
+  <path d="M20.32 -26.00 A33.00 33.00 0 0 1 32.68 4.59" fill="none" stroke="#fdfcf8" stroke-width="115.00" stroke-linecap="round" opacity="0.78"/>
+  <path d="M29.55 -37.82 A48.00 48.00 0 0 1 47.53 6.68" fill="none" stroke="#fdfcf8" stroke-width="92.50" stroke-linecap="round" opacity="1.0"/></g>
+    <text x="0" y="150" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">128px</text>
+  </g>
+  <g transform="translate(160,30)">
+    <rect width="64" height="64" rx="12" fill="#2a4228"/><g transform="translate(32,34)"><circle cx="0" cy="0" r="2.875" fill="#c49a48"/>
+  <path d="M6.16 -7.88 A10.00 10.00 0 0 1 9.90 1.39" fill="none" stroke="#fdfcf8" stroke-width="67.50" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10.16 -13.00 A16.50 16.50 0 0 1 16.34 2.30" fill="none" stroke="#fdfcf8" stroke-width="57.50" stroke-linecap="round" opacity="0.78"/>
+  <path d="M14.78 -18.91 A24.00 24.00 0 0 1 23.77 3.34" fill="none" stroke="#fdfcf8" stroke-width="46.25" stroke-linecap="round" opacity="1.0"/></g>
+    <text x="0" y="86" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">64px</text>
+  </g>
+  <g transform="translate(250,30)">
+    <rect width="32" height="32" rx="7" fill="#2a4228"/><g transform="translate(16,17) scale(0.5)"><circle cx="0" cy="0" r="2.99" fill="#c49a48"/>
+  <path d="M6.40 -8.20 A10.40 10.40 0 0 1 10.30 1.45" fill="none" stroke="#fdfcf8" stroke-width="70.20" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10.56 -13.52 A17.16 17.16 0 0 1 16.99 2.39" fill="none" stroke="#fdfcf8" stroke-width="59.80" stroke-linecap="round" opacity="0.78"/>
+  <path d="M15.37 -19.67 A24.96 24.96 0 0 1 24.72 3.47" fill="none" stroke="#fdfcf8" stroke-width="48.10" stroke-linecap="round" opacity="1.0"/></g>
+    <text x="0" y="54" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">32px</text>
+  </g>
+  <g transform="translate(310,30)">
+    <rect width="16" height="16" rx="3" fill="#2a4228"/><g transform="translate(8,8.5) scale(0.24)"><circle cx="0" cy="0" r="3.22" fill="#c49a48"/>
+  <path d="M6.90 -8.83 A11.20 11.20 0 0 1 11.09 1.56" fill="none" stroke="#fdfcf8" stroke-width="75.60" stroke-linecap="round" opacity="0.5"/>
+  <path d="M11.38 -14.56 A18.48 18.48 0 0 1 18.30 2.57" fill="none" stroke="#fdfcf8" stroke-width="64.40" stroke-linecap="round" opacity="0.78"/>
+  <path d="M16.55 -21.18 A26.88 26.88 0 0 1 26.62 3.74" fill="none" stroke="#fdfcf8" stroke-width="51.80" stroke-linecap="round" opacity="1.0"/></g>
+    <text x="0" y="38" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">16px (browser tab)</text>
+  </g>
+</g>
+</svg>
