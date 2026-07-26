@@ -1,0 +1,70 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+<rect width="1400" height="900" fill="#fdfcf8"/>
+
+<!-- ═══ 1. PRIMARY LOCKUP — the "eyebrow & Co." treatment ═══ -->
+<g transform="translate(90,80)">
+  <circle cx="72" cy="78" r="7.13" fill="#c49a48"/>
+  <path d="M87.27 58.46 A24.80 24.80 0 0 1 96.56 81.45" fill="none" stroke="#2a4228" stroke-width="167.40" stroke-linecap="round" opacity="0.5"/>
+  <path d="M97.19 45.75 A40.92 40.92 0 0 1 112.52 83.69" fill="none" stroke="#2a4228" stroke-width="142.60" stroke-linecap="round" opacity="0.78"/>
+  <path d="M108.64 31.10 A59.52 59.52 0 0 1 130.94 86.28" fill="none" stroke="#2a4228" stroke-width="114.70" stroke-linecap="round" opacity="1.0"/>
+  <text x="180" y="70" font-family="'Geist Mono',monospace" font-size="15" letter-spacing="5" fill="#c49a48">EST. WAYNESBORO, VA</text>
+  <text x="176" y="130" font-family="'Playfair Display',Georgia,serif" font-size="76" font-weight="700" fill="#1a1712" letter-spacing="-1.5">Beacon <tspan font-style="italic" font-weight="600" fill="#7a9e72" font-size="52">&amp; Co.</tspan></text>
+</g>
+<text x="90" y="250" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="2" fill="#8a8578">PRIMARY LOCKUP — THE "&amp; CO." SIGNALS ESTABLISHED, LOCAL, TRUSTED — SAME REGISTER AS A GENERAL STORE, NOT A STARTUP</text>
+
+<!-- ═══ 2. Reversed, on forest ═══ -->
+<rect x="90" y="290" width="700" height="180" rx="16" fill="#2a4228"/>
+<g transform="translate(140,350)">
+  <circle cx="46" cy="46" r="5.29" fill="#c49a48"/>
+  <path d="M57.33 31.50 A18.40 18.40 0 0 1 64.22 48.56" fill="none" stroke="#fdfcf8" stroke-width="124.20" stroke-linecap="round" opacity="0.5"/>
+  <path d="M64.69 22.08 A30.36 30.36 0 0 1 76.06 50.23" fill="none" stroke="#fdfcf8" stroke-width="105.80" stroke-linecap="round" opacity="0.78"/>
+  <path d="M73.19 11.20 A44.16 44.16 0 0 1 89.73 52.15" fill="none" stroke="#fdfcf8" stroke-width="85.10" stroke-linecap="round" opacity="1.0"/>
+  <text x="120" y="30" font-family="'Geist Mono',monospace" font-size="11" letter-spacing="4" fill="#c49a48">EST. WAYNESBORO, VA</text>
+  <text x="118" y="72" font-family="'Playfair Display',Georgia,serif" font-size="52" font-weight="700" fill="#fdfcf8" letter-spacing="-1">Beacon <tspan font-style="italic" font-weight="600" fill="#7a9e72" font-size="36">&amp; Co.</tspan></text>
+</g>
+<text x="90" y="500" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="2" fill="#8a8578">REVERSED — DARK BACKGROUND, SIGNAGE, FOOTER</text>
+
+<!-- ═══ 3. Icon mark alone ═══ -->
+<rect x="90" y="540" width="150" height="150" rx="30" fill="#fdfcf8" stroke="#e2ddcf" stroke-width="2"/>
+<g transform="translate(165,615)"><circle cx="0" cy="0" r="5.98" fill="#c49a48"/>
+  <path d="M12.81 -16.39 A20.80 20.80 0 0 1 20.60 2.89" fill="none" stroke="#2a4228" stroke-width="140.40" stroke-linecap="round" opacity="0.5"/>
+  <path d="M21.13 -27.04 A34.32 34.32 0 0 1 33.99 4.78" fill="none" stroke="#2a4228" stroke-width="119.60" stroke-linecap="round" opacity="0.78"/>
+  <path d="M30.73 -39.34 A49.92 49.92 0 0 1 49.43 6.95" fill="none" stroke="#2a4228" stroke-width="96.20" stroke-linecap="round" opacity="1.0"/></g>
+<rect x="260" y="540" width="150" height="150" rx="30" fill="#2a4228"/>
+<g transform="translate(335,615)"><circle cx="0" cy="0" r="5.98" fill="#c49a48"/>
+  <path d="M12.81 -16.39 A20.80 20.80 0 0 1 20.60 2.89" fill="none" stroke="#fdfcf8" stroke-width="140.40" stroke-linecap="round" opacity="0.5"/>
+  <path d="M21.13 -27.04 A34.32 34.32 0 0 1 33.99 4.78" fill="none" stroke="#fdfcf8" stroke-width="119.60" stroke-linecap="round" opacity="0.78"/>
+  <path d="M30.73 -39.34 A49.92 49.92 0 0 1 49.43 6.95" fill="none" stroke="#fdfcf8" stroke-width="96.20" stroke-linecap="round" opacity="1.0"/></g>
+<text x="90" y="720" font-family="'Geist Mono',monospace" font-size="12" letter-spacing="2" fill="#8a8578">ICON ALONE — FAVICON · SOCIAL AVATAR · APP TILE · TRUCK DOOR</text>
+
+<!-- ═══ 4. Minimum size + clear space guide ═══ -->
+<g transform="translate(90,770)">
+  <rect x="0" y="0" width="32" height="32" rx="6" fill="#fdfcf8" stroke="#e2ddcf"/>
+  <g transform="translate(16,16) scale(0.55)"><circle cx="0" cy="0" r="2.99" fill="#c49a48"/>
+  <path d="M6.40 -8.20 A10.40 10.40 0 0 1 10.30 1.45" fill="none" stroke="#2a4228" stroke-width="70.20" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10.56 -13.52 A17.16 17.16 0 0 1 16.99 2.39" fill="none" stroke="#2a4228" stroke-width="59.80" stroke-linecap="round" opacity="0.78"/>
+  <path d="M15.37 -19.67 A24.96 24.96 0 0 1 24.72 3.47" fill="none" stroke="#2a4228" stroke-width="48.10" stroke-linecap="round" opacity="1.0"/></g>
+  <text x="46" y="12" font-family="'Geist Mono',monospace" font-size="11" fill="#1a1712">MIN SIZE 32px — arcs still read as three distinct strokes</text>
+  <text x="46" y="30" font-family="'Geist Mono',monospace" font-size="11" fill="#8a8578">Clear space: minimum 0.5× the icon's own height on all sides</text>
+</g>
+
+<!-- ═══ 5. Color + type specimen ═══ -->
+<g transform="translate(560,540)">
+  <rect x="0" y="0" width="80" height="80" rx="10" fill="#2a4228"/><text x="0" y="98" font-family="'Geist Mono',monospace" font-size="10" fill="#1a1712">FOREST</text><text x="0" y="112" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">#2a4228</text>
+  <rect x="110" y="0" width="80" height="80" rx="10" fill="#c49a48"/><text x="110" y="98" font-family="'Geist Mono',monospace" font-size="10" fill="#1a1712">GOLD</text><text x="110" y="112" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">#c49a48</text>
+  <rect x="220" y="0" width="80" height="80" rx="10" fill="#7a9e72"/><text x="220" y="98" font-family="'Geist Mono',monospace" font-size="10" fill="#1a1712">SAGE</text><text x="220" y="112" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">#7a9e72</text>
+  <rect x="330" y="0" width="80" height="80" rx="10" fill="#fdfcf8" stroke="#e2ddcf" stroke-width="2"/><text x="330" y="98" font-family="'Geist Mono',monospace" font-size="10" fill="#1a1712">CREAM</text><text x="330" y="112" font-family="'Geist Mono',monospace" font-size="10" fill="#8a8578">#fdfcf8</text>
+  <text x="0" y="160" font-family="'Playfair Display',serif" font-size="28" font-weight="700" fill="#1a1712">Playfair Display — headlines</text>
+  <text x="0" y="196" font-family="'Geist Mono',monospace" font-size="16" fill="#1a1712">Geist Mono — eyebrows &amp; labels</text>
+</g>
+
+<!-- ═══ 6. Rationale ═══ -->
+<foreignObject x="1000" y="540" width="320" height="330">
+  <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.65;color:#1a1712">
+    <b style="font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:2px;color:#8a8578">WHY &amp; CO.</b><br/><br/>
+    Adds real distance from Beacon Roofing Supply's registered lighthouse mark without losing the core word or the sound-symbolism research behind it.<br/><br/>
+    "&amp; Co." is a genuine small-business register — general stores, family hardware shops, the exact tone this proposal has argued Veslyn should own against page-mill competitors.<br/><br/>
+    "Est. Waynesboro, VA" as a permanent eyebrow line does double duty: hyperlocal credibility on every use of the mark, and a second, harder-to-collide layer on top of the name itself.
+  </div>
+</foreignObject>
+</svg>
