@@ -65,5 +65,6 @@ See `docs/architecture.md` for the full breakdown across all phases.
 - [ ] Run a formal USPTO TESS trademark search before committing
 - [ ] Full rename pass across all copy once the name is locked
 - [x] Wire up the contact form to a real backend (Cloudflare Worker + Turnstile + Resend)
-- [ ] Set `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `RESEND_API_KEY` in the Cloudflare dashboard (see Contact form setup above)
+- [x] Set `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `RESEND_API_KEY` in the Cloudflare dashboard — verified end-to-end (real submission → Turnstile pass → email delivered)
 - [x] Connect Cloudflare for auto-deploy on push
+- [ ] Resend is currently sending from `onboarding@resend.dev` (their shared test address) — verify a custom domain in Resend once one's registered, so it sends from `@beaconandco.com` instead
