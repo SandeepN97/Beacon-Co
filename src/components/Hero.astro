@@ -1,0 +1,502 @@
+<section class="hero" id="about">
+	<div class="orb-field">
+		<div class="orb orb-1"></div>
+		<div class="orb orb-2"></div>
+		<div class="orb orb-3"></div>
+	</div>
+
+	<div class="hero-left">
+		<div class="hero-eyebrow">Waynesboro &amp; Staunton, VA · Locally founded · 2024</div>
+		<h1 class="hero-h1">
+			I help Valley businesses<br />
+			get found online —<br />
+			<em>honestly and affordably.</em>
+		</h1>
+		<p class="hero-body">
+			I'm Minjoon Kim. I live in Waynesboro and founded Beacon &amp; Co. because I kept walking past
+			incredible local businesses that were invisible online. Below you'll watch a real business
+			transform step by step — that's exactly what I do.
+		</p>
+		<div class="hero-actions">
+			<a
+				href="javascript:void(0)"
+				onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'start'});return false"
+				class="btn-primary">Watch the transformation ↓</a
+			>
+			<a
+				href="javascript:void(0)"
+				onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+				class="btn-ghost">Get your free audit →</a
+			>
+		</div>
+		<div class="hero-honesty">
+			<div class="honesty-label">Full transparency</div>
+			<p class="honesty-text">
+				<strong>Beacon &amp; Co. is newly launched.</strong> The interactive demo below is built around
+				a real local business to show exactly what I do at each step — not a paid project. I'd rather
+				prove skill with real work than make claims I can't back up.
+			</p>
+		</div>
+	</div>
+
+	<div class="hero-right">
+		<div class="founder-card" id="founderCard">
+			<div class="fc-top">
+				<div class="fc-avatar">MK</div>
+				<div>
+					<div class="fc-name">Minjoon Kim</div>
+					<div class="fc-role">Founder &amp; sole operator, Beacon &amp; Co.</div>
+					<div class="fc-loc">📍 Waynesboro, Virginia</div>
+				</div>
+			</div>
+			<div class="fc-quote">
+				"I built Beacon &amp; Co. because the Valley deserves real digital help — not an agency that
+				sends monthly PDF reports nobody reads. Watch what I actually do below."
+			</div>
+			<div class="fc-meta">
+				<div class="fc-stat">
+					<div class="fc-stat-label">Background</div>
+					<div class="fc-stat-val">Data &amp; Web Dev</div>
+				</div>
+				<div class="fc-stat">
+					<div class="fc-stat-label">Based in</div>
+					<div class="fc-stat-val">Waynesboro, VA</div>
+				</div>
+				<div class="fc-stat">
+					<div class="fc-stat-label">Phone</div>
+					<div class="fc-stat-val">(540) 942-0000</div>
+				</div>
+				<div class="fc-stat">
+					<div class="fc-stat-label">Response</div>
+					<div class="fc-stat-val">Same business day</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="audit-card">
+			<div class="audit-label">Sample free audit · Heard The Store, Staunton</div>
+			<div class="audit-row"><span class="audit-key">Website exists?</span><span class="audit-bad">✗ None found</span></div>
+			<div class="audit-row"><span class="audit-key">Google hours &amp; phone?</span><span class="audit-bad">✗ Missing</span></div>
+			<div class="audit-row"><span class="audit-key">Social media active?</span><span class="audit-bad">✗ No presence</span></div>
+			<div class="audit-row"><span class="audit-key">Google rating</span><span class="audit-warn">4.9★ · 28 reviews</span></div>
+			<div class="audit-score-row">
+				<span class="audit-score-label">Opportunity score</span>
+				<span class="audit-score-num" id="auditNum">0</span>
+			</div>
+			<div class="audit-bar"><div class="audit-fill" id="auditFill"></div></div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		min-height: 100svh;
+		padding-top: 57px;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		border-bottom: 1px solid var(--rule);
+		position: relative;
+		overflow: hidden;
+	}
+	.hero-left {
+		padding: var(--sp-20) var(--pad-x) var(--sp-16);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		border-right: 1px solid var(--rule);
+		position: relative;
+		z-index: 1;
+	}
+	.hero-left::before {
+		content: "";
+		position: absolute;
+		top: var(--sp-10);
+		left: var(--sp-8);
+		width: 28px;
+		height: 28px;
+		border-top: 1.5px solid var(--rule-2);
+		border-left: 1.5px solid var(--rule-2);
+	}
+	.hero-eyebrow {
+		font-family: var(--fm);
+		font-size: 0.6875rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--sage);
+		margin-bottom: var(--sp-6);
+		display: flex;
+		align-items: center;
+		gap: var(--sp-3);
+		opacity: 0;
+		animation: hero-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+	}
+	.hero-eyebrow::before {
+		content: "";
+		width: 22px;
+		height: 1px;
+		background: currentColor;
+	}
+	.hero-h1 {
+		font-family: var(--fd);
+		font-size: clamp(2.25rem, 3.6vw, 3.75rem);
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: -0.03em;
+		color: var(--ink);
+		margin-bottom: var(--sp-6);
+		opacity: 0;
+		animation: hero-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards;
+	}
+	.hero-h1 em {
+		font-style: italic;
+		color: var(--forest);
+		background: linear-gradient(
+			105deg,
+			transparent 35%,
+			rgba(196, 154, 72, 0.15) 35%,
+			rgba(196, 154, 72, 0.15) 65%,
+			transparent 65%
+		);
+		padding: 0 4px;
+		border-radius: 2px;
+	}
+	.hero-body {
+		font-size: 0.9375rem;
+		font-weight: 300;
+		color: var(--ink-2);
+		line-height: 1.82;
+		max-width: 420px;
+		margin-bottom: var(--sp-8);
+		opacity: 0;
+		animation: hero-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.34s forwards;
+	}
+	.hero-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--sp-4);
+		flex-wrap: wrap;
+		margin-bottom: var(--sp-8);
+		opacity: 0;
+		animation: hero-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.46s forwards;
+	}
+	.hero-honesty {
+		padding: var(--sp-6) var(--sp-8);
+		background: rgba(249, 246, 240, 0.7);
+		backdrop-filter: blur(12px);
+		border: 1px solid var(--glass-border);
+		border-left: 3px solid var(--gold);
+		border-radius: 6px;
+		box-shadow: var(--glass-shadow);
+		opacity: 0;
+		animation: hero-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s forwards;
+	}
+	.honesty-label {
+		font-family: var(--fm);
+		font-size: 0.5625rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--gold);
+		margin-bottom: var(--sp-3);
+		display: flex;
+		align-items: center;
+		gap: var(--sp-2);
+	}
+	.honesty-label::before {
+		content: "";
+		width: 14px;
+		height: 1px;
+		background: var(--gold-lt);
+	}
+	.honesty-text {
+		font-size: 0.8125rem;
+		color: var(--ink-2);
+		line-height: 1.75;
+	}
+	.honesty-text strong {
+		color: var(--ink);
+		font-weight: 500;
+	}
+	.hero-right {
+		background: var(--bg-2);
+		padding: var(--sp-16) var(--pad-x) var(--sp-12);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: var(--sp-4);
+		position: relative;
+		opacity: 0;
+		animation: hero-right 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+	}
+	.founder-card {
+		background: var(--glass-bg);
+		backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+		-webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+		border: 1px solid var(--glass-border);
+		border-radius: 12px;
+		padding: var(--sp-6);
+		box-shadow: var(--glass-shadow);
+		transition:
+			transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+			box-shadow 0.3s;
+		cursor: default;
+	}
+	.founder-card:hover {
+		transform: translateY(-2px) rotate(0.3deg);
+		box-shadow:
+			0 16px 48px rgba(26, 23, 18, 0.15),
+			0 1px 0 rgba(255, 255, 255, 0.65) inset;
+	}
+	.fc-top {
+		display: flex;
+		gap: var(--sp-4);
+		align-items: flex-start;
+		margin-bottom: var(--sp-4);
+	}
+	.fc-avatar {
+		width: 56px;
+		height: 56px;
+		min-width: 56px;
+		border-radius: 50%;
+		background: linear-gradient(135deg, var(--forest) 0%, var(--sage) 100%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: var(--fd);
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: var(--cream);
+		box-shadow:
+			0 0 0 2.5px rgba(249, 246, 240, 0.8),
+			0 0 0 4px rgba(74, 102, 64, 0.25),
+			0 4px 12px rgba(42, 66, 40, 0.25);
+	}
+	.fc-name {
+		font-family: var(--fd);
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--ink);
+		margin-bottom: 2px;
+	}
+	.fc-role {
+		font-size: 0.8125rem;
+		color: var(--muted);
+		margin-bottom: 6px;
+	}
+	.fc-loc {
+		font-family: var(--fm);
+		font-size: 0.625rem;
+		color: var(--sage);
+		letter-spacing: 0.04em;
+	}
+	.fc-quote {
+		font-family: var(--fc);
+		font-style: italic;
+		font-size: 0.9375rem;
+		color: var(--ink-2);
+		line-height: 1.7;
+		border-top: 1px solid var(--rule);
+		padding-top: var(--sp-4);
+	}
+	.fc-meta {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--sp-2);
+		margin-top: var(--sp-4);
+	}
+	.fc-stat {
+		background: rgba(240, 235, 224, 0.6);
+		border: 1px solid var(--rule);
+		border-radius: 4px;
+		padding: var(--sp-3);
+	}
+	.fc-stat-label {
+		font-family: var(--fm);
+		font-size: 0.5rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ghost);
+		margin-bottom: 2px;
+	}
+	.fc-stat-val {
+		font-size: 0.8125rem;
+		color: var(--ink);
+		font-weight: 500;
+	}
+	.audit-card {
+		background: var(--glass-bg);
+		backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+		-webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+		border: 1px solid var(--glass-border);
+		border-radius: 12px;
+		padding: var(--sp-6) var(--sp-8);
+		box-shadow: var(--glass-shadow);
+	}
+	.audit-label {
+		font-family: var(--fm);
+		font-size: 0.5rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ghost);
+		margin-bottom: var(--sp-4);
+	}
+	.audit-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 0.8125rem;
+		padding: 11px 0;
+		border-bottom: 1px solid var(--rule);
+	}
+	.audit-row:last-of-type {
+		border-bottom: none;
+	}
+	.audit-key {
+		color: var(--ink-2);
+	}
+	.audit-bad {
+		color: var(--terra);
+		font-weight: 600;
+	}
+	.audit-warn {
+		color: var(--gold);
+		font-weight: 600;
+	}
+	.audit-score-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-top: var(--sp-3);
+		margin-top: var(--sp-2);
+		border-top: 1px solid var(--rule);
+	}
+	.audit-score-label {
+		font-size: 0.8125rem;
+		color: var(--ink-2);
+	}
+	.audit-score-num {
+		font-family: var(--fd);
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--forest);
+	}
+	.audit-bar {
+		height: 4px;
+		background: var(--bg-3);
+		border-radius: 2px;
+		overflow: hidden;
+		margin-top: 6px;
+	}
+	.audit-fill {
+		height: 100%;
+		width: 0;
+		background: linear-gradient(90deg, var(--forest), var(--sage-lt));
+		border-radius: 2px;
+		transition: width 1.4s var(--ease-out);
+	}
+	@keyframes hero-up {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@keyframes hero-right {
+		from {
+			opacity: 0;
+			transform: translateX(20px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.hero-eyebrow,
+		.hero-h1,
+		.hero-body,
+		.hero-actions,
+		.hero-honesty,
+		.hero-right {
+			animation: none;
+			opacity: 1;
+			transform: none;
+		}
+		.founder-card,
+		.founder-card:hover {
+			transition: none;
+			transform: none;
+		}
+	}
+	@media (max-width: 960px) {
+		.hero {
+			grid-template-columns: 1fr;
+		}
+		.hero-left {
+			padding: calc(57px + 40px) var(--sp-6) var(--sp-12);
+			border-right: none;
+		}
+		.hero-right {
+			padding: var(--sp-8) var(--sp-6);
+		}
+	}
+	@media (max-width: 600px) {
+		h1.hero-h1 {
+			font-size: 2rem;
+		}
+	}
+</style>
+
+<script>
+	function animateCounter(el: HTMLElement, target: number, duration: number) {
+		let start: number | null = null;
+		const step = (ts: number) => {
+			if (!start) start = ts;
+			const progress = Math.min((ts - start) / duration, 1);
+			const ease = 1 - Math.pow(1 - progress, 3);
+			el.textContent = Math.round(ease * target) + "/100";
+			if (progress < 1) requestAnimationFrame(step);
+		};
+		requestAnimationFrame(step);
+	}
+	const auditFillEl = document.getElementById("auditFill");
+	if (auditFillEl && auditFillEl.parentElement) {
+		const auditObs = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((e) => {
+					if (e.isIntersecting) {
+						(auditFillEl as HTMLElement).style.width = "90%";
+						const numEl = document.getElementById("auditNum");
+						if (numEl) animateCounter(numEl, 90, 1200);
+						auditObs.unobserve(e.target);
+					}
+				});
+			},
+			{ threshold: 0.5 }
+		);
+		auditObs.observe(auditFillEl.parentElement);
+	}
+
+	const founderCard = document.getElementById("founderCard");
+	const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	if (founderCard && !prefersReducedMotion) {
+		founderCard.addEventListener("mousemove", (e: MouseEvent) => {
+			const r = founderCard.getBoundingClientRect();
+			const x = (e.clientX - r.left) / r.width - 0.5;
+			const y = (e.clientY - r.top) / r.height - 0.5;
+			(founderCard as HTMLElement).style.transform =
+				`perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-2px)`;
+			(founderCard as HTMLElement).style.transition = "none";
+		});
+		founderCard.addEventListener("mouseleave", () => {
+			(founderCard as HTMLElement).style.transition =
+				"transform .5s cubic-bezier(.16,1,.3,1), box-shadow .3s";
+			(founderCard as HTMLElement).style.transform = "";
+			setTimeout(() => {
+				if (founderCard) (founderCard as HTMLElement).style.transition = "";
+			}, 500);
+		});
+	}
+</script>

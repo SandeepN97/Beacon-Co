@@ -1,0 +1,304 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Beacon & Co. — Digital Presence for Valley Businesses",
+	description = "Beacon & Co. helps Waynesboro and Staunton businesses get found online — websites, Google listings, social media, and reviews. Honest, affordable, locally owned.",
+} = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Geist+Mono:wght@300;400;500&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<div class="sticky-pill" id="pill">
+			<span class="sp-text">Questions? Talk directly to Minjoon.</span>
+			<div class="sp-divider"></div>
+			<a
+				href="javascript:void(0)"
+				onclick="navigator.clipboard&&navigator.clipboard.writeText('(540) 942-0000');showToast('📞 (540) 942-0000 copied!');return false"
+				class="sp-phone"
+				data-tip-bottom="Click to copy">(540) 942-0000</a
+			>
+			<div class="sp-divider"></div>
+			<a
+				href="javascript:void(0)"
+				onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+				class="sp-btn">Free Audit</a
+			>
+		</div>
+
+		<nav class="nav" id="mainNav">
+			<div class="nav-inner">
+				<a
+					class="nav-logo"
+					href="javascript:void(0)"
+					onclick="window.scrollTo({top:0,behavior:'smooth'});return false"
+				>
+					<span class="nav-logo-pip"></span>
+					<span class="nav-logo-text">Beacon<span class="nav-logo-co">&amp; Co.</span></span>
+				</a>
+				<ul class="nav-links">
+					<li>
+						<a
+							href="javascript:void(0)"
+							onclick="document.getElementById('about').scrollIntoView({behavior:'smooth',block:'start'});return false"
+							>About</a
+						>
+					</li>
+					<li>
+						<a
+							href="javascript:void(0)"
+							onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'start'});return false"
+							>Live Demo</a
+						>
+					</li>
+					<li>
+						<a
+							href="javascript:void(0)"
+							onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+							>Services</a
+						>
+					</li>
+					<li>
+						<a
+							href="javascript:void(0)"
+							onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'});return false"
+							>Pricing</a
+						>
+					</li>
+					<li>
+						<a
+							href="javascript:void(0)"
+							onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+							>Contact</a
+						>
+					</li>
+				</ul>
+				<div class="nav-r">
+					<a
+						href="javascript:void(0)"
+						onclick="navigator.clipboard&&navigator.clipboard.writeText('(540) 942-0000');showToast('📞 (540) 942-0000 copied!');return false"
+						class="nav-phone">(540) 942-0000</a
+					>
+					<a
+						href="javascript:void(0)"
+						onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+						class="nav-cta">Free Audit →</a
+					>
+				</div>
+			</div>
+		</nav>
+
+		<slot />
+
+		<footer>
+			<div class="footer-inner">
+				<div class="footer-grid">
+					<div>
+						<a
+							class="footer-logo"
+							href="javascript:void(0)"
+							onclick="window.scrollTo({top:0,behavior:'smooth'});return false"
+						>
+							<span style="color:var(--gold-lt);font-size:.45rem">●</span>
+							<span class="footer-logo-text">Beacon<span class="footer-logo-co">&amp; Co.</span></span>
+						</a>
+						<p class="footer-tagline">
+							Honest digital presence for Shenandoah Valley businesses. Founded and run by Minjoon Kim
+							in Waynesboro, VA.
+						</p>
+					</div>
+					<div class="fcol">
+						<h5>Services</h5>
+						<ul>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Website Design</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Google Listing</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Social Media</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Local SEO</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('services').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Brand Identity</a
+								>
+							</li>
+						</ul>
+					</div>
+					<div class="fcol">
+						<h5>Company</h5>
+						<ul>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('about').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>About Minjoon</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									data-tip="Watch a real business transform">Live Demo</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									data-tip="Honest, transparent pricing">Pricing</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('honest').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>How We Work</a
+								>
+							</li>
+						</ul>
+					</div>
+					<div class="fcol">
+						<h5>Contact</h5>
+						<ul>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="navigator.clipboard&&navigator.clipboard.writeText('(540) 942-0000');showToast('📞 (540) 942-0000 copied!');return false"
+									>(540) 942-0000</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="navigator.clipboard&&navigator.clipboard.writeText('hello@beaconandco.com');showToast('✉ hello@beaconandco.com copied!');return false"
+									>hello@beaconandco.com</a
+								>
+							</li>
+							<li>
+								<a
+									href="javascript:void(0)"
+									onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+									>Waynesboro, VA 22980</a
+								>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="footer-bottom">
+					<span>© 2024 Beacon & Co. Shenandoah Valley, Virginia.</span>
+					<div class="ftrust">
+						<span class="fti">🔒 SSL Secured</span>
+						<span class="fti">📍 Waynesboro, VA</span>
+						<span class="fti">🤝 Locally owned</span>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<script>
+			const navSections = ["about", "demo", "services", "pricing", "contact"];
+			const navLinkEls = document.querySelectorAll(".nav-links a");
+
+			function updateActiveNav() {
+				const probe = window.scrollY + window.innerHeight * 0.35;
+				let activeIdx = 0;
+				navSections.forEach((id, i) => {
+					const sec = document.getElementById(id);
+					if (sec && sec.offsetTop <= probe) activeIdx = i;
+				});
+				navLinkEls.forEach((a, i) => a.classList.toggle("active", i === activeIdx));
+			}
+
+			window.addEventListener(
+				"scroll",
+				() => {
+					const y = window.scrollY;
+					const pill = document.getElementById("pill");
+					if (pill) pill.classList.toggle("visible", y > 600);
+					const nav = document.getElementById("mainNav");
+					if (nav) {
+						const inner = nav.querySelector(".nav-inner") as HTMLElement | null;
+						if (inner) inner.style.padding = y > 80 ? "10px var(--pad-x)" : "var(--sp-4) var(--pad-x)";
+						(nav as HTMLElement).style.boxShadow =
+							y > 80
+								? "0 4px 32px rgba(26,23,18,.12), 0 1px 0 rgba(255,255,255,.55) inset"
+								: "0 1px 0 rgba(255,255,255,.5) inset, 0 4px 24px rgba(26,23,18,.07)";
+					}
+					updateActiveNav();
+				},
+				{ passive: true }
+			);
+			updateActiveNav();
+
+			const tagIO = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((e) => {
+						if (e.isIntersecting) {
+							e.target.classList.add("wiggle");
+							tagIO.unobserve(e.target);
+						}
+					});
+				},
+				{ threshold: 0.5 }
+			);
+			document.querySelectorAll(".s-tag").forEach((el) => tagIO.observe(el));
+
+			function showToast(msg: string) {
+				let t = document.getElementById("vToast");
+				if (!t) {
+					t = document.createElement("div");
+					t.id = "vToast";
+					t.className = "v-toast";
+					document.body.appendChild(t);
+				}
+				t.textContent = msg;
+				t.classList.add("show");
+				window.clearTimeout((t as any)._timer);
+				(t as any)._timer = window.setTimeout(() => t!.classList.remove("show"), 2200);
+			}
+			(window as any).showToast = showToast;
+		</script>
+	</body>
+</html>
