@@ -30,7 +30,19 @@ npm run preview  # serve the production build locally
 
 ## Deploying
 
-Target is **Cloudflare Pages** (not yet configured) — connect this repo in the Cloudflare dashboard, build command `npm run build`, output directory `dist`.
+Deployed as a Cloudflare Worker with static assets (`beaconco9`), connected to this repo — auto-deploys on every push to `main`. Build command `npm run build`, deploy command `npx wrangler deploy` (Cloudflare's dashboard runs this automatically; `wrangler.jsonc` configures the assets binding and the `/api/contact` route).
+
+### Contact form setup
+
+The contact form posts to `/api/contact`, handled by `src/worker.ts` — it verifies Turnstile, validates fields server-side, and sends the message via Resend. Three values need to be set in the Cloudflare dashboard (Workers & Pages → `beaconco9` → Settings → Variables and Secrets):
+
+| Name | Type | Where to get it |
+|---|---|---|
+| `PUBLIC_TURNSTILE_SITE_KEY` | Build variable (not secret — this one is public) | Cloudflare dashboard → Turnstile → add a site → copy the Site Key |
+| `TURNSTILE_SECRET_KEY` | Secret | Same Turnstile site → copy the Secret Key |
+| `RESEND_API_KEY` | Secret | [resend.com](https://resend.com) → sign up → API Keys → create one |
+
+For local testing, copy `.dev.vars.example` to `.dev.vars` (gitignored) and fill in the secret values, then run `npx wrangler dev`.
 
 ## The business, in short
 
@@ -38,8 +50,8 @@ A solo-operator agency built around one idea: automate everything except the two
 
 ## Stack
 
-- **Frontend (Phase 1, this repo):** Astro static site → Cloudflare Pages
-- **Edge/hosting (later phases):** Cloudflare Pages Functions, Turnstile
+- **Frontend (Phase 1, this repo):** Astro static site → Cloudflare Workers (static assets)
+- **Contact form:** Cloudflare Worker route (`src/worker.ts`) + Turnstile + Resend
 - **Data:** Supabase (Postgres, Storage, Realtime, RLS)
 - **Queue:** pg-boss on Postgres
 - **AI:** Claude API, versioned prompt registry, output guards
@@ -52,5 +64,6 @@ See `docs/architecture.md` for the full breakdown across all phases.
 - [ ] Confirm domain availability for the finalized name via a registrar
 - [ ] Run a formal USPTO TESS trademark search before committing
 - [ ] Full rename pass across all copy once the name is locked
-- [ ] Wire up the contact form to a real backend (Cloudflare Pages Function + Turnstile) once Phase 2 starts
-- [ ] Connect Cloudflare Pages for auto-deploy on push
+- [x] Wire up the contact form to a real backend (Cloudflare Worker + Turnstile + Resend)
+- [ ] Set `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `RESEND_API_KEY` in the Cloudflare dashboard (see Contact form setup above)
+- [x] Connect Cloudflare for auto-deploy on push
