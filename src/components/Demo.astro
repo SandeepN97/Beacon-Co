@@ -1,0 +1,1283 @@
+<section class="section surface" id="demo">
+	<div class="s-tag">Live transformation demo</div>
+	<h2 class="sh">Watch a real business<br /><em>get found online.</em></h2>
+
+	<div class="demo-intro">
+		<div>
+			<p
+				style="font-size:.9375rem;color:var(--ink-2);line-height:1.82;font-weight:300;margin-bottom:var(--sp-4)"
+			>
+				<strong style="color:var(--ink);font-weight:600">Heard The Store</strong> is a real boutique
+				in downtown Staunton — 4.9 stars, incredible curation, zero online presence. Click through
+				each step to watch exactly what changes.
+			</p>
+			<div class="di-stats">
+				<div class="di-stat-row"><span>Website before Beacon &amp; Co.</span><span class="di-bad">✗ Did not exist</span></div>
+				<div class="di-stat-row"><span>Google hours &amp; phone</span><span class="di-bad">✗ Not listed</span></div>
+				<div class="di-stat-row"><span>Social media presence</span><span class="di-bad">✗ None found</span></div>
+				<div class="di-stat-row"><span>Google rating</span><span class="di-ok">4.9★ · 28 reviews</span></div>
+				<div class="di-stat-row"><span>Opportunity score</span><span class="di-good">90 / 100</span></div>
+			</div>
+		</div>
+		<div class="di-ctx">
+			<div class="di-ctx-tag">What this shows</div>
+			<p class="di-ctx-text">
+				Every screen here is real work — not a wireframe or Figma mockup. The website you'll see is
+				fully coded and responsive. The Google listing, social profile, and review system are built
+				exactly as I'd deliver them to any business.
+			</p>
+			<a
+				href="javascript:void(0)"
+				onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+				class="btn-primary"
+				style="display:inline-flex;font-size:.8125rem;padding:10px 20px">Get my free audit →</a
+			>
+		</div>
+	</div>
+
+	<div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+
+	<div class="step-nav" id="stepNav">
+		<div class="sn-tab active" onclick="goTo(0)" data-tip="See the problem Heard faces">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Start</div><div class="sn-tab-label">Problem</div>
+		</div>
+		<div class="sn-tab" onclick="goTo(1)" data-tip="Google listing fixed in 48h">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Step 1</div><div class="sn-tab-label">Google</div>
+		</div>
+		<div class="sn-tab" onclick="goTo(2)" data-tip="Full custom website built">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Step 2</div><div class="sn-tab-label">Website</div>
+		</div>
+		<div class="sn-tab" onclick="goTo(3)" data-tip="Instagram presence launched">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Step 3</div><div class="sn-tab-label">Social</div>
+		</div>
+		<div class="sn-tab" onclick="goTo(4)" data-tip="Review system grows ratings">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Step 4</div><div class="sn-tab-label">Reviews</div>
+		</div>
+		<div class="sn-tab" onclick="goTo(5)" data-tip="Final results — fully transformed">
+			<div class="sn-check">✓</div><div class="sn-tab-n">Result</div><div class="sn-tab-label">Transformed</div>
+		</div>
+	</div>
+
+	<div class="stage-layout">
+		<div class="stage-info-panel">
+			<div class="stage-info-card" id="stageCard"></div>
+			<div class="stage-actions">
+				<button class="btn-prev-stage" id="btnPrev" onclick="prev()" style="display:none">← Back</button>
+				<button class="btn-next-stage" id="btnNext" onclick="next()"><span id="btnLbl">See the problem →</span></button>
+			</div>
+		</div>
+		<div class="preview-panel">
+			<div class="pp-chrome">
+				<div class="pp-dots">
+					<div class="pp-dot" style="background:#ff5f57"></div>
+					<div class="pp-dot" style="background:#febc2e"></div>
+					<div class="pp-dot" style="background:#28c840"></div>
+				</div>
+				<div class="pp-url-bar">
+					<span style="color:var(--sage);font-size:.6rem">🔒</span>
+					<span id="ppUrl">heard-the-store · current state</span>
+				</div>
+				<div class="pp-badge badge-before" id="ppBadge">Before Beacon &amp; Co.</div>
+			</div>
+			<div class="pp-body" id="ppBody"></div>
+		</div>
+	</div>
+
+	<div class="demo-note">
+		<strong>Everything you see is real, production-quality work.</strong> The website in Step 2 is fully
+		coded, scrollable, and mobile-responsive — not a screenshot or Figma design. This is the standard
+		every project is held to.
+		<a
+			href="javascript:void(0)"
+			onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false"
+			style="color:var(--sage);font-weight:500;text-decoration:none"
+			>Request your free audit and I'll build a demo for your business →</a
+		>
+	</div>
+</section>
+
+<script>
+/* ══════════════ STAGE DATA ══════════════ */
+const stages = [
+  { step: 'Starting point', title: 'The problem, right now.',
+    desc: 'Heard The Store — 4.9 stars, incredible curation. But look at what any customer sees when they search. Missing hours, no phone, no website. Every gap is losing real customers every week.',
+    insight: 'The free audit I send every business — 24 hours, specific gaps identified, no pitch attached.', insightLabel: 'What the free audit reveals',
+    btn: 'Fix the Google listing →', badgeClass: 'badge-before', badgeText: 'Before Beacon & Co.', url: 'heard-the-store · current state' },
+  { step: 'Step 1 of 4', title: 'Google listing optimized.',
+    desc: 'Within 48 hours, the Google listing is claimed, verified, and fully built out — hours, phone, photos, location, and a review system. This single change triples search visibility immediately.',
+    insight: 'I handle claim, verification, photo upload, and review strategy. You never touch Google\'s backend. Live in 48 hours.', insightLabel: 'What happens in 48 hours',
+    btn: 'Build the website →', badgeClass: 'badge-after', badgeText: 'Step 1 Complete', url: 'Google Business Profile · optimized' },
+  { step: 'Step 2 of 4', title: 'A real website, built.',
+    desc: 'A fully custom website built for this specific business — not a template. Every section designed for Heard\'s identity. Delivered in 2–3 weeks. You own the files forever.',
+    insight: 'Custom design, custom copy, mobile-responsive, SEO-ready. You approve every section before it goes live.', insightLabel: 'What\'s included',
+    btn: 'Start social media →', badgeClass: 'badge-after', badgeText: 'Step 2 Complete', url: 'heard-the-store.com · live' },
+  { step: 'Step 3 of 4', title: 'Social presence built.',
+    desc: 'Instagram, Facebook, and TikTok — set up, branded, and populated monthly. Every caption written, every graphic designed. Each platform reaches a different slice of Staunton: IG for style-conscious shoppers, Facebook for the local community, TikTok for the under-30 crowd.',
+    insight: 'I set up all three accounts, write every bio, create every post, and manage monthly. You never open any of the apps to create content.', insightLabel: 'What social management includes',
+    btn: 'Grow the reviews →', badgeClass: 'badge-after', badgeText: 'Step 3 Complete', url: 'Instagram · Facebook · TikTok — all live' },
+  { step: 'Step 4 of 4', title: 'Reviews growing.',
+    desc: 'A review request system sends every happy customer a simple text asking for a Google review. Within 60 days the count grows — higher count means higher search ranking.',
+    insight: 'I set up the automated sequence and write every response template. You never ask for a review manually.', insightLabel: 'What the review system does',
+    btn: 'See the result →', badgeClass: 'badge-after', badgeText: 'Step 4 Complete', url: 'Google Reviews · growing' },
+  { step: 'Result', title: 'Heard The Store — transformed.',
+    desc: 'From invisible to found. This is what Beacon & Co. does — and this is a spec demo I built for Heard before ever charging them anything. Your business gets this same level of work.',
+    insight: 'Request your free audit and I\'ll build a demo for your business before you spend a cent.', insightLabel: 'Your next step',
+    btn: 'Get my free audit →', btnAction: 'contact', badgeClass: 'badge-after', badgeText: 'After Beacon & Co.', url: 'heard-the-store.com · fully transformed' }
+];
+
+let cur = 0;
+
+/* ── Render functions ── */
+function rBefore() {
+  return `<div class="sb-wrap">
+  <div class="sb-alert"><span>⚠</span><span>This is what any customer currently sees when they search for Heard The Store online. Every gap is costing real foot traffic.</span></div>
+  <div class="g-searchbar">
+    <div class="g-logo-inline"><span class="lb">G</span><span class="lr">o</span><span class="ly">o</span><span class="lb">g</span><span class="lg">l</span><span class="lr">e</span></div>
+    <div class="g-query-text">Heard The Store Staunton VA</div>
+    <span style="color:#70757a;font-size:1.1rem">🔍</span>
+  </div>
+  <div class="g-knowledgecard broken">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+      <div>
+        <div class="gk-biz-name">Heard The Store</div>
+        <div class="gk-category">Clothing store · Staunton, VA</div>
+      </div>
+    </div>
+    <div class="gk-row"><span class="gk-icon">⭐</span><span class="gk-stars">★★★★★</span>&nbsp;<span style="font-size:.8125rem;font-weight:600;color:#202124">4.9</span>&nbsp;<span class="gk-review-link">(28 reviews)</span></div>
+    <div class="gk-row"><span class="gk-icon">📞</span><span class="gk-missing">Phone number not listed</span></div>
+    <div class="gk-row"><span class="gk-icon">🕐</span><span class="gk-missing">Hours not listed — is this business even open?</span></div>
+    <div class="gk-row"><span class="gk-icon">🌐</span><span class="gk-missing">No website</span></div>
+    <div class="gk-row"><span class="gk-icon">📍</span><span class="gk-value">16 S New St, Staunton, VA 24401</span></div>
+    <div class="gk-warning">⚠ A potential customer cannot call ahead, check today's hours, or visit a website. The majority will go to a competitor instead.</div>
+  </div>
+  <div class="no-website-block">
+    <span class="nwb-icon">🌐</span>
+    <div class="nwb-h">No website found for this business</div>
+    <div class="nwb-sub">72% of people research online before visiting a local store</div>
+  </div>
+  <div class="before-stats">
+    <div class="bst"><div class="bst-n">0</div><div class="bst-l">Website visits/month</div></div>
+    <div class="bst"><div class="bst-n ok">28</div><div class="bst-l">Google reviews</div></div>
+    <div class="bst"><div class="bst-n">0</div><div class="bst-l">Social followers</div></div>
+  </div>
+  </div>`;
+}
+
+function rGoogle() {
+  return `<div class="sb-wrap" style="background:#f1f3f4">
+  <div class="sb-alert" style="background:#e6f4ea;border-color:rgba(52,168,83,.25);color:#137333"><span>✓</span><span>Google Business Profile claimed, verified, and fully optimized. Live within 48 hours of starting.</span></div>
+  <div class="g-searchbar">
+    <div class="g-logo-inline"><span class="lb">G</span><span class="lr">o</span><span class="ly">o</span><span class="lb">g</span><span class="lg">l</span><span class="lr">e</span></div>
+    <div class="g-query-text">Heard The Store Staunton VA</div>
+    <span style="color:#70757a;font-size:1.1rem">🔍</span>
+  </div>
+  <div class="g-knowledgecard fixed">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div>
+        <div class="gk-biz-name">Heard The Store</div>
+        <div class="gk-category">Clothing boutique · Staunton, VA</div>
+        <div class="gk-row" style="margin-top:5px">
+          <span class="gk-stars">★★★★★</span>
+          <span style="font-size:.8125rem;font-weight:700;color:#202124">4.9</span>
+          <span class="gk-review-link">(28 Google reviews)</span>
+        </div>
+      </div>
+      <span class="gk-verified-badge">✓ Verified</span>
+    </div>
+    <div class="gk-row"><span class="gk-icon">📍</span><span class="gk-value">16 S New St, Downtown Staunton, VA 24401</span></div>
+    <div class="gk-row"><span class="gk-icon">🕐</span><span class="gk-value"><span class="gk-open">Open now</span> · Mon–Sat 11am–6pm · Sunday 12–5pm</span></div>
+    <div class="gk-row"><span class="gk-icon">📞</span><span class="gk-value">(540) 885-0000 · Tap to call</span></div>
+    <div class="gk-row"><span class="gk-icon">🌐</span><span style="color:#1a73e8;font-size:.8125rem">heard-the-store.com</span></div>
+    <div class="gk-photos">
+      <div class="gk-photo" style="background:linear-gradient(135deg,#1a1000,#2d1e00)">🧥</div>
+      <div class="gk-photo" style="background:linear-gradient(135deg,#0d0800,#1a1000)">👖</div>
+      <div class="gk-photo" style="background:linear-gradient(135deg,#1a1200,#2a1e00)">👟</div>
+      <div class="gk-photo" style="background:linear-gradient(135deg,#0a0600,#160c00)">🎨</div>
+    </div>
+    <div class="gk-actions">
+      <div class="gk-action">📞 Call</div>
+      <div class="gk-action">🗺 Directions</div>
+      <div class="gk-action">🌐 Website</div>
+      <div class="gk-action">💾 Save</div>
+    </div>
+  </div>
+  <div class="goog-result-mets">
+    <div class="grm"><div class="grm-n">3×</div><div class="grm-l">Search visibility</div><div class="grm-c">↑ vs before</div></div>
+    <div class="grm"><div class="grm-n">48h</div><div class="grm-l">Time to go live</div><div class="grm-c">from day we start</div></div>
+    <div class="grm"><div class="grm-n">✓</div><div class="grm-l">Customers can call & check hours</div></div>
+  </div>
+  </div>`;
+}
+
+function rWebsite() {
+  return `<div class="heard-full">
+
+    <!-- ── SEO META BAR ── visible at top like a browser would show -->
+    <div class="hf-seo-bar">
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-green">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hf-seo-label">SEO Score</div>
+        <div class="hf-seo-val hf-seo-green">94/100</div>
+      </div>
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-green">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hf-seo-label">Page Speed</div>
+        <div class="hf-seo-val hf-seo-green">98</div>
+      </div>
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-green">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hf-seo-label">Mobile Ready</div>
+        <div class="hf-seo-val hf-seo-green">Yes</div>
+      </div>
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-gold">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1v6M6 9v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="hf-seo-label">Google Rank</div>
+        <div class="hf-seo-val hf-seo-gold">#1 "vintage staunton"</div>
+      </div>
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-green">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hf-seo-label">SSL Secure</div>
+        <div class="hf-seo-val hf-seo-green">HTTPS</div>
+      </div>
+      <div class="hf-seo-item">
+        <div class="hf-seo-icon hf-seo-green">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 6l1.5 1.5L8 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="hf-seo-label">Schema</div>
+        <div class="hf-seo-val hf-seo-green">LocalBusiness</div>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCEMENT MARQUEE ── -->
+    <div class="hf-announce">
+      <div class="hf-announce-track">
+        <span>New arrivals every Thursday</span><span class="hf-ann-dot">◆</span>
+        <span>Japanese selvedge restock</span><span class="hf-ann-dot">◆</span>
+        <span>Free parking downtown</span><span class="hf-ann-dot">◆</span>
+        <span>4.9★ on Google</span><span class="hf-ann-dot">◆</span>
+        <span>New arrivals every Thursday</span><span class="hf-ann-dot">◆</span>
+        <span>Japanese selvedge restock</span><span class="hf-ann-dot">◆</span>
+        <span>Free parking downtown</span><span class="hf-ann-dot">◆</span>
+        <span>4.9★ on Google</span><span class="hf-ann-dot">◆</span>
+      </div>
+    </div>
+
+    <!-- ── NAV ── -->
+    <nav class="hf-nav">
+      <div class="hf-logo">Heard</div>
+      <ul class="hf-nav-links">
+        <li><a href="javascript:void(0)">About</a></li>
+        <li><a href="javascript:void(0)">Collections</a></li>
+        <li><a href="javascript:void(0)">Journal</a></li>
+        <li><a href="javascript:void(0)">Visit</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:14px">
+        <!-- Social icons in nav -->
+        <div class="hf-nav-socials">
+          <a href="javascript:void(0)" class="hf-nav-social-icon" title="Instagram">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,168,48,.6)" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="rgba(200,168,48,.6)" stroke="none"/></svg>
+          </a>
+          <a href="javascript:void(0)" class="hf-nav-social-icon" title="Facebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,168,48,.6)" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="javascript:void(0)" class="hf-nav-social-icon" title="Pinterest">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(200,168,48,.6)" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.18-.77 1.22-5.17 1.22-5.17s-.31-.62-.31-1.54c0-1.45.84-2.53 1.88-2.53.89 0 1.32.67 1.32 1.47 0 .9-.57 2.23-.87 3.47-.25 1.04.52 1.89 1.54 1.89 1.85 0 3.1-2.37 3.1-5.17 0-2.14-1.44-3.63-3.5-3.63-2.38 0-3.78 1.79-3.78 3.63 0 .72.28 1.49.62 1.91a.25.25 0 0 1 .06.24c-.06.27-.2.85-.23.97-.04.16-.13.2-.3.12C7.48 13.73 7 12.5 7 11.5 7 8.95 9.04 6 12.82 6 15.84 6 18 8.4 18 11.04c0 3.96-2.2 6.73-5.38 6.73-1.06 0-2.05-.57-2.39-1.24l-.65 2.5c-.23.9-.87 2.03-1.3 2.72.98.3 2.01.46 3.08.46 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          </a>
+        </div>
+        <div class="hf-nav-cta">Visit the Store</div>
+      </div>
+    </nav>
+
+    <!-- ── HERO ── Full-width editorial with visual depth -->
+    <div class="hf-hero-v2">
+      <!-- Left: editorial typography -->
+      <div class="hf-hero-v2-left">
+        <div class="hf-hero-v2-eyebrow">
+          <span class="hf-hero-v2-line"></span>
+          Downtown Staunton, Virginia · Est. 2019
+        </div>
+        <h1 class="hf-hero-v2-h1">
+          <span class="hf-hero-v2-h1-main">HEARD</span>
+          <span class="hf-hero-v2-h1-sub">The Store</span>
+        </h1>
+        <p class="hf-hero-v2-tagline">Curated vintage, Japanese selvedge denim, and the work of local Shenandoah Valley makers. <em>Nothing is here by accident.</em></p>
+        <div class="hf-hero-v2-actions">
+          <div class="hf-btn-g">Visit the Store</div>
+          <div class="hf-btn-o">Explore Collections</div>
+        </div>
+        <!-- Google snippet preview -->
+        <div class="hf-google-snippet">
+          <div class="hf-gs-label">As seen on Google</div>
+          <div class="hf-gs-title">Heard The Store – Vintage &amp; Streetwear, Staunton VA</div>
+          <div class="hf-gs-url">heard-the-store.com</div>
+          <div class="hf-gs-desc">Curated vintage clothing, Japanese selvedge denim &amp; local artisan goods. Open Mon–Sat 11–6. Downtown Staunton, VA.</div>
+          <div class="hf-gs-stars">★★★★★ <span>4.9</span> · 28 reviews · <span class="hf-gs-open">Open now</span></div>
+        </div>
+      </div>
+      <!-- Right: visual panel with stats + social proof -->
+      <div class="hf-hero-v2-right">
+        <!-- Store visual -->
+        <div class="hf-store-card">
+          <div class="hf-store-card-bg">
+            <div class="hf-store-card-texture"></div>
+            <div class="hf-store-card-content">
+              <div class="hf-store-card-logo">H</div>
+              <div class="hf-store-card-name">HEARD</div>
+              <div class="hf-store-card-tagline">The Store</div>
+            </div>
+          </div>
+        </div>
+        <!-- Stats grid -->
+        <div class="hf-stat-grid">
+          <div class="hf-stat-box">
+            <div class="hf-stat-box-n">4.9★</div>
+            <div class="hf-stat-box-l">Google Rating</div>
+          </div>
+          <div class="hf-stat-box">
+            <div class="hf-stat-box-n">28</div>
+            <div class="hf-stat-box-l">Reviews</div>
+          </div>
+          <div class="hf-stat-box">
+            <div class="hf-stat-box-n">#1</div>
+            <div class="hf-stat-box-l">Local Search</div>
+          </div>
+          <div class="hf-stat-box">
+            <div class="hf-stat-box-n">340</div>
+            <div class="hf-stat-box-l">IG Followers</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TRUST TICKER ── -->
+    <div class="hf-trust">
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>4.9 on Google</div>
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>Japanese Selvedge Denim</div>
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>True Vintage</div>
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>Local Artisans</div>
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>Free Parking Downtown</div>
+      <div class="hf-trust-item"><div class="hf-trust-dot"></div>16 S New St, Staunton</div>
+    </div>
+
+    <!-- ── SOCIAL PROOF BAR ── -->
+    <div class="hf-social-proof">
+      <div class="hf-sp-heading">Find us everywhere</div>
+      <div class="hf-sp-platforms">
+        <a href="javascript:void(0)" class="hf-sp-platform">
+          <div class="hf-sp-icon hf-sp-ig">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+          </div>
+          <div class="hf-sp-info">
+            <div class="hf-sp-name">@heard_staunton</div>
+            <div class="hf-sp-stat">340 followers</div>
+          </div>
+        </a>
+        <a href="javascript:void(0)" class="hf-sp-platform">
+          <div class="hf-sp-icon hf-sp-fb">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </div>
+          <div class="hf-sp-info">
+            <div class="hf-sp-name">Heard The Store</div>
+            <div class="hf-sp-stat">218 likes</div>
+          </div>
+        </a>
+        <a href="javascript:void(0)" class="hf-sp-platform">
+          <div class="hf-sp-icon hf-sp-goog">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="white"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="rgba(255,255,255,.7)"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="rgba(255,255,255,.5)"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="rgba(255,255,255,.8)"/></svg>
+          </div>
+          <div class="hf-sp-info">
+            <div class="hf-sp-name">Google Business</div>
+            <div class="hf-sp-stat">4.9★ · Verified</div>
+          </div>
+        </a>
+        <a href="javascript:void(0)" class="hf-sp-platform">
+          <div class="hf-sp-icon hf-sp-tt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+          </div>
+          <div class="hf-sp-info">
+            <div class="hf-sp-name">@heardthestore</div>
+            <div class="hf-sp-stat">1.2K likes</div>
+          </div>
+        </a>
+        <a href="javascript:void(0)" class="hf-sp-platform">
+          <div class="hf-sp-icon hf-sp-pin">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.18-.77 1.22-5.17 1.22-5.17s-.31-.62-.31-1.54c0-1.45.84-2.53 1.88-2.53.89 0 1.32.67 1.32 1.47 0 .9-.57 2.23-.87 3.47-.25 1.04.52 1.89 1.54 1.89 1.85 0 3.1-2.37 3.1-5.17 0-2.14-1.44-3.63-3.5-3.63-2.38 0-3.78 1.79-3.78 3.63 0 .72.28 1.49.62 1.91.07.08.07.16.06.24-.06.27-.2.85-.23.97-.04.16-.13.2-.3.12-1.14-.57-1.62-1.8-1.62-2.8C7 8.95 9.04 6 12.82 6c3.02 0 5.18 2.4 5.18 5.04 0 3.96-2.2 6.73-5.38 6.73-1.06 0-2.05-.57-2.39-1.24l-.65 2.5c-.23.9-.87 2.03-1.3 2.72.98.3 2.01.46 3.08.46 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          </div>
+          <div class="hf-sp-info">
+            <div class="hf-sp-name">Pinterest</div>
+            <div class="hf-sp-stat">Style boards</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- ── SEO RANKING PANEL ── -->
+    <div class="hf-seo-panel">
+      <div class="hf-seo-panel-left">
+        <div class="hf-seo-panel-tag">Search Performance</div>
+        <div class="hf-seo-panel-h">Ranking for what matters</div>
+        <div class="hf-keyword-list">
+          <div class="hf-kw">
+            <div class="hf-kw-rank hf-kw-r1">#1</div>
+            <div class="hf-kw-term">"vintage store staunton va"</div>
+            <div class="hf-kw-vol">480/mo</div>
+          </div>
+          <div class="hf-kw">
+            <div class="hf-kw-rank hf-kw-r1">#1</div>
+            <div class="hf-kw-term">"japanese denim staunton"</div>
+            <div class="hf-kw-vol">90/mo</div>
+          </div>
+          <div class="hf-kw">
+            <div class="hf-kw-rank hf-kw-r2">#2</div>
+            <div class="hf-kw-term">"vintage clothing shenandoah valley"</div>
+            <div class="hf-kw-vol">210/mo</div>
+          </div>
+          <div class="hf-kw">
+            <div class="hf-kw-rank hf-kw-r2">#3</div>
+            <div class="hf-kw-term">"streetwear staunton va"</div>
+            <div class="hf-kw-vol">130/mo</div>
+          </div>
+          <div class="hf-kw">
+            <div class="hf-kw-rank hf-kw-r3">#4</div>
+            <div class="hf-kw-term">"clothing boutique waynesboro"</div>
+            <div class="hf-kw-vol">320/mo</div>
+          </div>
+        </div>
+      </div>
+      <div class="hf-seo-panel-right">
+        <div class="hf-seo-panel-tag">Traffic Overview</div>
+        <div class="hf-traffic-chart">
+          <div class="hf-tc-bars">
+            <div class="hf-tc-bar" style="height:30%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:45%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:40%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:60%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:75%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:65%"><div class="hf-tc-bar-fill"></div></div>
+            <div class="hf-tc-bar" style="height:90%"><div class="hf-tc-bar-fill hf-tc-bar-fill-active"></div></div>
+          </div>
+          <div class="hf-tc-labels">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+          </div>
+        </div>
+        <div class="hf-traffic-stats">
+          <div class="hf-ts-item">
+            <div class="hf-ts-n">1,240</div>
+            <div class="hf-ts-l">Monthly visitors</div>
+          </div>
+          <div class="hf-ts-item">
+            <div class="hf-ts-n">3:24</div>
+            <div class="hf-ts-l">Avg time on site</div>
+          </div>
+          <div class="hf-ts-item">
+            <div class="hf-ts-n">68%</div>
+            <div class="hf-ts-l">Organic traffic</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ABOUT ── -->
+    <div class="hf-about">
+      <div class="hf-about-vis">
+        <div class="hf-store-emblem">
+          <div class="hf-emblem-ring"><div class="hf-emblem-letter">H</div></div>
+          <div class="hf-store-name">HEARD</div>
+          <div class="hf-store-addr">16 S New St · Downtown Staunton</div>
+          <div class="hf-store-hours">Mon–Sat: 11am – 6pm<br>Sunday: 12pm – 5pm</div>
+        </div>
+      </div>
+      <div class="hf-about-text">
+        <div class="hf-sec-tag">Who we are</div>
+        <h2 class="hf-sec-h">Curation is an art.<br><em>We take it seriously.</em></h2>
+        <p class="hf-sec-p">Heard is not your typical vintage shop. Every piece on our floor has been hand-selected — true vintage, Japanese selvedge denim, limited streetwear, and work from local Shenandoah Valley artisans. Nothing is here by accident.</p>
+        <p class="hf-sec-p">We believe your wardrobe should tell a story. Come in with curiosity. Leave with something worth keeping.</p>
+        <div class="hf-tags">
+          <span class="hf-tag">True Vintage</span>
+          <span class="hf-tag">Japanese Denim</span>
+          <span class="hf-tag">Streetwear</span>
+          <span class="hf-tag">Local Artisans</span>
+          <span class="hf-tag">Men's &amp; Women's</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COLLECTIONS ── -->
+    <div class="hf-collections">
+      <div class="hf-coll-header">
+        <div class="hf-coll-h">The Collections</div>
+        <div class="hf-coll-count">Six categories · Updated regularly</div>
+      </div>
+      <div class="hf-coll-grid">
+        <div class="hf-gi"><div class="hf-gi-num">01</div><div class="hf-gi-marker"></div><div class="hf-gi-name">Japanese Denim</div><div class="hf-gi-desc">Selvedge &amp; raw from Japan's finest mills</div></div>
+        <div class="hf-gi"><div class="hf-gi-num">02</div><div class="hf-gi-marker"></div><div class="hf-gi-name">True Vintage</div><div class="hf-gi-desc">Carefully sourced from the 1960s through 1990s</div></div>
+        <div class="hf-gi"><div class="hf-gi-num">03</div><div class="hf-gi-marker"></div><div class="hf-gi-name">Streetwear</div><div class="hf-gi-desc">Limited releases &amp; curated contemporary brands</div></div>
+        <div class="hf-gi"><div class="hf-gi-num">04</div><div class="hf-gi-marker"></div><div class="hf-gi-name">Local Makers</div><div class="hf-gi-desc">Art &amp; goods from Shenandoah Valley artisans</div></div>
+        <div class="hf-gi"><div class="hf-gi-num">05</div><div class="hf-gi-marker"></div><div class="hf-gi-name">Tailored Pieces</div><div class="hf-gi-desc">Classic silhouettes built to last a lifetime</div></div>
+        <div class="hf-gi"><div class="hf-gi-num">06</div><div class="hf-gi-marker"></div><div class="hf-gi-name">Accessories</div><div class="hf-gi-desc">Belts, bags, caps &amp; finishing details</div></div>
+      </div>
+    </div>
+
+    <!-- ── REVIEWS ── -->
+    <div class="hf-reviews">
+      <div class="hf-reviews-top">
+        <div class="hf-rating-panel">
+          <div class="hf-rating-big">4.9</div>
+          <div class="hf-stars">
+            <div class="hf-star"></div><div class="hf-star"></div><div class="hf-star"></div>
+            <div class="hf-star"></div><div class="hf-star"></div>
+          </div>
+          <div class="hf-rating-count">28 Verified Reviews</div>
+          <div class="hf-rating-pill">⭐ Top-rated in Staunton</div>
+        </div>
+        <div class="hf-review-quote">
+          <div class="hf-review-qs">"</div>
+          <p class="hf-review-text">Most vintage shops are just glorified thrift stores. Heard is not. The inventory is curated with true vintage pieces, streetwear, Japanese denim, and local artisans. Nothing is here by accident.</p>
+          <div class="hf-review-source">Verified Google Review</div>
+        </div>
+      </div>
+      <div class="hf-reviews-grid">
+        <div class="hf-review-card">
+          <div class="hf-review-card-stars"><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div></div>
+          <p class="hf-review-card-text">"The curation here is unlike anything else in Virginia. Found selvedge jeans I'd been hunting for years."</p>
+          <div class="hf-review-card-author">Sarah R. · Google Review</div>
+          <div class="hf-review-card-ver">Verified Customer</div>
+        </div>
+        <div class="hf-review-card">
+          <div class="hf-review-card-stars"><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div><div class="hf-review-card-star"></div></div>
+          <p class="hf-review-card-text">"Drove 45 minutes after finding them on Instagram. Worth every mile. The best boutique in the Valley."</p>
+          <div class="hf-review-card-author">James M. · Google Review</div>
+          <div class="hf-review-card-ver">Verified Customer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VISIT ── -->
+    <div class="hf-visit">
+      <div class="hf-visit-inner">
+        <div class="hf-vi">
+          <div class="hf-vi-label">Address</div>
+          <div class="hf-vi-val">16 S New St<br>Downtown Staunton<br>Virginia 24401</div>
+        </div>
+        <div class="hf-vi">
+          <div class="hf-vi-label">Hours</div>
+          <div class="hf-vi-val">Mon–Sat 11am–6pm<br>Sunday 12pm–5pm</div>
+        </div>
+        <div class="hf-vi">
+          <div class="hf-vi-label">Phone</div>
+          <div class="hf-vi-val">(540) 885-0000<br>Call or stop in anytime</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <div class="hf-footer-full">
+      <div class="hf-footer-top">
+        <div class="hf-footer-brand">
+          <div class="hf-footer-logo">Heard</div>
+          <div class="hf-footer-tagline">Curated vintage &amp; streetwear<br>Downtown Staunton, Virginia</div>
+          <!-- Social links in footer -->
+          <div class="hf-footer-socials">
+            <a href="javascript:void(0)" class="hf-footer-social" title="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="javascript:void(0)" class="hf-footer-social" title="Facebook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="javascript:void(0)" class="hf-footer-social" title="Pinterest">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.18-.77 1.22-5.17 1.22-5.17s-.31-.62-.31-1.54c0-1.45.84-2.53 1.88-2.53.89 0 1.32.67 1.32 1.47 0 .9-.57 2.23-.87 3.47-.25 1.04.52 1.89 1.54 1.89 1.85 0 3.1-2.37 3.1-5.17 0-2.14-1.44-3.63-3.5-3.63-2.38 0-3.78 1.79-3.78 3.63 0 .72.28 1.49.62 1.91.07.08.07.16.06.24-.06.27-.2.85-.23.97-.04.16-.13.2-.3.12-1.14-.57-1.62-1.8-1.62-2.8C7 8.95 9.04 6 12.82 6c3.02 0 5.18 2.4 5.18 5.04 0 3.96-2.2 6.73-5.38 6.73-1.06 0-2.05-.57-2.39-1.24l-.65 2.5c-.23.9-.87 2.03-1.3 2.72.98.3 2.01.46 3.08.46 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+            </a>
+            <a href="javascript:void(0)" class="hf-footer-social" title="TikTok">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+            </a>
+            <a href="javascript:void(0)" class="hf-footer-social" title="Google">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="rgba(200,168,48,.7)"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="rgba(200,168,48,.55)"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="rgba(200,168,48,.4)"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="rgba(200,168,48,.6)"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="hf-footer-col">
+          <div class="hf-footer-col-head">Shop</div>
+          <a href="javascript:void(0)" class="hf-footer-link">Japanese Denim</a>
+          <a href="javascript:void(0)" class="hf-footer-link">True Vintage</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Streetwear</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Local Makers</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Accessories</a>
+        </div>
+        <div class="hf-footer-col">
+          <div class="hf-footer-col-head">Visit</div>
+          <a href="javascript:void(0)" class="hf-footer-link">16 S New St</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Downtown Staunton, VA</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Mon–Sat 11–6</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Sunday 12–5</a>
+          <a href="javascript:void(0)" class="hf-footer-link">(540) 885-0000</a>
+        </div>
+        <div class="hf-footer-col">
+          <div class="hf-footer-col-head">Connect</div>
+          <a href="javascript:void(0)" class="hf-footer-link">Instagram</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Facebook</a>
+          <a href="javascript:void(0)" class="hf-footer-link">TikTok</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Pinterest</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Google Business</a>
+          <a href="javascript:void(0)" class="hf-footer-link">Contact Us</a>
+        </div>
+      </div>
+      <div class="hf-footer-bottom">
+        <div class="hf-footer-copy">© 2024 Heard The Store &nbsp;·&nbsp; 16 S New St, Downtown Staunton, VA 24401</div>
+        <div class="hf-footer-badges">
+          <span class="hf-footer-badge">🔒 SSL Secure</span>
+          <span class="hf-footer-badge">📱 Mobile Ready</span>
+          <span class="hf-footer-badge">⚡ Fast Loading</span>
+        </div>
+      </div>
+    </div>
+
+  </div>`;
+}
+function rSocial() {
+  return `<div class="ig-app">
+
+    <!-- ── CHANNEL SUMMARY: before → after ── -->
+    <div class="sm-summary">
+      <div class="sm-summary-title">Three platforms. All launched.</div>
+      <div class="sm-channels">
+        <div class="sm-ch">
+          <div class="sm-ch-icon sm-ch-ig">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="white" stroke="none"/></svg>
+          </div>
+          <div class="sm-ch-name">Instagram</div>
+          <div class="sm-ch-change"><span class="sm-was">0</span> → <span class="sm-now">340 followers</span></div>
+        </div>
+        <div class="sm-ch">
+          <div class="sm-ch-icon sm-ch-fb">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </div>
+          <div class="sm-ch-name">Facebook</div>
+          <div class="sm-ch-change"><span class="sm-was">0</span> → <span class="sm-now">218 page likes</span></div>
+        </div>
+        <div class="sm-ch">
+          <div class="sm-ch-icon sm-ch-tt">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+          </div>
+          <div class="sm-ch-name">TikTok</div>
+          <div class="sm-ch-change"><span class="sm-was">0</span> → <span class="sm-now">1.2K likes</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PLATFORM SWITCHER ── -->
+    <div class="sm-tabs">
+      <div class="sm-tab-btn active" onclick="smSwitch('IG', this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        Instagram
+      </div>
+      <div class="sm-tab-btn" onclick="smSwitch('FB', this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        Facebook
+      </div>
+      <div class="sm-tab-btn" onclick="smSwitch('TT', this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg>
+        TikTok
+      </div>
+    </div>
+
+    <!-- ── INSTAGRAM PANE ── -->
+    <div class="sm-pane sm-pane-active" id="smPaneIG">
+
+    <!-- Header -->
+    <div class="ig-app-header">
+      <div class="ig-app-logo">Instagram</div>
+      <div class="ig-header-icons">
+        <div class="ig-icon-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </div>
+        <div class="ig-icon-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile -->
+    <div class="ig-profile-area">
+      <div>
+        <div class="ig-av-ring-outer">
+          <div class="ig-av-inner">H</div>
+        </div>
+      </div>
+      <div>
+        <div class="ig-meta-stats">
+          <div class="ig-stat-item"><div class="ig-stat-n">18</div><div class="ig-stat-l">posts</div></div>
+          <div class="ig-stat-item"><div class="ig-stat-n">340</div><div class="ig-stat-l">followers</div></div>
+          <div class="ig-stat-item"><div class="ig-stat-n">86</div><div class="ig-stat-l">following</div></div>
+        </div>
+        <div class="ig-display-name">heard_staunton</div>
+        <div class="ig-cat-label">Clothing (Brand)</div>
+        <div class="ig-bio-lines">Curated vintage · Japanese selvedge denim<br>Local makers · 16 S New St, Staunton VA<br>Mon–Sat 11–6 · Sun 12–5</div>
+        <div class="ig-link-color">heard-the-store.com</div>
+        <div class="ig-follow-row">
+          <button class="ig-follow">Follow</button>
+          <button class="ig-message-btn">Message</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Story Highlights — CSS-painted covers, no emoji -->
+    <div class="ig-highlights-row">
+      <div class="ig-hl-item">
+        <div class="ig-hl-ring">
+          <div class="ig-hl-face" style="background:linear-gradient(145deg,#1a1200,#2a1e00)">
+            <svg width="28" height="28" viewBox="0 0 28 28"><rect x="4" y="8" width="20" height="14" rx="1" stroke="rgba(200,168,48,.6)" stroke-width="1" fill="none"/><line x1="4" y1="12" x2="24" y2="12" stroke="rgba(200,168,48,.3)" stroke-width="1"/><line x1="8" y1="16" x2="16" y2="16" stroke="rgba(200,168,48,.25)" stroke-width="1"/></svg>
+          </div>
+        </div>
+        <div class="ig-hl-label-text">Denim</div>
+      </div>
+      <div class="ig-hl-item">
+        <div class="ig-hl-ring">
+          <div class="ig-hl-face" style="background:linear-gradient(145deg,#0c0c0c,#1a1a1a)">
+            <svg width="28" height="28" viewBox="0 0 28 28"><path d="M8 18 L14 8 L20 18" stroke="rgba(255,255,255,.5)" stroke-width="1" fill="none"/><line x1="10" y1="15" x2="18" y2="15" stroke="rgba(255,255,255,.3)" stroke-width="1"/></svg>
+          </div>
+        </div>
+        <div class="ig-hl-label-text">Vintage</div>
+      </div>
+      <div class="ig-hl-item">
+        <div class="ig-hl-ring">
+          <div class="ig-hl-face" style="background:#f0ede6">
+            <svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="13" r="5" stroke="rgba(100,80,40,.5)" stroke-width="1" fill="none"/><circle cx="14" cy="13" r="2" fill="rgba(100,80,40,.3)"/></svg>
+          </div>
+        </div>
+        <div class="ig-hl-label-text">Makers</div>
+      </div>
+      <div class="ig-hl-item">
+        <div class="ig-hl-ring">
+          <div class="ig-hl-face" style="background:linear-gradient(145deg,#0d0800,#1a1200)">
+            <svg width="28" height="28" viewBox="0 0 28 28"><path d="M14 6 C14 6 8 11 8 16 a6 6 0 0 0 12 0 C20 11 14 6 14 6Z" stroke="rgba(200,168,48,.55)" stroke-width="1" fill="rgba(200,168,48,.08)"/><circle cx="14" cy="16" r="2" fill="rgba(200,168,48,.4)"/></svg>
+          </div>
+        </div>
+        <div class="ig-hl-label-text">Visit</div>
+      </div>
+      <div class="ig-hl-item">
+        <div class="ig-hl-ring">
+          <div class="ig-hl-face" style="background:#0a0a0a">
+            <svg width="28" height="28" viewBox="0 0 28 28"><rect x="6" y="10" width="16" height="10" rx="1" stroke="rgba(255,255,255,.4)" stroke-width="1" fill="none"/><polygon points="6,10 14,16 22,10" stroke="rgba(255,255,255,.3)" stroke-width="1" fill="none"/></svg>
+          </div>
+        </div>
+        <div class="ig-hl-label-text">New In</div>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="ig-tab-bar">
+      <div class="ig-tab active">
+        <div class="ig-grid-icon">
+          <div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div>
+          <div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div>
+          <div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div><div class="ig-grid-icon-cell"></div>
+        </div>
+      </div>
+      <div class="ig-tab">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8e8e8e" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      </div>
+      <div class="ig-tab">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8e8e8e" stroke-width="1.5"><circle cx="11" cy="11" r="3"/><path d="M11 2v2M11 18v2M2 11h2M18 11h2M4.9 4.9l1.4 1.4M15.7 15.7l1.4 1.4M4.9 17.1l1.4-1.4M15.7 6.3l1.4-1.4"/></svg>
+      </div>
+    </div>
+
+    <!-- 9-post grid — each post CSS-painted as a real composition -->
+    <div class="ig-posts-grid">
+
+      <!-- Post 1: Japanese denim feature -->
+      <div class="ig-post ig-post-1">
+        <div class="ig-post-content">
+          <div class="ig-post-1-fold"></div>
+          <div class="ig-post-1-label">Japanese Selvedge</div>
+          <div class="ig-post-1-title">New Arrivals</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>142</span>
+          </div>
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>8</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 2: Editorial quote -->
+      <div class="ig-post ig-post-2">
+        <div class="ig-post-content">
+          <div class="ig-post-2-qs">"</div>
+          <p class="ig-post-2-text">Nothing is here by accident.</p>
+          <div class="ig-post-2-rule"></div>
+          <div class="ig-post-2-source">Heard The Store</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>218</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 3: Store location -->
+      <div class="ig-post ig-post-3">
+        <div class="ig-post-content">
+          <div class="ig-post-3-bldg">
+            <div class="ig-post-3-door"></div>
+          </div>
+          <div style="position:relative;z-index:1">
+            <div class="ig-post-3-addr">16 S New St</div>
+            <div class="ig-post-3-name">Downtown Staunton</div>
+          </div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>97</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 4: Denim texture closeup -->
+      <div class="ig-post ig-post-4">
+        <div class="ig-post-content">
+          <div class="ig-denim-block"></div>
+          <div class="ig-post-4-label">Selvedge Denim</div>
+          <div class="ig-post-4-sub">14oz raw, unwashed</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>185</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 5: Light collection card -->
+      <div class="ig-post ig-post-5">
+        <div class="ig-post-5-dec"></div>
+        <div class="ig-post-content">
+          <div class="ig-post-5-tag">Now in store</div>
+          <div class="ig-post-5-h">Spring<br>Vintage</div>
+          <div class="ig-post-5-line"></div>
+          <div class="ig-post-5-sub">Selected pieces</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>163</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 6: Vintage tag -->
+      <div class="ig-post ig-post-6">
+        <div class="ig-post-content">
+          <div class="ig-post-6-label-top">True Vintage</div>
+          <div class="ig-vintage-tag"><div class="ig-vintage-tag-text">Est. 1974</div></div>
+          <div class="ig-post-6-year">74</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>201</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 7: Local maker spotlight -->
+      <div class="ig-post ig-post-7">
+        <div class="ig-maker-mark"></div>
+        <div class="ig-post-content">
+          <div class="ig-post-7-caption">"Made by hand in the Valley"</div>
+          <div class="ig-post-7-name">Local Makers Series</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>134</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 8: Streetwear drop -->
+      <div class="ig-post ig-post-8">
+        <div class="ig-post-content">
+          <div class="ig-post-8-new">Just dropped</div>
+          <div class="ig-post-8-h">Limited<br>Drop</div>
+          <div class="ig-post-8-tag">Streetwear</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>247</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post 9: Location pin -->
+      <div class="ig-post ig-post-9">
+        <div class="ig-post-content">
+          <div class="ig-pin"></div>
+          <div class="ig-post-9-city">Staunton, VA</div>
+          <div class="ig-post-9-addr">Open Today · 11am – 6pm</div>
+        </div>
+        <div class="ig-post-overlay">
+          <div class="ig-post-overlay-stat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>89</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Performance metrics -->
+    <div class="ig-performance">
+      <div class="ig-perf-item"><span class="ig-perf-n">340</span><div class="ig-perf-l">Followers in 60 days</div></div>
+      <div class="ig-perf-item"><span class="ig-perf-n">12</span><div class="ig-perf-l">Posts per month</div></div>
+      <div class="ig-perf-item"><span class="ig-perf-n">4.2%</span><div class="ig-perf-l">Avg engagement</div></div>
+    </div>
+
+    </div><!-- /IG pane -->
+
+    <!-- ── FACEBOOK PANE ── -->
+    <div class="sm-pane" id="smPaneFB">
+    <div class="fb-page">
+      <div class="fb-cover">
+        <div class="fb-cover-texture"></div>
+        <div class="fb-cover-text">HEARD</div>
+      </div>
+      <div class="fb-head">
+        <div class="fb-avatar">H</div>
+        <div class="fb-head-info">
+          <div class="fb-page-name">Heard The Store <span class="fb-verified">✓</span></div>
+          <div class="fb-page-meta">Clothing Store · 218 likes · 172 followers</div>
+        </div>
+        <div class="fb-head-actions">
+          <div class="fb-btn-primary">👍 Like</div>
+          <div class="fb-btn-secondary">Message</div>
+        </div>
+      </div>
+      <div class="fb-post">
+        <div class="fb-post-top">
+          <div class="fb-post-av">H</div>
+          <div>
+            <div class="fb-post-name">Heard The Store</div>
+            <div class="fb-post-time">2 days ago · 📍 Staunton, VA</div>
+          </div>
+        </div>
+        <div class="fb-post-text">New arrivals just hit the floor — Japanese selvedge restock plus a fresh batch of true vintage from the 70s. Doors open at 11. ✨</div>
+        <div class="fb-post-visual">
+          <div class="fb-post-visual-inner">
+            <div class="fb-pv-label">NEW ARRIVALS</div>
+            <div class="fb-pv-sub">Japanese Selvedge · True Vintage</div>
+          </div>
+        </div>
+        <div class="fb-post-stats">
+          <span>👍❤️ 47</span>
+          <span>6 comments · 3 shares</span>
+        </div>
+      </div>
+
+      <!-- Second post: community event example -->
+      <div class="fb-post">
+        <div class="fb-post-top">
+          <div class="fb-post-av">H</div>
+          <div>
+            <div class="fb-post-name">Heard The Store</div>
+            <div class="fb-post-time">1 week ago · 📍 Staunton, VA</div>
+          </div>
+        </div>
+        <div class="fb-post-text">Thank you Staunton! 🙏 First Friday was our biggest night yet. Special thanks to everyone who came out for the local makers pop-up — see you next month.</div>
+        <div class="fb-post-visual">
+          <div class="fb-post-visual-inner" style="background:linear-gradient(145deg,#241a10,#3a2a18)">
+            <div class="fb-pv-label">FIRST FRIDAY</div>
+            <div class="fb-pv-sub">Local Makers Pop-Up · Monthly</div>
+          </div>
+        </div>
+        <div class="fb-post-stats">
+          <span>👍❤️😍 89</span>
+          <span>14 comments · 8 shares</span>
+        </div>
+      </div>
+
+      <!-- FB performance strip -->
+      <div class="fb-perf">
+        <div class="fb-perf-item"><div class="fb-perf-n">218</div><div class="fb-perf-l">Page likes in 60 days</div></div>
+        <div class="fb-perf-item"><div class="fb-perf-n">8</div><div class="fb-perf-l">Posts per month</div></div>
+        <div class="fb-perf-item"><div class="fb-perf-n">3.1K</div><div class="fb-perf-l">Monthly reach</div></div>
+      </div>
+    </div>
+
+    </div><!-- /FB pane -->
+
+    <!-- ── TIKTOK PANE ── -->
+    <div class="sm-pane" id="smPaneTT">
+    <div class="tt-profile">
+      <div class="tt-head">
+        <div class="tt-avatar">H</div>
+        <div class="tt-handle">@heardthestore</div>
+        <div class="tt-stats">
+          <div class="tt-stat"><div class="tt-stat-n">42</div><div class="tt-stat-l">Following</div></div>
+          <div class="tt-stat"><div class="tt-stat-n">386</div><div class="tt-stat-l">Followers</div></div>
+          <div class="tt-stat"><div class="tt-stat-n">1.2K</div><div class="tt-stat-l">Likes</div></div>
+        </div>
+        <div class="tt-follow-btn">Follow</div>
+        <div class="tt-bio">Curated vintage &amp; Japanese denim in Staunton VA 📍 New drops every Thursday</div>
+      </div>
+      <div class="tt-videos">
+        <div class="tt-video">
+          <div class="tt-video-bg tt-vbg-1">
+            <div class="tt-video-caption">Thrift with me: 70s denim edition</div>
+          </div>
+          <div class="tt-video-views">▶ 12.4K</div>
+        </div>
+        <div class="tt-video">
+          <div class="tt-video-bg tt-vbg-2">
+            <div class="tt-video-caption">What $80 gets you at Heard</div>
+          </div>
+          <div class="tt-video-views">▶ 8.1K</div>
+        </div>
+        <div class="tt-video">
+          <div class="tt-video-bg tt-vbg-3">
+            <div class="tt-video-caption">Japanese selvedge 101</div>
+          </div>
+          <div class="tt-video-views">▶ 5.7K</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /TT pane -->
+
+    <!-- Cross-platform summary -->
+    <div class="sm-total">
+      <div class="sm-total-item"><div class="sm-total-n">3</div><div class="sm-total-l">Platforms live</div></div>
+      <div class="sm-total-item"><div class="sm-total-n">944</div><div class="sm-total-l">Total followers</div></div>
+      <div class="sm-total-item"><div class="sm-total-n">26K</div><div class="sm-total-l">Monthly reach</div></div>
+      <div class="sm-total-item"><div class="sm-total-n">100%</div><div class="sm-total-l">Managed by Beacon & Co.</div></div>
+    </div>
+
+  </div>`;
+}
+
+function rReviews() {
+  return `<div class="grev-wrap">
+    <div class="grev-logo"><span class="lb">G</span><span class="lr">o</span><span class="ly">o</span><span class="lb">g</span><span class="lg">l</span><span class="lr">e</span></div>
+    <div class="grev-title">Reviews for Heard The Store · Staunton, VA</div>
+    <div class="grev-summary">
+      <div class="grev-big-score">
+        <div class="grev-big-n">4.9</div>
+        <div class="grev-big-stars">★★★★★</div>
+        <div class="grev-big-count">47 reviews</div>
+        <div class="grev-new-tag">↑ +19 new since we started</div>
+      </div>
+      <div class="grev-bars">
+        <div class="grev-bar-row"><span class="grev-bar-label">5 ★</span><div class="grev-bar-track"><div class="grev-bar-fill" style="width:92%"></div></div><span class="grev-bar-n">43</span></div>
+        <div class="grev-bar-row"><span class="grev-bar-label">4 ★</span><div class="grev-bar-track"><div class="grev-bar-fill" style="width:6%;background:#fbbc04"></div></div><span class="grev-bar-n">3</span></div>
+        <div class="grev-bar-row"><span class="grev-bar-label">3 ★</span><div class="grev-bar-track"><div class="grev-bar-fill" style="width:2%;background:#fbbc04"></div></div><span class="grev-bar-n">1</span></div>
+        <div class="grev-bar-row"><span class="grev-bar-label">2 ★</span><div class="grev-bar-track"><div class="grev-bar-fill" style="width:0"></div></div><span class="grev-bar-n">0</span></div>
+        <div class="grev-bar-row"><span class="grev-bar-label">1 ★</span><div class="grev-bar-track"><div class="grev-bar-fill" style="width:0"></div></div><span class="grev-bar-n">0</span></div>
+      </div>
+    </div>
+    <div class="grev-list">
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av" style="background:#4a6640">SR</div>
+          <div><div class="grev-reviewer-name">Sarah R.</div><div class="grev-reviewer-date">3 days ago</div></div>
+          <div class="grev-new-badge">● New</div>
+        </div>
+        <div class="grev-stars">★★★★★</div>
+        <p class="grev-text">"Jeffrey has the most impeccable taste. Found a pair of Japanese selvedge jeans I've been hunting for years. The store feels like a proper vintage destination — nothing here by accident."</p>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av" style="background:#5c3a3a">JM</div>
+          <div><div class="grev-reviewer-name">James M.</div><div class="grev-reviewer-date">1 week ago</div></div>
+          <div class="grev-new-badge">● New</div>
+        </div>
+        <div class="grev-stars">★★★★★</div>
+        <p class="grev-text">"Best vintage shop in the Shenandoah Valley — maybe all of Virginia. The curation is absolutely unlike anything else. Drove from Richmond and it was worth every mile."</p>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-av" style="background:#3a3a5c">AK</div>
+          <div><div class="grev-reviewer-name">Anna K.</div><div class="grev-reviewer-date">2 weeks ago</div></div>
+          <div class="grev-new-badge">● New</div>
+        </div>
+        <div class="grev-stars">★★★★★</div>
+        <p class="grev-text">"Found this through their Instagram and drove 45 minutes. The shop perfectly matches the feed — carefully curated, quality pieces, great prices. Heard is the real deal."</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function rResults() {
+  return `<div class="results-full">
+  <div class="rf-hero">
+    <div class="rf-hero-title">Heard The Store — Fully Transformed</div>
+    <div class="rf-hero-big">Before → After</div>
+    <div class="rf-hero-sub">4 services active · fully visible online</div>
+  </div>
+  <div class="rf-grid">
+    <div class="rf-item"><span class="rf-item-icon">🌐</span><div><div class="rf-item-label">Website</div><div class="rf-item-val">✓ Live, SEO-ready &amp; mobile</div></div></div>
+    <div class="rf-item"><span class="rf-item-icon">📍</span><div><div class="rf-item-label">Google listing</div><div class="rf-item-val">✓ Fully optimized</div></div></div>
+    <div class="rf-item"><span class="rf-item-icon">📱</span><div><div class="rf-item-label">Instagram</div><div class="rf-item-val">✓ 340 followers, active</div></div></div>
+    <div class="rf-item"><span class="rf-item-icon">⭐</span><div><div class="rf-item-label">Google reviews</div><div class="rf-item-val">✓ 47 reviews · growing</div></div></div>
+    <div class="rf-item"><span class="rf-item-icon">📞</span><div><div class="rf-item-label">Calls from Google</div><div class="rf-item-val">✓ Now receiving</div></div></div>
+    <div class="rf-item"><span class="rf-item-icon">📈</span><div><div class="rf-item-label">Search visibility</div><div class="rf-item-val">✓ 3× increase</div></div></div>
+  </div>
+  <div class="rf-cta-block">
+    <div class="rf-cta-label">Your business is next</div>
+    <div class="rf-cta-quote">"This is a spec demo I built for Heard before charging them anything. Request your free audit and I'll do the same for your business — before you spend a cent."<br><small style="font-style:normal;opacity:.55;font-size:.8rem">— Minjoon Kim, Founder · Beacon & Co.</small></div>
+    <a href="javascript:void(0)" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false" class="rf-cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth',block:'start'});return false">Get my free audit →</a>
+  </div>
+  </div>`;
+}
+
+const renders = [rBefore, rGoogle, rWebsite, rSocial, rReviews, rResults];
+
+/* Skeleton HTML shown while stage content loads */
+function skeletonHTML() {
+  return `<div class="skel-wrap">
+    <div class="skel skel-h"></div>
+    <div class="skel skel-line" style="width:90%"></div>
+    <div class="skel skel-line" style="width:75%"></div>
+    <div class="skel skel-block"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px">
+      <div class="skel skel-sm"></div>
+      <div class="skel skel-sm"></div>
+      <div class="skel skel-sm"></div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  const s = stages[cur];
+
+  /* Progress bar */
+  const pb = document.getElementById('progBar');
+  if (pb) pb.style.width = ((cur / (stages.length - 1)) * 100) + '%';
+
+  /* Step tabs */
+  document.querySelectorAll('.sn-tab').forEach((el, i) => {
+    el.classList.toggle('active', i === cur);
+    el.classList.toggle('done', i < cur);
+  });
+
+  /* Info card — optimistic: update text immediately */
+  const card = document.getElementById('stageCard');
+  if (card) {
+    card.innerHTML = `
+      <div class="si-step-label">${s.step}</div>
+      <div class="si-title">${s.title}</div>
+      <div class="si-desc">${s.desc}</div>
+      <div class="si-insight">
+        <div class="si-insight-label">${s.insightLabel}</div>
+        <div class="si-insight-text">${s.insight}</div>
+      </div>`;
+  }
+
+  /* Buttons */
+  const btnPrev = document.getElementById('btnPrev');
+  if (btnPrev) btnPrev.style.display = cur > 0 ? '' : 'none';
+
+  const btnLbl = document.getElementById('btnLbl');
+  if (btnLbl) btnLbl.textContent = s.btn;
+
+  const nb = document.getElementById('btnNext');
+  if (nb) {
+    const isLast = cur === stages.length - 1;
+    nb.style.background = isLast ? 'var(--gold-lt)' : '';
+    nb.style.color      = isLast ? 'var(--ink)' : '';
+    nb.className = 'btn-next-stage' + (isLast ? ' gold-action' : '');
+  }
+
+  /* URL bar + badge */
+  const ppUrl = document.getElementById('ppUrl');
+  if (ppUrl) ppUrl.textContent = s.url;
+
+  const badge = document.getElementById('ppBadge');
+  if (badge) {
+    badge.className = 'pp-badge ' + s.badgeClass;
+    badge.textContent = s.badgeText;
+  }
+
+  /* Preview panel — skeleton → content */
+  const body = document.getElementById('ppBody');
+  if (!body) return;
+
+  /* Step 1: show skeleton immediately (optimistic) */
+  body.innerHTML = skeletonHTML();
+  body.style.opacity = '1';
+  body.style.transform = 'none';
+  body.style.transition = 'none';
+
+  /* Step 2: after short delay, swap in real content with slide-in */
+  const loadedCur = cur;
+  setTimeout(() => {
+    if (cur !== loadedCur) return; /* guard against fast clicking */
+    body.style.opacity = '0';
+    body.style.transform = 'translateX(10px)';
+    body.style.transition = 'opacity .28s ease, transform .28s ease';
+    setTimeout(() => {
+      if (cur !== loadedCur) return;
+      body.innerHTML = renders[cur]();
+      body.scrollTop = 0;
+      requestAnimationFrame(() => {
+        body.style.opacity = '1';
+        body.style.transform = 'none';
+      });
+    }, 150);
+  }, 180);
+}
+
+/* Scroll only if the step nav is out of view — never yank the page */
+function ensureDemoVisible() {
+  const nav = document.getElementById('stepNav');
+  if (!nav) return;
+  const r = nav.getBoundingClientRect();
+  const navH = 70; /* fixed header height */
+  const inView = r.top >= navH && r.top < window.innerHeight * 0.5;
+  if (!inView) {
+    const y = window.scrollY + r.top - navH - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+
+function next() {
+  const s = stages[cur];
+  if (s.btnAction === 'contact') {
+    const c = document.getElementById('contact');
+    if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  if (cur < stages.length - 1) { cur++; render(); ensureDemoVisible(); }
+}
+function prev() { if (cur > 0) { cur--; render(); ensureDemoVisible(); } }
+function goTo(n) { if (n === cur) return; cur = n; render(); ensureDemoVisible(); }
+function smSwitch(p, btn) {
+  document.querySelectorAll('.sm-pane').forEach(el => el.classList.remove('sm-pane-active'));
+  const pane = document.getElementById('smPane' + p);
+  if (pane) pane.classList.add('sm-pane-active');
+  document.querySelectorAll('.sm-tab-btn').forEach(el => el.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+render();
+
+window.goTo = goTo;
+window.next = next;
+window.prev = prev;
+window.smSwitch = smSwitch;
+</script>
