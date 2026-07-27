@@ -7,9 +7,7 @@ export interface DocumentationConflict {
   reason: string;
 }
 
-export function detectConflicts(
-  documents: DocumentIndexEntry[],
-): DocumentationConflict[] {
+export function detectConflicts(documents: DocumentIndexEntry[]): DocumentationConflict[] {
   const claims = new Map<string, Array<{ value: string; source: string }>>();
   for (const document of documents.filter(({ status }) => status !== "superseded")) {
     for (const claim of document.claims ?? []) {

@@ -1,23 +1,132 @@
 ---
 interface Props {
   src: string;
+  animated?: string;
   source?: string;
   alt: string;
+  title?: string;
   caption?: string;
   format?: "image" | "object" | string;
 }
-const { src, source, alt, caption, format = "image" } = Astro.props;
+const { src, animated, source, alt, title, caption, format = "image" } = Astro.props;
 ---
-<figure class="architecture-diagram">
-  <a href={src} target="_blank" rel="noreferrer" aria-label={`Open diagram: ${alt}`}>
-    {format === "object" ? (
-      <object data={src} type="image/svg+xml" aria-label={alt}></object>
-    ) : (
-      <img src={src} alt={alt} loading="lazy" />
-    )}
-  </a>
+
+<figure
+  class="architecture-diagram"
+  data-architecture-diagram
+  data-static-src={src}
+  data-animated-src={animated}
+>
+  {
+    title && (
+      <div class="architecture-diagram__header">
+        <span>Excalidraw architecture</span>
+        <strong>{title}</strong>
+      </div>
+    )
+  }
+  <div
+    class="architecture-diagram__viewport"
+    tabindex="0"
+    aria-label={`Scrollable diagram: ${alt}`}
+  >
+    <a
+      class="architecture-diagram__canvas"
+      href={src}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={`Open full-size diagram: ${alt}`}
+    >
+      {
+        format === "object" ? (
+          <object data={src} type="image/svg+xml" aria-label={alt} />
+        ) : (
+          <img data-diagram-preview src={src} alt={alt} loading="lazy" />
+        )
+      }
+    </a>
+  </div>
   <figcaption>
-    {caption && <span>{caption}</span>}
-    {source && <a href={source}>Open editable source</a>}
+    <div>
+      {caption && <span>{caption}</span>}
+      <span class="architecture-diagram__status" data-diagram-status aria-live="polite">
+        Static review view
+      </span>
+    </div>
+    <div class="architecture-diagram__actions">
+      {
+        animated && format !== "object" && (
+          <button type="button" data-diagram-animation aria-pressed="false">
+            Play animation
+          </button>
+        )
+      }
+      <a href={src} target="_blank" rel="noreferrer">Open full size</a>
+      {source && <a href={source}>Download editable source</a>}
+      {
+        source && (
+          <a href="https://dai-shi.github.io/excalidraw-animate/" target="_blank" rel="noreferrer">
+            Open animation tool
+          </a>
+        )
+      }
+    </div>
   </figcaption>
+  {
+    source && (
+      <details class="architecture-diagram__source">
+        <summary>Source and provenance</summary>
+        <p>
+          Canonical editable source in this Decision System: <code>{source}</code>
+        </p>
+        <p>The source file remains authoritative. The visible SVG is a generated review surface.</p>
+        <a href={source}>Open or download the local Excalidraw source</a>
+      </details>
+    )
+  }
 </figure>
+
+<script>
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  for (const figure of document.querySelectorAll("[data-architecture-diagram]")) {
+    if (!(figure instanceof HTMLElement)) continue;
+    const button = figure.querySelector("[data-diagram-animation]");
+    const preview = figure.querySelector("[data-diagram-preview]");
+    const status = figure.querySelector("[data-diagram-status]");
+    if (!(button instanceof HTMLButtonElement) || !(preview instanceof HTMLImageElement)) {
+      continue;
+    }
+
+    const staticSource = figure.dataset.staticSrc;
+    const animatedSource = figure.dataset.animatedSrc;
+    if (!staticSource || !animatedSource) continue;
+
+    const resetToStatic = () => {
+      preview.src = staticSource;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = reducedMotion.matches ? "Animation disabled" : "Play animation";
+      button.disabled = reducedMotion.matches;
+      if (status) {
+        status.textContent = reducedMotion.matches
+          ? "Static review view · reduced-motion preference honored"
+          : "Static review view";
+      }
+    };
+
+    resetToStatic();
+    reducedMotion.addEventListener("change", resetToStatic);
+
+    button.addEventListener("click", () => {
+      const isPlaying = button.getAttribute("aria-pressed") === "true";
+      if (isPlaying) {
+        resetToStatic();
+        return;
+      }
+      preview.src = animatedSource;
+      button.setAttribute("aria-pressed", "true");
+      button.textContent = "Show static";
+      if (status) status.textContent = "Animated review view · generated with Excalidraw Animate";
+    });
+  }
+</script>

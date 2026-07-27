@@ -5,10 +5,22 @@ interface Props {
 }
 const { src, title } = Astro.props;
 ---
+
 <figure class="mermaid-diagram" data-mermaid-diagram data-source={src}>
   <figcaption>{title}</figcaption>
-  <pre aria-label={`${title} textual diagram source`}>Loading reviewable Mermaid source…</pre>
-  <a href={src}>Open Mermaid source</a>
+  <div
+    class="mermaid-diagram__render"
+    data-mermaid-render
+    role="img"
+    tabindex="0"
+    aria-label={`${title} rendered diagram`}
+  >
+  </div>
+  <details class="mermaid-diagram__source">
+    <summary>View Mermaid source</summary>
+    <pre aria-label={`${title} textual diagram source`}>Loading reviewable Mermaid source…</pre>
+    <a href={src}>Open or download the local Mermaid source</a>
+  </details>
 </figure>
 
 <script>
@@ -29,23 +41,26 @@ const { src, title } = Astro.props;
     },
   });
 
-  for (const [index, figure] of [...document.querySelectorAll("[data-mermaid-diagram]")].entries()) {
+  for (const [index, figure] of [
+    ...document.querySelectorAll("[data-mermaid-diagram]"),
+  ].entries()) {
     if (!(figure instanceof HTMLElement)) continue;
     const sourcePath = figure.dataset.source;
     const pre = figure.querySelector("pre");
-    if (!sourcePath || !(pre instanceof HTMLElement)) continue;
+    const container = figure.querySelector("[data-mermaid-render]");
+    if (!sourcePath || !(pre instanceof HTMLElement) || !(container instanceof HTMLElement))
+      continue;
     try {
       const source = await fetch(sourcePath).then((response) => {
         if (!response.ok) throw new Error(`Diagram source returned ${response.status}`);
         return response.text();
       });
       pre.textContent = source;
-      const { svg, bindFunctions } = await mermaid.render(`mermaid-${index}-${Math.random().toString(16).slice(2)}`, source);
-      const container = document.createElement("div");
-      container.className = "mermaid-diagram__render";
+      const { svg, bindFunctions } = await mermaid.render(
+        `mermaid-${index}-${Math.random().toString(16).slice(2)}`,
+        source,
+      );
       container.innerHTML = svg;
-      pre.hidden = true;
-      pre.insertAdjacentElement("afterend", container);
       bindFunctions?.(container);
     } catch (error) {
       pre.textContent = `Diagram could not render. Open the source link below.\n${String(error)}`;

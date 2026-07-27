@@ -41,8 +41,7 @@ export function analyzeDocumentationImpact(
     reasons.push("The translated request expects documentation impact review.");
     pages.add("references/open-questions");
   }
-  const adrRequired =
-    summary.architectureChanged || summary.businessRuleChanged;
+  const adrRequired = summary.architectureChanged || summary.businessRuleChanged;
   return {
     expected: reasons.length > 0,
     level: adrRequired ? "adr" : reasons.length > 0 ? "reference" : "none",

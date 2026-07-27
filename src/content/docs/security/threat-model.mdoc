@@ -1,0 +1,52 @@
+---
+title: "Threat model"
+description: "Assets, actors, boundaries, abuse cases, mitigations, and accepted gaps for the Phase 1 site and delivery path."
+section: "security"
+order: 701
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","src/worker.ts","security/exception-register.yml"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["architecture/secure-cicd-architecture","security/secrets-management","security/vulnerability-management"]
+tags: ["security","threat-model"]
+truthState: "current"
+---
+
+## Scope and assets
+
+The current production-shaped system is an Astro static site plus a narrow Cloudflare Worker contact route. Protected assets are source integrity, deployment credentials, Cloudflare configuration, visitor availability, contact-form PII in transit, notification integrity, documentation truth, and audit evidence.
+
+## Actors
+
+- legitimate visitor submitting one contact request;
+- repository owner acting as author, reviewer, and release approver;
+- automated dependency and CI services;
+- unauthenticated spammer or bot;
+- malicious contributor or compromised dependency;
+- attacker with a leaked repository or Cloudflare token;
+- AI coding agent following incomplete or hostile instructions.
+
+## Principal threats and controls
+
+| Threat | Current repository control | Remaining gap |
+|---|---|---|
+| Secret committed or printed | secret scanner, redacted logging policy, PR checklist | GitHub push protection must be enabled |
+| Workflow supply-chain substitution | allowlist plus full Action SHA pins | pins require quarterly review |
+| Untrusted PR obtains deployment credentials | no PR deploy secrets; deploy workflows are manual and environment-gated | environments and isolated tokens must be configured |
+| Contact spam or oversized payload | 32 KiB cap, allowlists, Turnstile, honeypot, duplicate damping | distributed rate limit and WAF are pending |
+| Header or browser-policy weakness | Worker-applied CSP, HSTS, MIME, referrer, permissions, framing, caching | temporary inline-style and handler exceptions |
+| Dependency compromise | lockfile, approved direct-dependency list, Dependabot, dependency review, audit | current transitive audit findings require triage |
+| Artifact substitution | one tested archive, digest evidence, digest verification before deploy | signed provenance is not active |
+| AI agent expands scope or exfiltrates data | scoped briefs, prohibited actions, human gates, no secret access in PR jobs | model/provider controls remain procedural |
+| Solo operator self-approves | deterministic gates and explicit exception | no independent human review exists |
+
+## Abuse cases
+
+The contact endpoint treats every request as untrusted. It rejects foreign origins, invalid media types, oversized bodies, control characters, out-of-range values, unknown select options, invalid Turnstile results, configured rate-limit failures, and rapid duplicates. It returns generic errors and never logs submitted values.
+
+The delivery path treats branch content and PR metadata as untrusted. PR workflows receive no deployment credentials. Inputs used by shell commands must enter through environment variables and be validated. Production accepts only a tested artifact associated with a commit on `main`.
+
+## Review triggers
+
+Review this model when adding authentication, a database, durable queues, file upload, analytics carrying identifiers, a new provider, a new deployment target, a public API, or a live orchestration service.

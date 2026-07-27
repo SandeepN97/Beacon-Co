@@ -1,35 +1,17 @@
 import { createHash } from "node:crypto";
-import {
-  access,
-  copyFile,
-  mkdir,
-  readFile,
-  readdir,
-  stat,
-  writeFile,
-} from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
-import {
-  basename,
-  dirname,
-  extname,
-  join,
-  relative,
-  resolve,
-} from "node:path";
+import { basename, dirname, extname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(scriptDirectory, "..");
 const downloadsDirectory = join(homedir(), "Downloads");
-const materialsRoot = join(
-  projectRoot,
-  "reference",
-  "source-materials",
-);
+const materialsRoot = join(projectRoot, "reference", "source-materials");
 const originalsDirectory = join(materialsRoot, "originals");
 const extractedDirectory = join(materialsRoot, "extracted");
 const inventoryDirectory = join(materialsRoot, "inventory");
+const publicDiagramDirectory = join(projectRoot, "public", "diagrams", "source");
 
 const sourceRules = [
   {
@@ -78,6 +60,21 @@ const sourceRules = [
     note: "Authoritative execution requirements",
   },
   {
+    pattern: /^BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10\.excalidraw$/i,
+    tier: "tier-1",
+    note: "Target secure CI/CD and AI delivery architecture",
+  },
+  {
+    pattern: /^BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10\.md$/i,
+    tier: "tier-1",
+    note: "Authoritative secure CI/CD execution requirements",
+  },
+  {
+    pattern: /^BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10\.md$/i,
+    tier: "tier-1",
+    note: "Authoritative secure CI/CD target implementation plan",
+  },
+  {
     pattern: /^smart-home-architecture.*\.html$/i,
     tier: "tier-3",
     note: "Visual and interaction reference only",
@@ -94,8 +91,7 @@ const sourceRules = [
   },
 ];
 
-const sha256 = (buffer) =>
-  createHash("sha256").update(buffer).digest("hex");
+const sha256 = (buffer) => createHash("sha256").update(buffer).digest("hex");
 
 const exists = async (path) => {
   try {
@@ -118,10 +114,7 @@ const writeWhenChanged = async (path, content) => {
 const collisionPath = (fileName, hash) => {
   const extension = extname(fileName);
   const stem = fileName.slice(0, fileName.length - extension.length);
-  return join(
-    originalsDirectory,
-    `${stem}__${hash.slice(0, 12)}${extension}`,
-  );
+  return join(originalsDirectory, `${stem}__${hash.slice(0, 12)}${extension}`);
 };
 
 const extractionStatus = async (fileName) => {
@@ -159,6 +152,7 @@ await Promise.all([
     recursive: true,
   }),
   mkdir(inventoryDirectory, { recursive: true }),
+  mkdir(publicDiagramDirectory, { recursive: true }),
 ]);
 
 const downloadsEntries = await readdir(downloadsDirectory, {
@@ -167,15 +161,11 @@ const downloadsEntries = await readdir(downloadsDirectory, {
 const selectedSources = downloadsEntries
   .filter((entry) => entry.isFile())
   .map((entry) => {
-    const rule = sourceRules.find(({ pattern }) =>
-      pattern.test(entry.name),
-    );
+    const rule = sourceRules.find(({ pattern }) => pattern.test(entry.name));
     return rule ? { fileName: entry.name, rule } : null;
   })
   .filter(Boolean)
-  .sort((left, right) =>
-    left.fileName.localeCompare(right.fileName),
-  );
+  .sort((left, right) => left.fileName.localeCompare(right.fileName));
 
 const inventory = [];
 for (const { fileName, rule } of selectedSources) {
@@ -199,6 +189,13 @@ for (const { fileName, rule } of selectedSources) {
     }
   } else {
     await copyFile(sourcePath, destinationPath);
+  }
+
+  if (/^BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10\.excalidraw$/i.test(fileName)) {
+    const publicPath = join(publicDiagramDirectory, fileName);
+    if (!(await exists(publicPath)) || sha256(await readFile(publicPath)) !== sourceHash) {
+      await copyFile(sourcePath, publicPath);
+    }
   }
 
   inventory.push({
@@ -263,9 +260,7 @@ const markdownChanged = await writeWhenChanged(
 console.log(
   [
     `Imported ${inventory.length} source materials.`,
-    jsonChanged || markdownChanged
-      ? "Inventory updated."
-      : "Inventory unchanged.",
+    jsonChanged || markdownChanged ? "Inventory updated." : "Inventory unchanged.",
     "Downloads originals were not modified.",
   ].join(" "),
 );

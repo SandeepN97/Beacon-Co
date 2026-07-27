@@ -1,14 +1,6 @@
-import type {
-  ProviderId,
-  RoutingDecision,
-  RoutingRequest,
-} from "../domain/provider";
+import type { ProviderId, RoutingDecision, RoutingRequest } from "../domain/provider";
 import type { CapacityManager } from "./capacity-manager";
-import {
-  defaultRoutingPolicy,
-  scoreProvider,
-  type RoutingPolicyConfig,
-} from "./routing-policy";
+import { defaultRoutingPolicy, scoreProvider, type RoutingPolicyConfig } from "./routing-policy";
 
 export class ProviderRouter {
   constructor(
@@ -25,14 +17,14 @@ export class ProviderRouter {
     if (!selected) {
       return {
         provider: null,
-        reason: "No provider satisfies policy, capability, health, cooldown, and capacity requirements.",
+        reason:
+          "No provider satisfies policy, capability, health, cooldown, and capacity requirements.",
         scores,
         fallbackUsed: false,
       };
     }
 
-    const requested =
-      request.preferredProvider === "auto" ? null : request.preferredProvider;
+    const requested = request.preferredProvider === "auto" ? null : request.preferredProvider;
     return {
       provider: selected.provider,
       reason: selected.reasons.join("; "),

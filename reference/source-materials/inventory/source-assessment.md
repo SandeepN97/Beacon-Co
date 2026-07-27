@@ -1,6 +1,6 @@
 # Source material assessment
 
-Generated: 2026-07-27T05:15:24.685Z
+Generated: 2026-07-27T07:01:40.827Z
 
 This assessment records repository-local copies and extracted material. It does not promote proposals to implemented state.
 
@@ -19,6 +19,9 @@ This assessment records repository-local copies and extracted material. It does 
 | `reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw` | tier-1-source-evidence | excalidraw | 858760 | 840 elements; 0 frames; 840 ordered elements |
 | `reference/source-materials/originals/ai_company_all_agents_one_file_package.zip` | tier-1-source-evidence | zip | 175519 | preserved and hashed |
 | `reference/source-materials/originals/BEACON_COMPLETE_EXECUTION_PROMPT.md` | tier-1-authoritative-project-content | md | 45201 | preserved and hashed |
+| `reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw` | tier-1-source-evidence | excalidraw | 308180 | 346 elements; 0 frames; 0 ordered elements |
+| `reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md` | tier-1-authoritative-project-content | md | 8704 | preserved and hashed |
+| `reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md` | tier-1-authoritative-project-content | md | 13790 | preserved and hashed |
 | `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx` | tier-1-authoritative-project-content | docx | 1692989 | preserved and hashed |
 | `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf` | tier-1-authoritative-project-content | pdf | 595121 | preserved and hashed |
 | `reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw` | tier-1-source-evidence | excalidraw | 268495 | 300 elements; 0 frames; 300 ordered elements |
@@ -1128,6 +1131,219 @@ Elements: 840. Frames: none.
 - Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
 - COMPLETION RULE
 - Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+
+### BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw
+
+Elements: 346. Frames: none.
+
+- BEACON 10/10 SECURE CI/CD AND AI DELIVERY ARCHITECTURE
+- Astro + Markdoc · GitHub Actions · Cloudflare · Claude/Codex · Human-controlled production
+- 0. SECURITY FOUNDATION — THREAT MODEL BEFORE PIPELINE
+- Assets
+- Source · Markdoc truth · customer leads GitHub · Cloudflare · AI context · audit evidence
+- Actors
+- External attacker · compromised contributor malicious dependency · compromised action · insider
+- Trust Boundaries
+- Developer/AI · GitHub PR · CI runner preview · staging · production · external services
+- Risk Classification
+- Low · medium · high · critical security/privacy/production changes escalate
+- Security Acceptance
+- Owner · control · evidence · residual risk expiry date and review cadence
+- 1. CONTROLLED REQUEST, AI AGENTS AND PRIVILEGED CHANGE GOVERNANCE
+- Human Request
+- Plain language business outcome
+- Intent Translator
+- Scope · assumptions acceptance criteria
+- Markdoc Retrieval
+- Approved architecture ADRs · security policy
+- Risk & Data Gate
+- Classify data required approvals
+- Broker
+- Claude-first policy Codex task affinity
+- Sandboxed Worktree
+- Bounded paths no production secrets
+- Independent Review
+- Author cannot approve fresh second voice
+- Human Owner
+- Accountable approver for every AI change
+- AI Context Firewall
+- Treat repository, issues, PR comments, logs and web content as untrusted. Redact secrets, minimize context, block arbitrary tool/network access.
+- Security-Critical Files
+- AGENTS.md · CLAUDE.md · workflows · package scripts · adapters · approvals · infrastructure require human + CODEOWNER review.
+- AI Prohibitions
+- No production credentials · no self-approval · no merge bypass · no deployment authority · no disabling tests or security gates.
+- Continuation Package
+- Provider-neutral state, diff, tests, assumptions, decisions and next action.
+- 2. REPOSITORY AND GITHUB GOVERNANCE
+- Protected Main
+- PR required no direct push no force push
+- Rulesets
+- Required checks latest approval resolved threads
+- CODEOWNERS
+- Workflows · security AI rules · infrastructure
+- Privileged Changes
+- 2 approvals target human security approval
+- Signed History
+- Signed commits/tags release traceability
+- Secret Protection
+- Push protection custom patterns no bypass by default
+- Actions Policy
+- Allow-list actions full-SHA pinning
+- Branch Strategy
+- feature/BEA-* → pull request → squash merge → protected main
+- Dependency Governance
+- Lockfile required · controlled updates · license policy · package-age and maintainer review
+- Workflow Governance
+- No pull_request_target execution of untrusted code · no mutable actions · no latest installs
+- Access Governance
+- MFA · least privilege · periodic access review · no shared accounts · separate machine identities
+- 3. UNTRUSTED PULL-REQUEST CI — READ-ONLY AND SECRETLESS
+- Policy Gate
+- work-unit Markdoc/ADR changed-file class
+- Install
+- npm ci lockfile integrity Node 22.12+
+- Quality
+- format · lint Astro check type checks
+- Tests
+- unit · integration contract tests build
+- Frontend
+- Playwright · axe keyboard · reflow viewport matrix
+- Security
+- CodeQL · secrets dependency review workflow scan
+- Supply Chain
+- SBOM · licenses hash · provenance artifact evidence
+- Verdict
+- all required gates pass
+- Permissions
+- `contents: read` by default permissions declared per job
+- Runner
+- GitHub-hosted ephemeral runner no persistent production trust
+- Untrusted Input
+- PR title/body/branch treated as data never interpolated into shell
+- Actions
+- Full commit SHA + release comment action source reviewed
+- Network
+- Minimal outbound access no arbitrary curl | shell
+- Timeouts
+- Job timeouts · retry limits cancel stale runs
+- Evidence
+- SARIF · JUnit · screenshots SBOM · hashes · logs
+- Blocking Findings
+- Secret exposure · failed build/tests · critical/high exploitable dependency · serious/critical axe issue · workflow policy violation · unverified artifact · production credential exposure
+- Review-Required Findings
+- Heuristic SAST result · architecture hotspot · complexity increase · noncritical dependency issue · performance regression · incomplete manual accessibility validation
+- GitGalaxy
+- Optional evaluation only until commercial licensing is confirmed. Non-blocking; never replaces CodeQL, dependency review, tests or human judgment.
+- CI Trust Boundary
+- Cannot merge · cannot approve · cannot access staging/production secrets · cannot alter protected settings · cannot mark its own work complete
+- 4. BUILD-ONCE ARTIFACT, ATTESTATION AND PREVIEW
+- Immutable Build
+- Exact reviewed commit reproducible npm ci
+- Digest
+- SHA-256 manifest commit + workflow ID
+- SBOM
+- CycloneDX/SPDX runtime dependencies
+- Attestation
+- GitHub artifact provenance OIDC-backed statement
+- Preview
+- Cloudflare isolated preview no prod data/secrets
+- Deployed Tests
+- smoke · headers · links accessibility · UI
+- Artifact Promotion Rule
+- Build once. Promote the same verified artifact through preview, staging and production.
+- Preview Isolation
+- Ephemeral URL · mock/test integrations · no production customer data · automatic expiry.
+- Evidence Bundle
+- Artifact · digest · SBOM · attestation · test reports · SARIF · screenshots · approval record.
+- Merge Gate
+- Required checks + independent review + human approval + docs impact complete.
+- 5. CONTROLLED DELIVERY — STAGING, PRODUCTION AND ROLLBACK
+- Protected Main
+- squash merge release candidate
+- Staging Environment
+- separate token/domain/data least privilege
+- Staging Security
+- smoke · DAST baseline headers · API abuse tests
+- Release Freeze
+- record digest change summary rollback candidate
+- Human Production Gate
+- required reviewer prevent self-review
+- Production Deploy
+- serialized same artifact scoped token
+- Post-Deploy Verify
+- health · logs · synthetic SHA · contact flow
+- Cloudflare Credential Model
+- Separate staging and production API tokens. Store only in protected GitHub environments. Scope to the minimum account/resource permissions and rotate regularly.
+- Deployment Concurrency
+- One production deployment at a time. No overlapping releases. Cancel stale staging jobs safely.
+- Failure Gate
+- Any failed validation stops promotion. Preserve evidence, classify incident and revoke exposed credentials.
+- Rollback
+- Redeploy last known-good verified artifact or revert the protected-main commit. Repeat post-deploy verification before service is declared restored.
+- Initial Recovery Targets
+- Target RTO: 60 minutes · Target RPO: near-zero for source/configuration · validate against actual business needs
+- Release Completion
+- Production verification + audit evidence + Markdoc/ADR/runbook/roadmap update
+- Break-Glass
+- Documented emergency owner · time-limited access · mandatory incident record · retrospective review
+- 6. RUNTIME APPLICATION SECURITY FOR BEACON
+- Edge Protection
+- TLS · HSTS · rate limits Turnstile server verification
+- Security Headers
+- CSP · frame-ancestors nosniff · referrer policy
+- Contact API
+- schema validation · size limits encoding · abuse throttling
+- Data Protection
+- PII minimization · retention redacted logs · deletion process
+- Observability
+- structured logs · alerts request IDs · deployment SHA
+- Availability
+- timeouts · retry policy circuit breakers where needed
+- Privacy
+- consent language no selling/sharing claims verified
+- Frontend Security & Accessibility
+- WCAG 2.2 AA engineering target · keyboard and screen-reader support · reduced motion · no unsafe HTML injection · content remains usable without animation and at 320 CSS pixels.
+- Third-Party Services
+- Google Fonts · Turnstile · email provider · analytics reviewed for CSP, privacy, availability and data handling. Minimize external scripts and document every processor.
+- Production Configuration
+- Environment-specific configuration · no debug mode · safe error messages · secure CORS · no source maps containing secrets · cache rules reviewed.
+- Penetration & Abuse Testing
+- Contact-form abuse · injection · open redirects · header checks · rate-limit behavior · dependency and endpoint review.
+- 7. CONTINUOUS ASSURANCE, INCIDENT RESPONSE AND BUSINESS CONTINUITY
+- Every PR
+- policy · test · SAST · SCA accessibility · preview
+- Daily
+- security alerts failed workflow review
+- Weekly
+- full scans · links · headers scheduled smoke tests
+- Monthly
+- access review · tokens actions and licenses
+- Quarterly
+- threat model · rollback drill incident tabletop
+- Release
+- attestation · SBOM runbook and docs update
+- Incident
+- detect · contain · revoke rollback · learn
+- Incident Response
+- Severity classification · owner and escalation · evidence preservation · credential revocation · Cloudflare rollback · GitHub token/session review · notification decision · root cause · corrective actions.
+- Metrics
+- Deployment frequency · change failure rate · MTTR · vulnerability age · secret incidents · failed gates · rollback success · accessibility regressions · dependency freshness.
+- Audit Retention
+- Workflow logs · approvals · deployment history · SARIF · SBOM · provenance · incident reports · exception decisions. Retention period documented and reviewed.
+- Documentation Truth
+- Markdoc records current state only after verified implementation. Architecture, ADR, runbook and roadmap changes are part of completion.
+- 8. CONTROL FRAMEWORK MAPPING
+- NIST SSDF 1.1
+- Prepare · Protect · Produce · Respond
+- NIST SP 800-218A
+- Generative-AI secure development profile
+- OWASP CI/CD
+- Flow · IAM · dependencies · PPE · credentials · integrity · logging
+- GitHub Secure Use
+- Least privilege · SHA pinning · environment gates · attestations
+- SLSA
+- Build provenance · artifact integrity · verification
+- Operating principle: AI proposes and implements · deterministic controls validate · humans own risk and authorize production · verified artifacts are promoted
 
 ### easy_read_ai_company_architecture.excalidraw
 

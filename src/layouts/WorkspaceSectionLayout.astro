@@ -9,6 +9,7 @@ interface Props {
 
 const { eyebrow, title, description } = Astro.props;
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -37,14 +38,19 @@ const { eyebrow, title, description } = Astro.props;
       </header>
       <div class="workspace-truth">
         <strong>Simulation boundary</strong>
-        <span>This view is static and in-memory. It does not persist requests, invoke providers, approve actions, or report production activity.</span>
+        <span
+          >This view is static and in-memory. It does not persist requests, invoke providers,
+          approve actions, or report production activity.</span
+        >
       </div>
       <section class="workspace-section">
         <slot />
       </section>
     </main>
     <footer>
-      <p>Runtime persistence is future work. Current policy lives in <a href="/docs/">Markdoc</a>.</p>
+      <p>
+        Runtime persistence is future work. Current policy lives in <a href="/docs/">Markdoc</a>.
+      </p>
     </footer>
   </body>
 </html>

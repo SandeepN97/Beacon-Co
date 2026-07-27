@@ -5,10 +5,7 @@ export interface RepairState {
   evidence: string[];
 }
 
-export function requestRepair(
-  state: RepairState,
-  defectEvidence: string,
-): RepairState {
+export function requestRepair(state: RepairState, defectEvidence: string): RepairState {
   if (state.attempt >= state.maximumAttempts) {
     throw new Error("Bounded repair limit reached; human escalation is required.");
   }

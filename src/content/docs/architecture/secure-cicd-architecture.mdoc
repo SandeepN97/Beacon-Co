@@ -1,0 +1,70 @@
+---
+title: "Secure CI/CD architecture"
+description: "Repository controls, trust boundaries, promotion flow, and activation state for Beacon delivery."
+section: "architecture"
+order: 412
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect","DevOps Engineer"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","security/approved-actions.yml","secure-cicd-build-plan.md","secure-cicd-implementation-report.md"]
+relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["security/secure-development-standard","operations/deployment-runbook","operations/rollback-runbook"]
+tags: ["architecture","security","cicd"]
+truthState: "current"
+---
+
+## Purpose
+
+Beacon delivery separates untrusted change creation from trusted promotion. A feature branch can propose code, documentation, policy, or workflow changes. It cannot deploy production. Pull-request gates create evidence, a protected main branch establishes the release boundary, and environment-gated workflows promote the exact tested archive.
+
+{% architecture_diagram title="Beacon secure CI/CD architecture" src="/diagrams/exports/beacon-secure-cicd-architecture-static.svg" source="/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw" alt="Secure CI/CD architecture covering pull-request gates, protected main, artifact promotion, environment approval, production verification, rollback, and audit evidence" caption="Source-faithful static export of the supplied 10/10 security architecture." /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/secure-cicd-control-flow.mmd" title="Secure CI/CD control flow" /%}
+
+## Supplied architecture source
+
+[Open the editable 10/10 Excalidraw source](/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw). The repository copy is hash-verified at `116ade3935e9bd57edd7e6134471eb736f62a12de580e2803d1c072436c7d1c2`.
+
+The source scene contains 346 elements and 208 text elements. The Decision System generates and validates a deterministic, source-faithful static SVG review surface. The editable `.excalidraw` file remains authoritative. This source has no embedded animation ordering, so the interface does not claim an animated version.
+
+## Trust boundaries
+
+| Boundary | Trusted input | Prohibited shortcut |
+|---|---|---|
+| Authoring | scoped branch and canonical project context | direct production change |
+| Pull request | repository code and unprivileged CI token | PR secrets or `pull_request_target` execution |
+| Main | passing required checks and explicit owner approval | force push or check bypass |
+| Promotion | tested archive, expected SHA-256, approved environment | rebuilding differently for production |
+| Runtime | Cloudflare secrets and least-privilege deployment token | credentials in source or artifacts |
+| Evidence | hashes, command results, review state | request bodies, PII, tokens, or secret values |
+
+## Implemented in the repository
+
+- least-privilege workflow definitions with top-level `permissions: {}`;
+- full-length, reviewed Action pins recorded in `security/approved-actions.yml`;
+- separate policy, quality, security, and browser gates;
+- deterministic build packaging and SHA-256 verification before promotion;
+- separate manual preview, staging, production, and post-deploy workflows;
+- production branch check, environment boundary, and single-flight concurrency;
+- contact-route validation, request caps, timeout handling, redacted logs, bot controls, and headers;
+- canonical standards, runbooks, exception records, and machine-readable policy.
+
+## Requires human activation outside the repository
+
+These controls are **not active merely because their files exist**:
+
+- protect `main` with a GitHub ruleset;
+- select the required check names after their first successful run;
+- create preview, staging, and production environments;
+- configure environment reviewers, deployment branches, and secrets;
+- create separate least-privilege Cloudflare tokens;
+- configure Cloudflare preview behavior, WAF/rate limiting, alerts, and rollback access;
+- enable GitHub secret scanning, push protection, and Dependabot settings.
+
+Beacon currently has one human operator. Independent two-person approval cannot be claimed until a second accountable reviewer is added.
+
+## Failure model
+
+Fail closed when a required gate, artifact digest, approval, credential, or production verification is missing. A failed deployment never authorizes an automatic second deployment. The operator follows the rollback runbook, records the incident, and re-enters the normal pull-request path for a fix.
+
+The repository-level implementation evidence, exact commands, results, and unresolved external controls are recorded in `secure-cicd-implementation-report.md`.

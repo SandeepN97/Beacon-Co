@@ -1,0 +1,31 @@
+schemaVersion: 1
+required:
+  Content-Security-Policy:
+    contains:
+      - "default-src 'self'"
+      - "object-src 'none'"
+      - "frame-ancestors 'none'"
+  Strict-Transport-Security:
+    value: "max-age=31536000"
+  X-Content-Type-Options:
+    value: "nosniff"
+  Referrer-Policy:
+    value: "strict-origin-when-cross-origin"
+  Permissions-Policy:
+    contains:
+      - "camera=()"
+      - "microphone=()"
+      - "geolocation=()"
+  X-Frame-Options:
+    value: "DENY"
+exceptions:
+  - id: SEC-HDR-001
+    directive: "style-src 'unsafe-inline'"
+    reason: "The preserved Phase 1 design contains component inline style attributes."
+    owner: Frontend Owner
+    expires: 2026-10-27
+  - id: SEC-HDR-002
+    directive: "script-src-attr 'unsafe-inline'"
+    reason: "The preserved Phase 1 source-of-truth design still uses inline navigation handlers."
+    owner: Frontend Owner
+    expires: 2026-10-27

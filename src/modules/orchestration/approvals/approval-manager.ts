@@ -1,17 +1,10 @@
-import type {
-  ApprovalKind,
-  ApprovalRequest,
-} from "../domain/approval";
+import type { ApprovalKind, ApprovalRequest } from "../domain/approval";
 import { ApprovalStore } from "./approval-store";
 
 export class ApprovalManager {
   constructor(private readonly store = new ApprovalStore()) {}
 
-  request(
-    workUnitId: string,
-    kind: ApprovalKind,
-    scope: string,
-  ): ApprovalRequest {
+  request(workUnitId: string, kind: ApprovalKind, scope: string): ApprovalRequest {
     return this.store.save({
       id: `${workUnitId}-${kind}`,
       workUnitId,

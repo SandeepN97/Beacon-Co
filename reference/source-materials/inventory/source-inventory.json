@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "sourceRoot": "~/Downloads",
   "repositoryRoot": "reference/source-materials",
-  "sourceCount": 12,
+  "sourceCount": 15,
   "sources": [
     {
       "originalPath": "~/Downloads/ai_company_all_agents_and_combined_canvas.excalidraw",
@@ -42,6 +42,45 @@
       "authorityTier": "tier-1",
       "extractionStatus": "copied-and-read",
       "notes": "Authoritative execution requirements; identical repository copy already present"
+    },
+    {
+      "originalPath": "~/Downloads/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+      "repositoryPath": "reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+      "filename": "BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+      "originalFilename": "BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+      "extension": ".excalidraw",
+      "byteSize": 308180,
+      "modificationTime": "2026-07-27T05:47:10.613Z",
+      "sha256": "116ade3935e9bd57edd7e6134471eb736f62a12de580e2803d1c072436c7d1c2",
+      "authorityTier": "tier-1",
+      "extractionStatus": "copied-and-structurally-inspected",
+      "notes": "Target secure CI/CD and AI delivery architecture; identical repository copy already present"
+    },
+    {
+      "originalPath": "~/Downloads/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md",
+      "repositoryPath": "reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md",
+      "filename": "BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md",
+      "originalFilename": "BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md",
+      "extension": ".md",
+      "byteSize": 8704,
+      "modificationTime": "2026-07-27T05:47:39.018Z",
+      "sha256": "2fe8af669cebbb91ff53f0ae619580c5908865b7a5401a7bc5e42f1e99b7b6f1",
+      "authorityTier": "tier-1",
+      "extractionStatus": "copied-and-read",
+      "notes": "Authoritative secure CI/CD execution requirements; identical repository copy already present"
+    },
+    {
+      "originalPath": "~/Downloads/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",
+      "repositoryPath": "reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",
+      "filename": "BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",
+      "originalFilename": "BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",
+      "extension": ".md",
+      "byteSize": 13790,
+      "modificationTime": "2026-07-27T05:47:44.123Z",
+      "sha256": "2812e776c126d3e76b34602177baa54777dd70cdb50c30c85f9645ed895ff10c",
+      "authorityTier": "tier-1",
+      "extractionStatus": "copied-and-read",
+      "notes": "Authoritative secure CI/CD target implementation plan; identical repository copy already present"
     },
     {
       "originalPath": "~/Downloads/Claude_Codex_Broker_Addendum.docx",

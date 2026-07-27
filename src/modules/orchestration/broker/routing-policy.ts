@@ -1,9 +1,4 @@
-import type {
-  ProviderId,
-  ProviderScore,
-  ProviderState,
-  RoutingRequest,
-} from "../domain/provider";
+import type { ProviderId, ProviderScore, ProviderState, RoutingRequest } from "../domain/provider";
 import { isProviderAvailable } from "./provider-health";
 
 export interface RoutingPolicyConfig {
@@ -28,17 +23,19 @@ export function scoreProvider(
     capability.workflows.includes(request.workflowType) &&
     capability.dataClassifications.includes(request.dataClassification) &&
     request.requiredTools.every((tool) => capability.tools.includes(tool)) &&
-    !(
-      request.purpose === "review" &&
-      request.authorProvider === state.provider
-    );
+    !(request.purpose === "review" && request.authorProvider === state.provider);
 
   if (!eligible) {
-    if (!isProviderAvailable(state)) reasons.push("provider is unhealthy, cooling down, or has no manual capacity");
-    if (!capability.workflows.includes(request.workflowType)) reasons.push("workflow capability is missing");
-    if (!capability.dataClassifications.includes(request.dataClassification)) reasons.push("data policy is not eligible");
-    if (!request.requiredTools.every((tool) => capability.tools.includes(tool))) reasons.push("required tool capability is missing");
-    if (request.purpose === "review" && request.authorProvider === state.provider) reasons.push("authoring provider cannot independently review its own output");
+    if (!isProviderAvailable(state))
+      reasons.push("provider is unhealthy, cooling down, or has no manual capacity");
+    if (!capability.workflows.includes(request.workflowType))
+      reasons.push("workflow capability is missing");
+    if (!capability.dataClassifications.includes(request.dataClassification))
+      reasons.push("data policy is not eligible");
+    if (!request.requiredTools.every((tool) => capability.tools.includes(tool)))
+      reasons.push("required tool capability is missing");
+    if (request.purpose === "review" && request.authorProvider === state.provider)
+      reasons.push("authoring provider cannot independently review its own output");
     return { provider: state.provider, eligible: false, score: Number.NEGATIVE_INFINITY, reasons };
   }
 
@@ -48,10 +45,7 @@ export function scoreProvider(
   score -= state.activeWorkUnits * 3;
   score -= state.estimatedContextPressure * 8;
 
-  if (
-    request.preferredProvider !== "auto" &&
-    request.preferredProvider === state.provider
-  ) {
+  if (request.preferredProvider !== "auto" && request.preferredProvider === state.provider) {
     score += 24;
     reasons.push("explicit or translated provider preference");
   }

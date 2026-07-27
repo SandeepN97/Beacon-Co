@@ -1,7 +1,4 @@
-import type {
-  DocumentIndexEntry,
-  SearchResult,
-} from "../knowledge/document-index";
+import type { DocumentIndexEntry, SearchResult } from "../knowledge/document-index";
 import type { ContextRetriever } from "../knowledge/context-retriever";
 import {
   validateWorkRequest,
@@ -45,7 +42,10 @@ function inferWorkflow(rawRequest: string): WorkflowType {
   return distinct.length > 1 ? "mixed" : distinct[0];
 }
 
-function preferredProvider(rawRequest: string, workflow: WorkflowType): {
+function preferredProvider(
+  rawRequest: string,
+  workflow: WorkflowType,
+): {
   preference: ProviderPreference;
   reason: string;
 } {
@@ -65,12 +65,14 @@ function preferredProvider(rawRequest: string, workflow: WorkflowType): {
   if (workflow === "implementation" || workflow === "review") {
     return {
       preference: "codex",
-      reason: "Initial policy gives Codex affinity for repository implementation, tests, and code review.",
+      reason:
+        "Initial policy gives Codex affinity for repository implementation, tests, and code review.",
     };
   }
   return {
     preference: "claude",
-    reason: "Claude-first is the configured preference for planning, architecture, and documentation.",
+    reason:
+      "Claude-first is the configured preference for planning, architecture, and documentation.",
   };
 }
 
@@ -124,7 +126,8 @@ export class IntentTranslator {
       id: stableId(raw),
       rawRequest: rawRequest,
       normalizedGoal: conciseGoal(raw),
-      businessOutcome: "Advance the stated Beacon outcome while preserving approved project boundaries.",
+      businessOutcome:
+        "Advance the stated Beacon outcome while preserving approved project boundaries.",
       workflowType,
       requestedDeliverables: [deliverable],
       acceptanceCriteria: buildAcceptanceCriteria(workflowType),
@@ -161,15 +164,15 @@ export class IntentTranslator {
     return {
       request,
       context,
-      preview: formatInterpretation(request, context.map(({ document }) => document)),
+      preview: formatInterpretation(
+        request,
+        context.map(({ document }) => document),
+      ),
     };
   }
 }
 
-export function formatInterpretation(
-  request: WorkRequest,
-  context: DocumentIndexEntry[],
-): string {
+export function formatInterpretation(request: WorkRequest, context: DocumentIndexEntry[]): string {
   const list = (items: string[]) => (items.length ? items.join("; ") : "None");
   return [
     "I understood your request as:",

@@ -1,0 +1,19 @@
+schemaVersion: 1
+paths:
+  - pattern: ".github/**"
+    reviewers: ["Security Architect", "Release Manager"]
+  - pattern: "security/**"
+    reviewers: ["Security Architect"]
+  - pattern: "src/worker.ts"
+    reviewers: ["Security Architect", "QA Engineer"]
+  - pattern: "wrangler.jsonc"
+    reviewers: ["Security Architect", "Release Manager"]
+  - pattern: "package.json"
+    reviewers: ["Security Architect"]
+  - pattern: "package-lock.json"
+    reviewers: ["Security Architect"]
+  - pattern: "scripts/security/**"
+    reviewers: ["Security Architect"]
+  - pattern: "scripts/ci/**"
+    reviewers: ["Security Architect", "DevOps Engineer"]
+note: "Repository roles are accountability labels. GitHub cannot enforce team review in this user-owned repository."

@@ -13,8 +13,6 @@ export class ApprovalStore {
   }
 
   forWorkUnit(workUnitId: string): ApprovalRequest[] {
-    return [...this.records.values()].filter(
-      (record) => record.workUnitId === workUnitId,
-    );
+    return [...this.records.values()].filter((record) => record.workUnitId === workUnitId);
   }
 }

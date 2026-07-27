@@ -6,6 +6,7 @@ interface Props {
 }
 const { provider, reason, prompt } = Astro.props;
 ---
+
 <section class="workspace-card workspace-card--provider" aria-labelledby="provider-heading">
   <div class="workspace-card__eyebrow">03 · Broker recommendation</div>
   <h2 id="provider-heading"><span data-result-provider>{provider ?? "Waiting"}</span></h2>

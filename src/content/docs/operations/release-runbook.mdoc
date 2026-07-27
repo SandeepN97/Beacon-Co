@@ -6,9 +6,9 @@ order: 906
 status: "approved"
 lastReviewed: "2026-07-27"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval"]
-relatedPages: ["workflows/operations-learning-loop"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["workflows/operations-learning-loop","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["operations"]
 truthState: "target"
 ---
@@ -23,4 +23,4 @@ truthState: "target"
 8. perform the separately authorized release action;
 9. validate and record outcome.
 
-The current orchestration prototype stops before steps 7–9 and performs no release action.
+The orchestration prototype stops before steps 7–9 and performs no release action. Repository deployment workflows are separately manual and environment-gated. They promote a tested archive by digest, but cannot run successfully until external GitHub and Cloudflare controls are configured.

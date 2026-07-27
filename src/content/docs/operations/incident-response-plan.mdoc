@@ -1,0 +1,36 @@
+---
+title: "Incident response plan"
+description: "Detection, severity, containment, recovery, communication, and learning for security and availability incidents."
+section: "operations"
+order: 909
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Incident Commander","Security Architect"]
+sourceFiles: ["security/vulnerability-policy.yml","security/data-classification.yml","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["operations/rollback-runbook","security/secrets-management"]
+tags: ["operations","incident-response"]
+truthState: "current"
+---
+
+## Severity
+
+- SEV-1: confirmed secret exposure, active compromise, material PII exposure, or customer-facing outage;
+- SEV-2: exploitable high-risk flaw, failed production control, or major degradation;
+- SEV-3: contained defect or suspicious event without confirmed impact.
+
+## Response
+
+1. identify an incident commander and start a private timeline;
+2. preserve relevant logs, workflow links, commit SHAs, and artifact hashes;
+3. contain with the least destructive reversible action;
+4. rotate potentially exposed credentials and revoke sessions;
+5. assess affected systems and data without copying PII into tickets;
+6. recover using the rollback runbook or an approved fix;
+7. verify production and monitor recurrence;
+8. communicate known facts, uncertainty, impact, and next update;
+9. publish a blameless review and tracked corrective work.
+
+## Evidence handling
+
+Public issues contain sanitized facts only. Credentials, provider identifiers, contact submissions, request bodies, and exploit details stay in the approved private incident location. This repository does not currently configure that external location.

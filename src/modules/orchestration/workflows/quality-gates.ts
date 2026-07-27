@@ -5,7 +5,5 @@ export function deterministicGatesPass(gates: QualityGateResult[]): boolean {
 }
 
 export function summarizeGates(gates: QualityGateResult[]): string[] {
-  return gates.map(
-    (gate) => `${gate.passed ? "PASS" : "FAIL"} ${gate.name}: ${gate.evidence}`,
-  );
+  return gates.map((gate) => `${gate.passed ? "PASS" : "FAIL"} ${gate.name}: ${gate.evidence}`);
 }

@@ -39,15 +39,15 @@ async function walk(directory: string): Promise<string[]> {
   return files;
 }
 
-export async function readMarkdocDocuments(
-  contentRoot: string,
-): Promise<DocumentIndexEntry[]> {
+export async function readMarkdocDocuments(contentRoot: string): Promise<DocumentIndexEntry[]> {
   const files = await walk(contentRoot);
   return Promise.all(
     files.map(async (file) => {
       const source = await readFile(file, "utf8");
       const { data, body } = parseMarkdocSource(source);
-      const id = relative(contentRoot, file).replace(/\.mdoc$/, "").replaceAll("\\", "/");
+      const id = relative(contentRoot, file)
+        .replace(/\.mdoc$/, "")
+        .replaceAll("\\", "/");
       return {
         id,
         title: String(data.title ?? id),

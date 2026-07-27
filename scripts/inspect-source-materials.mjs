@@ -103,7 +103,9 @@ function authorityFor(filename) {
   if (
     filename.endsWith("Claude_Multi_Agent_Business_Guide.pdf") ||
     filename.endsWith("Claude_Codex_Broker_Addendum.docx") ||
-    filename.endsWith("BEACON_COMPLETE_EXECUTION_PROMPT.md")
+    filename.endsWith("BEACON_COMPLETE_EXECUTION_PROMPT.md") ||
+    filename.endsWith("BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md") ||
+    filename.endsWith("BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md")
   ) {
     return "tier-1-authoritative-project-content";
   }
@@ -220,4 +222,6 @@ await writeFile(outputJson, `${JSON.stringify(summary, null, 2)}\n`);
 await writeFile(outputMarkdown, `${markdown.join("\n")}\n`);
 
 console.log(`Inspected ${records.length} repository-local source files.`);
-console.log(`Wrote ${relative(root.pathname, outputJson.pathname)} and ${relative(root.pathname, outputMarkdown.pathname)}.`);
+console.log(
+  `Wrote ${relative(root.pathname, outputJson.pathname)} and ${relative(root.pathname, outputMarkdown.pathname)}.`,
+);

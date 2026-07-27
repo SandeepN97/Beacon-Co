@@ -1,0 +1,36 @@
+---
+title: "Disaster recovery plan"
+description: "Source, artifact, DNS, provider, documentation, and credential recovery priorities."
+section: "operations"
+order: 911
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Incident Commander","Repository Owner"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","docs/architecture.md","wrangler.jsonc"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["operations/backup-and-recovery","operations/incident-response-plan"]
+tags: ["operations","recovery"]
+truthState: "target"
+---
+
+## Recovery objectives
+
+For the current static marketing site, target a four-hour recovery time and 24-hour recovery point for repository and configuration evidence. These are objectives, not measured guarantees.
+
+## Recovery order
+
+1. secure GitHub, Cloudflare, domain, Turnstile, and email-provider accounts;
+2. restore the canonical repository and verify commit signatures or hashes where available;
+3. restore environment configuration from the approved private inventory;
+4. deploy the last known-good tested archive;
+5. verify DNS, TLS, headers, primary pages, and safe contact behavior;
+6. rebuild only after service is stable and dependencies are reviewed;
+7. reconcile Markdoc current-state pages and incident evidence.
+
+## Required offline knowledge
+
+Maintain private recovery contacts, account ownership, domain registrar access, token rotation procedure, Cloudflare account and zone identifiers, last known-good commit and digest, and billing recovery. Do not commit that confidential inventory here.
+
+## Test
+
+Perform a tabletop every six months and a non-production restoration annually. Record time, missing access, unclear steps, and follow-up owners.

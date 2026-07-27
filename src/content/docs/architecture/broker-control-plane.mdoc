@@ -24,3 +24,5 @@ The Chief of Staff interprets the business workflow; the broker enforces the res
 Current code implements typed routing, health/capacity, continuation, audit events, approval policy, and simulated execution in memory. Durable queueing, process execution, provider calls, worktrees, and persistent audit remain target capabilities.
 
 {% mermaid_diagram src="/diagrams/mermaid/broker-control-plane.mmd" title="Broker control-plane relationships" /%}
+
+{% architecture_diagram title="Multi-agent broker end-to-end" src="/diagrams/exports/multi-agent-broker-end-to-end-static.svg" animated="/diagrams/exports/multi-agent-broker-end-to-end-animated.svg" source="/diagrams/source/multi_agent_business_broker_end_to_end.excalidraw" alt="End-to-end broker control plane from intake and routing through isolated execution, checks, independent review, approval, and audit" caption="Supplied broker-package target architecture." /%}

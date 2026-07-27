@@ -101,6 +101,12 @@ Store approved business, architecture, decisions, contracts, workflows, and runb
 Compile provider-specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning.
 {% /decision_card %}
 
+{% decision_card number="ADR-0015" status="approved" href="/docs/decisions/0015-adopt-secure-cicd-control-model/" %}
+### Adopt a secure CI/CD control model
+
+Separate untrusted authoring, deterministic pull-request gates, protected main, immutable artifact promotion, environment approval, production verification, and rollback. External settings remain pending until explicitly activated.
+{% /decision_card %}
+
 ## Status rule
 
 Implemented and established repository choices may be approved. Target architecture not implemented is draft or under review unless the decision governs a simulation or policy boundary that now exists. Evidence alone does not accept an ADR.

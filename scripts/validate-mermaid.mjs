@@ -18,14 +18,10 @@ mermaid.initialize({
   securityLevel: "strict",
 });
 
-const files = (await readdir(diagramDirectory))
-  .filter((name) => name.endsWith(".mmd"))
-  .sort();
+const files = (await readdir(diagramDirectory)).filter((name) => name.endsWith(".mmd")).sort();
 
 for (const file of files) {
-  await mermaid.parse(
-    await readFile(join(diagramDirectory.pathname, file), "utf8"),
-  );
+  await mermaid.parse(await readFile(join(diagramDirectory.pathname, file), "utf8"));
 }
 
 console.log(`Parsed ${files.length} Mermaid diagram sources successfully.`);

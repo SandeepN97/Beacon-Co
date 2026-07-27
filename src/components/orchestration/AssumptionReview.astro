@@ -6,6 +6,7 @@ interface Props {
 }
 const { assumptions, questions, documents } = Astro.props;
 ---
+
 <section class="workspace-card" aria-labelledby="assumptions-heading">
   <div class="workspace-card__eyebrow">02 · Context and ambiguity</div>
   <h2 id="assumptions-heading">What the system is carrying forward</h2>
@@ -13,8 +14,26 @@ const { assumptions, questions, documents } = Astro.props;
   <ul data-result-assumptions>{assumptions.map((item) => <li>{item}</li>)}</ul>
   <h3>Questions that must be answered</h3>
   <div data-result-questions>
-    {questions.length ? <ul>{questions.map((item) => <li>{item}</li>)}</ul> : <p>No blocking clarification is required.</p>}
+    {
+      questions.length ? (
+        <ul>
+          {questions.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No blocking clarification is required.</p>
+      )
+    }
   </div>
   <h3>Relevant Markdoc</h3>
-  <ul data-result-documents>{documents.map((item) => <li><code>{item}</code></li>)}</ul>
+  <ul data-result-documents>
+    {
+      documents.map((item) => (
+        <li>
+          <code>{item}</code>
+        </li>
+      ))
+    }
+  </ul>
 </section>

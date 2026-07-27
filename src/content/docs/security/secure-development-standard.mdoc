@@ -1,0 +1,43 @@
+---
+title: "Secure development standard"
+description: "Required branch, review, test, documentation, and release behavior for human and agent-authored changes."
+section: "security"
+order: 702
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect","QA Engineer"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md",".github/pull_request_template.md","security/security-critical-paths.yml"]
+relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["security/ai-agent-security-standard","operations/deployment-runbook"]
+tags: ["security","development","policy"]
+truthState: "current"
+---
+
+## Change rule
+
+All material changes begin on a feature branch and enter `main` through a pull request. Direct production changes, hidden generated state, committed credentials, bypassed checks, and deployment from an unreviewed working tree are prohibited.
+
+## Required pull-request evidence
+
+Every PR states summary, risk, tests, documentation impact, and rollback. Security-critical paths named in `security/security-critical-paths.yml` require explicit security review. A material architecture, product, business, security, or UI decision updates canonical Markdoc and creates or amends an ADR.
+
+## Required gates
+
+- immutable dependency install with `npm ci`;
+- incremental formatting and lint adoption;
+- Astro type checking;
+- unit tests;
+- Markdoc source, link, and diagram validation;
+- production build and built-link validation;
+- secret, dependency, license, workflow, and vulnerability checks;
+- browser smoke, accessibility, responsive, and reduced-motion checks when UI changes.
+
+No gate may silently convert a blocking failure into success. An exception must be time-bounded, owned, mitigated, and recorded in `security/exception-register.yml`.
+
+## Review and merge
+
+AI output is a proposal, never approval. The accountable human reviews the actual diff and evidence. Because Beacon is currently a solo operation, the owner approval is not independent review; this limitation is recorded and must not be described otherwise.
+
+## Release
+
+Building, merging, staging, production approval, deployment, and verification are separate decisions. Production promotes the tested archive without rebuilding. Any missing digest, approval, credential, required check, or verification fails closed.

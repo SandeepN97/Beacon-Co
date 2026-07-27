@@ -1,11 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import StatusBadge from "../components/docs/StatusBadge.astro";
-import {
-  docsHref,
-  docsSectionLabels,
-  docsSectionOrder,
-} from "../data/docs-navigation";
+import { docsHref, docsSectionLabels, docsSectionOrder } from "../data/docs-navigation";
 import "../styles/docs.css";
 
 interface Heading {
@@ -25,7 +21,11 @@ const sortedEntries = [...entries].sort((left, right) => {
   const sectionDifference =
     docsSectionOrder.indexOf(left.data.section as (typeof docsSectionOrder)[number]) -
     docsSectionOrder.indexOf(right.data.section as (typeof docsSectionOrder)[number]);
-  return sectionDifference || left.data.order - right.data.order || left.data.title.localeCompare(right.data.title);
+  return (
+    sectionDifference ||
+    left.data.order - right.data.order ||
+    left.data.title.localeCompare(right.data.title)
+  );
 });
 const currentIndex = sortedEntries.findIndex(({ id }) => id === entry.id);
 const previous = currentIndex > 0 ? sortedEntries[currentIndex - 1] : null;
@@ -36,14 +36,17 @@ const grouped = docsSectionOrder
     entries: sortedEntries.filter(({ data }) => data.section === section),
   }))
   .filter(({ entries: sectionEntries }) => sectionEntries.length);
-const crumbs = entry.id === "index"
-  ? []
-  : entry.id.split("/").map((segment, index, parts) => ({
-      label: index === parts.length - 1 ? entry.data.title : docsSectionLabels[segment] ?? segment,
-      href: index === parts.length - 1 ? null : `/docs/${parts.slice(0, index + 1).join("/")}/`,
-    }));
+const crumbs =
+  entry.id === "index"
+    ? []
+    : entry.id.split("/").map((segment, index, parts) => ({
+        label:
+          index === parts.length - 1 ? entry.data.title : (docsSectionLabels[segment] ?? segment),
+        href: index === parts.length - 1 ? null : `/docs/${parts.slice(0, index + 1).join("/")}/`,
+      }));
 const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -72,7 +75,12 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         </button>
         <a href="/workspace/">Workspace</a>
         <a href="/">Marketing site</a>
-        <button class="docs-menu-button" type="button" aria-expanded="false" aria-controls="docs-sidebar">
+        <button
+          class="docs-menu-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="docs-sidebar"
+        >
           Menu
         </button>
       </div>
@@ -85,41 +93,45 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
           <p>Current facts, accepted decisions, target architecture, and reviewable proposals.</p>
         </div>
         <nav>
-          {grouped.map(({ section, entries: sectionEntries }) => (
-            <section>
-              <h2>{docsSectionLabels[section]}</h2>
-              <ul>
-                {sectionEntries.map((document) => (
-                  <li>
-                    <a
-                      href={docsHref(document.id)}
-                      aria-current={document.id === entry.id ? "page" : undefined}
-                    >
-                      <span>{document.data.title}</span>
-                      {document.data.status !== "approved" && (
-                        <small>{document.data.status}</small>
-                      )}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {
+            grouped.map(({ section, entries: sectionEntries }) => (
+              <section>
+                <h2>{docsSectionLabels[section]}</h2>
+                <ul>
+                  {sectionEntries.map((document) => (
+                    <li>
+                      <a
+                        href={docsHref(document.id)}
+                        aria-current={document.id === entry.id ? "page" : undefined}
+                      >
+                        <span>{document.data.title}</span>
+                        {document.data.status !== "approved" && (
+                          <small>{document.data.status}</small>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
         </nav>
       </aside>
 
       <main class="docs-main" id="docs-content">
-        {crumbs.length > 0 && (
-          <nav class="docs-breadcrumbs" aria-label="Breadcrumb">
-            <a href="/docs/">Docs</a>
-            {crumbs.map((crumb) => (
-              <>
-                <span aria-hidden="true">/</span>
-                {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span>{crumb.label}</span>}
-              </>
-            ))}
-          </nav>
-        )}
+        {
+          crumbs.length > 0 && (
+            <nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+              <a href="/docs/">Docs</a>
+              {crumbs.map((crumb) => (
+                <>
+                  <span aria-hidden="true">/</span>
+                  {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span>{crumb.label}</span>}
+                </>
+              ))}
+            </nav>
+          )
+        }
 
         <header class="docs-page-header">
           <div class="docs-page-header__meta">
@@ -136,18 +148,20 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         </header>
 
         <div class="docs-mobile-toc">
-          {toc.length > 0 && (
-            <details>
-              <summary>On this page</summary>
-              <ol>
-                {toc.map((heading) => (
-                  <li class:list={{ nested: heading.depth === 3 }}>
-                    <a href={`#${heading.slug}`}>{heading.text}</a>
-                  </li>
-                ))}
-              </ol>
-            </details>
-          )}
+          {
+            toc.length > 0 && (
+              <details>
+                <summary>On this page</summary>
+                <ol>
+                  {toc.map((heading) => (
+                    <li class:list={{ nested: heading.depth === 3 }}>
+                      <a href={`#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            )
+          }
         </div>
 
         <article class="docs-prose">
@@ -157,43 +171,89 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         <footer class="docs-page-footer">
           <section>
             <h2>Sources</h2>
-            {entry.data.sourceFiles.length ? (
-              <ul>{entry.data.sourceFiles.map((source) => <li><code>{source}</code></li>)}</ul>
-            ) : (
-              <p>No external source is claimed for this navigation or reference page.</p>
-            )}
+            {
+              entry.data.sourceFiles.length ? (
+                <ul>
+                  {entry.data.sourceFiles.map((source) => (
+                    <li>
+                      <code>{source}</code>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No external source is claimed for this navigation or reference page.</p>
+              )
+            }
           </section>
-          {entry.data.relatedAdrs.length > 0 && (
-            <section>
-              <h2>Related ADRs</h2>
-              <ul>{entry.data.relatedAdrs.map((id) => <li><a href={docsHref(`decisions/${id}`)}>{id}</a></li>)}</ul>
-            </section>
-          )}
-          {entry.data.relatedPages.length > 0 && (
-            <section>
-              <h2>Related documentation</h2>
-              <ul>{entry.data.relatedPages.map((id) => <li><a href={docsHref(id)}>{id}</a></li>)}</ul>
-            </section>
-          )}
+          {
+            entry.data.relatedAdrs.length > 0 && (
+              <section>
+                <h2>Related ADRs</h2>
+                <ul>
+                  {entry.data.relatedAdrs.map((id) => (
+                    <li>
+                      <a href={docsHref(`decisions/${id}`)}>{id}</a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+          {
+            entry.data.relatedPages.length > 0 && (
+              <section>
+                <h2>Related documentation</h2>
+                <ul>
+                  {entry.data.relatedPages.map((id) => (
+                    <li>
+                      <a href={docsHref(id)}>{id}</a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
         </footer>
 
         <nav class="docs-pagination" aria-label="Previous and next documentation">
-          {previous ? <a rel="prev" href={docsHref(previous.id)}><span>Previous</span>{previous.data.title}</a> : <span />}
-          {next ? <a rel="next" href={docsHref(next.id)}><span>Next</span>{next.data.title}</a> : <span />}
+          {
+            previous ? (
+              <a rel="prev" href={docsHref(previous.id)}>
+                <span>Previous</span>
+                {previous.data.title}
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            next ? (
+              <a rel="next" href={docsHref(next.id)}>
+                <span>Next</span>
+                {next.data.title}
+              </a>
+            ) : (
+              <span />
+            )
+          }
         </nav>
       </main>
 
       <aside class="docs-toc" aria-label="On this page">
         <span>On this page</span>
-        {toc.length ? (
-          <ol>
-            {toc.map((heading) => (
-              <li class:list={{ nested: heading.depth === 3 }}>
-                <a href={`#${heading.slug}`}>{heading.text}</a>
-              </li>
-            ))}
-          </ol>
-        ) : <p>No subsections.</p>}
+        {
+          toc.length ? (
+            <ol>
+              {toc.map((heading) => (
+                <li class:list={{ nested: heading.depth === 3 }}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p>No subsections.</p>
+          )
+        }
       </aside>
     </div>
 
@@ -202,7 +262,12 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         <label id="search-title" for="docs-search-input">Search the source of truth</label>
         <button type="submit">Close</button>
       </form>
-      <input id="docs-search-input" type="search" placeholder="Try “provider fallback” or “human approval”" autocomplete="off" />
+      <input
+        id="docs-search-input"
+        type="search"
+        placeholder="Try “provider fallback” or “human approval”"
+        autocomplete="off"
+      />
       <div class="docs-search__results" aria-live="polite"></div>
     </dialog>
 
@@ -237,7 +302,11 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
       }
       document.querySelector("[data-search-open]")?.addEventListener("click", openSearch);
       document.addEventListener("keydown", (event) => {
-        if (event.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        if (
+          event.key === "/" &&
+          document.activeElement?.tagName !== "INPUT" &&
+          document.activeElement?.tagName !== "TEXTAREA"
+        ) {
           event.preventDefault();
           openSearch();
         }
@@ -246,19 +315,23 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         if (!(searchInput instanceof HTMLInputElement) || !(results instanceof HTMLElement)) return;
         const terms = searchInput.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
         const matches = terms.length
-          ? index.filter((item) => terms.every((term) => item.searchText.includes(term))).slice(0, 12)
+          ? index
+              .filter((item) => terms.every((term) => item.searchText.includes(term)))
+              .slice(0, 12)
           : index.slice(0, 8);
-        results.replaceChildren(...matches.map((item) => {
-          const link = document.createElement("a");
-          link.href = item.href;
-          const title = document.createElement("strong");
-          title.textContent = item.title;
-          const description = document.createElement("span");
-          description.textContent = item.description;
-          link.appendChild(title);
-          link.appendChild(description);
-          return link;
-        }));
+        results.replaceChildren(
+          ...matches.map((item) => {
+            const link = document.createElement("a");
+            link.href = item.href;
+            const title = document.createElement("strong");
+            title.textContent = item.title;
+            const description = document.createElement("span");
+            description.textContent = item.description;
+            link.appendChild(title);
+            link.appendChild(description);
+            return link;
+          }),
+        );
       });
 
       document.querySelectorAll(".docs-prose pre").forEach((pre) => {
@@ -269,7 +342,9 @@ const toc = headings.filter(({ depth }) => depth === 2 || depth === 3);
         button.addEventListener("click", async () => {
           await navigator.clipboard.writeText(pre.textContent ?? "");
           button.textContent = "Copied";
-          window.setTimeout(() => { button.textContent = "Copy"; }, 1200);
+          window.setTimeout(() => {
+            button.textContent = "Copy";
+          }, 1200);
         });
         pre.appendChild(button);
       });

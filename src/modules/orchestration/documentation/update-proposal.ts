@@ -7,9 +7,7 @@ export interface DocumentationUpdateProposal {
   automaticWrite: false;
 }
 
-export function createUpdateProposal(
-  impact: DocumentationImpact,
-): DocumentationUpdateProposal {
+export function createUpdateProposal(impact: DocumentationImpact): DocumentationUpdateProposal {
   return {
     summary: impact.expected
       ? impact.reasons.join(" ")

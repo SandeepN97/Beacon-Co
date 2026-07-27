@@ -1,0 +1,22 @@
+schemaVersion: 1
+classes:
+  public:
+    examples: ["marketing copy", "published documentation", "public diagrams"]
+    repositoryAllowed: true
+  internal:
+    examples: ["build evidence", "unpublished plans", "audit metadata"]
+    repositoryAllowed: true
+    publicArtifactAllowed: false
+  confidential:
+    examples: ["contact-form PII", "provider account identifiers", "incident details"]
+    repositoryAllowed: false
+    logAllowed: false
+  secret:
+    examples: ["API keys", "tokens", "private keys", "webhook secrets"]
+    repositoryAllowed: false
+    logAllowed: false
+controls:
+  minimumCollection: true
+  noSecretsInSource: true
+  noPiiInLogs: true
+  redactEvidence: true

@@ -6,9 +6,9 @@ order: 1000
 status: "approved"
 lastReviewed: "2026-07-27"
 owners: ["Knowledge Manager"]
-sourceFiles: ["reference/source-materials/inventory/source-inventory.json","reference/source-materials/inventory/source-assessment.json","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0013-use-docs-as-code"]
-relatedPages: ["references/open-questions","architecture/diagrams"]
+sourceFiles: ["reference/source-materials/inventory/source-inventory.json","reference/source-materials/inventory/source-assessment.json","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0013-use-docs-as-code","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["references/open-questions","architecture/diagrams","architecture/secure-cicd-architecture"]
 tags: ["sources","provenance"]
 truthState: "current"
 ---
@@ -18,8 +18,13 @@ truthState: "current"
 - `Claude_Multi_Agent_Business_Guide.pdf`
 - `Claude_Codex_Broker_Addendum.docx`
 - all supplied AI-company, individual-agent, unified, easy-read, and broker Excalidraw/ZIP sources
+- `BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw`
+- `BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md`
+- `BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md`
 
 These define role contracts, workflow, broker target, routing, gates, approvals, audit, and diagram meaning.
+
+The secure CI/CD files define the delivery-control target and execution requirements. Repository code and ADR-0015 determine which parts are implemented or approved; GitHub and Cloudflare settings determine which external controls are actually active.
 
 ## Tier 2: authoritative repository context
 

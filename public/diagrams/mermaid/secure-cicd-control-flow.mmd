@@ -1,0 +1,19 @@
+flowchart LR
+  A[Developer or agent] --> B[Feature branch]
+  B --> C[Pull request]
+  C --> D[Policy gates]
+  C --> E[Quality gates]
+  C --> F[Security gates]
+  C --> G[Accessibility and responsive gates]
+  D --> H[Protected main]
+  E --> H
+  F --> H
+  G --> H
+  H --> I[Immutable tested artifact]
+  I --> J[Staging approval]
+  J --> K[Staging verification]
+  K --> L[Production approval]
+  L --> M[Production deploy]
+  M --> N[Post-deploy verification]
+  N --> O[Evidence and audit]
+  N --> P[Rollback when unhealthy]

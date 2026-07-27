@@ -5,6 +5,7 @@ interface Props {
 }
 const { state = "current", label } = Astro.props;
 ---
+
 <aside class={`truth-notice truth-notice--${state}`}>
   <div>
     <span class="truth-notice__label">{label ?? state}</span>

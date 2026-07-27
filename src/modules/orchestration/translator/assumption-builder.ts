@@ -1,9 +1,6 @@
 import type { WorkflowType } from "../domain/work-request";
 
-export function buildAssumptions(
-  rawRequest: string,
-  workflowType: WorkflowType,
-): string[] {
+export function buildAssumptions(rawRequest: string, workflowType: WorkflowType): string[] {
   const assumptions = [
     "Work stays inside the current Beacon-Co repository.",
     "No deployment, merge, push, or production credential use is authorized.",
@@ -16,10 +13,14 @@ export function buildAssumptions(
     assumptions.push("No spending authority is assumed.");
   }
   if (workflowType === "implementation") {
-    assumptions.push("Use the smallest change consistent with approved architecture and existing conventions.");
+    assumptions.push(
+      "Use the smallest change consistent with approved architecture and existing conventions.",
+    );
   }
   if (workflowType === "documentation") {
-    assumptions.push("Approved Markdoc remains canonical; source proposals stay labeled as proposals.");
+    assumptions.push(
+      "Approved Markdoc remains canonical; source proposals stay labeled as proposals.",
+    );
   }
   return assumptions;
 }

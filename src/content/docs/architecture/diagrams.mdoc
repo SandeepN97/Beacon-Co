@@ -6,29 +6,74 @@ order: 412
 status: "approved"
 lastReviewed: "2026-07-27"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
-relatedPages: ["plans/capability-map","references/source-map"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","public/diagrams/source/beacon-system.excalidraw","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","references/source-map"]
 tags: ["architecture","broker"]
 truthState: "target"
 ---
 
-## Supplied sources
+{% source_of_truth state="target" label="Complete diagram coverage" %}
+Every unique public Excalidraw source and every Mermaid architecture source is rendered below. Static SVG is the default review view. Where the source contains animation ordering, **Play animation** switches to the locally generated Excalidraw Animate SVG without uploading project files to a third party.
+{% /source_of_truth %}
 
-| Diagram | Architecture level | Availability |
-|---|---|---|
-| Combined all-agents canvas | Company, broker, workflow, individual roles | Source + contact-sheet preview; animation metadata |
-| Easy-read architecture | Unified flow, company lanes, agent pattern | Source; animation metadata |
-| Individual-agent architecture | 14 roles and seven-step internal flow | Source; animation metadata |
-| Unified all-in-one architecture | System, company, and role flows | Source; animation metadata |
-| Broker end-to-end | Control plane and execution lifecycle | Source + preview; animation metadata |
+## Excalidraw architecture sources
 
-{% architecture_diagram src="/diagrams/previews/broker-end-to-end.png" source="/diagrams/source/multi_agent_business_broker_end_to_end.excalidraw" alt="End-to-end multi-agent broker architecture preview" caption="Broker package preview supplied with Tier 1 source." /%}
+### Current phased Beacon boundary
+
+{% architecture_diagram title="Beacon phased system architecture" src="/diagrams/exports/beacon-system-static.svg" animated="/diagrams/exports/beacon-system-animated.svg" source="/diagrams/source/beacon-system.excalidraw" alt="Beacon phased architecture from the current marketing and contact boundary through planned data, workers, approval, publishing, and reporting" caption="Current Phase 1 is separated from gated Phase 2 and Phase 3 capabilities." /%}
+
+### AI company and all-agent operating canvas
+
+{% architecture_diagram title="AI company and all-agent operating canvas" src="/diagrams/exports/ai-company-all-agents-static.svg" animated="/diagrams/exports/ai-company-all-agents-animated.svg" source="/diagrams/source/ai_company_all_agents_and_combined_canvas.excalidraw" alt="Complete AI company canvas containing business lanes, broker workflow, specialist agents, review, approvals, and delivery" caption="Supplied Tier 1 canvas. It combines company, workflow, broker, and role views." /%}
+
+### Easy-read AI company architecture
+
+{% architecture_diagram title="Easy-read AI company architecture" src="/diagrams/exports/easy-read-ai-company-architecture-static.svg" animated="/diagrams/exports/easy-read-ai-company-architecture-animated.svg" source="/diagrams/source/easy_read_ai_company_architecture.excalidraw" alt="Simplified AI company architecture showing the owner request, company lanes, broker, specialist agents, review, approval, and delivery" caption="Simplified target-state reading path." /%}
+
+### Individual-agent architecture
+
+{% architecture_diagram title="Individual-agent architecture" src="/diagrams/exports/individual-agent-architecture-static.svg" animated="/diagrams/exports/individual-agent-architecture-animated.svg" source="/diagrams/source/individual_agent_architecture_animated.excalidraw" alt="Fourteen specialist roles and the internal seven-step pattern used by an individual agent" caption="Role-level target architecture and bounded handoff sequence." /%}
+
+### Unified agent operating architecture
+
+{% architecture_diagram title="Unified agent operating architecture" src="/diagrams/exports/unified-agent-operating-architecture-static.svg" animated="/diagrams/exports/unified-agent-operating-architecture-animated.svg" source="/diagrams/source/unified_agent_operating_architecture_all_in_one.excalidraw" alt="Unified target architecture combining system, company, broker, workflow, and individual-role views" caption="All-in-one target operating architecture." /%}
+
+### Multi-agent broker end-to-end
+
+{% architecture_diagram title="Multi-agent broker end-to-end" src="/diagrams/exports/multi-agent-broker-end-to-end-static.svg" animated="/diagrams/exports/multi-agent-broker-end-to-end-animated.svg" source="/diagrams/source/multi_agent_business_broker_end_to_end.excalidraw" alt="End-to-end broker control plane covering intake, routing, isolated work, deterministic checks, independent review, approval, and audit" caption="Supplied broker-package control-plane and execution lifecycle." /%}
+
+### Secure CI/CD architecture
+
+{% architecture_diagram title="Beacon secure CI/CD architecture" src="/diagrams/exports/beacon-secure-cicd-architecture-static.svg" source="/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw" alt="Secure CI/CD architecture covering pull-request gates, protected main, artifact promotion, environment approval, production verification, rollback, and audit evidence" caption="Source-faithful static export of the supplied 10/10 security canvas. This source does not contain animation ordering." /%}
+
+## Mermaid architecture views
+
+Mermaid provides focused, text-versioned views of the same system. Each diagram renders in the page and keeps its complete `.mmd` source inside the documentation view.
+
+{% mermaid_diagram src="/diagrams/mermaid/broker-system-context.mmd" title="Broker system context" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/broker-control-plane.mmd" title="Broker control-plane relationships" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/work-unit-sequence.mmd" title="Work-unit lifecycle sequence" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/security-boundaries.mmd" title="Security boundaries" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/deployment-boundary.mmd" title="Deployment boundary" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/secure-cicd-control-flow.mmd" title="Secure CI/CD control flow" /%}
+
+## Coverage and source rule
+
+- **Excalidraw:** 7 unique sources, all 7 visible, with canonical local `.excalidraw` files.
+- **Mermaid:** 6 unique sources, all 6 visible, with canonical local `.mmd` files.
+
+The Excalidraw source remains authoritative for visual layout; the generated SVG is a review surface. Mermaid source remains authoritative for Mermaid views. Duplicate package copies are provenance evidence, not separate diagrams.
 
 ## Text alternative
 
-An owner request moves through intake, business definition, product, UX, architecture, security, and repository research. An approved work unit enters the broker. The broker chooses a provider, reserves the other provider for critique, isolates implementation, runs real checks, gathers fresh reviews, returns defects to the owning role, and stops at human release authority.
+An owner request moves through intake, business definition, product, UX, architecture, security, and repository research. An approved work unit enters the broker. The broker chooses a provider, reserves the other provider for critique, isolates implementation, runs real checks, gathers fresh reviews, returns defects to the owning role, and stops at human release authority. The secure delivery path separates untrusted authoring, deterministic pull-request checks, protected main, immutable artifact promotion, environment approval, production verification, rollback, and evidence.
 
-## Open and animate
+## Edit and regenerate
 
-Open any `.excalidraw` file in [Excalidraw](https://excalidraw.com/) for editing or [Excalidraw Animate](https://dai-shi.github.io/excalidraw-animate/) to play element ordering embedded in the source IDs. A preview is not claimed where no deterministic export was available.
+The canonical sources are served from this Decision System. Download a local `.excalidraw` source and open it in [Excalidraw](https://excalidraw.com/) for editing or [Excalidraw Animate](https://dai-shi.github.io/excalidraw-animate/) for animation review. Regenerate committed previews with `npm run docs:diagrams:public`.

@@ -36,24 +36,35 @@ Beacon grew from one page to a maintainable site and then a documented target pl
 
 ## Decision
 
-Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives.
+Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, generated review previews, and textual alternatives.
+
+The Decision System diagram catalog must visibly render every unique public Excalidraw source and every Mermaid source. Excalidraw previews are deterministic SVG exports generated from the committed source. Sources with animation ordering also receive a local Excalidraw Animate SVG and an in-page play/static control. The editable source remains authoritative, animation is never required to understand the architecture, and reduced-motion preferences force the static view.
+
+[Review the complete diagram catalog](/docs/architecture/diagrams/) or open the local source from the source-and-provenance section attached to any rendered diagram.
+
+{% architecture_diagram title="Unified agent operating architecture" src="/diagrams/exports/unified-agent-operating-architecture-static.svg" animated="/diagrams/exports/unified-agent-operating-architecture-animated.svg" source="/diagrams/source/unified_agent_operating_architecture_all_in_one.excalidraw" alt="Unified target architecture combining system, company, broker, workflow, and specialist-agent views" caption="The canonical visual referenced by this architecture-evolution decision. It is target state unless a current page proves otherwise." /%}
 
 ## Positive consequences
 
 - Proposal and production remain distinct
 - Sources stay reviewable
+- Every retained diagram is discoverable and visible in the canonical Decision System
+- Excalidraw and Mermaid remain editable source formats rather than screenshots only
 
 ## Negative consequences
 
 - Multiple overlapping diagrams require maintenance
+- Generated SVG review assets increase repository and published asset size
 
 ## Risks
 
 - A source preview may be mistaken for implementation
+- A generated preview may become stale if source-to-export validation is bypassed
 
 ## Follow-up work
 
 - Update the catalog with every material architecture change
+- Regenerate and validate public SVG previews after changing an Excalidraw source
 - Revalidate vendor choices at phase entry
 
 ## Supersedes or superseded by

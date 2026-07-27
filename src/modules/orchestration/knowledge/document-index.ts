@@ -68,9 +68,7 @@ export class DocumentIndex {
         const summary = tokenize(
           `${document.description} ${document.section} ${document.id} ${document.body}`,
         );
-        const matchedTerms = terms.filter(
-          (term) => title.includes(term) || summary.includes(term),
-        );
+        const matchedTerms = terms.filter((term) => title.includes(term) || summary.includes(term));
         const score = matchedTerms.reduce(
           (total, term) =>
             total + (title.includes(term) ? 5 : 0) + (summary.includes(term) ? 1 : 0),
@@ -79,7 +77,10 @@ export class DocumentIndex {
         return { document, score, matchedTerms };
       })
       .filter(({ score }) => score > 0)
-      .sort((left, right) => right.score - left.score || left.document.id.localeCompare(right.document.id))
+      .sort(
+        (left, right) =>
+          right.score - left.score || left.document.id.localeCompare(right.document.id),
+      )
       .slice(0, limit);
   }
 }

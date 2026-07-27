@@ -1,0 +1,41 @@
+schemaVersion: 1
+policy:
+  lockfileRequired: true
+  productionDependenciesRequireReview: true
+  maximumAllowedAgeDays: 365
+dependencies:
+  production:
+    - "@astrojs/markdoc"
+    - "astro"
+  development:
+    - "@eslint/js"
+    - "@astrojs/check"
+    - "@axe-core/playwright"
+    - "@cloudflare/workers-types"
+    - "@playwright/test"
+    - "@types/node"
+    - "eslint"
+    - "eslint-plugin-astro"
+    - "excalidraw-animate"
+    - "jsdom"
+    - "mermaid"
+    - "prettier"
+    - "prettier-plugin-astro"
+    - "react"
+    - "react-dom"
+    - "typescript"
+    - "typescript-eslint"
+    - "vitest"
+    - "wrangler"
+    - "yaml"
+exceptions:
+  - id: SEC-DEP-001
+    packages:
+      - "excalidraw-animate"
+      - "@excalidraw/excalidraw"
+      - "lodash-es"
+      - "nanoid"
+    reason: "The requested diagram viewer carries development-only transitive advisories and older Radix React peer ranges; npm's proposed fix is a breaking downgrade."
+    expires: 2026-08-26
+    owner: Security Architect
+    mitigation: "The viewer is a development dependency, accepts only trusted repository-owned scenes, has no upload path, and npm audit --omit=dev reports zero vulnerabilities. The scheduled full audit remains intentionally visible."
