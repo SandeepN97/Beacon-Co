@@ -1,0 +1,147 @@
+---
+import RequestInput from "../../components/orchestration/RequestInput.astro";
+import IntentPreview from "../../components/orchestration/IntentPreview.astro";
+import AssumptionReview from "../../components/orchestration/AssumptionReview.astro";
+import ProviderDecision from "../../components/orchestration/ProviderDecision.astro";
+import ApprovalGate from "../../components/orchestration/ApprovalGate.astro";
+import WorkUnitStatus from "../../components/orchestration/WorkUnitStatus.astro";
+import documentCatalog from "../../data/document-catalog.json";
+import type { DocumentIndexEntry } from "../../modules/orchestration/knowledge/document-index";
+import { runOrchestrationSimulation } from "../../modules/orchestration/simulation";
+import "../../styles/workspace.css";
+
+const sample = runOrchestrationSimulation(
+  "improve the Markdoc architecture guide and make the provider fallback clear",
+  documentCatalog as DocumentIndexEntry[],
+);
+const request = sample.translation.request;
+const provider = sample.execution.routing?.provider ?? null;
+const reason = sample.execution.routing?.reason ?? "The request is waiting for clarification or human approval.";
+const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compilation will begin after the required gate.";
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Simulated Beacon work-request translation, context retrieval, provider routing, and documentation impact." />
+    <title>Orchestration workspace · Beacon & Co.</title>
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body>
+    <a class="workspace-skip" href="#workspace-main">Skip to workspace</a>
+    <header class="workspace-nav">
+      <a href="/docs/"><strong>Beacon</strong><span>Orchestration workspace</span></a>
+      <nav aria-label="Workspace links">
+        <a href="/workspace/requests/">Requests</a>
+        <a href="/workspace/approvals/">Approvals</a>
+        <a href="/workspace/runs/">Runs</a>
+        <a href="/docs/">Documentation</a>
+      </nav>
+    </header>
+    <main id="workspace-main">
+      <header class="workspace-hero">
+        <span>Provider-neutral · Markdoc-grounded · simulation</span>
+        <h1>Start with your thought.<br />The system shapes the work.</h1>
+        <p>Describe an outcome in ordinary language. Beacon retrieves the relevant source of truth, exposes assumptions, recommends an eligible provider, and shows the exact prompt package—without pretending a live agent ran.</p>
+      </header>
+
+      <RequestInput />
+
+      <div class="workspace-truth">
+        <strong>Current truth</strong>
+        <span>Translation, retrieval, routing, and impact are local typed logic. Claude/Codex execution, durable state, worktrees, and production actions are not connected.</span>
+      </div>
+
+      <div class="workspace-grid" data-workspace-results>
+        <IntentPreview
+          goal={request.normalizedGoal}
+          workflow={request.workflowType}
+          role={request.recommendedFirstRole}
+          deliverables={request.requestedDeliverables}
+          criteria={request.acceptanceCriteria}
+        />
+        <AssumptionReview
+          assumptions={request.assumptions}
+          questions={request.openQuestions}
+          documents={sample.context.approvedDocuments.map(({ id }) => id)}
+        />
+        <ProviderDecision provider={provider} reason={reason} prompt={prompt} />
+        <ApprovalGate approvals={sample.approvals} />
+        <WorkUnitStatus
+          status={sample.execution.workUnit.status}
+          impact={sample.documentationImpact.level}
+          pages={sample.documentationImpact.pagesToUpdate}
+        />
+      </div>
+    </main>
+    <footer>
+      <p>Canonical policy lives in <a href="/docs/">Markdoc</a>. This workspace is a reviewable simulation.</p>
+    </footer>
+
+    <script>
+      import { simulateWorkspaceRequest } from "../../modules/orchestration/workspace-client";
+
+      const form = document.querySelector<HTMLFormElement>("[data-workspace-form]");
+      const setText = (selector: string, value: unknown) => {
+        const element = document.querySelector(selector);
+        if (element) element.textContent = String(value);
+      };
+      const setList = (selector: string, values: unknown[]) => {
+        const element = document.querySelector(selector);
+        if (!element) return;
+        element.replaceChildren(...values.map((value) => {
+          const item = document.createElement("li");
+          item.textContent = String(value);
+          return item;
+        }));
+      };
+      const setMessageOrList = (selector: string, values: unknown[], emptyMessage: string) => {
+        const element = document.querySelector(selector);
+        if (!element) return;
+        if (!values.length) {
+          const paragraph = document.createElement("p");
+          paragraph.textContent = emptyMessage;
+          element.replaceChildren(paragraph);
+          return;
+        }
+        const list = document.createElement("ul");
+        for (const value of values) {
+          const item = document.createElement("li");
+          item.textContent = String(value);
+          list.appendChild(item);
+        }
+        element.replaceChildren(list);
+      };
+
+      form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(form);
+        const rawRequest = String(data.get("request") ?? "").trim();
+        if (!rawRequest) return;
+        try {
+          const result = simulateWorkspaceRequest(rawRequest);
+          const request = result.translation.request;
+          setText("[data-result-goal]", request.normalizedGoal);
+          setText("[data-result-workflow]", request.workflowType);
+          setText("[data-result-role]", request.recommendedFirstRole);
+          setList("[data-result-deliverables]", request.requestedDeliverables);
+          setList("[data-result-criteria]", request.acceptanceCriteria);
+          setList("[data-result-assumptions]", request.assumptions);
+          setMessageOrList("[data-result-questions]", request.openQuestions, "No blocking clarification is required.");
+          setList("[data-result-documents]", result.context.approvedDocuments.map(({ id }) => id));
+          setText("[data-result-provider]", result.execution.routing?.provider ?? "Waiting");
+          setText("[data-result-provider-reason]", result.execution.routing?.reason ?? "The request is waiting at a gate.");
+          setText("[data-result-prompt]", result.execution.providerResult?.prompt.content ?? "Prompt compilation will begin after the required gate.");
+          setMessageOrList("[data-result-approvals]", result.approvals, "No high-impact approval was inferred for this simulation.");
+          setText("[data-result-status]", result.execution.workUnit.status);
+          setText("[data-result-impact]", result.documentationImpact.level);
+          setList("[data-result-impact-pages]", result.documentationImpact.pagesToUpdate);
+          document.querySelector("[data-workspace-results]")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (error) {
+          setText("[data-result-status]", `Could not interpret request: ${String(error)}`);
+        }
+      });
+    </script>
+  </body>
+</html>

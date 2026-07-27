@@ -1,0 +1,15 @@
+---
+interface Props {
+  status: string;
+  impact: string;
+  pages: string[];
+}
+const { status, impact, pages } = Astro.props;
+---
+<section class="workspace-card" aria-labelledby="status-heading">
+  <div class="workspace-card__eyebrow">05 · Result and documentation impact</div>
+  <h2 id="status-heading" data-result-status>{status}</h2>
+  <p>Documentation impact: <strong data-result-impact>{impact}</strong></p>
+  <ul data-result-impact-pages>{pages.map((page) => <li><code>{page}</code></li>)}</ul>
+  <p>Updates are proposed as reviewable repository changes. Runtime state never edits approved Markdoc automatically.</p>
+</section>

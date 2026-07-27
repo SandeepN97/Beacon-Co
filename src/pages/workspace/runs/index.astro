@@ -1,0 +1,12 @@
+---
+import WorkspaceSectionLayout from "../../../layouts/WorkspaceSectionLayout.astro";
+---
+<WorkspaceSectionLayout
+  eyebrow="Execution evidence"
+  title="Runs"
+  description="A truthful placeholder for future execution history and audit evidence."
+>
+  <h2>No live or persisted runs</h2>
+  <p>Claude and Codex adapters currently compile provider-specific prompt previews only. The workspace does not call either provider, create branches, run repair loops, merge, deploy, or write runtime audit data to durable storage.</p>
+  <p>See <a href="/docs/architecture/observability-and-audit/">Observability and audit</a> for the approved target boundary.</p>
+</WorkspaceSectionLayout>

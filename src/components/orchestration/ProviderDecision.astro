@@ -1,0 +1,18 @@
+---
+interface Props {
+  provider: string | null;
+  reason: string;
+  prompt: string;
+}
+const { provider, reason, prompt } = Astro.props;
+---
+<section class="workspace-card workspace-card--provider" aria-labelledby="provider-heading">
+  <div class="workspace-card__eyebrow">03 · Broker recommendation</div>
+  <h2 id="provider-heading"><span data-result-provider>{provider ?? "Waiting"}</span></h2>
+  <p data-result-provider-reason>{reason}</p>
+  <details>
+    <summary>Provider-specific prompt preview</summary>
+    <pre data-result-prompt>{prompt}</pre>
+  </details>
+  <div class="simulation-label">Simulation only · no provider called</div>
+</section>
