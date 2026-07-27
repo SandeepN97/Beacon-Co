@@ -35,7 +35,7 @@ a { color: inherit; }
 .workspace-nav span { color: #d3e0d1; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
 .workspace-nav nav { display: flex; gap: 1rem; font-size: .82rem; }
 main { width: min(1160px, calc(100% - 2rem)); margin: auto; padding-bottom: 5rem; }
-.workspace-hero { padding: clamp(4rem, 10vw, 8rem) 0 3rem; }
+.workspace-hero { padding: clamp(3rem, 7vw, 6rem) 0 2.5rem; }
 .workspace-hero > span, .workspace-card__eyebrow {
   color: #55754f;
   text-transform: uppercase;
@@ -43,7 +43,7 @@ main { width: min(1160px, calc(100% - 2rem)); margin: auto; padding-bottom: 5rem
   font-size: .72rem;
   font-weight: 700;
 }
-.workspace-hero h1 { max-width: 14ch; margin: 1rem 0; font: 700 clamp(3rem, 8vw, 6.8rem)/.95 "Playfair Display", Georgia, serif; letter-spacing: -.045em; color: var(--deep); }
+.workspace-hero h1 { max-width: 24ch; margin: 1rem 0; font: 700 clamp(2.4rem, 4vw, 3.75rem)/1.02 "Playfair Display", Georgia, serif; letter-spacing: -.035em; color: var(--deep); }
 .workspace-hero p { max-width: 66ch; color: #4f4b42; font-size: 1.08rem; }
 .workspace-hero--section h1 { font-size: clamp(3rem, 7vw, 5.5rem); }
 .workspace-request {
@@ -58,6 +58,23 @@ main { width: min(1160px, calc(100% - 2rem)); margin: auto; padding-bottom: 5rem
 .workspace-request label { font: 700 clamp(1.5rem, 3vw, 2.2rem) "Playfair Display", Georgia, serif; }
 .workspace-request p, .workspace-request small { margin: 0; color: var(--muted); }
 .workspace-request textarea { width: 100%; resize: vertical; border: 2px solid var(--rule); border-radius: .7rem; padding: 1rem; color: var(--ink); background: var(--cream); font: inherit; }
+.workspace-file-row { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem .8rem; }
+.workspace-file-control {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: var(--forest);
+  cursor: pointer;
+  font: 700 .82rem/1.2 "DM Sans", system-ui, sans-serif !important;
+  text-decoration: underline;
+  text-decoration-color: rgba(42, 66, 40, .35);
+  text-underline-offset: .2rem;
+}
+.workspace-file-control:hover { color: var(--deep); text-decoration-color: currentColor; }
+.workspace-file-control svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+.workspace-file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.workspace-file-row:focus-within .workspace-file-control { outline: 3px solid var(--gold); outline-offset: 3px; }
+.workspace-file-status { font-size: .75rem; }
 .workspace-request button { justify-self: start; border: 0; border-radius: 999px; background: var(--forest); color: white; padding: .8rem 1.2rem; font-weight: 700; cursor: pointer; }
 .workspace-request button:hover { background: var(--deep); }
 .workspace-truth { display: grid; grid-template-columns: auto 1fr; gap: 1rem; margin: 1.5rem 0; border-left: 4px solid var(--gold); background: #fff9ec; padding: 1rem; font-size: .85rem; }

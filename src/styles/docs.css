@@ -75,13 +75,34 @@ button, input { font: inherit; }
   text-decoration: none;
   cursor: pointer;
 }
-.docs-search-button kbd { opacity: 0.7; margin-left: 0.4rem; }
+.docs-search-button { display: inline-flex; align-items: center; gap: 0.42rem; }
+.docs-search-button__icon {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.docs-search-button kbd {
+  display: inline-grid;
+  min-width: 1.35rem;
+  place-items: center;
+  margin-left: 0.08rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0.28rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.02rem 0.28rem;
+  color: #e3ece1;
+  font: 600 0.7rem/1.4 var(--docs-body);
+}
 .docs-menu-button { display: none; }
 
 .docs-shell {
   display: grid;
   grid-template-columns: minmax(250px, 300px) minmax(0, 780px) minmax(170px, 230px);
-  justify-content: center;
+  justify-content: start;
   min-height: calc(100vh - 72px);
 }
 .docs-sidebar {

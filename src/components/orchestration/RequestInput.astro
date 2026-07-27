@@ -1,7 +1,57 @@
 <form class="workspace-request" data-workspace-form>
   <label for="workspace-request">What are you trying to get done?</label>
   <p>Write naturally. Misspellings and incomplete phrasing are okay. The translator will expose assumptions instead of hiding them.</p>
-  <textarea id="workspace-request" name="request" rows="5">improve the Markdoc architecture guide and make the provider fallback clear</textarea>
+  <textarea id="workspace-request" name="request" rows="5" data-workspace-request-input>improve the Markdoc architecture guide and make the provider fallback clear</textarea>
+  <div class="workspace-file-row">
+    <label class="workspace-file-control" for="workspace-request-file">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M12 17V4"></path>
+        <path d="m7 9 5-5 5 5"></path>
+        <path d="M5 14v5h14v-5"></path>
+      </svg>
+      <span>Add a Markdown file</span>
+    </label>
+    <input
+      class="workspace-file-input"
+      id="workspace-request-file"
+      type="file"
+      accept=".md,text/markdown,text/plain"
+      data-workspace-file
+    />
+    <small class="workspace-file-status" data-workspace-file-status aria-live="polite">.md · read locally · 500 KB maximum</small>
+  </div>
   <button type="submit">Interpret request</button>
   <small>This creates a local prompt preview. It does not invoke Claude or Codex.</small>
 </form>
+
+<script>
+  const fileInput = document.querySelector<HTMLInputElement>("[data-workspace-file]");
+  const requestInput = document.querySelector<HTMLTextAreaElement>("[data-workspace-request-input]");
+  const fileStatus = document.querySelector<HTMLElement>("[data-workspace-file-status]");
+  const maximumFileSize = 500 * 1024;
+
+  fileInput?.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if (!file || !requestInput || !fileStatus) return;
+
+    if (!file.name.toLowerCase().endsWith(".md")) {
+      fileStatus.textContent = "Choose a Markdown (.md) file.";
+      fileInput.value = "";
+      return;
+    }
+
+    if (file.size > maximumFileSize) {
+      fileStatus.textContent = "That file is larger than the 500 KB local limit.";
+      fileInput.value = "";
+      return;
+    }
+
+    try {
+      requestInput.value = await file.text();
+      fileStatus.textContent = `${file.name} added locally`;
+      requestInput.focus();
+    } catch {
+      fileStatus.textContent = "The file could not be read. Try another .md file.";
+    }
+  });
+</script>
