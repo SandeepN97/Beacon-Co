@@ -55,7 +55,7 @@
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.0.1",
     "excalidraw-animate": "0.7.2",
-    "jsdom": "27.4.0",
+    "jsdom": "30.0.0",
     "mermaid": "11.16.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
