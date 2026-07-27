@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bridge Work"
+  short_description: "Shape prompts and transfer active work"
+  default_prompt: "Use $bridge-work to turn my rough note into a compact task and execute it."

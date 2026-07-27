@@ -1,0 +1,17 @@
+sequenceDiagram
+  actor Human
+  participant T as Translator
+  participant K as Markdoc retriever
+  participant B as Broker
+  participant P as Primary provider
+  participant R as Independent reviewer
+  Human->>T: Informal request
+  T->>K: Retrieve relevant approved context
+  K-->>T: Documents, ADRs, conflicts
+  T-->>Human: Interpretation and required questions
+  Human->>B: Confirm when required
+  B->>P: Provider-neutral work unit
+  P-->>B: Deliverable and evidence
+  B->>R: Read-only diff/deliverable review
+  R-->>B: Verdict and findings
+  B-->>Human: Simulated result or approval gate

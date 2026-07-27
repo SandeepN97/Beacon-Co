@@ -1,0 +1,19 @@
+flowchart LR
+  public["Public"]
+  internal["Internal"]
+  confidential["Confidential"]
+  restricted["Restricted"]
+  eligibility{"Policy eligibility"}
+  read["Read-only session"]
+  worktree["Isolated worktree"]
+  human["Human approval"]
+  blocked["Blocked"]
+
+  public --> eligibility
+  internal --> eligibility
+  confidential --> eligibility
+  restricted --> eligibility
+  eligibility -->|planning / review| read
+  eligibility -->|approved implementation| worktree
+  eligibility -->|material action| human
+  eligibility -->|unsupported provider or tool| blocked

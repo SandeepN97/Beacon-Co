@@ -1,0 +1,28 @@
+flowchart LR
+    PROSPECT["Local prospect"]
+    PUBLIC["Phase 1: Public site"]
+    DATA["Phase 2: Client data"]
+    QUEUE["Durable job queue"]
+    WORKERS["Phase 3: Service workers"]
+    APPROVAL{"Client approval"}
+    PUBLISH["Publish + report"]
+    DASHBOARD["Operator dashboard"]
+
+    PROSPECT --> PUBLIC
+    PUBLIC -. "future" .-> DATA
+    DATA --> QUEUE
+    QUEUE --> WORKERS
+    WORKERS --> APPROVAL
+    APPROVAL --> PUBLISH
+    DASHBOARD <--> DATA
+    DASHBOARD -. "replay" .-> QUEUE
+
+    classDef person fill:#f5f1e7,stroke:#c49a48,color:#1a1712,stroke-width:2px
+    classDef current fill:#dfe9dc,stroke:#2a4228,color:#1a1712,stroke-width:3px
+    classDef planned fill:#fdfcf8,stroke:#7a9e72,color:#1a1712,stroke-width:2px
+    classDef control fill:#f7edda,stroke:#c49a48,color:#1a1712,stroke-width:2px
+
+    class PROSPECT person
+    class PUBLIC current
+    class DATA,QUEUE,WORKERS,DASHBOARD planned
+    class APPROVAL,PUBLISH control

@@ -1,0 +1,20 @@
+flowchart TB
+  subgraph current["Current repository build"]
+    astro["Astro static application"]
+    markdoc["Markdoc collection"]
+    workspace["Static simulation workspace"]
+    worker["Narrow contact Worker"]
+  end
+  subgraph target["Future; separate approval required"]
+    broker["Durable broker service"]
+    store[("Runtime store")]
+    providers["Live provider CLIs / APIs"]
+    worktrees["Isolated worktrees"]
+  end
+  markdoc --> astro
+  workspace --> astro
+  astro --> worker
+  workspace -. no live call .-> broker
+  broker --> store
+  broker --> providers
+  broker --> worktrees

@@ -1,0 +1,24 @@
+ONE-FILE EXCALIDRAW ANIMATE PACKAGE
+
+RECOMMENDED: LOAD THE LIBRARY
+1. Open https://dai-shi.github.io/excalidraw-animate/
+2. Click "Load Library".
+3. Choose: ai_company_all_agents_and_combined.excalidrawlib
+4. The library contains:
+   - Combined end-to-end business + broker architecture
+   - Full 14-agent company board
+   - 14 separate individual agent architecture diagrams
+5. Select/animate the library items.
+
+ALTERNATIVE: LOAD ONE LARGE CANVAS
+1. Click "Load File".
+2. Choose: ai_company_all_agents_and_combined_canvas.excalidraw
+3. This places every diagram on one large editable canvas.
+
+WHY THERE ARE TWO FORMATS
+- .excalidrawlib is easier to view one diagram at a time.
+- .excalidraw places everything on one continuous canvas.
+
+A permanent public one-click URL requires the drawing file to be published
+to a public host or uploaded as an Excalidraw share link. This package keeps
+your architecture private and local.

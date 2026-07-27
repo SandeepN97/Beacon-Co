@@ -1,0 +1,93 @@
+sequenceDiagram
+    autonumber
+    participant Cron as ⏰ Scheduler
+    participant LE as 🔍 Lead Engine
+    participant Q as 📦 Job Queue
+    participant DB as 🗄️ Supabase
+    participant OR as 📬 Outreach
+    participant MK as 👤 Minjoon
+    participant BIZ as 🏪 Owner
+    participant ST as 💳 Stripe
+    participant DEL as ⚙️ Delivery
+    participant AI as 🤖 Claude
+    participant SOC as 📱 Meta/TikTok/GBP
+    participant OBS as 🔔 Sentry/Alerts
+
+    rect rgb(238,243,236)
+    Note over Cron,DB: PHASE 1 — ACQUISITION
+    Cron->>LE: weekly trigger
+    LE->>LE: fetch Places+Yelp · rate-limited
+    LE->>LE: dedupe fingerprint · audit gaps · score
+    LE->>DB: upsert leads · idempotency key
+    LE--xOBS: on failure → alert + retry via DLQ
+    end
+
+    rect rgb(251,238,237)
+    Note over DB,OR: COMPLIANCE GATE
+    DB->>OR: hot lead event (score ≥ 75)
+    OR->>DB: check suppression_list + DNC + existing client
+    alt blocked
+        OR->>DB: mark suppressed · stop
+    else clear
+        OR->>Q: enqueue audit-PDF render
+    end
+    end
+
+    rect rgb(253,246,227)
+    Note over Q,BIZ: PHASE 2 — OUTREACH
+    Q->>OR: render job
+    OR->>BIZ: email 1 · audit PDF · unsubscribe link
+    BIZ-->>OR: open/click webhooks → status update
+    OR->>BIZ: emails 2–3 · spaced 4d
+    alt unsubscribes
+        BIZ->>OR: 1-click unsubscribe
+        OR->>DB: suppression_list forever
+    else books call
+        BIZ->>MK: Cal.com booking
+        MK->>BIZ: 15-min honest call
+    end
+    end
+
+    alt WON
+        rect rgb(238,243,236)
+        Note over BIZ,DEL: PHASE 3 — ONBOARD
+        BIZ->>ST: Checkout · Presence 450/mo
+        ST->>DB: webhook · signature verified
+        alt payment fails later
+            ST->>DB: dunning webhook
+            DB->>BIZ: retry emails · pause delivery day 14
+        end
+        DB->>DEL: kickoff project
+        DEL->>SOC: OAuth connect accounts → tokens to vault
+        end
+
+        rect rgb(243,238,247)
+        Note over DEL,SOC: PHASE 4 — MONTHLY DELIVERY LOOP
+        loop every month
+            DEL->>AI: calendar slots + brand voice profile
+            AI-->>DEL: 12–20 drafts
+            DEL->>MK: approval queue
+            MK-->>DEL: approve / edit
+            DEL->>SOC: publish · retry w/ backoff
+            alt token expired
+                DEL->>SOC: refresh OAuth token from vault
+                DEL->>SOC: retry publish
+            end
+            SOC-->>DB: post IDs · reach · followers
+            DEL->>BIZ: Twilio review-request SMS
+        end
+        end
+
+        rect rgb(238,243,236)
+        Note over DB,BIZ: PHASE 5 — REPORT & RENEW
+        Cron->>DEL: monthly report job
+        DEL->>DB: collect GA4 · GBP · social · ranks
+        DEL->>AI: metrics → plain-English summary
+        AI-->>DEL: owner-readable wins
+        DEL->>BIZ: branded PDF · renewal touchpoint
+        BIZ->>ST: renews 🔁
+        end
+    else LOST
+        OR->>DB: status lost · re-nurture in 90d
+        Cron->>OR: 90d later → fresh audit → sequence restarts
+    end

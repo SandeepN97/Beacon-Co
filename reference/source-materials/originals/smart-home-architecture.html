@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System dossier — local smart home architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8ec;
+  --surface:#ffffff;
+  --surface-2:#fff1da;
+  --ink:#2b2117;
+  --ink-dim:#8a7c6b;
+  --border:#f3e2c4;
+  --accent:#ff6b4a;
+  --accent-soft:rgba(255,107,74,.13);
+  --c1:#ff6b6b; --c2:#ffa630; --c3:#9b5de5; --c4:#2ec4b6; --c5:#4cc9f0; --c6:#ff5a7a; --c7:#06d6a0; --c8:#f7b733;
+  --mono:'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+  --sans:'Inter', -apple-system, sans-serif;
+  --display:'Baloo 2', var(--sans);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(560px circle at 8% 8%, rgba(255,166,48,.16), transparent 60%),
+    radial-gradient(620px circle at 95% 18%, rgba(76,201,240,.14), transparent 60%),
+    radial-gradient(680px circle at 15% 85%, rgba(155,93,229,.11), transparent 60%),
+    radial-gradient(600px circle at 90% 90%, rgba(46,196,182,.13), transparent 60%);
+  background-attachment:fixed;
+  color:var(--ink); font-family:var(--sans); line-height:1.65;
+}
+::selection{background:var(--accent); color:#fff;}
+.wrap{max-width:980px; margin:0 auto; padding:0 32px;}
+
+/* ---------- hero with three.js ---------- */
+.hero{position:relative; min-height:88vh; display:flex; align-items:center; overflow:hidden;
+  --mx:50%; --my:40%;
+  background:
+    radial-gradient(600px circle at var(--mx) var(--my), rgba(255,166,48,.20), transparent 60%),
+    linear-gradient(160deg, #fff1da 0%, #ffe4d6 45%, #ffe9c7 100%);
+}
+#hero-canvas{position:absolute; inset:0; width:100%; height:100%; opacity:.9;}
+.hero-inner{position:relative; z-index:2; max-width:980px; margin:0 auto; padding:0 32px; width:100%;}
+.eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; display:flex; align-items:center; gap:10px; font-weight:600;}
+.eyebrow::before{content:''; width:20px; height:1px; background:var(--accent); display:inline-block;}
+h1{
+  font-family:var(--display); font-weight:800; font-size:clamp(34px,5.6vw,60px); line-height:1.08;
+  letter-spacing:-.01em; margin-bottom:22px; max-width:15ch; color:var(--ink);
+  opacity:0; transform:translateY(14px);
+  animation: riseIn .8s cubic-bezier(.2,.9,.3,1.1) .1s forwards;
+}
+@keyframes riseIn{ to{ opacity:1; transform:translateY(0); } }
+.lede{font-size:19px; color:var(--ink-dim); max-width:58ch;}
+.stamp{margin-top:40px; font-family:var(--mono); font-size:12px; color:var(--ink-dim); display:flex; gap:12px; flex-wrap:wrap;}
+.stamp span{background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:6px 14px;}
+.stamp span b{color:var(--ink); font-weight:600;}
+
+/* ---------- sections ---------- */
+section.stage{position:relative; padding:64px 32px; max-width:980px; margin:24px auto; background:var(--surface); border:1px solid var(--border); border-radius:24px; box-shadow:0 10px 30px -18px rgba(43,33,23,.18);}
+.stage-num{
+  font-family:var(--mono); font-size:12px; color:#fff; letter-spacing:.08em; margin-bottom:16px;
+  display:inline-block; background:var(--stage-color, var(--accent)); padding:6px 14px; border-radius:20px; font-weight:600;
+}
+.stage h2{font-family:var(--display); font-weight:700; font-size:28px; margin-bottom:16px; letter-spacing:-.01em; color:var(--ink);}
+.stage p{color:var(--ink-dim); max-width:64ch; font-size:16px;}
+.stage p + p{margin-top:12px;}
+.note{margin-top:22px; padding:16px 18px; border-radius:14px; border-left:4px solid var(--stage-color, var(--accent)); background:var(--surface-2); font-size:14px; max-width:60ch;}
+.note.security{border-left-width:5px;}
+.note b{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:6px; color:var(--stage-color, var(--accent));}
+.note.security b::before{content:'\26A0  ';}
+.diagram{margin-top:32px; background:var(--surface-2); border:1px solid var(--border); border-radius:16px; padding:22px 14px; overflow-x:auto;}
+.diagram svg{width:100%; height:auto; display:block; min-width:640px;}
+.diagram svg .edgePath path{stroke:#c9b795 !important;}
+.diagram svg marker path{fill:#c9b795 !important; stroke:#c9b795 !important;}
+.diagram svg .messageLine0, .diagram svg .messageLine1{stroke:#8a7c6b !important;}
+.diagram svg .messageText{fill:var(--ink-dim) !important;}
+.diagram svg .actor{filter:none;}
+.diagram svg text{fill:var(--ink) !important;}
+.diagram.small{padding:18px 10px;}
+.diagram.small svg{min-width:0;}
+.draw{fill:none; stroke:#8a7c6b; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+.draw.dim{stroke:#c9b795; stroke-width:1.4;}
+.draw.amber{stroke:var(--stage-color, var(--accent));}
+.dtext{font-family:var(--mono); fill:var(--ink); font-size:11px;}
+.dtext.sub{fill:var(--ink-dim); font-size:9.5px;}
+.tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px;}
+.tag{font-family:var(--mono); font-size:11.5px; padding:7px 14px; border:1px solid var(--border); border-radius:20px; color:var(--ink-dim); cursor:pointer; background:var(--surface-2); transition:transform .15s ease, border-color .2s, color .2s, background .2s; will-change:transform; font-weight:500;}
+.tag:hover,.tag.open{border-color:var(--stage-color, var(--accent)); color:#fff; background:var(--stage-color, var(--accent));}
+.detail{max-height:0; overflow:hidden; transition:max-height .35s ease; font-size:14px; color:var(--ink-dim);}
+.detail.open{max-height:220px; margin-top:14px;}
+.diagram-label{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-dim); margin-bottom:6px; font-weight:600;}
+
+.runbook{list-style:none; counter-reset:step; display:grid; gap:0;}
+.runbook li{counter-increment:step; position:relative; padding:22px 0 22px 60px; border-top:1px dashed var(--border);}
+.runbook li:first-child{border-top:none;}
+.runbook li::before{
+  content:counter(step);
+  position:absolute; left:0; top:22px;
+  width:36px; height:36px; border-radius:50%;
+  color:#fff; background:var(--step-color, var(--accent));
+  font-family:var(--mono); font-size:14px; font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 10px -4px rgba(43,33,23,.35);
+}
+.runbook li:nth-child(8n+1){--step-color:var(--c1);}
+.runbook li:nth-child(8n+2){--step-color:var(--c2);}
+.runbook li:nth-child(8n+3){--step-color:var(--c3);}
+.runbook li:nth-child(8n+4){--step-color:var(--c4);}
+.runbook li:nth-child(8n+5){--step-color:var(--c5);}
+.runbook li:nth-child(8n+6){--step-color:var(--c6);}
+.runbook li:nth-child(8n+7){--step-color:var(--c7);}
+.runbook li:nth-child(8n+8){--step-color:var(--c8);}
+.runbook h3{font-family:var(--display); font-size:17px; font-weight:700; margin-bottom:6px; color:var(--ink);}
+.runbook p{font-size:14.5px; color:var(--ink-dim); max-width:64ch;}
+.runbook .devices{font-family:var(--mono); font-size:11px; color:var(--step-color, var(--accent)); letter-spacing:.04em; margin-top:8px; font-weight:600;}
+
+/* ---------- sticky nav (inspired by Inversa / Groth Studio's minimal nav bars) ---------- */
+.topnav{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 32px; background:rgba(255,248,236,.82); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.topnav .word{font-family:var(--display); font-weight:800; font-size:16px; color:var(--ink);}
+.topnav .word span{color:var(--accent);}
+.topnav .links{display:flex; gap:4px; flex-wrap:wrap;}
+.topnav .links a{
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--ink-dim); text-decoration:none; padding:7px 10px; border-radius:14px; transition:background .2s, color .2s;
+}
+.topnav .links a:hover{background:var(--surface-2); color:var(--ink);}
+.topnav .links a.active{background:var(--ink); color:var(--bg);}
+@media (max-width:820px){ .topnav .links{display:none;} }
+
+/* ---------- live HUD readout (inspired by Inversa's Phase/Freq ticker, Groth's dual clocks) ---------- */
+.hud{
+  position:absolute; top:24px; right:24px; z-index:3;
+  display:flex; gap:10px; font-family:var(--mono); font-size:11px;
+}
+.hud-item{
+  background:rgba(255,255,255,.75); backdrop-filter:blur(6px);
+  border:1px solid var(--border); border-radius:12px; padding:8px 12px;
+  color:var(--ink-dim); line-height:1.3;
+}
+.hud-item b{display:block; color:var(--ink); font-size:12.5px; font-weight:600;}
+.hud-dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--c7); margin-right:5px; animation:pulseDot 1.8s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{opacity:1;} 50%{opacity:.35;}}
+@media (max-width:700px){ .hud{position:static; margin-bottom:24px; flex-wrap:wrap;} }
+
+/* ---------- numbered pillar teaser (inspired by Inversa's 001/002/003 blocks) ---------- */
+.pillars{max-width:980px; margin:24px auto; padding:0 32px; display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+.pillar{
+  display:block; text-decoration:none;
+  background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:26px 22px;
+  box-shadow:0 10px 30px -18px rgba(43,33,23,.18);
+  transition:transform .25s cubic-bezier(.2,.8,.3,1.1), box-shadow .25s ease, border-color .25s ease;
+}
+.pillar:hover{transform:translateY(-6px); box-shadow:0 18px 34px -16px rgba(43,33,23,.28); border-color:var(--pillar-color);}
+.pillar .idx{font-family:var(--mono); font-size:12px; font-weight:700; color:var(--pillar-color); margin-bottom:10px;}
+.pillar h3{font-family:var(--display); font-size:18px; font-weight:700; margin-bottom:8px; color:var(--ink);}
+.pillar p{font-size:13.5px; color:var(--ink-dim); line-height:1.5;}
+.pillar-go{display:inline-block; margin-top:14px; font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--pillar-color); opacity:0; transform:translateX(-4px); transition:opacity .2s, transform .2s;}
+.pillar:hover .pillar-go{opacity:1; transform:translateX(0);}
+@media (max-width:820px){ .pillars{grid-template-columns:1fr;} }
+
+footer{padding:50px 32px 60px; max-width:980px; margin:24px auto 0; background:var(--surface); border:1px solid var(--border); border-radius:24px;}
+footer p{color:var(--ink-dim); max-width:60ch; margin-bottom:22px;}
+.checklist{list-style:none; font-family:var(--mono); font-size:13.5px; display:grid; gap:10px; margin-bottom:40px;}
+.checklist li{display:flex; gap:10px; color:var(--ink-dim);}
+.checklist li::before{content:'—'; color:var(--accent);}
+.colophon{border-top:1px solid var(--border); padding-top:26px; font-family:var(--mono); font-size:11.5px; color:var(--ink-dim); line-height:2;}
+.colophon b{color:var(--ink); font-weight:600;}
+
+@media (max-width:700px){ .hero{min-height:70vh;} section.stage{padding:44px 22px; margin:16px auto; border-radius:18px;} }
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} h1{animation:none; opacity:1; transform:none;} }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="word">home<span>brain</span></div>
+  <div class="links">
+    <a href="#hardware">Hardware</a>
+    <a href="#stack">Stack</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#litter">Litter</a>
+    <a href="#voice">Voice</a>
+    <a href="#security">Security</a>
+    <a href="#power">Power</a>
+    <a href="#buildorder">Build order</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hud">
+    <div class="hud-item">Local time<br><b id="hud-time">--:--</b></div>
+    <div class="hud-item"><span class="hud-dot"></span>Status<br><b>Build in progress</b></div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow">System dossier · rev 02</div>
+    <h1>From a bare board to a house that thinks</h1>
+    <p class="lede">A local smart-home build: Home Assistant, a self-hosted LLM, camera-triggered cleaning, and network-level ad blocking — with the actual architecture and sequence diagrams behind it, not just a mood board.</p>
+    <div class="stamp">
+      <span>Hardware: <b>Raspberry Pi 5, 8GB</b></span>
+      <span>Brain: <b>Home Assistant + Ollama</b></span>
+      <span>Diagrams: <b>Mermaid.js, live-rendered</b></span>
+    </div>
+  </div>
+</div>
+
+<div class="pillars">
+  <a class="pillar" href="#stack" style="--pillar-color:var(--c1);">
+    <div class="idx">001</div>
+    <h3>Local AI brain</h3>
+    <p>Ollama and Home Assistant's own intent engine handle requests on-device — the model never leaves your network.</p>
+    <span class="pillar-go">See how it's hosted →</span>
+  </a>
+  <a class="pillar" href="#litter" style="--pillar-color:var(--c4);">
+    <div class="idx">002</div>
+    <h3>Cat-triggered cleanup</h3>
+    <p>Frigate watches the litter zone locally and hands the Dreame a targeted clean, cooldown included.</p>
+    <span class="pillar-go">See the sequence →</span>
+  </a>
+  <a class="pillar" href="#security" style="--pillar-color:var(--c7);">
+    <div class="idx">003</div>
+    <h3>Ad-free, everywhere</h3>
+    <p>Pi-hole or AdGuard filters DNS network-wide — every device on the house, no per-app setup.</p>
+    <span class="pillar-go">See the network layer →</span>
+  </a>
+</div>
+
+<!-- STAGE 01 -->
+<section class="stage" id="hardware" data-stage="1" style="--stage-color:var(--c1);">
+  <div class="stage-num">STAGE 01 / HARDWARE &amp; TOPOLOGY</div>
+  <h2>Decide what runs where, before buying anything</h2>
+  <p>Every version of this build so far assumed one Pi runs Home Assistant, Frigate, and Ollama together. That's a real, working setup — but it's a budget compromise, not the best option, and it's worth deciding on purpose rather than by default.</p>
+  <div class="tags">
+    <div class="tag" data-detail="d-onepi">One Pi does everything</div>
+    <div class="tag" data-detail="d-split">Split: Green + a second box</div>
+    <div class="tag" data-detail="d-zigbee">Add a Zigbee/Thread coordinator</div>
+  </div>
+  <div class="detail" id="d-onepi">A Pi 5 (8GB), active cooler, USB SSD boot instead of microSD, and a proper 27W supply. Documented benchmarks show it runs Home Assistant plus light add-ons comfortably around 40–55% RAM at idle — Frigate with even one camera is where it starts to feel squeezed, and local voice transcription gets frustratingly slow on top of that. Cheapest path, most fragile under load.</div>
+  <div class="detail" id="d-split">Home Assistant Green ($149–199, Rockchip RK3566, 4GB RAM, 32GB eMMC) is now Nabu Casa's only official hub — Yellow was discontinued in October 2025. Green is plug-and-play, idles at roughly 4–6W, and its soldered eMMC storage doesn't wear out and corrupt the way SD cards do. It has no camera or LLM headroom to spare, though — the documented pattern that keeps coming up: "the Green handles the automation, a second box handles the video." Put Frigate (and Ollama, if running locally) on a separate Pi 5 or small mini PC instead of asking Green to do all three jobs.</div>
+  <div class="detail" id="d-zigbee">None of your current devices are Zigbee, but it's worth flagging now rather than after the fact: adding a Home Assistant Connect ZBT-2 dongle (Zigbee + Thread/Matter in one) gives any future device a fully local path that doesn't depend on a vendor's cloud at all — a stronger fix than segmenting cloud devices after buying them.</div>
+  <div class="diagram small">
+    <svg viewBox="0 0 640 130" id="svg-1"></svg>
+  </div>
+</section>
+
+<!-- STAGE 02 -->
+<section class="stage" id="stack" data-stage="2" style="--stage-color:var(--c2);">
+  <div class="stage-num">STAGE 02 / CORE STACK</div>
+  <h2>Install the brain</h2>
+  <p>Home Assistant is the hub every device reports to. Mosquitto brokers anything that talks MQTT. None of this needs to leave the Pi.</p>
+  <div class="note"><b>Field research</b>The Pi-only Ollama setup from the last version undersold a real constraint. A widely-shared NetworkChuck video runs Ollama on a separate Mac Mini instead of the Pi — and the Home Assistant community thread reacting to it confirms why: Pi CPU inference is workable but slow. Two honest paths, below.</div>
+  <div class="tags">
+    <div class="tag" data-detail="d-pionly">Path A — Pi only</div>
+    <div class="tag" data-detail="d-remote">Path B — offload Ollama</div>
+    <div class="tag" data-detail="d-hat">AI HAT+ 2 middle ground</div>
+  </div>
+  <div class="detail" id="d-pionly">Gemma 3 1B runs ~18–22 tok/s on Pi 5 CPU — fast enough to feel responsive. Phi-3 Mini 3.8B is smarter but drops to ~4–7 tok/s. 7B+ models are impractical on CPU alone. Fine for a first build.</div>
+  <div class="detail" id="d-remote">Point Home Assistant's Assist pipeline at Ollama running on any spare machine with 8GB+ VRAM on your LAN — a Mac Mini, an old gaming PC, anything with a real GPU. The Pi then only runs Home Assistant plus the voice satellite. This is what most serious builds actually do once they outgrow the Pi-only setup.</div>
+  <div class="detail" id="d-hat">The official AI HAT+ 2 (Hailo-10H, 40 TOPS INT4) runs a compatible <code>hailo-ollama</code> server that mirrors the standard Ollama API, giving roughly 5–10x the inference speed of CPU-only — without needing a second machine.</div>
+  <div class="diagram small">
+    <svg viewBox="0 0 640 100" id="svg-2"></svg>
+  </div>
+</section>
+
+<!-- STAGE 03 — ARCHITECTURE -->
+<section class="stage" id="architecture" data-stage="3" style="--stage-color:var(--c3);">
+  <div class="stage-num">STAGE 03 / SYSTEM ARCHITECTURE</div>
+  <h2>The full component map</h2>
+  <p>Mermaid.js is the highest-starred diagram-as-code tool on GitHub by a wide margin (~85K stars vs. newer alternatives like D2), so it stays. What changes is the layout engine — swapped from Mermaid's default (dagre) to ELK, built specifically to reduce crossings in denser diagrams — and the diagram itself is now split into two, since one crowded diagram trying to show layers and devices at once was the actual readability problem.</p>
+  <div class="diagram-label">Architecture diagram — system layers</div>
+  <div class="diagram"><div id="mermaid-arch"></div></div>
+  <p style="margin-top:24px;">And separately, how the individual devices connect in — the previous version crammed this into the same diagram as the layers above, which is exactly why it was hard to follow.</p>
+  <div class="diagram-label">Architecture diagram — device connections</div>
+  <div class="diagram"><div id="mermaid-devices"></div></div>
+  <div class="tags">
+    <div class="tag" data-detail="d-alexa">Alexa echos</div>
+    <div class="tag" data-detail="d-govee">Govee light</div>
+    <div class="tag" data-detail="d-dreame">Dreame X vacuum</div>
+    <div class="tag" data-detail="d-pura">Pura diffuser</div>
+    <div class="tag" data-detail="d-purifier">Air purifier</div>
+    <div class="tag" data-detail="d-arduino">Arduino</div>
+  </div>
+  <div class="detail" id="d-alexa">Alexa Media Player (HACS) exposes both Echos to Home Assistant. Voice recognition itself stays in Amazon's cloud — the Echos are peripherals, not the core.</div>
+  <div class="detail" id="d-govee">Native Govee integration. Enable the local LAN API in the Govee app where supported — faster, works offline. Note it still needs mDNS for initial pairing, which crosses VLANs poorly (see security notes below).</div>
+  <div class="detail" id="d-dreame">Correction from the last version: Valetudo isn't a simple network flash — it's a physical root over a 3.3V UART breakout PCB, and only specific documented models are supported (check the current list at valetudo.cloud before buying). If your X-series isn't on it yet, the stock Xiaomi/Dreame cloud integration in Home Assistant still exposes per-room cleaning by room ID — you lose "no cloud," not room-level control.</div>
+  <div class="detail" id="d-pura">No local API exists. Unofficial HACS integration, cloud-dependent — accepted limitation.</div>
+  <div class="detail" id="d-purifier">Model-dependent. Tuya-based purifiers have solid local-mode support in Home Assistant.</div>
+  <div class="detail" id="d-arduino">ESP32/ESP8266 boards flash to ESPHome for native local integration. Classic Uno/Mega boards report over MQTT instead.</div>
+  <div class="note security"><b>Security note</b>Every cloud-linked device is a device you don't control the firmware of. The IoT VLAN and Pi-hole DNS layer exist specifically to contain that risk, not to speed things up.</div>
+</section>
+
+<!-- STAGE 04 — SEQUENCE 1 -->
+<section class="stage" id="litter" data-stage="4" style="--stage-color:var(--c4);">
+  <div class="stage-num">STAGE 04 / SEQUENCE — LITTER AUTOMATION</div>
+  <h2>What happens, in order</h2>
+  <p>Frigate runs locally and watches a defined zone over the litter area — "cat" is already in its default detection model. Documented builds consistently tune three things: detect at 1280×720 rather than the camera's native 4K (a 60% CPU cut with no real accuracy loss), run detection at 5fps instead of 30fps, and draw the zone as a tight polygon rather than trusting the whole frame. This is the exact message order from the cat entering the zone to the vacuum finishing its clean.</p>
+  <div class="diagram-label">Sequence diagram</div>
+  <div class="diagram"><div id="mermaid-seq1"></div></div>
+  <div class="note"><b>Field note</b>The cooldown is the whole trick — skip it and the vacuum can start while the cat's still nearby, which is how litter-box aversion starts. Ten minutes is a safe default.</div>
+  <div class="note"><b>Hardware note</b>A Coral USB accelerator brings detection latency down to 8–10ms versus 100–300ms on CPU alone — worth it once you're running Frigate alongside Ollama and Home Assistant on the same Pi.</div>
+</section>
+
+<!-- STAGE 05 — SEQUENCE 2 -->
+<section class="stage" id="voice" data-stage="5" style="--stage-color:var(--c5);">
+  <div class="stage-num">STAGE 05 / SEQUENCE — VOICE COMMAND</div>
+  <h2>What happens when you ask for something</h2>
+  <p>Correction from the last version: not every request should hit the LLM. Home Assistant's built-in intent engine resolves simple, well-formed commands — "turn off the kitchen lights" — in a few hundred milliseconds without touching Ollama at all. Only phrasing the intent engine can't parse falls through to the model, which then reads the memory store for context before deciding what to call. This is the actual documented behavior of the Assist pipeline, not a simplification.</p>
+  <div class="diagram-label">Sequence diagram</div>
+  <div class="diagram"><div id="mermaid-seq2"></div></div>
+  <div class="note"><b>Field note</b>There is no official Ollama add-on in the Home Assistant add-on store — installing it means adding a community add-on repository, or running Ollama outside Home Assistant OS entirely. Never expose Ollama's port (11434) to your router's WAN side.</div>
+</section>
+
+<!-- STAGE 06 -->
+<section class="stage" id="security" data-stage="6" style="--stage-color:var(--c6);">
+  <div class="stage-num">STAGE 06 / NETWORK &amp; SECURITY</div>
+  <h2>Segment before you automate</h2>
+  <p>Put every cloud-linked device — Alexa, Pura, the purifier — on its own VLAN so a compromised device can't reach your laptop or NAS. Run Pi-hole or AdGuard Home on a second lightweight Pi so a Home Assistant reboot doesn't take DNS down for the house. Never port-forward Home Assistant — use a WireGuard-based mesh like Tailscale for remote access instead.</p>
+  <p>Three corrections from the last version, all documented failure modes other builders hit first:</p>
+  <div class="tags">
+    <div class="tag" data-detail="d-mdns">Device discovery breaks</div>
+    <div class="tag" data-detail="d-dnsleak">DNS bypasses Pi-hole</div>
+    <div class="tag" data-detail="d-haiot">HA can't reach the IoT VLAN</div>
+  </div>
+  <div class="detail" id="d-mdns">VLANs isolate broadcast domains, which is the point — but Govee's app pairing, Chromecast, and Sonos all rely on mDNS to find devices, and mDNS doesn't cross VLANs by default. Run an mDNS reflector (Avahi, or your router/UniFi controller's built-in option) between the Trusted and IoT VLANs specifically for discovery traffic.</div>
+  <div class="detail" id="d-dnsleak">One documented setup lost a week of protection this way: a smart TV had 8.8.8.8 hardcoded and simply ignored the DHCP-assigned Pi-hole address. Block outbound UDP/TCP port 53 from the IoT VLAN to anywhere except your Pi-hole's IP — don't just set it as the suggested resolver.</div>
+  <div class="detail" id="d-haiot">Segmentation done correctly blocks Trusted-to-IoT traffic by default — which also blocks Home Assistant from reaching your devices, since HA usually lives on the Trusted side. Add one explicit allow rule: Home Assistant's IP, and only that IP, to the IoT VLAN. Everything else on Trusted stays blocked from IoT.</div>
+  <div class="note security"><b>Security note</b>Keep every token and password in Home Assistant's <code>secrets.yaml</code>, never inline in automation files — it's the difference between a leaked config and a leaked credential.</div>
+</section>
+
+<!-- STAGE 07 — UPS & BACKUP -->
+<section class="stage" id="power" data-stage="7" style="--stage-color:var(--c7);">
+  <div class="stage-num">STAGE 07 / POWER &amp; BACKUP</div>
+  <h2>What happens when the power actually goes out</h2>
+  <p>None of the previous versions addressed this at all, and it's not optional for something that now controls your cat's litter box and your air quality. A UPS on its own only buys time — the part that matters is monitoring it and reacting before the battery dies.</p>
+  <div class="tags">
+    <div class="tag" data-detail="d-nut">What goes on the UPS</div>
+    <div class="tag" data-detail="d-shed">Graceful shutdown, not a hard stop</div>
+    <div class="tag" data-detail="d-restore">Backups you can actually restore</div>
+  </div>
+  <div class="detail" id="d-nut">Router, modem, switch, the Home Assistant host, and any Zigbee/Thread USB dongles — all on the UPS. Monitor it with NUT (Network UPS Tools) and Home Assistant's official NUT integration, which reached Home Assistant's "platinum" quality bar in the 2025.9 release. Skip the vacuum, purifier, and diffuser — a small UPS isn't sized for them, and losing them briefly during an outage is fine.</div>
+  <div class="detail" id="d-shed">Set an automation on the UPS battery-percentage sensor: at a threshold like 30%, trigger a clean Home Assistant shutdown rather than waiting for a hard cutoff — this is what protects the database from corruption. A second, lighter automation can shed load the moment power is lost at all: turn off non-essential lights and plugs to stretch the runtime for the router and Zigbee mesh specifically.</div>
+  <div class="detail" id="d-restore">Home Assistant's built-in backup system does scheduled, encrypted backups to a location you pick. The only real failure mode is not testing it — restoring to fresh hardware takes about ten minutes if backups have actually been running, and considerably longer if you're finding out they weren't. Unplug the UPS from the wall every few months to confirm the whole chain — detection, shutdown automation, restart — actually fires.</div>
+</section>
+
+<!-- STAGE 08 -->
+<section class="stage" id="memory" data-stage="8" style="--stage-color:var(--c8);">
+  <div class="stage-num">STAGE 08 / PERSONALIZATION</div>
+  <h2>Let it remember the house, not retrain itself</h2>
+  <p>Fine-tuning the model's weights on daily usage isn't realistic on a Pi, and isn't the right tool anyway. The memory store shown in the sequence diagram above — routines, preferences, the cat's usual schedule — is what actually gives the felt sense of a system that's learned your house.</p>
+  <div class="diagram small">
+    <svg viewBox="0 0 640 110" id="svg-3"></svg>
+  </div>
+</section>
+
+<!-- BUILD ORDER -->
+<section class="stage" id="buildorder" data-stage="9" style="--stage-color:var(--accent);">
+  <div class="stage-num">HOW IT ALL COMES TOGETHER</div>
+  <h2>The build order</h2>
+  <p>Everything above described individually. This is the actual sequence — network first, hub second, devices one at a time, automation and safety nets last — with every device you own placed where it belongs.</p>
+  <ol class="runbook">
+    <li>
+      <h3>Choose topology and buy hardware</h3>
+      <p>One Pi 5 (8GB) doing everything, or Home Assistant Green for the hub plus a second Pi 5/mini PC for Frigate and Ollama. Either way: active cooler, USB SSD (not microSD), a real 27W supply.</p>
+    </li>
+    <li>
+      <h3>Build the network before anything connects to it</h3>
+      <p>Managed switch with 802.1Q support, a Trusted VLAN and an IoT VLAN, an mDNS reflector between them, and outbound DNS (port 53) from the IoT VLAN locked to your future Pi-hole's address only.</p>
+    </li>
+    <li>
+      <h3>Stand up Home Assistant and turn on backups immediately</h3>
+      <p>Flash Home Assistant OS on the hub. Before installing a single integration: Settings → System → Backups, set an automatic encrypted schedule. This is the step every "I lost everything" thread has in common skipping.</p>
+    </li>
+    <li>
+      <h3>Install Mosquitto and Pi-hole/AdGuard Home</h3>
+      <p>Mosquitto for MQTT. Pi-hole or AdGuard Home on its own lightweight second Pi so a hub reboot never takes the house's DNS down with it. Point the IoT VLAN's DHCP at it.</p>
+    </li>
+    <li>
+      <h3>Bring the Govee light online</h3>
+      <p>Native Govee integration; enable the local LAN API in the Govee app if your model supports it.</p>
+      <div class="devices">→ Govee light</div>
+    </li>
+    <li>
+      <h3>Flash the Arduino</h3>
+      <p>ESP32/ESP8266: flash ESPHome for native local integration. Classic Uno/Mega: wire it to report over MQTT to Mosquitto instead.</p>
+      <div class="devices">→ Arduino</div>
+    </li>
+    <li>
+      <h3>Pair the Echo devices</h3>
+      <p>Both Echos onto the IoT VLAN. Install Alexa Media Player (HACS) so Home Assistant can see and control them. They stay peripherals — voice recognition never leaves Amazon's cloud.</p>
+      <div class="devices">→ Echo Show, Echo Dot</div>
+    </li>
+    <li>
+      <h3>Connect Pura and the air purifier</h3>
+      <p>Pura via its unofficial HACS integration — accept that it's cloud-only, there's no local API. Check the purifier for Tuya local-mode support before falling back to its cloud integration.</p>
+      <div class="devices">→ Pura diffuser, air purifier</div>
+    </li>
+    <li>
+      <h3>Attempt to root the vacuum</h3>
+      <p>Check valetudo.cloud's current supported-model list for your exact Dreame X model before buying into "fully local." If it's supported, root it for local per-zone control. If not, the stock cloud integration still gives room-by-room cleaning.</p>
+      <div class="devices">→ Dreame X vacuum</div>
+    </li>
+    <li>
+      <h3>Install Frigate and point it at the litter camera</h3>
+      <p>Detect at 720p/5fps, not native 4K. Draw a tight zone polygon over the litter area — "cat" is already in the default model. Add a Coral USB accelerator if this Pi is also running Ollama.</p>
+      <div class="devices">→ Litter camera, cat</div>
+    </li>
+    <li>
+      <h3>Build the litter-cleanup automation</h3>
+      <p>Zone-entered and zone-cleared events from Frigate, a 10-minute cooldown, then a targeted Dreame zone clean — not a full-house run.</p>
+    </li>
+    <li>
+      <h3>Decide LLM hosting and add local voice</h3>
+      <p>Ollama on the Pi with a small model, offloaded to a spare GPU machine, or accelerated with an AI HAT+2. Install the Wyoming voice satellite (faster-whisper, Piper, openWakeWord). Confirm Home Assistant's local intent engine resolves simple commands before Ollama is ever consulted.</p>
+    </li>
+    <li>
+      <h3>Give it a memory, not a retrain</h3>
+      <p>A small local store (SQLite or a lightweight vector DB) that Ollama reads for household context — routines, the cat's usual schedule, preferences — read on every request, never used to fine-tune the model itself.</p>
+    </li>
+    <li>
+      <h3>Add remote access</h3>
+      <p>Tailscale. Confirm nothing is port-forwarded — check your router's forwarding table directly, don't just assume.</p>
+    </li>
+    <li>
+      <h3>Add the UPS and test it</h3>
+      <p>Router, switch, hub, and any radio dongles on it. NUT integration for monitoring, a shutdown automation at a set battery threshold, a load-shedding automation for the moment power drops. Then actually unplug it from the wall and confirm the whole chain fires.</p>
+    </li>
+    <li>
+      <h3>Validate end to end</h3>
+      <p>Pull the Ethernet cable and confirm Pi-hole and Tailscale behave as expected. Ask an Echo to do something simple and confirm it resolves through the local intent engine, not Ollama. Let the cat use the litter box and confirm the vacuum waits its ten minutes. This is the step that turns a diagram into a system you actually trust.</p>
+    </li>
+  </ol>
+</section>
+
+<footer class="wrap">
+  <div class="eyebrow">Closing notes</div>
+  <p>The build order above is the real answer to "how does this all come together" — everything else on this page is reference material for the steps in it.</p>
+  <ul class="checklist">
+    <li>Pi 5 (8GB) alone, or HA Green plus a second box for Frigate/Ollama — decide on purpose, not by default</li>
+    <li>VLANs, mDNS reflector, and DNS lockdown built before any device joins the network</li>
+    <li>Backups turned on before the first integration, not after the first scare</li>
+    <li>Ollama: on the Pi for a first build, offloaded to a spare GPU machine once it feels slow, or AI HAT+2 as a middle ground</li>
+    <li>Wyoming voice satellite (faster-whisper, Piper, openWakeWord) for local speech; local intent engine tried first, Ollama as fallback</li>
+    <li>Valetudo on the Dreame X only if your exact model is on valetudo.cloud's list; cloud room-cleaning otherwise</li>
+    <li>Frigate at 720p/5fps detection, tight zone polygons, Coral accelerator if sharing the Pi with Ollama</li>
+    <li>Remote access via Tailscale — never a forwarded port</li>
+    <li>UPS on the network gear and hub, monitored by NUT, tested by actually unplugging it</li>
+    <li>secrets.yaml for every token, no exceptions</li>
+  </ul>
+  <div class="colophon">
+    <div><b>Diagrams</b> — Mermaid.js, GitHub's highest-starred diagram-as-code tool (~85K stars), rendered live with its ELK layout engine instead of the crossing-heavy default, and split into focused diagrams rather than one dense one.</div>
+    <div><b>Topology &amp; hardware</b> — current (2026) Home Assistant Green vs. Raspberry Pi 5 comparisons, following the discontinuation of Home Assistant Yellow in October 2025, plus the recurring "Green for automation, a second box for video" pattern from builders running Frigate alongside a hub.</div>
+    <div><b>Power &amp; backup</b> — Home Assistant's NUT integration docs and community threads on graceful shutdown, load shedding, and backup/restore testing.</div>
+    <div><b>Architecture corrections</b> — a NetworkChuck local-LLM video and the Home Assistant community thread reacting to it, current Frigate/Coral setup writeups, the Valetudo project's own supported-robots docs, and VLAN-segmentation postmortems from builders who hit the mDNS and DNS-bypass issues first.</div>
+    <div><b>Scroll choreography</b> — GSAP + ScrollTrigger, the engine behind most 2026 scroll-storytelling sites, per Codrops' own tutorials on the technique.</div>
+    <div><b>Hero object</b> — three.js with a custom GLSL shader, one rendered object with real weight rather than stacked effects — the throughline across this year's best three.js sites.</div>
+    <div><b>Type &amp; spacing</b> — tuned like a design-marketplace dossier, in the spirit of Interface Craft and UI8.</div>
+  </div>
+</footer>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ---------------- hand-drawn helper (small accent sketches) ---------------- */
+function rand(j){ return (Math.random()-0.5)*j; }
+function jpath(pts, j=3){
+  let d = `M ${pts[0][0]} ${pts[0][1]} `;
+  for(let i=1;i<pts.length;i++){
+    const a=pts[i-1], b=pts[i];
+    const mx=(a[0]+b[0])/2+rand(j), my=(a[1]+b[1])/2+rand(j);
+    d += `Q ${mx} ${my} ${b[0]} ${b[1]} `;
+  }
+  return d;
+}
+function roughRect(svg,x,y,w,h,cls='draw',j=2.5){
+  for(let n=0;n<2;n++){
+    const pts=[[x+rand(j),y+rand(j)],[x+w+rand(j),y+rand(j)],[x+w+rand(j),y+h+rand(j)],[x+rand(j),y+h+rand(j)],[x+rand(j),y+rand(j)]];
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d', jpath(pts,j)); p.setAttribute('class', cls);
+    svg.appendChild(p);
+  }
+}
+function roughLine(svg,x1,y1,x2,y2,cls='draw',j=3){
+  const steps=3, pts=[[x1,y1]];
+  for(let i=1;i<steps;i++){ pts.push([x1+(x2-x1)*i/steps, y1+(y2-y1)*i/steps]); }
+  pts.push([x2,y2]);
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', jpath(pts,j)); p.setAttribute('class', cls);
+  svg.appendChild(p);
+}
+function label(svg,x,y,txt,cls='dtext',anchor='middle'){
+  const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('text-anchor',anchor);
+  t.setAttribute('class',cls); t.textContent=txt;
+  svg.appendChild(t);
+}
+(function(){ // stage 1 — pi board
+  const svg=document.getElementById('svg-1');
+  roughRect(svg,180,20,120,50,'draw');
+  roughRect(svg,205,32,26,26,'draw dim');
+  for(let i=0;i<6;i++){ roughLine(svg,190+i*16,20,190+i*16,12,'draw dim',1); }
+  label(svg,240,90,'Raspberry Pi 5 · 8GB');
+  label(svg,240,105,'active cooler + USB SSD boot','dtext sub');
+})();
+(function(){ // stage 2 — three services
+  const svg=document.getElementById('svg-2');
+  roughRect(svg,40,15,170,55,'draw'); label(svg,125,40,'Home Assistant'); label(svg,125,57,'automation engine','dtext sub');
+  roughRect(svg,245,15,140,55,'draw amber'); label(svg,315,40,'Ollama'); label(svg,315,57,'local LLM','dtext sub');
+  roughRect(svg,420,15,160,55,'draw dim'); label(svg,500,40,'Mosquitto'); label(svg,500,57,'MQTT broker','dtext sub');
+  roughLine(svg,210,42,245,42); roughLine(svg,385,42,420,42,'draw dim');
+})();
+(function(){ // stage 7 — memory loop
+  const svg=document.getElementById('svg-3');
+  roughRect(svg,80,25,180,55,'draw amber'); label(svg,170,50,'Ollama'); label(svg,170,67,'answers requests','dtext sub');
+  roughRect(svg,370,25,180,55,'draw'); label(svg,460,50,'Memory store'); label(svg,460,67,'routines, preferences','dtext sub');
+  roughLine(svg,260,38,370,38,'draw dim',4); label(svg,315,28,'reads','dtext sub');
+  roughLine(svg,370,68,260,68,'draw dim',4); label(svg,315,88,'writes','dtext sub');
+})();
+
+/* Mermaid rendering now lives in its own module script block below,
+   so it can register the ELK layout engine (see diagram-readability fix). */
+
+/* ---------------- three.js hero: single rotating wireframe object ---------------- */
+(function(){
+  try{
+  const canvas = document.getElementById('hero-canvas');
+  if(typeof THREE === 'undefined' || !canvas) return;
+  const heroEl = canvas.parentElement;
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 6;
+
+  const geo = new THREE.IcosahedronGeometry(2, 2);
+
+  const shaderMat = new THREE.ShaderMaterial({
+    uniforms: { uTime:{value:0} },
+    vertexShader: `
+      varying vec3 vNormal;
+      varying vec3 vPos;
+      uniform float uTime;
+      void main(){
+        vNormal = normalize(normalMatrix * normal);
+        vec3 pos = position + normal * (sin(uTime*0.6 + position.x*2.0) * 0.04);
+        vPos = pos;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      }`,
+    fragmentShader: `
+      varying vec3 vNormal;
+      varying vec3 vPos;
+      uniform float uTime;
+      vec3 hue(float h){
+        vec3 c = clamp(abs(mod(h*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0);
+        return c*c*(3.0-2.0*c);
+      }
+      void main(){
+        float fresnel = pow(1.0 - abs(dot(normalize(vNormal), vec3(0.0,0.0,1.0))), 2.0);
+        float h = fract(uTime*0.05 + vPos.x*0.09 + vPos.y*0.07);
+        vec3 col = hue(h) * 0.85 + 0.15;
+        gl_FragColor = vec4(col, fresnel*0.95);
+      }`,
+    transparent:true, depthWrite:false, blending:THREE.AdditiveBlending, side:THREE.DoubleSide
+  });
+  const shell = new THREE.Mesh(geo, shaderMat);
+  scene.add(shell);
+
+  const wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(2,1)), new THREE.LineBasicMaterial({color:0xff9f45, transparent:true, opacity:.4}));
+  scene.add(wire);
+
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({color:0xff6b4a, size:0.05, transparent:true, opacity:.85}));
+  scene.add(pts);
+
+  function resize(){
+    const w = heroEl.clientWidth, h = heroEl.clientHeight;
+    renderer.setSize(w,h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let scrollFactor = 0;
+  if(!reduced){
+    const updateScrollFactor = ()=>{
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      scrollFactor = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+    };
+    window.addEventListener('scroll', updateScrollFactor, {passive:true});
+    updateScrollFactor();
+  }
+  const clock = new THREE.Clock();
+  function tick(){
+    shaderMat.uniforms.uTime.value = clock.getElapsedTime();
+    wire.rotation.y += reduced ? 0.001 : 0.0022 + scrollFactor*0.01;
+    wire.rotation.x += 0.0009;
+    shell.rotation.y = wire.rotation.y; shell.rotation.x = wire.rotation.x;
+    pts.rotation.y = wire.rotation.y; pts.rotation.x = wire.rotation.x;
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  tick();
+  }catch(e){ console.error('three.js hero failed', e); }
+})();
+
+/* ---------------- GSAP ScrollTrigger reveals for each stage ----------------
+   Deferred on purpose: ScrollTrigger attaches its internal cache to
+   document.documentElement as soon as it's used anywhere on the page, and
+   Mermaid's ELK layout engine has been observed to choke on that (circular
+   reference during an internal JSON.stringify). Rendering all diagrams FIRST,
+   then initializing ScrollTrigger, avoids the collision entirely. */
+window.initScrollReveals = function(){
+  try{
+    if(window.gsap && window.ScrollTrigger){
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll('section.stage').forEach(sec=>{
+        gsap.fromTo(sec, {opacity:0, y:32}, {
+          opacity:1, y:0, duration:.8, ease:'power2.out',
+          scrollTrigger:{trigger:sec, start:'top 82%'}
+        });
+      });
+    }
+  }catch(e){ console.error('scroll reveal failed', e); document.querySelectorAll('section.stage').forEach(s=>s.style.opacity=1); }
+};
+
+/* Fallback: if the module script above never runs (no ES module support,
+   or it hangs) still turn on scroll reveals after a few seconds. */
+setTimeout(()=>{
+  if(!window.__mermaidDone && window.initScrollReveals) window.initScrollReveals();
+}, 5000);
+
+/* ---------------- live HUD clock ---------------- */
+try{
+  const hudTime = document.getElementById('hud-time');
+  if(hudTime){
+    const tickClock = ()=>{ hudTime.textContent = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); };
+    tickClock();
+    setInterval(tickClock, 15000);
+  }
+}catch(e){ console.error('hud clock failed', e); }
+
+/* ---------------- cursor spotlight + magnetic tag hover ---------------- */
+try{
+  const reducedM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const heroBox = document.querySelector('.hero');
+  if(heroBox && !reducedM){
+    heroBox.addEventListener('mousemove', e=>{
+      const r = heroBox.getBoundingClientRect();
+      heroBox.style.setProperty('--mx', ((e.clientX - r.left)/r.width*100) + '%');
+      heroBox.style.setProperty('--my', ((e.clientY - r.top)/r.height*100) + '%');
+    });
+  }
+  if(!reducedM){
+    document.querySelectorAll('.tag').forEach(tagEl=>{
+      tagEl.addEventListener('mousemove', e=>{
+        const r = tagEl.getBoundingClientRect();
+        const dx = (e.clientX - (r.left+r.width/2)) * 0.28;
+        const dy = (e.clientY - (r.top+r.height/2)) * 0.28;
+        tagEl.style.transform = `translate(${dx}px, ${dy}px)`;
+      });
+      tagEl.addEventListener('mouseleave', ()=>{ tagEl.style.transform = 'translate(0,0)'; });
+    });
+  }
+}catch(e){ console.error('cursor interactions failed', e); }
+
+/* ---------------- tag detail toggles ---------------- */
+document.querySelectorAll('.tags').forEach(group=>{
+  const groupTags = Array.from(group.querySelectorAll('.tag'));
+  groupTags.forEach(tag=>{
+    tag.addEventListener('click', ()=>{
+      const el = document.getElementById(tag.getAttribute('data-detail'));
+      const wasOpen = tag.classList.contains('open');
+      groupTags.forEach(t=>{
+        t.classList.remove('open');
+        const d = document.getElementById(t.getAttribute('data-detail'));
+        if(d) d.classList.remove('open');
+      });
+      if(!wasOpen && el){ tag.classList.add('open'); el.classList.add('open'); }
+    });
+  });
+});
+
+/* ---------------- nav active-section tracking ---------------- */
+try{
+  const navLinks = Array.from(document.querySelectorAll('.topnav .links a'));
+  const navMap = new Map(navLinks.map(a=>[a.getAttribute('href').slice(1), a]));
+  const navSections = Array.from(document.querySelectorAll('section.stage[id]'));
+  if(navLinks.length && navSections.length){
+    const navObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        const link = navMap.get(entry.target.id);
+        if(!link) return;
+        if(entry.isIntersecting) navLinks.forEach(a=>a.classList.toggle('active', a===link));
+      });
+    }, {rootMargin:'-40% 0px -50% 0px'});
+    navSections.forEach(sec=>navObserver.observe(sec));
+  }
+}catch(e){ console.error('nav tracking failed', e); }
+</script>
+
+<script type="module">
+const archLayersSrc = `flowchart TB
+  CLOUD[Cloud services: Alexa, Pura, purifier]
+  PI[Raspberry Pi 5: Home Assistant, Frigate, Mosquitto]
+  BRAIN[LLM layer: Ollama plus memory store]
+  NET[Network layer: router, Pi-hole, mDNS, Tailscale]
+  IOT[IoT VLAN: all connected devices]
+  UPS[UPS plus NUT: hub, router, switch]
+  NET --> PI
+  PI --> BRAIN
+  PI --> IOT
+  PI <--> CLOUD
+  NET -.-> CLOUD
+  UPS -.powers.-> PI
+  UPS -.powers.-> NET`;
+
+const archDevicesSrc = `flowchart TB
+  subgraph PI[Raspberry Pi 5 hub]
+    HA[Home Assistant]
+    INTENT[Local intent engine]
+    WYOMING[Wyoming voice satellite]
+    MQTT[Mosquitto MQTT]
+    FRIGATE[Frigate NVR]
+  end
+  subgraph IOT[IoT VLAN]
+    GOVEE[Govee light]
+    DREAME[Dreame X vacuum]
+    ARDUINO[Arduino / ESPHome]
+    CAM[Litter camera]
+    SHOW[Echo Show]
+    DOT[Echo Dot]
+    PURA[Pura diffuser]
+    PURIFIER[Air purifier]
+  end
+  CAM --> FRIGATE --> HA
+  GOVEE --> HA
+  DREAME --> HA
+  ARDUINO --> MQTT --> HA
+  WYOMING --> HA
+  HA --> INTENT
+  SHOW -.Alexa cloud.-> HA
+  DOT -.Alexa cloud.-> HA
+  PURA -.cloud only.-> HA
+  PURIFIER -.cloud or Tuya local.-> HA`;
+
+const seq1Src = `sequenceDiagram
+  participant Cat
+  participant Camera as Litter camera
+  participant Frigate
+  participant HA as Home Assistant
+  participant Timer as Cooldown timer
+  participant Vacuum as Dreame X
+  Cat->>Camera: Enters litter zone
+  Camera->>Frigate: Video frames
+  Frigate->>HA: zone_entered event
+  Cat->>Camera: Leaves litter zone
+  Camera->>Frigate: Video frames
+  Frigate->>HA: zone_cleared event
+  HA->>Timer: Start 10 min cooldown
+  Timer-->>HA: Cooldown elapsed
+  HA->>Vacuum: Clean litter zone
+  Vacuum-->>HA: Cleaning complete`;
+
+const seq2Src = `sequenceDiagram
+  participant You
+  participant Echo as Echo device
+  participant HA as Home Assistant
+  participant Intent as Local intent engine
+  participant Ollama
+  participant Memory as Memory store
+  participant Device as Target device
+  You->>Echo: Dim the living room lights
+  Echo->>HA: Voice transcript
+  HA->>Intent: Try to parse locally
+  alt Intent matched (most requests)
+    Intent-->>HA: Service call resolved in ms
+  else Intent engine cannot parse
+    HA->>Ollama: Parse intent plus context
+    Ollama->>Memory: Read household preferences
+    Memory-->>Ollama: Past routines
+    Ollama-->>HA: Service call: brightness 30%
+  end
+  HA->>Device: Execute
+  Device-->>HA: State changed
+  HA-->>Echo: Confirmation`;
+
+const themeVariables = {
+  darkMode:false, background:'#fff1da',
+  primaryColor:'#ffe4d6', primaryTextColor:'#2b2117', primaryBorderColor:'#ff9f45',
+  lineColor:'#c9a876', secondaryColor:'#d6f5f0', tertiaryColor:'#f3e8ff',
+  fontFamily:'IBM Plex Mono, monospace', fontSize:'14px',
+  actorBkg:'#ffe4d6', actorBorder:'#ff9f45', actorTextColor:'#2b2117',
+  signalColor:'#8a7c6b', signalTextColor:'#2b2117',
+  labelBoxBkgColor:'#d6f5f0', labelBoxBorderColor:'#2ec4b6',
+  noteBkgColor:'#ff6b4a', noteTextColor:'#ffffff',
+  clusterBkg:'#f3e8ff', clusterBorder:'#9b5de5',
+  sequenceNumberColor:'#ffffff'
+};
+
+async function setup(){
+  let mermaid;
+  let elkAvailable = false;
+  try{
+    mermaid = (await import('https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.esm.min.mjs')).default;
+    try{
+      const elkLayouts = (await import('https://cdnjs.cloudflare.com/ajax/libs/mermaid-layout-elk/0.2.0/mermaid-layout-elk.esm.min.mjs')).default;
+      mermaid.registerLayoutLoaders(elkLayouts);
+      elkAvailable = true;
+    }catch(e){ console.warn('ELK layout engine unavailable, falling back to default layout', e); }
+
+    mermaid.initialize({
+      startOnLoad:false, theme:'base', securityLevel:'loose',
+      layout: elkAvailable ? 'elk' : 'dagre',
+      elk: { mergeEdges:true, nodePlacementStrategy:'BRANDES_KOEPF' },
+      flowchart: { padding:24, nodeSpacing:50, rankSpacing:70 },
+      themeVariables
+    });
+  }catch(e){
+    console.error('mermaid failed to load entirely', e);
+    ['mermaid-arch','mermaid-devices','mermaid-seq1','mermaid-seq2'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.innerHTML = '<p style="font-family:var(--mono);font-size:12.5px;color:var(--accent);padding:12px;">Diagrams failed to load — check your internet connection, this page loads Mermaid.js from a CDN.</p>';
+    });
+    return;
+  }
+
+  async function renderOne(id, src, target){
+    try{
+      const el = document.getElementById(target);
+      const r = await mermaid.render(id, src);
+      el.innerHTML = r.svg;
+    }catch(e){
+      console.error('diagram render failed:', target, e);
+      document.getElementById(target).innerHTML =
+        '<p style="font-family:var(--mono);font-size:12.5px;color:var(--accent);padding:12px;">This diagram failed to render (' + e.message + ').</p>';
+    }
+  }
+  await Promise.all([
+    renderOne('arch-layers-svg', archLayersSrc, 'mermaid-arch'),
+    renderOne('arch-devices-svg', archDevicesSrc, 'mermaid-devices'),
+    renderOne('seq1-svg', seq1Src, 'mermaid-seq1'),
+    renderOne('seq2-svg', seq2Src, 'mermaid-seq2')
+  ]);
+
+  window.__mermaidDone = true;
+  if(window.initScrollReveals) window.initScrollReveals();
+}
+setup().catch(e=>{
+  console.error('mermaid setup failed entirely', e);
+  window.__mermaidDone = true;
+  if(window.initScrollReveals) window.initScrollReveals();
+});
+</script>
+</body>
+</html>

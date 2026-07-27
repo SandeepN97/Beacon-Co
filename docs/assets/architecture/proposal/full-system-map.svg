@@ -1,0 +1,285 @@
+<svg class="arch-full" viewBox="0 0 1831 1076" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Full Beacon &amp; Co. system architecture diagram" aria-labelledby="title-4"><title id="title-4">Full proposed system map</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+<text x="20.0" y="47.3" font-size="26" font-family="'Playfair Display',serif" font-weight="700" fill="#2a4228">BEACON &amp; CO. OS — SYSTEM ARCHITECTURE v5</text>
+<text x="20.0" y="68.6" font-size="12" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">Cloudflare edge · Supabase core · queue-driven workers · builds left → right</text>
+<rect x="1160.0" y="22.0" width="560.0" height="54.0" rx="9" fill="#ffffff" stroke="#8a8578" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1170.0" y="44.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">HUMAN TOUCHPOINTS (only two)</text>
+<text x="1170.0" y="63.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">1. the 15-min sales call     2. the post approval queue</text>
+<rect x="20.0" y="136.0" width="260.0" height="430.0" rx="9" fill="#fdfcf8" stroke="#c05621" stroke-width="2"></rect>
+<text x="34.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#c05621">EDGE — Cloudflare</text>
+<rect x="35.0" y="174.0" width="230.0" height="78.0" rx="9" fill="#fbeee4" stroke="#c05621" stroke-width="2"></rect>
+<text x="45.0" y="196.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">DNS · WAF · DDoS</text>
+<text x="45.0" y="215.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">all domains proxied</text>
+<text x="45.0" y="229.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">free SSL · bot rules</text>
+<rect x="35.0" y="264.0" width="230.0" height="90.0" rx="9" fill="#fbeee4" stroke="#c05621" stroke-width="2"></rect>
+<text x="45.0" y="286.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Cloudflare Pages</text>
+<text x="45.0" y="305.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">client sites + Beacon &amp; Co. site</text>
+<text x="45.0" y="319.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Astro static builds</text>
+<text x="45.0" y="334.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">UNLIMITED bandwidth</text>
+<rect x="35.0" y="366.0" width="230.0" height="78.0" rx="9" fill="#fbeee4" stroke="#c05621" stroke-width="2"></rect>
+<text x="45.0" y="388.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Turnstile</text>
+<text x="45.0" y="407.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">invisible CAPTCHA</text>
+<text x="45.0" y="421.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">on every contact form</text>
+<rect x="35.0" y="456.0" width="230.0" height="96.0" rx="9" fill="#fbeee4" stroke="#c05621" stroke-width="2"></rect>
+<text x="45.0" y="478.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Pages Functions</text>
+<text x="45.0" y="497.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">form POST handler</text>
+<text x="45.0" y="511.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">validates → forwards</text>
+<text x="45.0" y="526.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">to ingress</text>
+<rect x="20.0" y="606.0" width="260.0" height="170.0" rx="9" fill="#fdfcf8" stroke="#2a4228" stroke-width="2"></rect>
+<text x="34.0" y="632.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#2a4228">ADMIN — Vercel</text>
+<rect x="35.0" y="646.0" width="230.0" height="114.0" rx="9" fill="#ffffff" stroke="#2a4228" stroke-width="2"></rect>
+<text x="45.0" y="668.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Dashboard · Next.js</text>
+<text x="45.0" y="687.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">pipeline board · approval queue</text>
+<text x="45.0" y="701.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">client health · manual overrides</text>
+<text x="45.0" y="716.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Supabase Auth + RLS session</text>
+<rect x="320.0" y="136.0" width="260.0" height="165.0" rx="9" fill="#fdfcf8" stroke="#a03d2e" stroke-width="2"></rect>
+<text x="334.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#a03d2e">INGRESS</text>
+<rect x="335.0" y="176.0" width="230.0" height="110.0" rx="9" fill="#f7e8e6" stroke="#a03d2e" stroke-width="2"></rect>
+<text x="345.0" y="198.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Webhook Receiver</text>
+<text x="345.0" y="217.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Supabase Edge Function</text>
+<text x="345.0" y="231.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">HMAC sig check per source</text>
+<text x="345.0" y="246.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">idempotency keys · replay-safe</text>
+<text x="345.0" y="260.4" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">events table append</text>
+<path d="M 280.0 504.0 L 335.0 236.0" fill="none" stroke="#c05621" stroke-width="2"></path>
+<line x1="335.0" y1="236.0" x2="329.2" y2="242.9" stroke="#c05621" stroke-width="2"></line>
+<line x1="335.0" y1="236.0" x2="337.6" y2="244.6" stroke="#c05621" stroke-width="2"></line>
+<text x="272.0" y="279.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">verified form</text>
+<rect x="320.0" y="331.0" width="260.0" height="300.0" rx="9" fill="#fdfcf8" stroke="#8a7a3d" stroke-width="2"></rect>
+<text x="334.0" y="357.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#8a7a3d">ASYNC PLATFORM</text>
+<path d="M 450.0 288.0 L 450.0 372.0" fill="none" stroke="#a03d2e" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="450.0" y1="372.0" x2="454.3" y2="364.1" stroke="#a03d2e" stroke-width="2"></line>
+<line x1="450.0" y1="372.0" x2="445.7" y2="364.1" stroke="#a03d2e" stroke-width="2"></line>
+<text x="466.0" y="313.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">events → jobs</text>
+<rect x="335.0" y="372.0" width="230.0" height="72.0" rx="9" fill="#f7efdc" stroke="#8a7a3d" stroke-width="2"></rect>
+<text x="345.0" y="394.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Schedulers</text>
+<text x="345.0" y="413.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Actions cron: weekly leads</text>
+<text x="345.0" y="427.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">daily syncs · monthly reports</text>
+<rect x="335.0" y="456.0" width="230.0" height="72.0" rx="9" fill="#f7efdc" stroke="#8a7a3d" stroke-width="2"></rect>
+<text x="345.0" y="478.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Job Queue — pg-boss</text>
+<text x="345.0" y="497.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">on Postgres · no Redis</text>
+<text x="345.0" y="511.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">retry + exp backoff · priorities</text>
+<rect x="335.0" y="540.0" width="230.0" height="72.0" rx="9" fill="#f7efdc" stroke="#8a7a3d" stroke-width="2"></rect>
+<text x="345.0" y="562.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Dead-Letter Queue</text>
+<text x="345.0" y="581.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">3 fails → park + alert</text>
+<text x="345.0" y="595.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">replayable from dashboard</text>
+<rect x="320.0" y="666.0" width="260.0" height="200.0" rx="9" fill="#fdfcf8" stroke="#4a4a4a" stroke-width="2"></rect>
+<text x="334.0" y="692.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#4a4a4a">CI / CD — GitHub</text>
+<rect x="335.0" y="706.0" width="230.0" height="66.0" rx="9" fill="#f0f0ee" stroke="#4a4a4a" stroke-width="2"></rect>
+<text x="345.0" y="728.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Monorepo</text>
+<text x="345.0" y="747.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">services/ · templates/ · infra/</text>
+<text x="345.0" y="761.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">PR checks: lint · test · types</text>
+<rect x="335.0" y="784.0" width="230.0" height="66.0" rx="9" fill="#f0f0ee" stroke="#4a4a4a" stroke-width="2"></rect>
+<text x="345.0" y="806.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Actions pipelines</text>
+<text x="345.0" y="825.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">build → wrangler deploy Pages</text>
+<text x="345.0" y="839.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Vercel deploy dashboard</text>
+<path d="M 335.0 751.0 L 280.0 526.0" fill="none" stroke="#4a4a4a" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="280.0" y1="526.0" x2="277.7" y2="534.7" stroke="#4a4a4a" stroke-width="2"></line>
+<line x1="280.0" y1="526.0" x2="286.1" y2="532.6" stroke="#4a4a4a" stroke-width="2"></line>
+<text x="282.0" y="569.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">deploys</text>
+<rect x="620.0" y="136.0" width="270.0" height="650.0" rx="9" fill="#fdfcf8" stroke="#4a6640" stroke-width="2"></rect>
+<text x="634.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#4a6640">SERVICE WORKERS — Node/TS</text>
+<path d="M 580.0 492.0 L 635.0 492.0" fill="none" stroke="#8a7a3d" stroke-width="2"></path>
+<line x1="635.0" y1="492.0" x2="627.1" y2="487.7" stroke="#8a7a3d" stroke-width="2"></line>
+<line x1="635.0" y1="492.0" x2="627.1" y2="496.3" stroke="#8a7a3d" stroke-width="2"></line>
+<text x="586.0" y="479.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">jobs</text>
+<rect x="635.0" y="178.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="200.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Lead Engine</text>
+<text x="645.0" y="219.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Places + Yelp fetchers · rate-limited</text>
+<text x="645.0" y="233.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">dedupe fingerprint · gap auditor</text>
+<text x="645.0" y="248.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">PageSpeed check · scorer 0–100</text>
+<rect x="635.0" y="278.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="300.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Outreach</text>
+<text x="645.0" y="319.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Puppeteer PDF render</text>
+<text x="645.0" y="333.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Resend sequences · suppression</text>
+<text x="645.0" y="348.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">open/click state machine</text>
+<rect x="635.0" y="378.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="400.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Content</text>
+<text x="645.0" y="419.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">calendar engine · Claude drafts</text>
+<text x="645.0" y="433.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">approval gate · publisher</text>
+<text x="645.0" y="448.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">per-platform formatters</text>
+<rect x="635.0" y="478.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="500.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Media Pipeline</text>
+<text x="645.0" y="519.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Satori → SVG → PNG graphics</text>
+<text x="645.0" y="533.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">brand-locked templates</text>
+<text x="645.0" y="548.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">resize per platform → Storage</text>
+<rect x="635.0" y="578.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="600.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Reviews + SEO</text>
+<text x="645.0" y="619.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Twilio SMS asks · reply drafts</text>
+<text x="645.0" y="633.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">GBP posts/hours/photos sync</text>
+<text x="645.0" y="648.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">DataForSEO rank pulls</text>
+<rect x="635.0" y="678.0" width="240.0" height="88.0" rx="9" fill="#e8efe4" stroke="#4a6640" stroke-width="2"></rect>
+<text x="645.0" y="700.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Reporting</text>
+<text x="645.0" y="719.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">GA4 + GBP + social collectors</text>
+<text x="645.0" y="733.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Claude summary · PDF compose</text>
+<text x="645.0" y="748.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Resend delivery · archive</text>
+<rect x="930.0" y="136.0" width="260.0" height="310.0" rx="9" fill="#fdfcf8" stroke="#7c5e99" stroke-width="2"></rect>
+<text x="944.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#7c5e99">AI LAYER</text>
+<path d="M 890.0 416.0 L 945.0 306.0" fill="none" stroke="#7c5e99" stroke-width="2"></path>
+<line x1="945.0" y1="306.0" x2="937.6" y2="311.1" stroke="#7c5e99" stroke-width="2"></line>
+<line x1="945.0" y1="306.0" x2="945.3" y2="315.0" stroke="#7c5e99" stroke-width="2"></line>
+<text x="882.0" y="353.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">draft req</text>
+<rect x="945.0" y="174.0" width="230.0" height="76.0" rx="9" fill="#efe8f5" stroke="#7c5e99" stroke-width="2"></rect>
+<text x="955.0" y="196.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Prompt Registry</text>
+<text x="955.0" y="215.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">versioned templates in repo</text>
+<text x="955.0" y="229.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">per-client brand-voice JSON</text>
+<text x="955.0" y="244.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">few-shot example bank</text>
+<rect x="945.0" y="262.0" width="230.0" height="76.0" rx="9" fill="#efe8f5" stroke="#7c5e99" stroke-width="2"></rect>
+<text x="955.0" y="284.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Claude API</text>
+<text x="955.0" y="303.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">captions · summaries · replies</text>
+<text x="955.0" y="317.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">structured JSON outputs</text>
+<text x="955.0" y="332.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">per-client token budgets</text>
+<rect x="945.0" y="350.0" width="230.0" height="76.0" rx="9" fill="#efe8f5" stroke="#7c5e99" stroke-width="2"></rect>
+<text x="955.0" y="372.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Output Guards</text>
+<text x="955.0" y="391.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">schema validation · length</text>
+<text x="955.0" y="405.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">banned-claims lint · profanity</text>
+<text x="955.0" y="420.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">fallback: human review</text>
+<rect x="930.0" y="476.0" width="260.0" height="250.0" rx="9" fill="#fdfcf8" stroke="#c49a48" stroke-width="2"></rect>
+<text x="944.0" y="502.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#c49a48">SECURITY</text>
+<path d="M 1060.0 476.0 L 1060.0 448.0" fill="none" stroke="#c49a48" stroke-width="2"></path>
+<line x1="1060.0" y1="448.0" x2="1055.7" y2="455.9" stroke="#c49a48" stroke-width="2"></line>
+<line x1="1060.0" y1="448.0" x2="1064.3" y2="455.9" stroke="#c49a48" stroke-width="2"></line>
+<text x="1076.0" y="463.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">tokens</text>
+<rect x="945.0" y="516.0" width="230.0" height="90.0" rx="9" fill="#fdf6e3" stroke="#c49a48" stroke-width="2"></rect>
+<text x="955.0" y="538.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Token Vault</text>
+<text x="955.0" y="557.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">client OAuth (Meta·TikTok·GBP)</text>
+<text x="955.0" y="571.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">pgsodium encrypted at rest</text>
+<text x="955.0" y="586.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">refresh worker · expiry alerts</text>
+<rect x="945.0" y="618.0" width="230.0" height="90.0" rx="9" fill="#fdf6e3" stroke="#c49a48" stroke-width="2"></rect>
+<text x="955.0" y="640.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Secrets &amp; Envs</text>
+<text x="955.0" y="659.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">dev + prod isolated projects</text>
+<text x="955.0" y="673.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">least-privilege API keys</text>
+<text x="955.0" y="688.1" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">GH environments · no .env files</text>
+<rect x="1230.0" y="136.0" width="270.0" height="650.0" rx="9" fill="#fdfcf8" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1244.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#2a4228">DATA — Supabase</text>
+<rect x="1245.0" y="176.0" width="240.0" height="116.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="198.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Postgres 15 + RLS</text>
+<text x="1255.0" y="217.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">leads · audits · clients · projects</text>
+<text x="1255.0" y="231.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">subscriptions · content_calendar</text>
+<text x="1255.0" y="246.2" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">posts · metrics · events · jobs</text>
+<text x="1255.0" y="260.4" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">suppression_list</text>
+<rect x="1245.0" y="304.0" width="240.0" height="72.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="326.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Storage — S3 API</text>
+<text x="1255.0" y="345.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">brand kits · report PDFs</text>
+<text x="1255.0" y="359.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">post graphics · audit PDFs</text>
+<rect x="1245.0" y="388.0" width="240.0" height="72.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="410.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">audit_log</text>
+<text x="1255.0" y="429.6" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">append-only trigger-fed</text>
+<text x="1255.0" y="443.9" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">who approved what, when</text>
+<rect x="1245.0" y="472.0" width="240.0" height="72.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="494.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Realtime</text>
+<text x="1255.0" y="513.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">approval queue live-updates</text>
+<text x="1255.0" y="527.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">dashboard subscriptions</text>
+<rect x="1245.0" y="556.0" width="240.0" height="72.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="578.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Backups</text>
+<text x="1255.0" y="597.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">PITR daily · weekly restore</text>
+<text x="1255.0" y="611.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">drill to staging project</text>
+<rect x="1245.0" y="640.0" width="240.0" height="72.0" rx="9" fill="#eef3ec" stroke="#2a4228" stroke-width="2"></rect>
+<text x="1255.0" y="662.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Migrations</text>
+<text x="1255.0" y="681.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">supabase CLI · versioned SQL</text>
+<text x="1255.0" y="695.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">applied via CI only</text>
+<rect x="1540.0" y="136.0" width="260.0" height="650.0" rx="9" fill="#fdfcf8" stroke="#c49a48" stroke-width="2"></rect>
+<text x="1554.0" y="162.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#c49a48">EXTERNAL APIs</text>
+<rect x="1555.0" y="174.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="193.7" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Google</text>
+<text x="1565.0" y="210.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Places · GBP · GA4 · PageSpeed</text>
+<rect x="1555.0" y="240.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="259.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Meta Graph API</text>
+<text x="1565.0" y="276.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">IG + FB publish · insights</text>
+<rect x="1555.0" y="306.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="325.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">TikTok Content API</text>
+<text x="1565.0" y="342.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">scheduled posting</text>
+<rect x="1555.0" y="372.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="391.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Stripe</text>
+<text x="1565.0" y="408.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">checkout · subs · dunning</text>
+<rect x="1555.0" y="438.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="457.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Resend</text>
+<text x="1565.0" y="474.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">email · SPF/DKIM/DMARC</text>
+<rect x="1555.0" y="504.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="523.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Twilio</text>
+<text x="1565.0" y="540.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">SMS review requests</text>
+<rect x="1555.0" y="570.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="589.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">DataForSEO</text>
+<text x="1565.0" y="606.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">keyword ranks</text>
+<rect x="1555.0" y="636.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="655.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Cal.com</text>
+<text x="1565.0" y="672.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">call booking</text>
+<rect x="1555.0" y="702.0" width="230.0" height="56.0" rx="9" fill="#fdfaf2" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></rect>
+<text x="1565.0" y="721.6" font-size="13" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">ntfy.sh push</text>
+<text x="1565.0" y="738.5" font-size="10" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">alerts → your phone</text>
+<path d="M 740.0 136.0 L 740.0 112.0 L 1365.0 112.0 L 1365.0 136.0" fill="none" stroke="#2a4228" stroke-width="3"></path>
+<line x1="1365.0" y1="136.0" x2="1369.3" y2="128.1" stroke="#2a4228" stroke-width="3"></line>
+<line x1="1365.0" y1="136.0" x2="1360.7" y2="128.1" stroke="#2a4228" stroke-width="3"></line>
+<text x="822.0" y="101.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">services ↔ data — every worker reads + writes here</text>
+<path d="M 680.0 136.0 L 680.0 96.0 L 1670.0 96.0 L 1670.0 136.0" fill="none" stroke="#c49a48" stroke-width="3"></path>
+<line x1="1670.0" y1="136.0" x2="1674.3" y2="128.1" stroke="#c49a48" stroke-width="3"></line>
+<line x1="1670.0" y1="136.0" x2="1665.7" y2="128.1" stroke="#c49a48" stroke-width="3"></line>
+<text x="1248.0" y="113.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">outbound API calls — fetch · publish · send · SMS · ranks</text>
+<path d="M 1670.0 786.0 L 1670.0 848.0 L 600.0 848.0 L 600.0 242.0 L 580.0 242.0" fill="none" stroke="#a03d2e" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="580.0" y1="242.0" x2="587.9" y2="246.3" stroke="#a03d2e" stroke-width="2"></line>
+<line x1="580.0" y1="242.0" x2="587.9" y2="237.7" stroke="#a03d2e" stroke-width="2"></line>
+<text x="920.0" y="863.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">incoming webhooks — stripe · resend · twilio · cal</text>
+<path d="M 150.0 776.0 L 150.0 878.0 L 1365.0 878.0 L 1365.0 788.0" fill="none" stroke="#2a4228" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="1365.0" y1="788.0" x2="1360.7" y2="795.9" stroke="#2a4228" stroke-width="2"></line>
+<line x1="1365.0" y1="788.0" x2="1369.3" y2="795.9" stroke="#2a4228" stroke-width="2"></line>
+<text x="540.0" y="893.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">dashboard ↔ data · Realtime session</text>
+<rect x="20.0" y="916.0" width="1480.0" height="140.0" rx="9" fill="#fdfcf8" stroke="#3d6a8a" stroke-width="2"></rect>
+<text x="34.0" y="942.8" font-size="16" font-family="'Playfair Display',serif" font-weight="700" fill="#3d6a8a">OBSERVABILITY — every worker instrumented</text>
+<rect x="40.0" y="958.0" width="330.0" height="80.0" rx="9" fill="#e6eef4" stroke="#3d6a8a" stroke-width="2"></rect>
+<text x="50.0" y="980.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Sentry</text>
+<text x="50.0" y="999.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">errors + traces + release tags</text>
+<text x="50.0" y="1013.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">alert rules → ntfy push</text>
+<rect x="390.0" y="958.0" width="330.0" height="80.0" rx="9" fill="#e6eef4" stroke="#3d6a8a" stroke-width="2"></rect>
+<text x="400.0" y="980.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Axiom logs</text>
+<text x="400.0" y="999.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">structured JSON logs</text>
+<text x="400.0" y="1013.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">job timelines · queryable</text>
+<rect x="740.0" y="958.0" width="330.0" height="80.0" rx="9" fill="#e6eef4" stroke="#3d6a8a" stroke-width="2"></rect>
+<text x="750.0" y="980.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">BetterStack uptime</text>
+<text x="750.0" y="999.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">every client site + dashboard</text>
+<text x="750.0" y="1013.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">status page per client</text>
+<rect x="1090.0" y="958.0" width="390.0" height="80.0" rx="9" fill="#e6eef4" stroke="#3d6a8a" stroke-width="2"></rect>
+<text x="1100.0" y="980.7" font-size="14" font-family="'DM Sans',sans-serif" font-weight="600" fill="#1a1712">Cost + quota alarms</text>
+<text x="1100.0" y="999.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">Claude tokens · DataForSEO · Twilio</text>
+<text x="1100.0" y="1013.8" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#5a5548">hard caps → pause job + alert</text>
+<path d="M 450.0 616.0 L 300.0 958.0" fill="none" stroke="#3d6a8a" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="300.0" y1="958.0" x2="307.1" y2="952.5" stroke="#3d6a8a" stroke-width="2"></line>
+<line x1="300.0" y1="958.0" x2="299.2" y2="949.0" stroke="#3d6a8a" stroke-width="2"></line>
+<text x="218.0" y="799.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">DLQ alerts · errors · logs</text>
+<path d="M 1480.0 998.0 L 1670.0 998.0 L 1670.0 792.0" fill="none" stroke="#c49a48" stroke-width="2" stroke-dasharray="6 5"></path>
+<line x1="1670.0" y1="792.0" x2="1665.7" y2="799.9" stroke="#c49a48" stroke-width="2"></line>
+<line x1="1670.0" y1="792.0" x2="1674.3" y2="799.9" stroke="#c49a48" stroke-width="2"></line>
+<text x="1524.0" y="985.5" font-size="11" font-family="'DM Sans',sans-serif" font-weight="400" fill="#6b6555">push to phone</text>
+</svg>

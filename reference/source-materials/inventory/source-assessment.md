@@ -1,0 +1,1625 @@
+# Source material assessment
+
+Generated: 2026-07-27T05:15:24.685Z
+
+This assessment records repository-local copies and extracted material. It does not promote proposals to implemented state.
+
+| Source | Authority | Kind | Size | Inspection summary |
+|---|---|---|---:|---|
+| `reference/source-materials/extracted/ai-company-package/ai_company_all_agents_and_combined_canvas.excalidraw` | tier-1-source-evidence | excalidraw | 858760 | 840 elements; 0 frames; 840 ordered elements |
+| `reference/source-materials/extracted/ai-company-package/ai_company_all_agents_and_combined.excalidrawlib` | tier-1-source-evidence | excalidraw-library | 957513 | 16 library items |
+| `reference/source-materials/extracted/ai-company-package/ai_company_all_agents_contact_sheet.png` | tier-3-derived-reference | png | 54671 | preserved and hashed |
+| `reference/source-materials/extracted/ai-company-package/OPEN_IN_EXCALIDRAW_ANIMATE.txt` | tier-3-derived-reference | text | 927 | 25 lines; 123 words |
+| `reference/source-materials/extracted/broker-package/multi_agent_business_broker_animation_sequence.txt` | tier-3-derived-reference | text | 908 | 23 lines; 121 words |
+| `reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end_preview.png` | tier-3-derived-reference | png | 165628 | preserved and hashed |
+| `reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw` | tier-1-source-evidence | excalidraw | 151216 | 161 elements; 0 frames; 161 ordered elements |
+| `reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.json` | tier-3-derived-reference | json | 151216 | preserved and hashed |
+| `reference/source-materials/extracted/Claude_Codex_Broker_Addendum.txt` | tier-1-derived-text | text | 16275 | 283 lines; 2206 words |
+| `reference/source-materials/extracted/Claude_Multi_Agent_Business_Guide.txt` | tier-1-derived-text | text | 64879 | 1773 lines; 9208 words |
+| `reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw` | tier-1-source-evidence | excalidraw | 858760 | 840 elements; 0 frames; 840 ordered elements |
+| `reference/source-materials/originals/ai_company_all_agents_one_file_package.zip` | tier-1-source-evidence | zip | 175519 | preserved and hashed |
+| `reference/source-materials/originals/BEACON_COMPLETE_EXECUTION_PROMPT.md` | tier-1-authoritative-project-content | md | 45201 | preserved and hashed |
+| `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx` | tier-1-authoritative-project-content | docx | 1692989 | preserved and hashed |
+| `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf` | tier-1-authoritative-project-content | pdf | 595121 | preserved and hashed |
+| `reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw` | tier-1-source-evidence | excalidraw | 268495 | 300 elements; 0 frames; 300 ordered elements |
+| `reference/source-materials/originals/individual_agent_architecture_animated.excalidraw` | tier-1-source-evidence | excalidraw | 105408 | 105 elements; 0 frames; 105 ordered elements |
+| `reference/source-materials/originals/multi_agent_business_broker_excalidraw_package.zip` | tier-1-source-evidence | zip | 180197 | preserved and hashed |
+| `reference/source-materials/originals/smart-home-architecture.html` | tier-3-visual-reference | html | 52119 | 29 headings; 3 SVG; 0 Mermaid; 0 controls |
+| `reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw` | tier-1-source-evidence | excalidraw | 465940 | 504 elements; 0 frames; 504 ordered elements |
+| `reference/source-materials/originals/v9-source.html` | tier-3-visual-reference | html | 207160 | 12 headings; 44 SVG; 0 Mermaid; 11 controls |
+| `reference/source-materials/originals/veslyn-proposal.html` | tier-3-visual-reference | html | 212410 | 44 headings; 8 SVG; 11 Mermaid; 23 controls |
+
+## HTML structure
+
+### smart-home-architecture.html
+
+Title: System dossier — local smart home architecture. Legacy “Veslyn” references: 0.
+
+- H1: From a bare board to a house that thinks
+- H3: Local AI brain
+- H3: Cat-triggered cleanup
+- H3: Ad-free, everywhere
+- H2: Decide what runs where, before buying anything
+- H2: Install the brain
+- H2: The full component map
+- H2: What happens, in order
+- H2: What happens when you ask for something
+- H2: Segment before you automate
+- H2: What happens when the power actually goes out
+- H2: Let it remember the house, not retrain itself
+- H2: The build order
+- H3: Choose topology and buy hardware
+- H3: Build the network before anything connects to it
+- H3: Stand up Home Assistant and turn on backups immediately
+- H3: Install Mosquitto and Pi-hole/AdGuard Home
+- H3: Bring the Govee light online
+- H3: Flash the Arduino
+- H3: Pair the Echo devices
+- H3: Connect Pura and the air purifier
+- H3: Attempt to root the vacuum
+- H3: Install Frigate and point it at the litter camera
+- H3: Build the litter-cleanup automation
+- H3: Decide LLM hosting and add local voice
+- H3: Give it a memory, not a retrain
+- H3: Add remote access
+- H3: Add the UPS and test it
+- H3: Validate end to end
+
+### v9-source.html
+
+Title: Veslyn — Digital Presence for Valley Businesses. Legacy “Veslyn” references: 31.
+
+- H1: I help Valley businesses get found online — honestly and affordably.
+- H2: Watch a real business get found online.
+- H2: Everything you need. Nothing you don't.
+- H2: Honest pricing. No lock-ins. No hidden fees.
+- H2: What to expect. What not to expect.
+- H2: Let's see what you're missing online.
+- H4: Audit + demo in 24 hours
+- H4: You're talking to Minjoon
+- H4: Based in Waynesboro
+- H4: Zero risk
+- H1: HEARD The Store
+- H2: Curation is an art. We take it seriously.
+
+### veslyn-proposal.html
+
+Title: Veslyn — Interactive Business Proposal. Legacy “Veslyn” references: 29.
+
+- H1: The agency that costs $200 to launch and 93% margin to run.
+- H2: A 129,000-person economy where a quarter of businesses are invisible online.
+- H2: Not a market estimate. A named list of 50 prospects.
+- H2: Seven competitors dossiered. Three gaps none of them fill.
+- H3: The three gaps nobody in the radius fills
+- H3: The five-second version
+- H2: Four products, one deliberate sequence.
+- H2: Watch it draw itself — three views of the same system.
+- H2: Every layer of the machine, and why each piece was chosen.
+- H4: The two most contestable picks, checked against real evidence
+- H3: Automating Instagram, Facebook & TikTok — what it actually costs
+- H4: Rent the shortcut
+- H4: Migrate to native APIs
+- H3: Or read it as Mermaid — the portable, text-native version
+- H3: Automating the video and the picture, not just the post
+- H4: The volume is smaller than it sounds
+- H4: Claude writes it, a template shoots it
+- H3: The full diagram — every layer, every connection
+- H3: ✎ Want to edit or present these live?
+- H2: How content gets made with almost no one touching it.
+- H4: What actually earns a place here — checked against real GitHub adoption
+- H2: Not neuromarketing — eye-tracking research, applied honestly.
+- H4: The F-pattern is real — and it's a warning sign, not a design goal
+- H4: The badge that stole the button's job
+- H4: How long an eye lingers tells you something
+- H4: The "person looking at your button" trick — real, but oversold
+- H3: The badge problem, illustrated
+- H2: The system behind the build — not just the plan for it.
+- H4: Solo-scale broker, not the full 25-section version
+- H4: Three-way became two-way, and two real bugs got caught first
+- H2: Don't trust my projections. Break them.
+- H2: The whole cost structure, on one screen.
+- H3: What the scarce resource actually is
+- H3: Why incumbents can't follow the price down
+- H2: Clients quit when they stop seeing value. So the system shows it monthly.
+- H3: The proof loop
+- H3: Structural stickiness
+- H2: Each phase pays for the next.
+- H4: Site live, first ten audits out, Spark by hand
+- H4: Supabase core, audit-PDF generator, Stripe, sequences
+- H4: Social pipeline with approval queue, review SMS, report engine
+- H4: Weekly lead-engine crawl, scored pipeline, re-nurture loops
+- H2: What could kill this, and what's already aimed at each.
+- H2: The first client is the only milestone that matters.
+
+## Diagram labels
+
+### ai_company_all_agents_and_combined_canvas.excalidraw
+
+Elements: 840. Frames: none.
+
+- END-TO-END MULTI-AGENT BUSINESS + CLAUDE/CODEX BROKER
+- Stable company roles • Dynamic model assignment • Independent second voice • Deterministic evidence • Human authority
+- OWNER / CEO
+- Vision • budget • legal responsibility Final authority to pause, reject, merge or release
+- CHIEF OF STAFF
+- Clarifies the request Chooses the business workflow Checks handoffs and approval gates
+- HUMAN GATES
+- Go / no-go • investment • requirements • scope Material architecture • legal/privacy • production release
+- CORE OPERATING RULES
+- One role owns one deliverable • no self-approval • read-only by default Evidence over confidence • least privilege • sequential until proven safe
+- A. CONTROLLED BUSINESS WORKFLOW — PHASES 1–9
+- Each phase returns a fixed handoff before the next phase begins
+- 1. IDEA INTAKE
+- Chief of Staff Work request + route
+- 2. MARKET VALIDATION
+- Market Researcher Evidence + alternatives
+- 3. BUSINESS FEASIBILITY
+- Strategist + Finance Business case + scenarios
+- 4. REQUIREMENTS
+- Business Analyst Rules + acceptance criteria
+- 5. PRODUCT SCOPE
+- Product Manager MVP + backlog + metrics
+- 6. EXPERIENCE DESIGN
+- UX/UI Designer Journeys + states + access
+- 7. SOLUTION ARCHITECTURE
+- Solution Architect Components + APIs + data
+- 8. SECURITY DESIGN
+- Security Architect Threats + controls + criteria
+- 9. CODEBASE RESEARCH
+- Codebase Researcher Flows + safe change points
+- APPROVED WORK PACKAGE
+- Requirements + UX + architecture Security + codebase map
+- B. BROKER CONTROL PLANE — SOFTWARE-ENFORCED MANAGEMENT
+- Roles stay stable; Claude and Codex are replaceable workers
+- WORK-UNIT CONTRACT
+- Goal • acceptance criteria constraints • risk • dependencies
+- DURABLE QUEUE
+- Priority • dependency graph status • retries • ownership
+- ROUTER + SCHEDULER
+- Capability • privacy • capacity usage • failures • cooldowns
+- MODEL REGISTRY
+- Claude • Codex • optional free/local health • context • tools • policy
+- ORCHESTRATOR
+- Plan → critique → execute → review collect evidence → convene panel
+- STATE + AUDIT
+- Runs • prompts • diffs • commands usage • verdicts • artifact hashes
+- POLICY ENGINE
+- Read-only planning/review • write access only in assigned worktree • no push/merge/deploy
+- BUDGET + LOAD BALANCER
+- Broker-tracked usage • manual capacity overrides • latency • reliability • cache advantage
+- CONTEXT PACKAGER
+- Only approved inputs for the current role; stable project memory stays in repository docs
+- C. ONE WORK UNIT — DYNAMIC CLAUDE/CODEX EXECUTION + QUALITY CONVERGENCE
+- MODEL PROVIDER POOL
+- CLAUDE CODE CLI Plan • code • test • review CODEX CLI Plan • code • test • review OPTIONAL FREE / LOCAL Low-risk specialist work only
+- PRIMARY PLAN
+- Best eligible model creates structured plan
+- SECOND VOICE
+- Other model critiques assumptions + testability
+- IMPLEMENT
+- Selected model edits only inside isolated Git worktree
+- DIFF REVIEW
+- Other model reviews complete diff without editing
+- 11. QA + REAL COMMANDS
+- Lint • types • unit/integration tests build • approved security scanners
+- 12. AGENT PANEL
+- Fresh Claude reviewer Fresh Codex reviewer Load-balanced arbiter
+- COMPLETE? Tests pass 2 of 3 approve 0 blockers
+- APPROVED BRANCH
+- Commit to broker/<work-unit-id> Prepare PR + evidence report
+- BOUNDED REPAIR
+- Return evidence to owning role Retry; never let reviewer silently fix
+- YES
+- NO / BLOCKER
+- 13. DELIVERY PREP
+- DevOps: CI/CD • migration • rollback • monitoring
+- 14. RELEASE DECISION
+- Release Manager assembles evidence; authorized human decides
+- MERGE / DEPLOY
+- Only after explicit human approval
+- 15. OPERATIONS + LEARNING
+- SRE • Support • Success • BI feed outcomes back to Product
+- MEASURE → LEARN → NEW WORK UNITS
+- Animation: elements reveal in business order. In Excalidraw Animate, select elements to adjust Order and Duration.
+- Hard rule: deterministic failures or unresolved blockers cannot be outvoted.
+- INDIVIDUAL AGENT OPERATING ARCHITECTURE — CLAUDE / CODEX BROKER COMPANY
+- Every role has approved inputs, one responsibility, restricted tools, a document output, an independent review, and a controlled handoff.
+- A. HOW ONE INDIVIDUAL AGENT RUNS
+- 1. APPROVED INPUTS
+- Only approved documents for the current role
+- 2. ROLE CONTRACT
+- Responsibility • boundaries output schema • stop condition
+- 3. BROKER ROUTING
+- Select Claude or Codex using capability + capacity
+- 4. RESTRICTED SESSION
+- Read-only or isolated Git worktree write access
+- 5. PRODUCE DOCUMENT
+- Evidence-based artifact with fixed structure
+- 6. SECOND VOICE
+- Other model reviews without editing
+- 7. GATE + HANDOFF
+- Pass, repair, escalate or send to next role
+- BROKER MANAGEMENT LAYER
+- Queue • dependency status • context packaging • provider health • token/capacity routing • permissions • audit log • retries • completion policy
+- 1. CHIEF OF STAFF
+- IN: owner request + policy DO: clarify + route workflow DOC: intake-routing.md TOOLS: read-only GATE: human go/no-go NEXT: Program Manager
+- 2. PROGRAM MANAGER
+- IN: approved intake DO: milestones + dependencies DOC: program-plan.md + work-units/*.json TOOLS: document write only GATE: complete work-unit contract NEXT: Market / Business Analyst
+- 3. MARKET RESEARCHER
+- IN: problem + target market DO: demand + alternatives + evidence DOC: market-validation.md TOOLS: read + approved web research GATE: evidence traceable NEXT: Business Analyst
+- 4. BUSINESS ANALYST
+- IN: approved business evidence DO: testable rules + requirements DOC: approved-requirements.md TOOLS: read-only GATE: requirements approval NEXT: Product Manager
+- 5. PRODUCT MANAGER
+- IN: approved requirements DO: MVP + priorities + metrics DOC: product-brief.md + backlog.yaml TOOLS: read-only GATE: scope approval NEXT: UX Designer
+- 6. UX/UI DESIGNER
+- IN: product brief + users DO: journeys + states + accessibility DOC: ux-spec.md + user-flows.excalidraw TOOLS: design/read-only GATE: design approval NEXT: Solution Architect
+- 7. SOLUTION ARCHITECT
+- IN: requirements + UX + code map DO: components + APIs + data flow DOC: architecture.md + ADRs TOOLS: read-only planning GATE: architecture approval NEXT: Security Architect
+- 8. SECURITY ARCHITECT
+- IN: architecture + data flows DO: threats + controls + security criteria DOC: threat-model.md TOOLS: read-only planning GATE: no unresolved blocker NEXT: Codebase Researcher
+- 9. CODEBASE RESEARCHER
+- IN: approved architecture + work unit DO: trace flows + safe change points DOC: codebase-map.md TOOLS: read + safe shell GATE: evidence from repository NEXT: Code Writer
+- 10. CODE WRITER
+- IN: approved work unit + maps DO: smallest implementation + tests DOC: source diff + implementation.json TOOLS: write only in worktree GATE: local validation NEXT: QA Engineer
+- 11. QA ENGINEER
+- IN: acceptance criteria + diff DO: acceptance + regression + negative tests DOC: qa-report.md + test results TOOLS: read + test shell GATE: all blockers resolved NEXT: PR Reviewer
+- 12. PR REVIEWER
+- IN: diff + requirements + QA DO: correctness + maintainability review DOC: pr-review.md TOOLS: read-only + safe commands GATE: approve or changes NEXT: DevOps / Code Writer
+- 13. DEVOPS ENGINEER
+- IN: approved implementation DO: CI/CD + migration + rollback + monitoring DOC: delivery-plan.md TOOLS: controlled write/shell GATE: no production action NEXT: Release Manager
+- 14. RELEASE MANAGER
+- IN: all gate evidence DO: verify readiness + residual risk DOC: release-readiness.md TOOLS: read-only GATE: authorized human approval NEXT: Operations
+- CANONICAL DOCUMENT REPOSITORY
+- docs/intake/ • research/ • requirements/ • product/ • ux/ architecture/ • decisions/ • security/ • codebase/ test-reports/ • reviews/ • release/ • operations/ Document states: DRAFT → UNDER REVIEW → APPROVED → SUPERSEDED
+- UNIVERSAL HANDOFF RECORD
+- Task completed • inputs reviewed • decisions • deliverables files affected • assumptions • risks • open questions acceptance status • next role • human approval Broker adds: work-unit ID • provider/model • run ID • worktree commands • token usage • gates • verdict • retry • hashes
+- QUALITY + DEFECT RETURN POLICY
+- Real tests, lint, types, build and approved security scanners run first. Then: Claude reviewer + Codex reviewer + load-balanced arbiter. COMPLETE = gates pass + 2/3 approve + zero blockers + evidence. Ambiguity → Analyst/Product • architecture → Architect/Security code → Code Writer • tests → QA • delivery → DevOps
+- Animation order is embedded in each element ID using animateOrder and animateDuration.
+- The reviewer never silently fixes the work being judged.
+- CHIEF OF STAFF — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Owner request Company policy Current portfolio status
+- ROLE CONTRACT
+- Clarify the request, choose the workflow, verify handoffs and stop at human gates.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only repository and documents Least privilege; only approved context
+- DOCUMENT OUTPUT
+- intake-routing.md Gate and routing status
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human go/no-go when required NEXT: Program Manager / Market Researcher / Business Analyst
+- FORBIDDEN ACTIONS
+- No specialist deliverables No code, architecture or self-approval
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PROGRAM MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved intake Business objective Known constraints
+- ROLE CONTRACT
+- Create milestones, dependencies, risk log, ownership map and reviewable work units.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only source Controlled document writes Least privilege; only approved context
+- DOCUMENT OUTPUT
+- program-plan.md risk-register.md work-units/*.json
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Every unit has measurable acceptance criteria NEXT: Market Researcher / Business Analyst / Broker queue
+- FORBIDDEN ACTIONS
+- No product requirements No architecture or coding
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- MARKET RESEARCHER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Problem statement Target-market assumptions
+- ROLE CONTRACT
+- Validate customers, demand, alternatives and competitors with traceable evidence.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + approved web research Least privilege; only approved context
+- DOCUMENT OUTPUT
+- market-validation.md source-register.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Evidence is traceable; uncertainty is explicit NEXT: Business Strategist / Business Analyst
+- FORBIDDEN ACTIONS
+- No invented market data No final investment decision
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- BUSINESS ANALYST — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved business evidence Stakeholders Problem definition
+- ROLE CONTRACT
+- Convert business needs into clear, testable requirements and business rules.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only Least privilege; only approved context
+- DOCUMENT OUTPUT
+- approved-requirements.md Acceptance-criteria matrix
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Requirements approval NEXT: Product Manager
+- FORBIDDEN ACTIONS
+- No technical design No roadmap priority or code
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PRODUCT MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved requirements Business strategy Success constraints
+- ROLE CONTRACT
+- Define product value, MVP scope, priority, roadmap, success metrics and deferred work.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only Least privilege; only approved context
+- DOCUMENT OUTPUT
+- product-brief.md backlog.yaml success-metrics.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human scope approval NEXT: UX/UI Designer / Solution Architect
+- FORBIDDEN ACTIONS
+- No implementation code No low-level technical design
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- UX / UI DESIGNER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Product brief Users Requirements Brand rules
+- ROLE CONTRACT
+- Define journeys, screens, interactions, states, accessibility and responsive behavior.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + approved design tools Least privilege; only approved context
+- DOCUMENT OUTPUT
+- ux-specification.md user-flows.excalidraw
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Major user-flow approval NEXT: Solution Architect
+- FORBIDDEN ACTIONS
+- No scope change No application implementation
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- SOLUTION ARCHITECT — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Requirements Product scope UX specification Codebase map
+- ROLE CONTRACT
+- Design components, APIs, integrations, data flow, reliability and implementation sequence.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only planning Least privilege; only approved context
+- DOCUMENT OUTPUT
+- architecture-package.md ADRs component diagram
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human approval for material architecture changes NEXT: Security Architect
+- FORBIDDEN ACTIONS
+- No production code No self-approval or invented requirements
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- SECURITY ARCHITECT — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Architecture Data flows Sensitive assets Business rules
+- ROLE CONTRACT
+- Create threat model, security controls, abuse cases and security acceptance criteria.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only planning Least privilege; only approved context
+- DOCUMENT OUTPUT
+- threat-model.md security-requirements.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- No unresolved high-risk design blocker NEXT: Codebase Researcher / Privacy specialist
+- FORBIDDEN ACTIONS
+- No implementation No acceptance of unresolved threats
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- CODEBASE RESEARCHER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved architecture Target work unit Repository instructions
+- ROLE CONTRACT
+- Trace current behavior, dependencies, conventions and the safest change points.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + safe read-only shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- codebase-map.md change-point evidence
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Every behavior claim references repository evidence NEXT: Code Writer
+- FORBIDDEN ACTIONS
+- No file edits No architecture redesign
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- CODE WRITER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved work unit Architecture Security criteria Codebase map
+- ROLE CONTRACT
+- Implement the smallest correct change and add or update automated tests.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read/edit/write/shell only in isolated worktree Least privilege; only approved context
+- DOCUMENT OUTPUT
+- Source diff Tests implementation.json
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Local deterministic validation NEXT: QA Engineer
+- FORBIDDEN ACTIONS
+- No merge, push or deploy No self-approval or test weakening
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- QA ENGINEER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Acceptance criteria Implementation diff Test environment
+- ROLE CONTRACT
+- Run acceptance, regression, negative, edge-case and integration testing independently.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + approved test shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- qa-report.md Machine-readable test results
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- All blockers resolved NEXT: Code Writer on defects / PR Reviewer on pass
+- FORBIDDEN ACTIONS
+- No silent fixes No changing tests to hide failures
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PR REVIEWER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Final diff Requirements Architecture QA evidence
+- ROLE CONTRACT
+- Review correctness, maintainability, performance, security observations and requirement coverage.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + safe validation commands Least privilege; only approved context
+- DOCUMENT OUTPUT
+- pr-review.md Evidence-based findings
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Approve or request changes NEXT: Code Writer / DevOps Engineer / Release Manager
+- FORBIDDEN ACTIONS
+- No editing or merging No approval with failed checks
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- DEVOPS ENGINEER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved implementation Operational requirements Environment constraints
+- ROLE CONTRACT
+- Prepare CI/CD, environments, migration, rollback, monitoring and alert artifacts.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Controlled write and shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- delivery-plan.md Pipeline and operations artifacts
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- No unapproved production action NEXT: Release Manager
+- FORBIDDEN ACTIONS
+- No embedded secrets No bypassing quality gates
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- RELEASE MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- All business, QA, review, security and delivery evidence
+- ROLE CONTRACT
+- Verify every release gate and recommend release, conditional release or hold.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + safe evidence commands Least privilege; only approved context
+- DOCUMENT OUTPUT
+- release-readiness.md Post-release validation plan
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Authorized human production approval NEXT: Human approver / Operations
+- FORBIDDEN ACTIONS
+- No merge or deploy No blocker waiver
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+
+### multi_agent_business_broker_end_to_end.excalidraw
+
+Elements: 161. Frames: none.
+
+- END-TO-END MULTI-AGENT BUSINESS + CLAUDE/CODEX BROKER
+- Stable company roles • Dynamic model assignment • Independent second voice • Deterministic evidence • Human authority
+- OWNER / CEO
+- Vision • budget • legal responsibility Final authority to pause, reject, merge or release
+- CHIEF OF STAFF
+- Clarifies the request Chooses the business workflow Checks handoffs and approval gates
+- HUMAN GATES
+- Go / no-go • investment • requirements • scope Material architecture • legal/privacy • production release
+- CORE OPERATING RULES
+- One role owns one deliverable • no self-approval • read-only by default Evidence over confidence • least privilege • sequential until proven safe
+- A. CONTROLLED BUSINESS WORKFLOW — PHASES 1–9
+- Each phase returns a fixed handoff before the next phase begins
+- 1. IDEA INTAKE
+- Chief of Staff Work request + route
+- 2. MARKET VALIDATION
+- Market Researcher Evidence + alternatives
+- 3. BUSINESS FEASIBILITY
+- Strategist + Finance Business case + scenarios
+- 4. REQUIREMENTS
+- Business Analyst Rules + acceptance criteria
+- 5. PRODUCT SCOPE
+- Product Manager MVP + backlog + metrics
+- 6. EXPERIENCE DESIGN
+- UX/UI Designer Journeys + states + access
+- 7. SOLUTION ARCHITECTURE
+- Solution Architect Components + APIs + data
+- 8. SECURITY DESIGN
+- Security Architect Threats + controls + criteria
+- 9. CODEBASE RESEARCH
+- Codebase Researcher Flows + safe change points
+- APPROVED WORK PACKAGE
+- Requirements + UX + architecture Security + codebase map
+- B. BROKER CONTROL PLANE — SOFTWARE-ENFORCED MANAGEMENT
+- Roles stay stable; Claude and Codex are replaceable workers
+- WORK-UNIT CONTRACT
+- Goal • acceptance criteria constraints • risk • dependencies
+- DURABLE QUEUE
+- Priority • dependency graph status • retries • ownership
+- ROUTER + SCHEDULER
+- Capability • privacy • capacity usage • failures • cooldowns
+- MODEL REGISTRY
+- Claude • Codex • optional free/local health • context • tools • policy
+- ORCHESTRATOR
+- Plan → critique → execute → review collect evidence → convene panel
+- STATE + AUDIT
+- Runs • prompts • diffs • commands usage • verdicts • artifact hashes
+- POLICY ENGINE
+- Read-only planning/review • write access only in assigned worktree • no push/merge/deploy
+- BUDGET + LOAD BALANCER
+- Broker-tracked usage • manual capacity overrides • latency • reliability • cache advantage
+- CONTEXT PACKAGER
+- Only approved inputs for the current role; stable project memory stays in repository docs
+- C. ONE WORK UNIT — DYNAMIC CLAUDE/CODEX EXECUTION + QUALITY CONVERGENCE
+- MODEL PROVIDER POOL
+- CLAUDE CODE CLI Plan • code • test • review CODEX CLI Plan • code • test • review OPTIONAL FREE / LOCAL Low-risk specialist work only
+- PRIMARY PLAN
+- Best eligible model creates structured plan
+- SECOND VOICE
+- Other model critiques assumptions + testability
+- IMPLEMENT
+- Selected model edits only inside isolated Git worktree
+- DIFF REVIEW
+- Other model reviews complete diff without editing
+- 11. QA + REAL COMMANDS
+- Lint • types • unit/integration tests build • approved security scanners
+- 12. AGENT PANEL
+- Fresh Claude reviewer Fresh Codex reviewer Load-balanced arbiter
+- COMPLETE? Tests pass 2 of 3 approve 0 blockers
+- APPROVED BRANCH
+- Commit to broker/<work-unit-id> Prepare PR + evidence report
+- BOUNDED REPAIR
+- Return evidence to owning role Retry; never let reviewer silently fix
+- YES
+- NO / BLOCKER
+- 13. DELIVERY PREP
+- DevOps: CI/CD • migration • rollback • monitoring
+- 14. RELEASE DECISION
+- Release Manager assembles evidence; authorized human decides
+- MERGE / DEPLOY
+- Only after explicit human approval
+- 15. OPERATIONS + LEARNING
+- SRE • Support • Success • BI feed outcomes back to Product
+- MEASURE → LEARN → NEW WORK UNITS
+- Animation: elements reveal in business order. In Excalidraw Animate, select elements to adjust Order and Duration.
+- Hard rule: deterministic failures or unresolved blockers cannot be outvoted.
+
+### ai_company_all_agents_and_combined_canvas.excalidraw
+
+Elements: 840. Frames: none.
+
+- END-TO-END MULTI-AGENT BUSINESS + CLAUDE/CODEX BROKER
+- Stable company roles • Dynamic model assignment • Independent second voice • Deterministic evidence • Human authority
+- OWNER / CEO
+- Vision • budget • legal responsibility Final authority to pause, reject, merge or release
+- CHIEF OF STAFF
+- Clarifies the request Chooses the business workflow Checks handoffs and approval gates
+- HUMAN GATES
+- Go / no-go • investment • requirements • scope Material architecture • legal/privacy • production release
+- CORE OPERATING RULES
+- One role owns one deliverable • no self-approval • read-only by default Evidence over confidence • least privilege • sequential until proven safe
+- A. CONTROLLED BUSINESS WORKFLOW — PHASES 1–9
+- Each phase returns a fixed handoff before the next phase begins
+- 1. IDEA INTAKE
+- Chief of Staff Work request + route
+- 2. MARKET VALIDATION
+- Market Researcher Evidence + alternatives
+- 3. BUSINESS FEASIBILITY
+- Strategist + Finance Business case + scenarios
+- 4. REQUIREMENTS
+- Business Analyst Rules + acceptance criteria
+- 5. PRODUCT SCOPE
+- Product Manager MVP + backlog + metrics
+- 6. EXPERIENCE DESIGN
+- UX/UI Designer Journeys + states + access
+- 7. SOLUTION ARCHITECTURE
+- Solution Architect Components + APIs + data
+- 8. SECURITY DESIGN
+- Security Architect Threats + controls + criteria
+- 9. CODEBASE RESEARCH
+- Codebase Researcher Flows + safe change points
+- APPROVED WORK PACKAGE
+- Requirements + UX + architecture Security + codebase map
+- B. BROKER CONTROL PLANE — SOFTWARE-ENFORCED MANAGEMENT
+- Roles stay stable; Claude and Codex are replaceable workers
+- WORK-UNIT CONTRACT
+- Goal • acceptance criteria constraints • risk • dependencies
+- DURABLE QUEUE
+- Priority • dependency graph status • retries • ownership
+- ROUTER + SCHEDULER
+- Capability • privacy • capacity usage • failures • cooldowns
+- MODEL REGISTRY
+- Claude • Codex • optional free/local health • context • tools • policy
+- ORCHESTRATOR
+- Plan → critique → execute → review collect evidence → convene panel
+- STATE + AUDIT
+- Runs • prompts • diffs • commands usage • verdicts • artifact hashes
+- POLICY ENGINE
+- Read-only planning/review • write access only in assigned worktree • no push/merge/deploy
+- BUDGET + LOAD BALANCER
+- Broker-tracked usage • manual capacity overrides • latency • reliability • cache advantage
+- CONTEXT PACKAGER
+- Only approved inputs for the current role; stable project memory stays in repository docs
+- C. ONE WORK UNIT — DYNAMIC CLAUDE/CODEX EXECUTION + QUALITY CONVERGENCE
+- MODEL PROVIDER POOL
+- CLAUDE CODE CLI Plan • code • test • review CODEX CLI Plan • code • test • review OPTIONAL FREE / LOCAL Low-risk specialist work only
+- PRIMARY PLAN
+- Best eligible model creates structured plan
+- SECOND VOICE
+- Other model critiques assumptions + testability
+- IMPLEMENT
+- Selected model edits only inside isolated Git worktree
+- DIFF REVIEW
+- Other model reviews complete diff without editing
+- 11. QA + REAL COMMANDS
+- Lint • types • unit/integration tests build • approved security scanners
+- 12. AGENT PANEL
+- Fresh Claude reviewer Fresh Codex reviewer Load-balanced arbiter
+- COMPLETE? Tests pass 2 of 3 approve 0 blockers
+- APPROVED BRANCH
+- Commit to broker/<work-unit-id> Prepare PR + evidence report
+- BOUNDED REPAIR
+- Return evidence to owning role Retry; never let reviewer silently fix
+- YES
+- NO / BLOCKER
+- 13. DELIVERY PREP
+- DevOps: CI/CD • migration • rollback • monitoring
+- 14. RELEASE DECISION
+- Release Manager assembles evidence; authorized human decides
+- MERGE / DEPLOY
+- Only after explicit human approval
+- 15. OPERATIONS + LEARNING
+- SRE • Support • Success • BI feed outcomes back to Product
+- MEASURE → LEARN → NEW WORK UNITS
+- Animation: elements reveal in business order. In Excalidraw Animate, select elements to adjust Order and Duration.
+- Hard rule: deterministic failures or unresolved blockers cannot be outvoted.
+- INDIVIDUAL AGENT OPERATING ARCHITECTURE — CLAUDE / CODEX BROKER COMPANY
+- Every role has approved inputs, one responsibility, restricted tools, a document output, an independent review, and a controlled handoff.
+- A. HOW ONE INDIVIDUAL AGENT RUNS
+- 1. APPROVED INPUTS
+- Only approved documents for the current role
+- 2. ROLE CONTRACT
+- Responsibility • boundaries output schema • stop condition
+- 3. BROKER ROUTING
+- Select Claude or Codex using capability + capacity
+- 4. RESTRICTED SESSION
+- Read-only or isolated Git worktree write access
+- 5. PRODUCE DOCUMENT
+- Evidence-based artifact with fixed structure
+- 6. SECOND VOICE
+- Other model reviews without editing
+- 7. GATE + HANDOFF
+- Pass, repair, escalate or send to next role
+- BROKER MANAGEMENT LAYER
+- Queue • dependency status • context packaging • provider health • token/capacity routing • permissions • audit log • retries • completion policy
+- 1. CHIEF OF STAFF
+- IN: owner request + policy DO: clarify + route workflow DOC: intake-routing.md TOOLS: read-only GATE: human go/no-go NEXT: Program Manager
+- 2. PROGRAM MANAGER
+- IN: approved intake DO: milestones + dependencies DOC: program-plan.md + work-units/*.json TOOLS: document write only GATE: complete work-unit contract NEXT: Market / Business Analyst
+- 3. MARKET RESEARCHER
+- IN: problem + target market DO: demand + alternatives + evidence DOC: market-validation.md TOOLS: read + approved web research GATE: evidence traceable NEXT: Business Analyst
+- 4. BUSINESS ANALYST
+- IN: approved business evidence DO: testable rules + requirements DOC: approved-requirements.md TOOLS: read-only GATE: requirements approval NEXT: Product Manager
+- 5. PRODUCT MANAGER
+- IN: approved requirements DO: MVP + priorities + metrics DOC: product-brief.md + backlog.yaml TOOLS: read-only GATE: scope approval NEXT: UX Designer
+- 6. UX/UI DESIGNER
+- IN: product brief + users DO: journeys + states + accessibility DOC: ux-spec.md + user-flows.excalidraw TOOLS: design/read-only GATE: design approval NEXT: Solution Architect
+- 7. SOLUTION ARCHITECT
+- IN: requirements + UX + code map DO: components + APIs + data flow DOC: architecture.md + ADRs TOOLS: read-only planning GATE: architecture approval NEXT: Security Architect
+- 8. SECURITY ARCHITECT
+- IN: architecture + data flows DO: threats + controls + security criteria DOC: threat-model.md TOOLS: read-only planning GATE: no unresolved blocker NEXT: Codebase Researcher
+- 9. CODEBASE RESEARCHER
+- IN: approved architecture + work unit DO: trace flows + safe change points DOC: codebase-map.md TOOLS: read + safe shell GATE: evidence from repository NEXT: Code Writer
+- 10. CODE WRITER
+- IN: approved work unit + maps DO: smallest implementation + tests DOC: source diff + implementation.json TOOLS: write only in worktree GATE: local validation NEXT: QA Engineer
+- 11. QA ENGINEER
+- IN: acceptance criteria + diff DO: acceptance + regression + negative tests DOC: qa-report.md + test results TOOLS: read + test shell GATE: all blockers resolved NEXT: PR Reviewer
+- 12. PR REVIEWER
+- IN: diff + requirements + QA DO: correctness + maintainability review DOC: pr-review.md TOOLS: read-only + safe commands GATE: approve or changes NEXT: DevOps / Code Writer
+- 13. DEVOPS ENGINEER
+- IN: approved implementation DO: CI/CD + migration + rollback + monitoring DOC: delivery-plan.md TOOLS: controlled write/shell GATE: no production action NEXT: Release Manager
+- 14. RELEASE MANAGER
+- IN: all gate evidence DO: verify readiness + residual risk DOC: release-readiness.md TOOLS: read-only GATE: authorized human approval NEXT: Operations
+- CANONICAL DOCUMENT REPOSITORY
+- docs/intake/ • research/ • requirements/ • product/ • ux/ architecture/ • decisions/ • security/ • codebase/ test-reports/ • reviews/ • release/ • operations/ Document states: DRAFT → UNDER REVIEW → APPROVED → SUPERSEDED
+- UNIVERSAL HANDOFF RECORD
+- Task completed • inputs reviewed • decisions • deliverables files affected • assumptions • risks • open questions acceptance status • next role • human approval Broker adds: work-unit ID • provider/model • run ID • worktree commands • token usage • gates • verdict • retry • hashes
+- QUALITY + DEFECT RETURN POLICY
+- Real tests, lint, types, build and approved security scanners run first. Then: Claude reviewer + Codex reviewer + load-balanced arbiter. COMPLETE = gates pass + 2/3 approve + zero blockers + evidence. Ambiguity → Analyst/Product • architecture → Architect/Security code → Code Writer • tests → QA • delivery → DevOps
+- Animation order is embedded in each element ID using animateOrder and animateDuration.
+- The reviewer never silently fixes the work being judged.
+- CHIEF OF STAFF — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Owner request Company policy Current portfolio status
+- ROLE CONTRACT
+- Clarify the request, choose the workflow, verify handoffs and stop at human gates.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only repository and documents Least privilege; only approved context
+- DOCUMENT OUTPUT
+- intake-routing.md Gate and routing status
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human go/no-go when required NEXT: Program Manager / Market Researcher / Business Analyst
+- FORBIDDEN ACTIONS
+- No specialist deliverables No code, architecture or self-approval
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PROGRAM MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved intake Business objective Known constraints
+- ROLE CONTRACT
+- Create milestones, dependencies, risk log, ownership map and reviewable work units.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only source Controlled document writes Least privilege; only approved context
+- DOCUMENT OUTPUT
+- program-plan.md risk-register.md work-units/*.json
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Every unit has measurable acceptance criteria NEXT: Market Researcher / Business Analyst / Broker queue
+- FORBIDDEN ACTIONS
+- No product requirements No architecture or coding
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- MARKET RESEARCHER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Problem statement Target-market assumptions
+- ROLE CONTRACT
+- Validate customers, demand, alternatives and competitors with traceable evidence.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + approved web research Least privilege; only approved context
+- DOCUMENT OUTPUT
+- market-validation.md source-register.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Evidence is traceable; uncertainty is explicit NEXT: Business Strategist / Business Analyst
+- FORBIDDEN ACTIONS
+- No invented market data No final investment decision
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- BUSINESS ANALYST — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved business evidence Stakeholders Problem definition
+- ROLE CONTRACT
+- Convert business needs into clear, testable requirements and business rules.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only Least privilege; only approved context
+- DOCUMENT OUTPUT
+- approved-requirements.md Acceptance-criteria matrix
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Requirements approval NEXT: Product Manager
+- FORBIDDEN ACTIONS
+- No technical design No roadmap priority or code
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PRODUCT MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved requirements Business strategy Success constraints
+- ROLE CONTRACT
+- Define product value, MVP scope, priority, roadmap, success metrics and deferred work.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only Least privilege; only approved context
+- DOCUMENT OUTPUT
+- product-brief.md backlog.yaml success-metrics.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human scope approval NEXT: UX/UI Designer / Solution Architect
+- FORBIDDEN ACTIONS
+- No implementation code No low-level technical design
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- UX / UI DESIGNER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Product brief Users Requirements Brand rules
+- ROLE CONTRACT
+- Define journeys, screens, interactions, states, accessibility and responsive behavior.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + approved design tools Least privilege; only approved context
+- DOCUMENT OUTPUT
+- ux-specification.md user-flows.excalidraw
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Major user-flow approval NEXT: Solution Architect
+- FORBIDDEN ACTIONS
+- No scope change No application implementation
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- SOLUTION ARCHITECT — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Requirements Product scope UX specification Codebase map
+- ROLE CONTRACT
+- Design components, APIs, integrations, data flow, reliability and implementation sequence.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only planning Least privilege; only approved context
+- DOCUMENT OUTPUT
+- architecture-package.md ADRs component diagram
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Human approval for material architecture changes NEXT: Security Architect
+- FORBIDDEN ACTIONS
+- No production code No self-approval or invented requirements
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- SECURITY ARCHITECT — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Architecture Data flows Sensitive assets Business rules
+- ROLE CONTRACT
+- Create threat model, security controls, abuse cases and security acceptance criteria.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only planning Least privilege; only approved context
+- DOCUMENT OUTPUT
+- threat-model.md security-requirements.md
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- No unresolved high-risk design blocker NEXT: Codebase Researcher / Privacy specialist
+- FORBIDDEN ACTIONS
+- No implementation No acceptance of unresolved threats
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- CODEBASE RESEARCHER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved architecture Target work unit Repository instructions
+- ROLE CONTRACT
+- Trace current behavior, dependencies, conventions and the safest change points.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + safe read-only shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- codebase-map.md change-point evidence
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Every behavior claim references repository evidence NEXT: Code Writer
+- FORBIDDEN ACTIONS
+- No file edits No architecture redesign
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- CODE WRITER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved work unit Architecture Security criteria Codebase map
+- ROLE CONTRACT
+- Implement the smallest correct change and add or update automated tests.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read/edit/write/shell only in isolated worktree Least privilege; only approved context
+- DOCUMENT OUTPUT
+- Source diff Tests implementation.json
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Local deterministic validation NEXT: QA Engineer
+- FORBIDDEN ACTIONS
+- No merge, push or deploy No self-approval or test weakening
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- QA ENGINEER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Acceptance criteria Implementation diff Test environment
+- ROLE CONTRACT
+- Run acceptance, regression, negative, edge-case and integration testing independently.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read + approved test shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- qa-report.md Machine-readable test results
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- All blockers resolved NEXT: Code Writer on defects / PR Reviewer on pass
+- FORBIDDEN ACTIONS
+- No silent fixes No changing tests to hide failures
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- PR REVIEWER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Final diff Requirements Architecture QA evidence
+- ROLE CONTRACT
+- Review correctness, maintainability, performance, security observations and requirement coverage.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + safe validation commands Least privilege; only approved context
+- DOCUMENT OUTPUT
+- pr-review.md Evidence-based findings
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Approve or request changes NEXT: Code Writer / DevOps Engineer / Release Manager
+- FORBIDDEN ACTIONS
+- No editing or merging No approval with failed checks
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- DEVOPS ENGINEER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- Approved implementation Operational requirements Environment constraints
+- ROLE CONTRACT
+- Prepare CI/CD, environments, migration, rollback, monitoring and alert artifacts.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Controlled write and shell Least privilege; only approved context
+- DOCUMENT OUTPUT
+- delivery-plan.md Pipeline and operations artifacts
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- No unapproved production action NEXT: Release Manager
+- FORBIDDEN ACTIONS
+- No embedded secrets No bypassing quality gates
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+- RELEASE MANAGER — INDIVIDUAL OPERATING ARCHITECTURE
+- A stable company role dynamically filled by Claude, Codex, or another approved model.
+- APPROVED INPUTS
+- All business, QA, review, security and delivery evidence
+- ROLE CONTRACT
+- Verify every release gate and recommend release, conditional release or hold.
+- BROKER ROUTING
+- Capability + privacy + capacity + usage + reliability Select primary model; reserve another model as second voice
+- RESTRICTED SESSION
+- Read-only + safe evidence commands Least privilege; only approved context
+- DOCUMENT OUTPUT
+- release-readiness.md Post-release validation plan
+- INDEPENDENT REVIEW
+- Other model verifies evidence, boundaries and acceptance criteria Reviewer does not edit the deliverable
+- GATE + HANDOFF
+- Authorized human production approval NEXT: Human approver / Operations
+- FORBIDDEN ACTIONS
+- No merge or deploy No blocker waiver
+- UNIVERSAL HANDOFF
+- Inputs reviewed • decisions • deliverables • evidence assumptions • risks • open questions • status • next role
+- COMPLETION RULE
+- Deterministic checks pass when applicable Independent review approves No unresolved blocker Required human approval recorded
+
+### easy_read_ai_company_architecture.excalidraw
+
+Elements: 300. Frames: none.
+
+- EASY-READ AI COMPANY ARCHITECTURE
+- One file. Larger text. Fewer words. Three sections: unified flow, company map, and how each agent works.
+- 1. UNIFIED FLOW
+- The overall business-to-release path
+- REQUEST
+- Business goal or client need
+- CHIEF OF STAFF
+- Clarify and route
+- PROGRAM MANAGER
+- Create work units
+- BROKER
+- Choose model and role
+- AGENTS
+- Do the work by stage
+- QA + REVIEW
+- Check quality and evidence
+- RELEASE
+- Approve and hand off
+- 2. COMPANY / BRAND MAP
+- How the company is grouped into lanes
+- BROKERED AI COMPANY
+- Stable roles • dynamic model routing • Claude / Codex / approved models
+- LEADERSHIP
+- Chief of Staff Program Manager
+- BUSINESS
+- Market Researcher Business Analyst
+- PRODUCT
+- Product Manager UX/UI Designer
+- ARCHITECTURE
+- Solution Architect Security Architect
+- ENGINEERING
+- Codebase Researcher Code Writer
+- QUALITY
+- QA Engineer • PR Reviewer
+- DELIVERY
+- DevOps Engineer • Release Manager
+- 3. HOW EACH AGENT WORKS
+- Same simple pattern for every role
+- INPUT
+- What the agent receives
+- ROLE
+- What the agent does
+- BROKER
+- Broker picks model
+- WORK
+- Restricted session
+- OUTPUT
+- Document or code output
+- REVIEW
+- Second voice and handoff
+- CHIEF OF STAFF
+- Simple operating flow
+- Input: Request + policy
+- Role: Clarify + route
+- Broker: choose model
+- Output: intake-routing.md
+- Review + handoff: second voice checks work • next → Program Manager
+- PROGRAM MANAGER
+- Simple operating flow
+- Input: Approved intake
+- Role: Create work units
+- Broker: choose model
+- Output: program-plan.md
+- Review + handoff: second voice checks work • next → Business / Product
+- MARKET RESEARCHER
+- Simple operating flow
+- Input: Problem + market
+- Role: Research evidence
+- Broker: choose model
+- Output: market-validation.md
+- Review + handoff: second voice checks work • next → Business Analyst
+- BUSINESS ANALYST
+- Simple operating flow
+- Input: Evidence + needs
+- Role: Write requirements
+- Broker: choose model
+- Output: approved-requirements.md
+- Review + handoff: second voice checks work • next → Product Manager
+- PRODUCT MANAGER
+- Simple operating flow
+- Input: Requirements
+- Role: Scope + prioritize
+- Broker: choose model
+- Output: product-brief.md
+- Review + handoff: second voice checks work • next → UX / Architect
+- UX/UI DESIGNER
+- Simple operating flow
+- Input: Users + product brief
+- Role: Design flow + UI
+- Broker: choose model
+- Output: ux-specification.md
+- Review + handoff: second voice checks work • next → Architect
+- SOLUTION ARCHITECT
+- Simple operating flow
+- Input: Scope + UX + rules
+- Role: Design solution
+- Broker: choose model
+- Output: architecture-package.md
+- Review + handoff: second voice checks work • next → Security
+- SECURITY ARCHITECT
+- Simple operating flow
+- Input: Architecture
+- Role: Threats + controls
+- Broker: choose model
+- Output: threat-model.md
+- Review + handoff: second voice checks work • next → Engineering
+- CODEBASE RESEARCHER
+- Simple operating flow
+- Input: Work unit + architecture
+- Role: Find safe change points
+- Broker: choose model
+- Output: codebase-map.md
+- Review + handoff: second voice checks work • next → Code Writer
+- CODE WRITER
+- Simple operating flow
+- Input: Approved work unit
+- Role: Implement change
+- Broker: choose model
+- Output: code + tests
+- Review + handoff: second voice checks work • next → QA
+- QA ENGINEER
+- Simple operating flow
+- Input: Acceptance criteria
+- Role: Test independently
+- Broker: choose model
+- Output: qa-report.md
+- Review + handoff: second voice checks work • next → PR Review / Fix
+- PR REVIEWER
+- Simple operating flow
+- Input: Diff + QA
+- Role: Review correctness
+- Broker: choose model
+- Output: pr-review.md
+- Review + handoff: second voice checks work • next → DevOps / Fix
+- DEVOPS ENGINEER
+- Simple operating flow
+- Input: Approved build
+- Role: Prepare delivery
+- Broker: choose model
+- Output: delivery-plan.md
+- Review + handoff: second voice checks work • next → Release Manager
+- RELEASE MANAGER
+- Simple operating flow
+- Input: All evidence
+- Role: Check readiness
+- Broker: choose model
+- Output: release-readiness.md
+- Review + handoff: second voice checks work • next → Human approval
+
+### individual_agent_architecture_animated.excalidraw
+
+Elements: 105. Frames: none.
+
+- INDIVIDUAL AGENT OPERATING ARCHITECTURE — CLAUDE / CODEX BROKER COMPANY
+- Every role has approved inputs, one responsibility, restricted tools, a document output, an independent review, and a controlled handoff.
+- A. HOW ONE INDIVIDUAL AGENT RUNS
+- 1. APPROVED INPUTS
+- Only approved documents for the current role
+- 2. ROLE CONTRACT
+- Responsibility • boundaries output schema • stop condition
+- 3. BROKER ROUTING
+- Select Claude or Codex using capability + capacity
+- 4. RESTRICTED SESSION
+- Read-only or isolated Git worktree write access
+- 5. PRODUCE DOCUMENT
+- Evidence-based artifact with fixed structure
+- 6. SECOND VOICE
+- Other model reviews without editing
+- 7. GATE + HANDOFF
+- Pass, repair, escalate or send to next role
+- BROKER MANAGEMENT LAYER
+- Queue • dependency status • context packaging • provider health • token/capacity routing • permissions • audit log • retries • completion policy
+- 1. CHIEF OF STAFF
+- IN: owner request + policy DO: clarify + route workflow DOC: intake-routing.md TOOLS: read-only GATE: human go/no-go NEXT: Program Manager
+- 2. PROGRAM MANAGER
+- IN: approved intake DO: milestones + dependencies DOC: program-plan.md + work-units/*.json TOOLS: document write only GATE: complete work-unit contract NEXT: Market / Business Analyst
+- 3. MARKET RESEARCHER
+- IN: problem + target market DO: demand + alternatives + evidence DOC: market-validation.md TOOLS: read + approved web research GATE: evidence traceable NEXT: Business Analyst
+- 4. BUSINESS ANALYST
+- IN: approved business evidence DO: testable rules + requirements DOC: approved-requirements.md TOOLS: read-only GATE: requirements approval NEXT: Product Manager
+- 5. PRODUCT MANAGER
+- IN: approved requirements DO: MVP + priorities + metrics DOC: product-brief.md + backlog.yaml TOOLS: read-only GATE: scope approval NEXT: UX Designer
+- 6. UX/UI DESIGNER
+- IN: product brief + users DO: journeys + states + accessibility DOC: ux-spec.md + user-flows.excalidraw TOOLS: design/read-only GATE: design approval NEXT: Solution Architect
+- 7. SOLUTION ARCHITECT
+- IN: requirements + UX + code map DO: components + APIs + data flow DOC: architecture.md + ADRs TOOLS: read-only planning GATE: architecture approval NEXT: Security Architect
+- 8. SECURITY ARCHITECT
+- IN: architecture + data flows DO: threats + controls + security criteria DOC: threat-model.md TOOLS: read-only planning GATE: no unresolved blocker NEXT: Codebase Researcher
+- 9. CODEBASE RESEARCHER
+- IN: approved architecture + work unit DO: trace flows + safe change points DOC: codebase-map.md TOOLS: read + safe shell GATE: evidence from repository NEXT: Code Writer
+- 10. CODE WRITER
+- IN: approved work unit + maps DO: smallest implementation + tests DOC: source diff + implementation.json TOOLS: write only in worktree GATE: local validation NEXT: QA Engineer
+- 11. QA ENGINEER
+- IN: acceptance criteria + diff DO: acceptance + regression + negative tests DOC: qa-report.md + test results TOOLS: read + test shell GATE: all blockers resolved NEXT: PR Reviewer
+- 12. PR REVIEWER
+- IN: diff + requirements + QA DO: correctness + maintainability review DOC: pr-review.md TOOLS: read-only + safe commands GATE: approve or changes NEXT: DevOps / Code Writer
+- 13. DEVOPS ENGINEER
+- IN: approved implementation DO: CI/CD + migration + rollback + monitoring DOC: delivery-plan.md TOOLS: controlled write/shell GATE: no production action NEXT: Release Manager
+- 14. RELEASE MANAGER
+- IN: all gate evidence DO: verify readiness + residual risk DOC: release-readiness.md TOOLS: read-only GATE: authorized human approval NEXT: Operations
+- CANONICAL DOCUMENT REPOSITORY
+- docs/intake/ • research/ • requirements/ • product/ • ux/ architecture/ • decisions/ • security/ • codebase/ test-reports/ • reviews/ • release/ • operations/ Document states: DRAFT → UNDER REVIEW → APPROVED → SUPERSEDED
+- UNIVERSAL HANDOFF RECORD
+- Task completed • inputs reviewed • decisions • deliverables files affected • assumptions • risks • open questions acceptance status • next role • human approval Broker adds: work-unit ID • provider/model • run ID • worktree commands • token usage • gates • verdict • retry • hashes
+- QUALITY + DEFECT RETURN POLICY
+- Real tests, lint, types, build and approved security scanners run first. Then: Claude reviewer + Codex reviewer + load-balanced arbiter. COMPLETE = gates pass + 2/3 approve + zero blockers + evidence. Ambiguity → Analyst/Product • architecture → Architect/Security code → Code Writer • tests → QA • delivery → DevOps
+- Animation order is embedded in each element ID using animateOrder and animateDuration.
+- The reviewer never silently fixes the work being judged.
+
+### unified_agent_operating_architecture_all_in_one.excalidraw
+
+Elements: 504. Frames: none.
+
+- AI COMPANY OPERATING SYSTEM — UNIFIED ARCHITECTURE + BRAND MAP + INDIVIDUAL AGENT FLOWS
+- Single Excalidraw Animate file. Load into https://dai-shi.github.io/excalidraw-animate/ and play through the architecture sections.
+- SECTION 1 — UNIFIED ARCHITECTURE
+- How the whole brokered company works end to end
+- SECTION 2 — BRAND / COMPANY ARCHITECTURE
+- How agents are grouped as a company structure
+- SECTION 3 — INDIVIDUAL AGENT SEQUENCE FLOW + OPERATING ARCHITECTURE
+- How each agent works internally
+- Business Goal / Client Request
+- Owner problem Desired outcome Constraints
+- Chief of Staff
+- Clarify request Choose path Start intake
+- Program Manager
+- Break into work units Set milestones Create acceptance criteria
+- Broker
+- Route work by capability capacity, privacy, cost, quality
+- BROKER CAN SPIN UP PRIMARY MODEL + SECOND VOICE
+- Business Lane
+- Market Researcher Business Analyst
+- Product Lane
+- Product Manager UX/UI Designer
+- Architecture Lane
+- Solution Architect Security Architect
+- Engineering Lane
+- Codebase Researcher Code Writer
+- Quality Lane
+- QA Engineer PR Reviewer
+- Delivery Lane
+- DevOps Engineer Release Manager
+- Independent Review Panel
+- Second voice review Majority convergence or explicit rejection
+- Quality + Security Gates
+- Acceptance criteria Threats addressed Evidence attached
+- Release / Business Output
+- Approved release Documents Reports Operational handoff
+- BROKERED AI COMPANY
+- Stable company roles + dynamic model routing Claude / Codex / other approved models fill the roles
+- Leadership & Intake
+- Chief of Staff Program Manager
+- Business Discovery
+- Market Researcher Business Analyst
+- Product & Design
+- Product Manager UX/UI Designer
+- Architecture & Security
+- Solution Architect Security Architect
+- Engineering & Delivery
+- Codebase Researcher Code Writer QA Engineer PR Reviewer DevOps Engineer Release Manager
+- ONE RESPONSIBILITY PER AGENT
+- NO SELF APPROVAL
+- SECOND VOICE AT EVERY STAGE
+- BROKER LOAD BALANCES MODELS
+- HUMAN GATES FOR MAJOR DECISIONS
+- CHIEF OF STAFF
+- How this agent works inside the brokered company
+- INPUTS
+- Owner request Company policy
+- ROLE
+- Clarify and route
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- intake-routing.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Program Manager / Broker
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- PROGRAM MANAGER
+- How this agent works inside the brokered company
+- INPUTS
+- Approved intake Business objective
+- ROLE
+- Create work units
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- program-plan.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Business + Product lanes
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- MARKET RESEARCHER
+- How this agent works inside the brokered company
+- INPUTS
+- Problem statement Target market
+- ROLE
+- Validate market evidence
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- market-validation.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Business Analyst
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- BUSINESS ANALYST
+- How this agent works inside the brokered company
+- INPUTS
+- Business evidence Stakeholders
+- ROLE
+- Write clear requirements
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- approved-requirements.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Product Manager
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- PRODUCT MANAGER
+- How this agent works inside the brokered company
+- INPUTS
+- Requirements Business goals
+- ROLE
+- Scope and prioritize
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- product-brief.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: UX/UI + Architect
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- UX/UI DESIGNER
+- How this agent works inside the brokered company
+- INPUTS
+- Product brief Users
+- ROLE
+- Design journeys and screens
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- ux-specification.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Solution Architect
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- SOLUTION ARCHITECT
+- How this agent works inside the brokered company
+- INPUTS
+- Scope Requirements UX
+- ROLE
+- Design system architecture
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- architecture-package.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Security Architect
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- SECURITY ARCHITECT
+- How this agent works inside the brokered company
+- INPUTS
+- Architecture Data flows
+- ROLE
+- Threat model and controls
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- threat-model.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Engineering
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- CODEBASE RESEARCHER
+- How this agent works inside the brokered company
+- INPUTS
+- Architecture Work unit
+- ROLE
+- Trace change points
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- codebase-map.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Code Writer
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- CODE WRITER
+- How this agent works inside the brokered company
+- INPUTS
+- Approved work unit Code map
+- ROLE
+- Implement smallest correct change
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- source diff + tests
+- REVIEW + HANDOFF
+- Independent review Gate check Next: QA Engineer
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- QA ENGINEER
+- How this agent works inside the brokered company
+- INPUTS
+- Acceptance criteria Implementation
+- ROLE
+- Independent testing
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- qa-report.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: PR Reviewer / Code Writer
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- PR REVIEWER
+- How this agent works inside the brokered company
+- INPUTS
+- Diff Requirements QA report
+- ROLE
+- Review for correctness
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- pr-review.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: DevOps / Code Writer
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- DEVOPS ENGINEER
+- How this agent works inside the brokered company
+- INPUTS
+- Approved implementation
+- ROLE
+- Prepare CI/CD and ops
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- delivery-plan.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Release Manager
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+- RELEASE MANAGER
+- How this agent works inside the brokered company
+- INPUTS
+- All evidence Delivery plan
+- ROLE
+- Verify release readiness
+- BROKER
+- Broker chooses primary model + second voice
+- WORK SESSION
+- Restricted tools least privilege company rules
+- OUTPUT
+- release-readiness.md
+- REVIEW + HANDOFF
+- Independent review Gate check Next: Human approver
+- UNIVERSAL RULES
+- One responsibility only • no self approval • evidence must be attached • another model acts as second voice
+

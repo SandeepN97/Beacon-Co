@@ -1,0 +1,113 @@
+flowchart LR
+
+classDef ui fill:#fff,stroke:#2a4228,stroke-width:2px,color:#1a1712
+classDef ingress fill:#fbeeed,stroke:#a03d2e,stroke-width:2px,color:#1a1712
+classDef svc fill:#eef3ec,stroke:#4a6640,stroke-width:2px,color:#1a1712
+classDef async fill:#f7f3e8,stroke:#8a7a3d,stroke-width:2px,color:#1a1712
+classDef ai fill:#f3eef7,stroke:#7c5e99,stroke-width:2px,color:#1a1712
+classDef data fill:#2a4228,stroke:#1d2f1c,stroke-width:2px,color:#f7f4ee
+classDef sec fill:#1a1712,stroke:#c49a48,stroke-width:2px,color:#f7f4ee
+classDef ext fill:#faf8f3,stroke:#c49a48,stroke-width:1.5px,stroke-dasharray:4 3,color:#1a1712
+classDef obs fill:#edf2f7,stroke:#3d6a8a,stroke-width:1.5px,color:#1a1712
+
+subgraph FRONT["🖥️ PRESENTATION"]
+    direction TB
+    DASH["Admin Dashboard<br/>Next.js · Vercel<br/>pipeline · approvals · health"]:::ui
+    SITES["Client Sites<br/>Astro static · Cloudflare Pages<br/>unlimited bandwidth"]:::ui
+    VSITE["Beacon & Co. site<br/>static · CF Pages + Turnstile"]:::ui
+end
+
+subgraph INGRESS["🚪 INGRESS — verified webhooks"]
+    direction TB
+    WH["Webhook receiver<br/>Supabase Edge Fn<br/>HMAC signature check<br/>idempotency keys"]:::ingress
+end
+
+subgraph ASYNC["📦 ASYNC PLATFORM"]
+    direction TB
+    SCHED["Schedulers<br/>GH Actions cron<br/>weekly · daily · monthly"]:::async
+    QUEUE["Job queue<br/>pg-boss on Postgres<br/>retry + backoff"]:::async
+    DLQ["Dead-letter queue<br/>failed jobs → alert"]:::async
+    SCHED --> QUEUE --> DLQ
+end
+
+subgraph SVCS["⚙️ SERVICES — Node/TS workers"]
+    direction TB
+    LEADS["Lead Engine<br/>fetch → dedupe → audit → score"]:::svc
+    OUTR["Outreach<br/>PDF render · sequences<br/>suppression enforcement"]:::svc
+    CONTENT["Content<br/>calendar → drafts → publish"]:::svc
+    REVSEO["Reviews + SEO<br/>SMS asks · GBP sync · ranks"]:::svc
+    REPORTS["Reporting<br/>collect → summarize → PDF"]:::svc
+end
+
+subgraph AIL["🤖 AI LAYER"]
+    direction TB
+    CLAUDE["Claude API<br/>captions · summaries · replies"]:::ai
+    PROMPTS["Prompt templates<br/>versioned · per-client<br/>brand-voice profiles"]:::ai
+    GUARD["Output guards<br/>length · banned claims<br/>brand-safety lint"]:::ai
+    PROMPTS --> CLAUDE --> GUARD
+end
+
+subgraph DATA["🗄️ DATA — Supabase"]
+    direction TB
+    PG[("Postgres + RLS<br/>leads · clients · projects<br/>calendar · posts · metrics<br/>events · suppression_list")]:::data
+    STOR[("Storage<br/>brand kits · PDFs · graphics")]:::data
+    AUDIT[("audit_log<br/>append-only · who did what")]:::data
+    BAK[("Backups<br/>PITR daily · tested restore")]:::data
+end
+
+subgraph SEC["🔐 SECURITY"]
+    direction TB
+    VAULT["Token vault<br/>client OAuth tokens<br/>encrypted · auto-refresh"]:::sec
+    SECRETS["Secrets<br/>env per environment<br/>least-privilege API keys"]:::sec
+end
+
+subgraph EXT["🔌 EXTERNAL"]
+    direction TB
+    GOOG["Google<br/>Places · GBP · GA4 · PageSpeed"]:::ext
+    META["Meta Graph<br/>IG + FB"]:::ext
+    TIK["TikTok Content API"]:::ext
+    STR["Stripe"]:::ext
+    COMMS["Resend + Twilio<br/>SPF/DKIM/DMARC"]:::ext
+    CFP["Cloudflare Pages"]:::ext
+    DFS["DataForSEO"]:::ext
+    CAL["Cal.com"]:::ext
+end
+
+subgraph OBS["🔭 OBSERVABILITY"]
+    direction TB
+    SENTRY["Sentry<br/>errors + traces"]:::obs
+    UPTIME["Uptime checks<br/>client sites + dashboard"]:::obs
+    COSTS["Cost alarms<br/>API spend caps"]:::obs
+end
+
+DASH <--> PG
+DASH -->|approve| CONTENT
+VSITE --> WH
+STR -->|billing events| WH
+COMMS -->|opens · clicks · replies| WH
+WH --> QUEUE
+QUEUE --> LEADS & OUTR & CONTENT & REVSEO & REPORTS
+LEADS --> GOOG
+LEADS --> PG
+OUTR --> COMMS
+OUTR <--> PG
+OUTR --> STOR
+CONTENT <--> PROMPTS
+GUARD --> CONTENT
+CONTENT --> META & TIK & CFP
+CONTENT <--> PG
+CONTENT --> STOR
+CONTENT <--> VAULT
+REVSEO --> COMMS & DFS
+REVSEO <--> GOOG
+REVSEO <--> PG
+REPORTS --> GOOG & DFS
+REPORTS <--> PROMPTS
+REPORTS <--> PG
+REPORTS --> STOR
+SITES --- CFP
+BIZBOOK["🏪 lead books call"] --> CAL --> WH
+SVCS -.-> SENTRY
+DLQ -.-> SENTRY
+PG -.-> BAK
+SECRETS -.- SVCS

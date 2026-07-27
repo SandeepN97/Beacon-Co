@@ -1,0 +1,92 @@
+<svg class="sketch" viewBox="0 0 980 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn diagram of the Beacon &amp; Co. business loop" aria-labelledby="title-1"><title id="title-1">Beacon &amp; Co. business loop</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+      <!-- 1 LEADS -->
+      <path class="st" style="--i:0" pathLength="1" d="M32 66 Q30 44 52 43 L182 40 Q202 41 201 62 L203 118 Q204 138 183 139 L54 141 Q31 142 32 120 Z"></path>
+      <text class="t-md" x="52" y="72" style="--i:0">weekly crawler</text>
+      <text class="t-sm" x="52" y="96" style="--i:0">Places + Yelp APIs</text>
+      <text class="t-sm" x="52" y="116" style="--i:0">scored 0–100</text>
+      <path class="st green" style="--i:1" pathLength="1" d="M205 90 Q245 84 283 89 M283 89 L268 80 M283 89 L269 99"></path>
+      <text class="t-sm t-green" x="215" y="76" style="--i:1">score ≥ 75</text>
+      <!-- 2 AUDIT -->
+      <path class="st" style="--i:2" pathLength="1" d="M290 64 Q289 42 311 42 L438 39 Q459 40 458 61 L460 117 Q460 138 439 138 L312 140 Q290 141 290 119 Z"></path>
+      <text class="t-md" x="310" y="71" style="--i:2">free audit PDF</text>
+      <text class="t-sm" x="310" y="95" style="--i:2">auto-generated,</text>
+      <text class="t-sm" x="310" y="115" style="--i:2">emailed same day</text>
+      <path class="st green" style="--i:3" pathLength="1" d="M462 90 Q502 96 538 90 M538 90 L523 82 M538 90 L524 100"></path>
+      <!-- HUMAN 1: call -->
+      <path class="st red dash" style="--i:4" pathLength="1" d="M546 62 Q545 41 566 41 L692 39 Q713 40 712 60 L714 117 Q714 138 693 138 L567 140 Q545 141 546 119 Z"></path>
+      <text class="t-md t-red" x="566" y="70" style="--i:4">👤 the 15-min call</text>
+      <text class="t-sm" x="566" y="94" style="--i:4">honest, no upsell —</text>
+      <text class="t-sm" x="566" y="114" style="--i:4">human touchpoint #1</text>
+      <path class="st gold" style="--i:5" pathLength="1" d="M716 88 Q756 82 794 88 M794 88 L779 79 M794 88 L780 98"></path>
+      <text class="t-sm t-gold" x="726" y="74" style="--i:5">won</text>
+      <!-- 3 SPARK -->
+      <path class="st gold" style="--i:6" pathLength="1" d="M800 63 Q799 42 820 41 L928 40 Q949 41 948 61 L950 116 Q950 137 929 137 L821 139 Q799 140 800 118 Z"></path>
+      <text class="t-md t-gold" x="818" y="71" style="--i:6">$299 Spark</text>
+      <text class="t-sm" x="818" y="95" style="--i:6">Google fixed</text>
+      <text class="t-sm" x="818" y="115" style="--i:6">in 48 hours</text>
+      <path class="st gold" style="--i:7" pathLength="1" d="M873 141 Q876 176 873 208 M873 208 L864 194 M873 208 L883 194"></path>
+      <text class="t-sm t-gold" x="884" y="182" style="--i:7">1 in 3 upgrades</text>
+      <!-- 4 PRESENCE -->
+      <path class="st green" style="--i:8" pathLength="1" stroke-width="3" d="M700 216 Q698 192 722 191 L926 189 Q950 190 949 212 L951 288 Q952 311 928 312 L724 314 Q699 315 700 292 Z"></path>
+      <text class="t-big t-green" x="722" y="226" style="--i:8">$450/mo Presence</text>
+      <text class="t-sm" x="722" y="252" style="--i:8">site + Google + 12–20 posts</text>
+      <text class="t-sm" x="722" y="272" style="--i:8">IG · FB · TikTok · reviews</text>
+      <text class="t-sm t-green" x="722" y="298" style="--i:8">~$31 cost → 93% margin</text>
+      <!-- HUMAN 2: approve -->
+      <path class="st red dash" style="--i:9" pathLength="1" d="M448 226 Q447 202 470 202 L640 200 Q662 201 661 222 L663 284 Q663 306 641 306 L471 308 Q447 309 448 286 Z"></path>
+      <text class="t-md t-red" x="468" y="234" style="--i:9">👤 approve queue</text>
+      <text class="t-sm" x="468" y="258" style="--i:9">Claude drafts, you tap ✓ —</text>
+      <text class="t-sm" x="468" y="278" style="--i:9">human touchpoint #2</text>
+      <path class="st" style="--i:9" pathLength="1" d="M698 256 Q682 256 666 255 M666 255 L680 247 M666 255 L680 264"></path>
+      <!-- 5 REPORT -->
+      <path class="st" style="--i:10" pathLength="1" d="M196 224 Q195 202 217 202 L388 200 Q409 201 408 221 L410 285 Q410 306 389 306 L218 308 Q195 309 196 287 Z"></path>
+      <text class="t-md" x="216" y="234" style="--i:10">monthly proof report</text>
+      <text class="t-sm" x="216" y="258" style="--i:10">"34 more calls from Google"</text>
+      <text class="t-sm" x="216" y="278" style="--i:10">plain English, automatic</text>
+      <path class="st" style="--i:10" pathLength="1" d="M445 256 Q429 257 413 256 M413 256 L427 248 M413 256 L427 265"></path>
+      <!-- RENEW LOOP -->
+      <path class="st green" style="--i:11" pathLength="1" d="M196 262 Q104 266 106 212 Q107 182 107 154" stroke-width="2.6"></path>
+      <path class="st green" style="--i:11" pathLength="1" d="M107 154 L98 168 M107 154 L116 168"></path>
+      <text class="t-md t-green" x="30" y="176" style="--i:11">client</text>
+      <text class="t-md t-green" x="30" y="198" style="--i:11">renews ↺</text>
+      <!-- ANNOTATIONS -->
+      <path class="st gold dash" style="--i:12" pathLength="1" d="M250 352 Q490 336 730 352"></path>
+      <text class="t-md t-gold" x="330" y="392" style="--i:12">everything else runs itself — sched + queue + Claude</text>
+      <path class="st gold" style="--i:12" pathLength="1" d="M300 384 Q282 372 268 358 M268 358 L272 372 M268 358 L282 362"></path>
+      <path class="st gold" style="--i:12" pathLength="1" d="M660 384 Q680 372 696 358 M696 358 L691 372 M696 358 L682 362"></path>
+    </svg>

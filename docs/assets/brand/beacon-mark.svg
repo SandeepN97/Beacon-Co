@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Beacon &amp; Co. mark</title>
+  <desc id="desc">A warm gold signal rising through a deep forest field.</desc>
+  <rect width="64" height="64" rx="14" fill="#1f321e"/>
+  <path d="M32 13 20 48h24L32 13Z" fill="none" stroke="#fdfcf8" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M26 37h12M28.5 30h7" fill="none" stroke="#c49a48" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="32" cy="14" r="4" fill="#c49a48"/>
+</svg>

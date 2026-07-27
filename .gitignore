@@ -1,10 +1,12 @@
 # build output
 dist/
+docs-site/
 # generated types
 .astro/
 
 # dependencies
 node_modules/
+.venv-docs/
 
 # logs
 npm-debug.log*
@@ -23,3 +25,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local cross-agent checkpoint (template is committed)
+.ai/handoff.md
