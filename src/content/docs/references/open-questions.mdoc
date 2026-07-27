@@ -18,6 +18,7 @@ truthState: "reference"
 - **MkDocs versus Markdoc:** Markdoc is now canonical; MkDocs is retained as migration evidence.
 - **Phase 1 versus broker request:** only a typed in-memory simulation is authorized; no speculative backend was added.
 - **ADR numbering:** founding ADRs 0001–0004 remain in order; new decisions continue at 0005.
+- **Default-branch protection:** GitHub ruleset `Protect main` is active without bypass and blocks deletion, force pushes, and direct changes outside a pull request.
 
 ## Still open
 
@@ -27,7 +28,7 @@ truthState: "reference"
 - Which measured tasks justify a Claude or Codex affinity adjustment?
 - When can the legacy MkDocs tree be removed?
 - Who can serve as a genuinely independent human reviewer for production changes?
-- Which GitHub ruleset and environment controls have been activated and verified?
+- When will required GitHub checks, environments, reviewers, secrets, scanning, and push protection be activated and verified?
 - When will Cloudflare distributed rate limiting, WAF, alerts, and isolated tokens be configured?
 - Which current npm advisories are production-reachable and which need expiring exceptions?
 - Should public artifact attestations be added after their verification path is tested?

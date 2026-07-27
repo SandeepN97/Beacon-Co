@@ -49,11 +49,16 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 - contact-route validation, request caps, timeout handling, redacted logs, bot controls, and headers;
 - canonical standards, runbooks, exception records, and machine-readable policy.
 
+## Activated on GitHub
+
+Repository ruleset `Protect main` (ID `19806104`) is active for the default branch. GitHub reports that it blocks deletion and non-fast-forward updates, requires all changes through a pull request, requires review conversations to be resolved, and grants no bypass. The rule allows the repository's existing merge, squash, and rebase methods and requires zero approving reviews while Beacon has only one accountable operator.
+
+Required status checks are not yet active. The PR workflows must first run successfully so their exact GitHub check names can be selected without creating an unmergeable branch rule.
+
 ## Requires human activation outside the repository
 
 These controls are **not active merely because their files exist**:
 
-- protect `main` with a GitHub ruleset;
 - select the required check names after their first successful run;
 - create preview, staging, and production environments;
 - configure environment reviewers, deployment branches, and secrets;

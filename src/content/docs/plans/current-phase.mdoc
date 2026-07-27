@@ -19,7 +19,9 @@ The repository builds a static Astro marketing site, a Markdoc documentation sit
 
 Repository-native secure delivery definitions now include PR policy, quality, security, browser gates, immutable Action pins, artifact digest promotion, manual environment-gated deploy workflows, security policies, and operating runbooks. Unit tests cover the hardened contact boundary.
 
-GitHub rulesets, required checks, environments, reviewers, isolated deployment secrets, secret scanning, and Cloudflare WAF/rate-limit controls still require external human configuration. No deployment was performed as part of this implementation.
+GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and force pushes, requires pull requests with resolved review conversations, and grants no bypass. Required checks remain intentionally pending until the repository-native PR workflows have completed successfully and GitHub has observed their check names.
+
+GitHub environments, reviewers, isolated deployment secrets, secret scanning, and Cloudflare WAF/rate-limit controls still require external human configuration. No deployment was performed as part of this implementation.
 
 ## Simulated orchestration
 
