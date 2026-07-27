@@ -38,8 +38,10 @@ export default defineMarkdocConfig({
       render: component("./src/components/docs/ArchitectureDiagram.astro"),
       attributes: {
         src: { type: String, required: true },
+        animated: { type: String },
         source: { type: String },
         alt: { type: String, required: true },
+        title: { type: String },
         caption: { type: String },
         format: { type: String, default: "image" },
       },

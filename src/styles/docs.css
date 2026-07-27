@@ -466,6 +466,41 @@ input {
   background: white;
   overflow: hidden;
 }
+.architecture-diagram__header {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--docs-rule);
+  background: var(--docs-cream-deep);
+}
+.architecture-diagram__header span {
+  color: var(--docs-gold);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.architecture-diagram__header strong {
+  color: var(--docs-forest-deep);
+  font-size: 0.95rem;
+}
+.architecture-diagram__viewport {
+  max-height: 52rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background:
+    linear-gradient(90deg, rgb(42 66 40 / 0.035) 1px, transparent 1px),
+    linear-gradient(rgb(42 66 40 / 0.035) 1px, transparent 1px), white;
+  background-size: 24px 24px;
+}
+.architecture-diagram__viewport:focus-visible {
+  outline: 3px solid var(--docs-gold);
+  outline-offset: -3px;
+}
+.architecture-diagram__canvas {
+  display: block;
+}
 .mermaid-diagram {
   margin: 2rem 0;
   border: 1px solid var(--docs-rule);
@@ -478,13 +513,6 @@ input {
   background: var(--docs-cream-deep);
   color: var(--docs-forest-deep);
   font-weight: 700;
-}
-.mermaid-diagram > pre {
-  margin: 1rem;
-}
-.mermaid-diagram > a {
-  display: inline-flex;
-  margin: 0 1rem 1rem;
 }
 .mermaid-diagram__render {
   overflow: auto;
@@ -500,7 +528,7 @@ input {
 .architecture-diagram object {
   display: block;
   width: 100%;
-  max-height: 46rem;
+  height: auto;
   object-fit: contain;
   background: white;
 }
@@ -512,6 +540,90 @@ input {
   padding: 0.8rem 1rem;
   border-top: 1px solid var(--docs-rule);
   font-size: 0.8rem;
+}
+.architecture-diagram figcaption > div:first-child {
+  display: grid;
+  gap: 0.3rem;
+  max-width: 34rem;
+}
+.architecture-diagram__status {
+  color: var(--docs-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+}
+.architecture-diagram__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem 0.8rem;
+}
+.architecture-diagram__actions a,
+.architecture-diagram__actions button {
+  min-height: 2rem;
+  color: var(--docs-forest);
+  font: inherit;
+  font-weight: 700;
+}
+.architecture-diagram__actions button {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--docs-sage);
+  border-radius: 999px;
+  background: var(--docs-cream-deep);
+  cursor: pointer;
+}
+.architecture-diagram__actions button:hover:not(:disabled) {
+  border-color: var(--docs-forest);
+  background: white;
+}
+.architecture-diagram__actions button:disabled {
+  color: var(--docs-muted);
+  cursor: not-allowed;
+}
+.architecture-diagram__source,
+.mermaid-diagram__source {
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--docs-rule);
+  background: var(--docs-cream-deep);
+}
+.architecture-diagram__source summary,
+.mermaid-diagram__source summary {
+  color: var(--docs-forest-deep);
+  font-weight: 700;
+  cursor: pointer;
+}
+.architecture-diagram__source p {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+}
+.architecture-diagram__source code {
+  overflow-wrap: anywhere;
+}
+.architecture-diagram__source a,
+.mermaid-diagram__source a {
+  display: inline-flex;
+  margin-top: 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.mermaid-diagram__source pre {
+  max-height: 24rem;
+  margin: 0.8rem 0 0;
+  overflow: auto;
+}
+
+@media (max-width: 760px) {
+  .architecture-diagram figcaption,
+  .architecture-diagram__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .architecture-diagram__actions button {
+    transition: none;
+  }
 }
 .decision-card,
 .agent-card {

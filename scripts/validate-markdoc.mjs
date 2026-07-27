@@ -1,4 +1,5 @@
 import { access, readFile, readdir } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -166,7 +167,7 @@ for (const page of pages) {
     if (!idSet.has(target))
       errors.push(`${page.id}: internal docs link does not exist: ${match[1]}`);
   }
-  for (const match of page.body.matchAll(/(?:src|source)="(\/diagrams\/[^"]+)"/g)) {
+  for (const match of page.body.matchAll(/(?:src|source|animated)="(\/diagrams\/[^"]+)"/g)) {
     if (!(await exists(join(root, "public", match[1]))))
       errors.push(`${page.id}: diagram path does not exist: ${match[1]}`);
   }
@@ -199,6 +200,7 @@ if (searchIndex.length !== pages.length) {
 }
 
 const expectedDiagramSources = [
+  "beacon-system.excalidraw",
   "ai_company_all_agents_and_combined_canvas.excalidraw",
   "easy_read_ai_company_architecture.excalidraw",
   "individual_agent_architecture_animated.excalidraw",
@@ -206,9 +208,66 @@ const expectedDiagramSources = [
   "multi_agent_business_broker_end_to_end.excalidraw",
   "BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
 ];
+const diagramCatalogPage = pages.find(({ id }) => id === "architecture/diagrams");
+const diagramManifest = JSON.parse(
+  await readFile(join(root, "public", "diagrams", "catalog.json"), "utf8"),
+);
+if (diagramManifest.length !== expectedDiagramSources.length) {
+  errors.push(
+    `Diagram manifest has ${diagramManifest.length} records for ${expectedDiagramSources.length} unique Excalidraw sources.`,
+  );
+}
 for (const name of expectedDiagramSources) {
-  if (!(await exists(join(root, "public", "diagrams", "source", name)))) {
+  const sourcePath = join(root, "public", "diagrams", "source", name);
+  if (!(await exists(sourcePath))) {
     errors.push(`Missing public diagram source: ${name}`);
+    continue;
+  }
+  if (!diagramCatalogPage?.body.includes(`/diagrams/source/${name}`)) {
+    errors.push(`Diagram catalog does not render local source: ${name}`);
+  }
+  const manifestEntry = diagramManifest.find(({ sourceFile }) => sourceFile === name);
+  if (!manifestEntry) {
+    errors.push(`Diagram manifest does not include source: ${name}`);
+    continue;
+  }
+  const source = await readFile(sourcePath);
+  const sourceSha256 = createHash("sha256").update(source).digest("hex");
+  if (manifestEntry.sourceSha256 !== sourceSha256) {
+    errors.push(`Diagram preview manifest is stale for source: ${name}`);
+  }
+  if (!(await exists(join(root, "public", manifestEntry.static)))) {
+    errors.push(`Missing static diagram export: ${manifestEntry.static}`);
+  } else {
+    const staticSvg = await readFile(join(root, "public", manifestEntry.static), "utf8");
+    if (!staticSvg.startsWith("<svg") || !staticSvg.includes('role="img"')) {
+      errors.push(`Static diagram export is not accessible SVG: ${manifestEntry.static}`);
+    }
+  }
+  if (
+    manifestEntry.hasAnimation &&
+    (!manifestEntry.animated || !(await exists(join(root, "public", manifestEntry.animated))))
+  ) {
+    errors.push(`Missing animated diagram export for source: ${name}`);
+  } else if (manifestEntry.hasAnimation) {
+    const animatedSvg = await readFile(join(root, "public", manifestEntry.animated), "utf8");
+    if (
+      !animatedSvg.includes("<animate") ||
+      !animatedSvg.includes("prefers-reduced-motion: reduce")
+    ) {
+      errors.push(
+        `Animated diagram export lacks animation or reduced-motion guard: ${manifestEntry.animated}`,
+      );
+    }
+  }
+}
+
+const mermaidSources = (await readdir(join(root, "public", "diagrams", "mermaid"))).filter((name) =>
+  name.endsWith(".mmd"),
+);
+for (const name of mermaidSources) {
+  if (!diagramCatalogPage?.body.includes(`/diagrams/mermaid/${name}`)) {
+    errors.push(`Diagram catalog does not render Mermaid source: ${name}`);
   }
 }
 

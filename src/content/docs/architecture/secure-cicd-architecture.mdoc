@@ -17,13 +17,15 @@ truthState: "current"
 
 Beacon delivery separates untrusted change creation from trusted promotion. A feature branch can propose code, documentation, policy, or workflow changes. It cannot deploy production. Pull-request gates create evidence, a protected main branch establishes the release boundary, and environment-gated workflows promote the exact tested archive.
 
+{% architecture_diagram title="Beacon secure CI/CD architecture" src="/diagrams/exports/beacon-secure-cicd-architecture-static.svg" source="/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw" alt="Secure CI/CD architecture covering pull-request gates, protected main, artifact promotion, environment approval, production verification, rollback, and audit evidence" caption="Source-faithful static export of the supplied 10/10 security architecture." /%}
+
 {% mermaid_diagram src="/diagrams/mermaid/secure-cicd-control-flow.mmd" title="Secure CI/CD control flow" /%}
 
 ## Supplied architecture source
 
 [Open the editable 10/10 Excalidraw source](/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw). The repository copy is hash-verified at `116ade3935e9bd57edd7e6134471eb736f62a12de580e2803d1c072436c7d1c2`.
 
-The source scene contains 346 elements and 208 text elements. It is preserved as design evidence. No PNG or SVG rendering is claimed because no deterministic export was supplied.
+The source scene contains 346 elements and 208 text elements. The Decision System generates and validates a deterministic, source-faithful static SVG review surface. The editable `.excalidraw` file remains authoritative. This source has no embedded animation ordering, so the interface does not claim an animated version.
 
 ## Trust boundaries
 

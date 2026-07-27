@@ -1,0 +1,86 @@
+[
+  {
+    "id": "beacon-system",
+    "title": "Beacon phased system architecture",
+    "description": "The implemented marketing and contact boundary followed by the gated data, worker, approval, publishing, reporting, and operator phases.",
+    "source": "/diagrams/source/beacon-system.excalidraw",
+    "sourceFile": "beacon-system.excalidraw",
+    "sourceSha256": "b769c1125465e24575aa9e4a607559bc0214fa1c0dd9c98d27e275eac24e0f44",
+    "static": "/diagrams/exports/beacon-system-static.svg",
+    "animated": "/diagrams/exports/beacon-system-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 26
+  },
+  {
+    "id": "ai-company-all-agents",
+    "title": "AI company and all-agent operating canvas",
+    "description": "The complete company structure, broker flow, work lifecycle, and specialist-agent responsibilities on one supplied canvas.",
+    "source": "/diagrams/source/ai_company_all_agents_and_combined_canvas.excalidraw",
+    "sourceFile": "ai_company_all_agents_and_combined_canvas.excalidraw",
+    "sourceSha256": "7ad837f98313862358088bb4d48529460225c0174919421c2f081458ae814357",
+    "static": "/diagrams/exports/ai-company-all-agents-static.svg",
+    "animated": "/diagrams/exports/ai-company-all-agents-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 840
+  },
+  {
+    "id": "easy-read-ai-company-architecture",
+    "title": "Easy-read AI company architecture",
+    "description": "A simplified view of the owner request, company lanes, broker, specialist agents, review, approval, and delivery flow.",
+    "source": "/diagrams/source/easy_read_ai_company_architecture.excalidraw",
+    "sourceFile": "easy_read_ai_company_architecture.excalidraw",
+    "sourceSha256": "ba8719185f9b79c39f4bf50f5b2fa0e1d44cf06bd007f0e52c8f819b9c186a75",
+    "static": "/diagrams/exports/easy-read-ai-company-architecture-static.svg",
+    "animated": "/diagrams/exports/easy-read-ai-company-architecture-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 300
+  },
+  {
+    "id": "individual-agent-architecture",
+    "title": "Individual-agent architecture",
+    "description": "Fourteen specialist roles and the internal seven-step agent pattern used to receive, validate, execute, review, and hand off work.",
+    "source": "/diagrams/source/individual_agent_architecture_animated.excalidraw",
+    "sourceFile": "individual_agent_architecture_animated.excalidraw",
+    "sourceSha256": "6d17c25eb8377ce792666fc181cd1c51ebd257a6d55879dd34fa6d24a00102b2",
+    "static": "/diagrams/exports/individual-agent-architecture-static.svg",
+    "animated": "/diagrams/exports/individual-agent-architecture-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 105
+  },
+  {
+    "id": "unified-agent-operating-architecture",
+    "title": "Unified agent operating architecture",
+    "description": "The combined system, company, broker, workflow, and role-level target architecture.",
+    "source": "/diagrams/source/unified_agent_operating_architecture_all_in_one.excalidraw",
+    "sourceFile": "unified_agent_operating_architecture_all_in_one.excalidraw",
+    "sourceSha256": "18bd2bf174d8f15997a7aea4edb218729581d423d221d15506841d7bd4e9cd5f",
+    "static": "/diagrams/exports/unified-agent-operating-architecture-static.svg",
+    "animated": "/diagrams/exports/unified-agent-operating-architecture-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 504
+  },
+  {
+    "id": "multi-agent-broker-end-to-end",
+    "title": "Multi-agent broker end-to-end",
+    "description": "The broker control plane from intake and routing through isolated execution, deterministic checks, independent review, approval, and audit.",
+    "source": "/diagrams/source/multi_agent_business_broker_end_to_end.excalidraw",
+    "sourceFile": "multi_agent_business_broker_end_to_end.excalidraw",
+    "sourceSha256": "4b35f5d3c0c6a2d8b4039687600d7045edff2063895883c6294032ea45e92535",
+    "static": "/diagrams/exports/multi-agent-broker-end-to-end-static.svg",
+    "animated": "/diagrams/exports/multi-agent-broker-end-to-end-animated.svg",
+    "hasAnimation": true,
+    "elementCount": 161
+  },
+  {
+    "id": "beacon-secure-cicd-architecture",
+    "title": "Beacon secure CI/CD architecture",
+    "description": "The repository, pull-request, protected-main, artifact-promotion, environment-approval, production-verification, rollback, and evidence boundaries.",
+    "source": "/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+    "sourceFile": "BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
+    "sourceSha256": "116ade3935e9bd57edd7e6134471eb736f62a12de580e2803d1c072436c7d1c2",
+    "static": "/diagrams/exports/beacon-secure-cicd-architecture-static.svg",
+    "animated": null,
+    "hasAnimation": false,
+    "elementCount": 346
+  }
+]

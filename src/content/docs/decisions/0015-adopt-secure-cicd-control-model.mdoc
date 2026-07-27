@@ -44,6 +44,10 @@ Adopt the separated control model. Repository workflows use default-deny permiss
 
 No external repository setting, credential, deployment, push, or merge is authorized by this ADR. Those changes require a deliberate owner action following the activation checklist.
 
+{% architecture_diagram title="Beacon secure CI/CD architecture" src="/diagrams/exports/beacon-secure-cicd-architecture-static.svg" source="/diagrams/source/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw" alt="Secure CI/CD architecture covering pull-request gates, protected main, artifact promotion, environment approval, production verification, rollback, and audit evidence" caption="The canonical local source and rendered review view referenced by ADR-0015." /%}
+
+[Review the focused Mermaid control flow and architecture explanation](/docs/architecture/secure-cicd-architecture/).
+
 ## Positive consequences
 
 - PR validation and deployment authority are separated;
