@@ -39,13 +39,14 @@ export function evaluateClarification(
 ): ClarificationResult {
   const matches = materialPatterns.filter(({ pattern }) => pattern.test(rawRequest));
   const architectureIsMaterial =
-    workflowType === "architecture" &&
-    /\b(change|replace|migrate|new|switch)\b/i.test(rawRequest);
+    workflowType === "architecture" && /\b(change|replace|migrate|new|switch)\b/i.test(rawRequest);
 
   const questions = matches.map(({ question }) => question);
   const approvals = matches.map(({ approval }) => approval);
   if (architectureIsMaterial) {
-    questions.push("Which current boundary may change, and who approves the architecture decision?");
+    questions.push(
+      "Which current boundary may change, and who approves the architecture decision?",
+    );
     approvals.push("architecture");
   }
 

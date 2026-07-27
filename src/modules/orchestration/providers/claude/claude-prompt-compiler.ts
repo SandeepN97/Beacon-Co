@@ -1,10 +1,7 @@
 import type { WorkRequest } from "../../domain/work-request";
 import type { ContextPackage } from "../../knowledge/context-packager";
 
-export function compileClaudePrompt(
-  request: WorkRequest,
-  context: ContextPackage,
-): string {
+export function compileClaudePrompt(request: WorkRequest, context: ContextPackage): string {
   return [
     "You are filling one bounded Beacon company role in a controlled workflow.",
     "",

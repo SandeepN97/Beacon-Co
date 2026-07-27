@@ -6,25 +6,64 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const contentRoot = join(root, "src", "content", "docs");
 const allowedStatuses = new Set(["draft", "under-review", "approved", "superseded"]);
 const allowedSections = new Set([
-  "home", "getting-started", "product", "plans", "architecture", "agents",
-  "workflows", "governance", "decisions", "operations", "references",
+  "home",
+  "getting-started",
+  "product",
+  "plans",
+  "architecture",
+  "agents",
+  "workflows",
+  "governance",
+  "security",
+  "decisions",
+  "operations",
+  "references",
 ]);
 const requiredFields = [
-  "title", "description", "section", "order", "status", "lastReviewed", "owners",
-  "sourceFiles", "relatedAdrs", "relatedPages", "tags", "truthState",
+  "title",
+  "description",
+  "section",
+  "order",
+  "status",
+  "lastReviewed",
+  "owners",
+  "sourceFiles",
+  "relatedAdrs",
+  "relatedPages",
+  "tags",
+  "truthState",
 ];
 const requiredAgentHeadings = [
-  "Purpose", "Business department or lane", "Single responsibility", "When to use",
-  "Approved inputs", "Required output or document", "Allowed tools",
-  "Prohibited actions", "Write-access level", "Required evidence",
-  "Acceptance criteria", "Stop condition", "Second-voice review",
-  "Human approval rule", "Defect return target", "Recommended next agent",
-  "Failure and escalation behavior", "Example universal handoff",
+  "Purpose",
+  "Business department or lane",
+  "Single responsibility",
+  "When to use",
+  "Approved inputs",
+  "Required output or document",
+  "Allowed tools",
+  "Prohibited actions",
+  "Write-access level",
+  "Required evidence",
+  "Acceptance criteria",
+  "Stop condition",
+  "Second-voice review",
+  "Human approval rule",
+  "Defect return target",
+  "Recommended next agent",
+  "Failure and escalation behavior",
+  "Example universal handoff",
 ];
 const requiredAdrHeadings = [
-  "Context", "Decision drivers", "Options considered", "Decision",
-  "Positive consequences", "Negative consequences", "Risks", "Follow-up work",
-  "Supersedes or superseded by", "Source references",
+  "Context",
+  "Decision drivers",
+  "Options considered",
+  "Decision",
+  "Positive consequences",
+  "Negative consequences",
+  "Risks",
+  "Follow-up work",
+  "Supersedes or superseded by",
+  "Source references",
 ];
 
 async function walk(directory, predicate = (name) => extname(name) === ".mdoc") {
@@ -60,7 +99,10 @@ function parsePage(source, file) {
 
 function docsIdFromHref(href) {
   if (href === "/docs/" || href === "/docs") return "index";
-  return href.replace(/^\/docs\//, "").replace(/\/$/, "").split(/[?#]/)[0];
+  return href
+    .replace(/^\/docs\//, "")
+    .replace(/\/$/, "")
+    .split(/[?#]/)[0];
 }
 
 async function exists(path) {
@@ -77,7 +119,9 @@ const files = await walk(contentRoot);
 const pages = [];
 for (const file of files) {
   const source = await readFile(file, "utf8");
-  const id = relative(contentRoot, file).replace(/\.mdoc$/, "").replaceAll("\\", "/");
+  const id = relative(contentRoot, file)
+    .replace(/\.mdoc$/, "")
+    .replaceAll("\\", "/");
   let parsed;
   try {
     parsed = parsePage(source, id);
@@ -96,40 +140,55 @@ for (const page of pages) {
   for (const field of requiredFields) {
     if (!(field in page.data)) errors.push(`${page.id}: missing frontmatter field ${field}`);
   }
-  if (!allowedStatuses.has(page.data.status)) errors.push(`${page.id}: invalid status ${page.data.status}`);
-  if (!allowedSections.has(page.data.section)) errors.push(`${page.id}: unknown section ${page.data.section}`);
-  if (!Array.isArray(page.data.owners) || !page.data.owners.length) errors.push(`${page.id}: at least one owner is required`);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(page.data.lastReviewed ?? "")) errors.push(`${page.id}: invalid review date`);
-  if (/<script\b|<iframe\b|on[a-z]+=/i.test(page.body)) errors.push(`${page.id}: unsafe raw HTML is not allowed`);
+  if (!allowedStatuses.has(page.data.status))
+    errors.push(`${page.id}: invalid status ${page.data.status}`);
+  if (!allowedSections.has(page.data.section))
+    errors.push(`${page.id}: unknown section ${page.data.section}`);
+  if (!Array.isArray(page.data.owners) || !page.data.owners.length)
+    errors.push(`${page.id}: at least one owner is required`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(page.data.lastReviewed ?? ""))
+    errors.push(`${page.id}: invalid review date`);
+  if (/<script\b|<iframe\b|on[a-z]+=/i.test(page.body))
+    errors.push(`${page.id}: unsafe raw HTML is not allowed`);
 
   for (const related of page.data.relatedPages ?? []) {
     if (!idSet.has(related)) errors.push(`${page.id}: related page does not exist: ${related}`);
   }
   for (const adr of page.data.relatedAdrs ?? []) {
-    if (!idSet.has(`decisions/${adr}`)) errors.push(`${page.id}: related ADR does not exist: ${adr}`);
+    if (!idSet.has(`decisions/${adr}`))
+      errors.push(`${page.id}: related ADR does not exist: ${adr}`);
   }
   for (const match of page.body.matchAll(/\]\((\/docs\/[^)]+)\)/g)) {
     let target = docsIdFromHref(match[1]);
     if (!idSet.has(target) && idSet.has(`${target}/index`)) {
       target = `${target}/index`;
     }
-    if (!idSet.has(target)) errors.push(`${page.id}: internal docs link does not exist: ${match[1]}`);
+    if (!idSet.has(target))
+      errors.push(`${page.id}: internal docs link does not exist: ${match[1]}`);
   }
   for (const match of page.body.matchAll(/(?:src|source)="(\/diagrams\/[^"]+)"/g)) {
-    if (!(await exists(join(root, "public", match[1])))) errors.push(`${page.id}: diagram path does not exist: ${match[1]}`);
+    if (!(await exists(join(root, "public", match[1]))))
+      errors.push(`${page.id}: diagram path does not exist: ${match[1]}`);
   }
   for (const sourceFile of page.data.sourceFiles ?? []) {
-    if (!(await exists(join(root, sourceFile)))) errors.push(`${page.id}: source file does not exist: ${sourceFile}`);
+    if (!(await exists(join(root, sourceFile))))
+      errors.push(`${page.id}: source file does not exist: ${sourceFile}`);
   }
 
-  if (/^agents\/(chief|program|market|business-analyst|product-manager|ux-ui|solution|security|codebase|code-writer|qa|pr-reviewer|devops|release-manager)/.test(page.id)) {
+  if (
+    /^agents\/(chief|program|market|business-analyst|product-manager|ux-ui|solution|security|codebase|code-writer|qa|pr-reviewer|devops|release-manager)/.test(
+      page.id,
+    )
+  ) {
     for (const heading of requiredAgentHeadings) {
-      if (!page.body.includes(`## ${heading}`)) errors.push(`${page.id}: missing agent contract heading “${heading}”`);
+      if (!page.body.includes(`## ${heading}`))
+        errors.push(`${page.id}: missing agent contract heading “${heading}”`);
     }
   }
   if (/^decisions\/\d{4}-/.test(page.id)) {
     for (const heading of requiredAdrHeadings) {
-      if (!page.body.includes(`## ${heading}`)) errors.push(`${page.id}: missing ADR heading “${heading}”`);
+      if (!page.body.includes(`## ${heading}`))
+        errors.push(`${page.id}: missing ADR heading “${heading}”`);
     }
   }
 }
@@ -145,6 +204,7 @@ const expectedDiagramSources = [
   "individual_agent_architecture_animated.excalidraw",
   "unified_agent_operating_architecture_all_in_one.excalidraw",
   "multi_agent_business_broker_end_to_end.excalidraw",
+  "BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw",
 ];
 for (const name of expectedDiagramSources) {
   if (!(await exists(join(root, "public", "diagrams", "source", name)))) {
@@ -152,10 +212,7 @@ for (const name of expectedDiagramSources) {
   }
 }
 
-const sourceFiles = await walk(
-  join(root, "src"),
-  (name) => /\.(astro|ts|js|css)$/.test(name),
-);
+const sourceFiles = await walk(join(root, "src"), (name) => /\.(astro|ts|js|css)$/.test(name));
 for (const file of sourceFiles) {
   const source = await readFile(file, "utf8");
   if (/\b(localStorage|sessionStorage)\b/.test(source)) {
@@ -169,4 +226,6 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Validated ${pages.length} Markdoc pages, navigation references, sources, diagrams, agent contracts, ADR contracts, and search entries.`);
+console.log(
+  `Validated ${pages.length} Markdoc pages, navigation references, sources, diagrams, agent contracts, ADR contracts, and search entries.`,
+);

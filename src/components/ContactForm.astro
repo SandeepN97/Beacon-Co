@@ -1,152 +1,189 @@
 <section class="section" id="contact">
-	<div class="s-tag">Get started</div>
-	<h2 class="sh">Let's see what you're<br /><em>missing online.</em></h2>
-	<div class="contact-cols">
-		<div>
-			<p
-				style="font-size:.9375rem;color:var(--ink-2);line-height:1.82;font-weight:300;margin-bottom:var(--sp-6)"
-			>
-				Fill this out and I'll personally send you a detailed audit and a demo website concept for
-				your business within 24 hours. Completely free. No obligation.
-			</p>
-			<div class="cr-items">
-				<div class="cr-item">
-					<div class="cr-icon">⚡</div>
-					<div class="cr-text">
-						<h4>Audit + demo in 24 hours</h4>
-						<p>Real written audit and a custom website concept — like what you saw for Heard above.</p>
-					</div>
-				</div>
-				<div class="cr-item">
-					<div class="cr-icon">👤</div>
-					<div class="cr-text">
-						<h4>You're talking to Minjoon</h4>
-						<p>No sales team. No handoffs. I personally handle every inquiry.</p>
-					</div>
-				</div>
-				<div class="cr-item">
-					<div class="cr-icon">📍</div>
-					<div class="cr-text">
-						<h4>Based in Waynesboro</h4>
-						<p>I know the Valley, the foot traffic, and your market.</p>
-					</div>
-				</div>
-				<div class="cr-item">
-					<div class="cr-icon">🛡️</div>
-					<div class="cr-text">
-						<h4>Zero risk</h4>
-						<p>Audit is free. Demo is free. You only pay when you see real value.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="form-card">
-			<form id="contactForm">
-				<div class="fg fg-row">
-					<div>
-						<label class="flabel">Your name</label>
-						<input type="text" name="name" class="finput" placeholder="Jane Smith" required maxlength="200" />
-					</div>
-					<div>
-						<label class="flabel">Business name</label>
-						<input
-							type="text"
-							name="business"
-							class="finput"
-							placeholder="Smith's Bakery"
-							required
-							maxlength="200"
-						/>
-					</div>
-				</div>
-				<div class="fg">
-					<label class="flabel">Email address</label>
-					<input
-						type="email"
-						name="email"
-						class="finput"
-						placeholder="jane@smithsbakery.com"
-						required
-						maxlength="254"
-					/>
-				</div>
-				<div class="fg">
-					<label class="flabel">Phone (optional)</label>
-					<input type="tel" name="phone" class="finput" placeholder="(540) 000-0000" maxlength="40" />
-				</div>
-				<div class="fg">
-					<label class="flabel">Type of business</label>
-					<select name="industry" class="fselect finput">
-						<option value="" disabled selected>Select your industry</option>
-						<option>Restaurant / Food &amp; Beverage</option>
-						<option>Retail Shop / Boutique</option>
-						<option>Hair / Beauty / Wellness</option>
-						<option>Auto Repair / Services</option>
-						<option>Professional Services</option>
-						<option>Other</option>
-					</select>
-				</div>
-				<div class="fg">
-					<label class="flabel">Biggest gap right now</label>
-					<select name="gap" class="fselect finput">
-						<option value="" disabled selected>Where do you need most help?</option>
-						<option>I don't have a website</option>
-						<option>My Google listing is incomplete</option>
-						<option>I have no social media presence</option>
-						<option>I need more reviews</option>
-						<option>All of the above</option>
-						<option>Not sure — just audit me</option>
-					</select>
-				</div>
-				<div class="fg cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}></div>
-				<button type="submit" class="fsubmit" id="formBtn">Send — I'll reply within 24 hours →</button>
-				<p class="fnote" id="formError" style="display:none;color:var(--terra)"></p>
-				<p class="fnote">🔒 Private. Never shared or sold.</p>
-			</form>
-		</div>
-	</div>
+  <div class="s-tag">Get started</div>
+  <h2 class="sh">Let's see what you're<br /><em>missing online.</em></h2>
+  <div class="contact-cols">
+    <div>
+      <p
+        style="font-size:.9375rem;color:var(--ink-2);line-height:1.82;font-weight:300;margin-bottom:var(--sp-6)"
+      >
+        Fill this out and I'll personally send you a detailed audit and a demo website concept for
+        your business within 24 hours. Completely free. No obligation.
+      </p>
+      <div class="cr-items">
+        <div class="cr-item">
+          <div class="cr-icon">⚡</div>
+          <div class="cr-text">
+            <h4>Audit + demo in 24 hours</h4>
+            <p>
+              Real written audit and a custom website concept — like what you saw for Heard above.
+            </p>
+          </div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-icon">👤</div>
+          <div class="cr-text">
+            <h4>You're talking to Minjoon</h4>
+            <p>No sales team. No handoffs. I personally handle every inquiry.</p>
+          </div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-icon">📍</div>
+          <div class="cr-text">
+            <h4>Based in Waynesboro</h4>
+            <p>I know the Valley, the foot traffic, and your market.</p>
+          </div>
+        </div>
+        <div class="cr-item">
+          <div class="cr-icon">🛡️</div>
+          <div class="cr-text">
+            <h4>Zero risk</h4>
+            <p>Audit is free. Demo is free. You only pay when you see real value.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-card">
+      <form id="contactForm">
+        <div class="contact-honeypot" aria-hidden="true">
+          <label for="contact-website">Website</label>
+          <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="fg fg-row">
+          <div>
+            <label class="flabel" for="contact-name">Your name</label>
+            <input
+              id="contact-name"
+              type="text"
+              name="name"
+              class="finput"
+              placeholder="Jane Smith"
+              required
+              maxlength="200"
+            />
+          </div>
+          <div>
+            <label class="flabel" for="contact-business">Business name</label>
+            <input
+              id="contact-business"
+              type="text"
+              name="business"
+              class="finput"
+              placeholder="Smith's Bakery"
+              required
+              maxlength="200"
+            />
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flabel" for="contact-email">Email address</label>
+          <input
+            id="contact-email"
+            type="email"
+            name="email"
+            class="finput"
+            placeholder="jane@smithsbakery.com"
+            required
+            maxlength="254"
+          />
+        </div>
+        <div class="fg">
+          <label class="flabel" for="contact-phone">Phone (optional)</label>
+          <input
+            id="contact-phone"
+            type="tel"
+            name="phone"
+            class="finput"
+            placeholder="(540) 000-0000"
+            maxlength="40"
+          />
+        </div>
+        <div class="fg">
+          <label class="flabel" for="contact-industry">Type of business</label>
+          <select id="contact-industry" name="industry" class="fselect finput">
+            <option value="" disabled selected>Select your industry</option>
+            <option>Restaurant / Food &amp; Beverage</option>
+            <option>Retail Shop / Boutique</option>
+            <option>Hair / Beauty / Wellness</option>
+            <option>Auto Repair / Services</option>
+            <option>Professional Services</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="flabel" for="contact-gap">Biggest gap right now</label>
+          <select id="contact-gap" name="gap" class="fselect finput">
+            <option value="" disabled selected>Where do you need most help?</option>
+            <option>I don't have a website</option>
+            <option>My Google listing is incomplete</option>
+            <option>I have no social media presence</option>
+            <option>I need more reviews</option>
+            <option>All of the above</option>
+            <option>Not sure — just audit me</option>
+          </select>
+        </div>
+        <div class="fg cf-turnstile" data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}></div>
+        <button type="submit" class="fsubmit" id="formBtn"
+          >Send — I'll reply within 24 hours →</button
+        >
+        <p class="fnote" id="formError" style="display:none;color:var(--terra)"></p>
+        <p class="fnote">🔒 Private. Never shared or sold.</p>
+      </form>
+    </div>
+  </div>
 </section>
+
+<style>
+  .contact-honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
-	const form = document.getElementById("contactForm") as HTMLFormElement | null;
-	const btn = document.getElementById("formBtn") as HTMLButtonElement | null;
-	const errorEl = document.getElementById("formError") as HTMLParagraphElement | null;
+  const form = document.getElementById("contactForm") as HTMLFormElement | null;
+  const btn = document.getElementById("formBtn") as HTMLButtonElement | null;
+  const errorEl = document.getElementById("formError") as HTMLParagraphElement | null;
 
-	if (form && btn) {
-		form.addEventListener("submit", async (e) => {
-			e.preventDefault();
-			if (btn.disabled) return;
+  if (form && btn) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (btn.disabled) return;
 
-			if (errorEl) errorEl.style.display = "none";
-			const originalLabel = btn.textContent;
-			btn.disabled = true;
-			btn.textContent = "Sending…";
+      if (errorEl) errorEl.style.display = "none";
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Sending…";
 
-			try {
-				const res = await fetch("/api/contact", {
-					method: "POST",
-					body: new FormData(form),
-				});
-				const data = (await res.json()) as { ok: boolean; error?: string };
+      try {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          body: new FormData(form),
+        });
+        const data = (await res.json()) as { ok: boolean; error?: string };
 
-				if (data.ok) {
-					btn.textContent = "✓ Sent! Minjoon will respond within 24 hours.";
-					btn.style.background = "var(--sage)";
-				} else {
-					throw new Error(data.error || "Something went wrong. Please try again.");
-				}
-			} catch (err) {
-				btn.disabled = false;
-				btn.textContent = originalLabel;
-				if (errorEl) {
-					errorEl.textContent = err instanceof Error ? err.message : "Something went wrong. Please try again.";
-					errorEl.style.display = "block";
-				}
-				if (typeof (window as any).turnstile !== "undefined") {
-					(window as any).turnstile.reset();
-				}
-			}
-		});
-	}
+        if (data.ok) {
+          btn.textContent = "✓ Sent! Minjoon will respond within 24 hours.";
+          btn.style.background = "var(--sage)";
+        } else {
+          throw new Error(data.error || "Something went wrong. Please try again.");
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+        if (errorEl) {
+          errorEl.textContent =
+            err instanceof Error ? err.message : "Something went wrong. Please try again.";
+          errorEl.style.display = "block";
+        }
+        if (typeof (window as any).turnstile !== "undefined") {
+          (window as any).turnstile.reset();
+        }
+      }
+    });
+  }
 </script>

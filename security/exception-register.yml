@@ -1,0 +1,30 @@
+schemaVersion: 1
+exceptions:
+  - id: SEC-GOV-001
+    control: "Independent human approval"
+    status: open
+    reason: "The repository is user-owned and operated by one person; a second GitHub reviewer is not currently available."
+    mitigation: "Require passing deterministic checks and explicit owner approval; do not represent this as two-person review."
+    owner: Repository Owner
+    expires: 2026-10-27
+  - id: SEC-CSP-001
+    control: "CSP without unsafe inline styles"
+    status: open
+    reason: "The Phase 1 source-of-truth design contains inline styles and inline navigation handlers."
+    mitigation: "Temporarily allow inline styles and script attributes while keeping script elements restricted, objects disabled, and framing denied."
+    owner: Frontend Owner
+    expires: 2026-10-27
+  - id: SEC-RATE-001
+    control: "Durable distributed contact-form rate limit"
+    status: pending-external-setting
+    reason: "No Cloudflare Rate Limiting binding is configured in the repository or dashboard."
+    mitigation: "Turnstile, strict validation, honeypot, request-size cap, and best-effort duplicate damping."
+    owner: Security Architect
+    expires: 2026-08-27
+  - id: SEC-DEP-001
+    control: "No unresolved high-severity dependency advisory"
+    status: time-bounded-development-only
+    reason: "The requested Excalidraw Animate tool carries a high lodash-es advisory through development-only parsing packages; npm proposes a breaking downgrade."
+    mitigation: "No production dependency advisory is reported by npm audit --omit=dev; only trusted repository diagrams are accepted; the full scheduled audit remains failing and visible until upgraded or replaced."
+    owner: Security Architect
+    expires: 2026-08-26

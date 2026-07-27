@@ -1,8 +1,4 @@
-import type {
-  ProviderHealth,
-  ProviderId,
-  ProviderState,
-} from "../domain/provider";
+import type { ProviderHealth, ProviderId, ProviderState } from "../domain/provider";
 import { createProviderState } from "./provider-health";
 
 export class CapacityManager {
@@ -60,10 +56,7 @@ export class CapacityManager {
     });
   }
 
-  private update(
-    provider: ProviderId,
-    changes: Partial<ProviderState>,
-  ): ProviderState {
+  private update(provider: ProviderId, changes: Partial<ProviderState>): ProviderState {
     const next = { ...this.get(provider), ...changes, provider };
     this.states.set(provider, next);
     return this.get(provider);

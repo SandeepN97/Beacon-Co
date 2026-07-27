@@ -1,0 +1,38 @@
+name: Post-deploy verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "HTTPS beaconco9.workers.dev URL to verify"
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: post-deploy-${{ inputs.target_url }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - name: Validate target boundary
+        env:
+          TARGET_URL: ${{ inputs.target_url }}
+        run: |
+          node -e "const u=new URL(process.env.TARGET_URL);if(u.protocol!=='https:'||!/(^|\\.)workers\\.dev$/.test(u.hostname))process.exit(1)"
+      - name: Verify status and security headers
+        env:
+          TARGET_URL: ${{ inputs.target_url }}
+        run: |
+          curl --fail --silent --show-error --location --max-time 20 --output /dev/null \
+            --dump-header headers.txt "$TARGET_URL"
+          grep -iq '^content-security-policy:' headers.txt
+          grep -iq '^strict-transport-security:' headers.txt
+          grep -iq '^x-content-type-options: nosniff' headers.txt

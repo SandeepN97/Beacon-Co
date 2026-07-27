@@ -1,10 +1,7 @@
 import type { WorkRequest } from "../../domain/work-request";
 import type { ContextPackage } from "../../knowledge/context-packager";
 
-export function compileCodexPrompt(
-  request: WorkRequest,
-  context: ContextPackage,
-): string {
+export function compileCodexPrompt(request: WorkRequest, context: ContextPackage): string {
   return [
     "Execute one bounded Beacon work unit from the current repository.",
     "",

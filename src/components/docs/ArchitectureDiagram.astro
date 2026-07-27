@@ -8,13 +8,16 @@ interface Props {
 }
 const { src, source, alt, caption, format = "image" } = Astro.props;
 ---
+
 <figure class="architecture-diagram">
   <a href={src} target="_blank" rel="noreferrer" aria-label={`Open diagram: ${alt}`}>
-    {format === "object" ? (
-      <object data={src} type="image/svg+xml" aria-label={alt}></object>
-    ) : (
-      <img src={src} alt={alt} loading="lazy" />
-    )}
+    {
+      format === "object" ? (
+        <object data={src} type="image/svg+xml" aria-label={alt} />
+      ) : (
+        <img src={src} alt={alt} loading="lazy" />
+      )
+    }
   </a>
   <figcaption>
     {caption && <span>{caption}</span>}

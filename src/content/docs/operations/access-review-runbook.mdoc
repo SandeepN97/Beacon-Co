@@ -1,0 +1,27 @@
+---
+title: "Access review runbook"
+description: "Quarterly verification of GitHub, Cloudflare, provider, and agent privileges."
+section: "operations"
+order: 910
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect","Repository Owner"]
+sourceFiles: ["security/security-critical-paths.yml","security/data-classification.yml","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["security/secrets-management","architecture/secure-cicd-architecture"]
+tags: ["operations","access","runbook"]
+truthState: "target"
+---
+
+Quarterly and after every access change:
+
+1. list GitHub owners, collaborators, installed Apps, deploy keys, Actions permissions, environment reviewers, secrets, and rulesets;
+2. list Cloudflare members, API tokens, token scopes, Workers, routes, custom domains, environment variables, and rollback access;
+3. list Turnstile and email-provider keys and authorized users;
+4. remove stale users, tokens, Apps, keys, and broad scopes;
+5. rotate credentials whose ownership or history is unclear;
+6. confirm PR jobs cannot read deployment secrets;
+7. confirm preview, staging, and production use separate least-privilege tokens;
+8. record reviewer, date, findings, remediation owner, and due date without recording secret values.
+
+Current repository files cannot prove external access state. The first review remains required before CI/CD activation.

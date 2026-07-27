@@ -5,6 +5,7 @@ interface Props {
 }
 const { src, title } = Astro.props;
 ---
+
 <figure class="mermaid-diagram" data-mermaid-diagram data-source={src}>
   <figcaption>{title}</figcaption>
   <pre aria-label={`${title} textual diagram source`}>Loading reviewable Mermaid source…</pre>
@@ -29,7 +30,9 @@ const { src, title } = Astro.props;
     },
   });
 
-  for (const [index, figure] of [...document.querySelectorAll("[data-mermaid-diagram]")].entries()) {
+  for (const [index, figure] of [
+    ...document.querySelectorAll("[data-mermaid-diagram]"),
+  ].entries()) {
     if (!(figure instanceof HTMLElement)) continue;
     const sourcePath = figure.dataset.source;
     const pre = figure.querySelector("pre");
@@ -40,7 +43,10 @@ const { src, title } = Astro.props;
         return response.text();
       });
       pre.textContent = source;
-      const { svg, bindFunctions } = await mermaid.render(`mermaid-${index}-${Math.random().toString(16).slice(2)}`, source);
+      const { svg, bindFunctions } = await mermaid.render(
+        `mermaid-${index}-${Math.random().toString(16).slice(2)}`,
+        source,
+      );
       const container = document.createElement("div");
       container.className = "mermaid-diagram__render";
       container.innerHTML = svg;

@@ -16,15 +16,22 @@ const sample = runOrchestrationSimulation(
 );
 const request = sample.translation.request;
 const provider = sample.execution.routing?.provider ?? null;
-const reason = sample.execution.routing?.reason ?? "The request is waiting for clarification or human approval.";
-const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compilation will begin after the required gate.";
+const reason =
+  sample.execution.routing?.reason ?? "The request is waiting for clarification or human approval.";
+const prompt =
+  sample.execution.providerResult?.prompt.content ??
+  "Prompt compilation will begin after the required gate.";
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="description" content="Simulated Beacon work-request translation, context retrieval, provider routing, and documentation impact." />
+    <meta
+      name="description"
+      content="Simulated Beacon work-request translation, context retrieval, provider routing, and documentation impact."
+    />
     <title>Orchestration workspace · Beacon & Co.</title>
     <link rel="icon" href="/favicon.svg" />
   </head>
@@ -43,14 +50,21 @@ const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compil
       <header class="workspace-hero">
         <span>Provider-neutral · Markdoc-grounded · simulation</span>
         <h1>Start with your thought.<br />The system shapes the work.</h1>
-        <p>Describe an outcome in ordinary language. Beacon retrieves the relevant source of truth, exposes assumptions, recommends an eligible provider, and shows the exact prompt package—without pretending a live agent ran.</p>
+        <p>
+          Describe an outcome in ordinary language. Beacon retrieves the relevant source of truth,
+          exposes assumptions, recommends an eligible provider, and shows the exact prompt
+          package—without pretending a live agent ran.
+        </p>
       </header>
 
       <RequestInput />
 
       <div class="workspace-truth">
         <strong>Current truth</strong>
-        <span>Translation, retrieval, routing, and impact are local typed logic. Claude/Codex execution, durable state, worktrees, and production actions are not connected.</span>
+        <span
+          >Translation, retrieval, routing, and impact are local typed logic. Claude/Codex
+          execution, durable state, worktrees, and production actions are not connected.</span
+        >
       </div>
 
       <div class="workspace-grid" data-workspace-results>
@@ -76,7 +90,10 @@ const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compil
       </div>
     </main>
     <footer>
-      <p>Canonical policy lives in <a href="/docs/">Markdoc</a>. This workspace is a reviewable simulation.</p>
+      <p>
+        Canonical policy lives in <a href="/docs/">Markdoc</a>. This workspace is a reviewable
+        simulation.
+      </p>
     </footer>
 
     <script>
@@ -90,11 +107,13 @@ const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compil
       const setList = (selector: string, values: unknown[]) => {
         const element = document.querySelector(selector);
         if (!element) return;
-        element.replaceChildren(...values.map((value) => {
-          const item = document.createElement("li");
-          item.textContent = String(value);
-          return item;
-        }));
+        element.replaceChildren(
+          ...values.map((value) => {
+            const item = document.createElement("li");
+            item.textContent = String(value);
+            return item;
+          }),
+        );
       };
       const setMessageOrList = (selector: string, values: unknown[], emptyMessage: string) => {
         const element = document.querySelector(selector);
@@ -128,16 +147,36 @@ const prompt = sample.execution.providerResult?.prompt.content ?? "Prompt compil
           setList("[data-result-deliverables]", request.requestedDeliverables);
           setList("[data-result-criteria]", request.acceptanceCriteria);
           setList("[data-result-assumptions]", request.assumptions);
-          setMessageOrList("[data-result-questions]", request.openQuestions, "No blocking clarification is required.");
-          setList("[data-result-documents]", result.context.approvedDocuments.map(({ id }) => id));
+          setMessageOrList(
+            "[data-result-questions]",
+            request.openQuestions,
+            "No blocking clarification is required.",
+          );
+          setList(
+            "[data-result-documents]",
+            result.context.approvedDocuments.map(({ id }) => id),
+          );
           setText("[data-result-provider]", result.execution.routing?.provider ?? "Waiting");
-          setText("[data-result-provider-reason]", result.execution.routing?.reason ?? "The request is waiting at a gate.");
-          setText("[data-result-prompt]", result.execution.providerResult?.prompt.content ?? "Prompt compilation will begin after the required gate.");
-          setMessageOrList("[data-result-approvals]", result.approvals, "No high-impact approval was inferred for this simulation.");
+          setText(
+            "[data-result-provider-reason]",
+            result.execution.routing?.reason ?? "The request is waiting at a gate.",
+          );
+          setText(
+            "[data-result-prompt]",
+            result.execution.providerResult?.prompt.content ??
+              "Prompt compilation will begin after the required gate.",
+          );
+          setMessageOrList(
+            "[data-result-approvals]",
+            result.approvals,
+            "No high-impact approval was inferred for this simulation.",
+          );
           setText("[data-result-status]", result.execution.workUnit.status);
           setText("[data-result-impact]", result.documentationImpact.level);
           setList("[data-result-impact-pages]", result.documentationImpact.pagesToUpdate);
-          document.querySelector("[data-workspace-results]")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          document
+            .querySelector("[data-workspace-results]")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
         } catch (error) {
           setText("[data-result-status]", `Could not interpret request: ${String(error)}`);
         }

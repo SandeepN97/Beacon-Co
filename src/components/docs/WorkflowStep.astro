@@ -6,6 +6,7 @@ interface Props {
 }
 const { number, title, owner } = Astro.props;
 ---
+
 <section class="workflow-step">
   <span class="workflow-step__number">{String(number).padStart(2, "0")}</span>
   <div>

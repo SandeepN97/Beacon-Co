@@ -1,0 +1,92 @@
+---
+title: "ADR-0015 — Adopt a secure CI/CD control model"
+description: "Separate untrusted authoring, deterministic review, immutable promotion, environment approval, verification, and rollback."
+section: "decisions"
+order: 824
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Repository Owner","Security Architect"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","secure-cicd-build-plan.md"]
+relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0013-use-docs-as-code"]
+relatedPages: ["architecture/secure-cicd-architecture","security/secure-development-standard","operations/deployment-runbook"]
+tags: ["adr","approved","security","cicd"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0015" status="approved" %}
+Repository control model approved 2026-07-27. External activation is tracked separately.
+{% /decision_card %}
+
+## Context
+
+Beacon had a deployable Astro and Cloudflare Worker application but no repository-native PR controls, supply-chain policy, environment promotion definition, incident runbooks, or verified security gate. The supplied 10/10 architecture defines a secure delivery target. Repository implementation must remain honest about controls that require GitHub or Cloudflare configuration.
+
+## Decision drivers
+
+- protect credentials and contact-form data;
+- make automated and AI-authored changes reviewable;
+- prevent untrusted PR code from receiving deployment authority;
+- promote the exact tested artifact;
+- preserve evidence without secrets or PII;
+- keep Phase 1 free of speculative backend infrastructure;
+- support safe rollback and incremental control activation.
+
+## Options considered
+
+- continue direct manual deployment;
+- use one workflow for test and production with broad credentials;
+- adopt separated PR gates, protected main, immutable artifacts, environment approvals, verification, and rollback;
+- introduce a third-party CI/CD platform.
+
+## Decision
+
+Adopt the separated control model. Repository workflows use default-deny permissions, immutable Action pins, bounded jobs, explicit quality and security gates, manual environment-gated promotion, artifact digest verification, and post-deploy checks. Canonical Markdoc records policy, threat model, exceptions, runbooks, and activation state.
+
+No external repository setting, credential, deployment, push, or merge is authorized by this ADR. Those changes require a deliberate owner action following the activation checklist.
+
+## Positive consequences
+
+- PR validation and deployment authority are separated;
+- supply-chain inputs and direct dependencies are machine checked;
+- the same tested archive can move through environments;
+- runtime input and response controls are stronger;
+- gaps are explicit, owned, and expiring;
+- agents operate under documented least privilege.
+
+## Negative consequences
+
+- more CI time and maintenance;
+- browser downloads and CodeQL add cost;
+- a solo operator still cannot provide independent human approval;
+- external setup is required before workflows can deploy;
+- temporary CSP exceptions remain until preserved inline markup is refactored.
+
+## Risks
+
+- required-check names may drift;
+- an Action pin can become outdated without review;
+- manual deployment input can be wrong;
+- external environment settings can differ from documentation;
+- transitive vulnerabilities may remain until triaged;
+- best-effort in-memory duplicate damping is not a distributed rate limit.
+
+## Follow-up work
+
+- activate GitHub ruleset, environments, secret scanning, and required checks;
+- create separate least-privilege Cloudflare tokens;
+- configure durable rate limiting, WAF, previews, alerts, and rollback access;
+- triage current npm advisories and record any exception;
+- remove inline handlers and styles before CSP exceptions expire;
+- add a second accountable human reviewer when the business can support it;
+- evaluate artifact attestations after repository settings support verification.
+
+## Supersedes or superseded by
+
+New decision; superseded by: none. It complements ADR-0010 and ADR-0012.
+
+## Source references
+
+- `BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw`
+- `BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md`
+- `BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md`
+- `secure-cicd-build-plan.md`

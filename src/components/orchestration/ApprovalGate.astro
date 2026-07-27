@@ -4,15 +4,25 @@ interface Props {
 }
 const { approvals } = Astro.props;
 ---
+
 <section class="workspace-card" aria-labelledby="approval-heading">
   <div class="workspace-card__eyebrow">04 · Human authority</div>
   <h2 id="approval-heading">Approval gate</h2>
   <div data-result-approvals>
-    {approvals.length ? (
-      <ul>{approvals.map((approval) => <li>{approval}</li>)}</ul>
-    ) : (
-      <p>No high-impact approval was inferred for this simulation.</p>
-    )}
+    {
+      approvals.length ? (
+        <ul>
+          {approvals.map((approval) => (
+            <li>{approval}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No high-impact approval was inferred for this simulation.</p>
+      )
+    }
   </div>
-  <p>The simulation never grants approval. It only records which authorized decision would be required.</p>
+  <p>
+    The simulation never grants approval. It only records which authorized decision would be
+    required.
+  </p>
 </section>

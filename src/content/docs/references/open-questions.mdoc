@@ -6,9 +6,9 @@ order: 1003
 status: "under-review"
 lastReviewed: "2026-07-27"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","docs/current-state.md","docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md"]
-relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0007-use-central-broker","0011-use-isolated-git-worktrees"]
-relatedPages: ["plans/future-work"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","AGENTS.md","docs/current-state.md","docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md"]
+relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0007-use-central-broker","0011-use-isolated-git-worktrees","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["plans/future-work","security/exception-register"]
 tags: ["questions","conflicts"]
 truthState: "reference"
 ---
@@ -26,5 +26,10 @@ truthState: "reference"
 - What durable store fits audit, approvals, retention, and recovery?
 - Which measured tasks justify a Claude or Codex affinity adjustment?
 - When can the legacy MkDocs tree be removed?
+- Who can serve as a genuinely independent human reviewer for production changes?
+- Which GitHub ruleset and environment controls have been activated and verified?
+- When will Cloudflare distributed rate limiting, WAF, alerts, and isolated tokens be configured?
+- Which current npm advisories are production-reachable and which need expiring exceptions?
+- Should public artifact attestations be added after their verification path is tested?
 - What formal name/domain/trademark decision replaces the provisional Beacon name?
 - Which proposal market, competitor, pricing, margin, and vendor claims remain valid after revalidation?

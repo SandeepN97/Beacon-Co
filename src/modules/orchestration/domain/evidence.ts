@@ -1,10 +1,4 @@
-export type EvidenceKind =
-  | "command"
-  | "test"
-  | "file"
-  | "decision"
-  | "review"
-  | "approval";
+export type EvidenceKind = "command" | "test" | "file" | "decision" | "review" | "approval";
 
 export interface EvidenceRecord {
   id: string;

@@ -1,0 +1,30 @@
+---
+title: "Dependency and Action policy"
+description: "Allowlisting, immutable pins, update review, audit thresholds, and evidence for npm packages and GitHub Actions."
+section: "security"
+order: 704
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect"]
+sourceFiles: ["security/approved-dependencies.yml","security/approved-actions.yml","security/vulnerability-policy.yml","package-lock.json"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["security/vulnerability-management","security/secure-development-standard"]
+tags: ["security","dependencies","supply-chain"]
+truthState: "current"
+---
+
+## npm dependencies
+
+`package-lock.json` is mandatory and CI installs with `npm ci`. Direct production and development packages must appear in `security/approved-dependencies.yml`. Adding a production dependency requires architecture and security review; adding any package requires license, maintenance, permissions, transitive-risk, and bundle-impact review.
+
+## GitHub Actions
+
+Every external Action is listed in `security/approved-actions.yml`, pinned to a verified full 40-character commit SHA, and annotated in workflow source with the reviewed release. Mutable tags and unapproved actions fail workflow validation. Pins are reviewed quarterly and when Dependabot proposes a change.
+
+## Vulnerabilities
+
+Production-reachable critical and high findings block merge. A development-only high finding requires a recorded, expiring exception and isolation evidence. Moderate findings require remediation or a recorded exception. Reports must not publish secrets, environment values, dependency credentials, or PII.
+
+## Current evidence limitation
+
+The dependency installation on 2026-07-27 reported nine moderate and one high transitive vulnerability across the Excalidraw Animate development tree. `npm audit --omit=dev` reported zero production vulnerabilities. npm's suggested fix is a breaking downgrade of the requested viewer, so SEC-DEP-001 records a development-only exception through 2026-08-26. Trusted repository scenes are the only accepted input and the full scheduled audit remains intentionally visible.

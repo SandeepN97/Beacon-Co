@@ -6,9 +6,9 @@ order: 301
 status: "approved"
 lastReviewed: "2026-07-27"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
-relatedPages: ["architecture/overview"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["architecture/overview","architecture/secure-cicd-architecture"]
 tags: ["roadmap","phase"]
 truthState: "current"
 ---
@@ -16,6 +16,10 @@ truthState: "current"
 ## Current implementation
 
 The repository builds a static Astro marketing site, a Markdoc documentation site, a simulated workspace, and a narrow Cloudflare Worker contact handler.
+
+Repository-native secure delivery definitions now include PR policy, quality, security, browser gates, immutable Action pins, artifact digest promotion, manual environment-gated deploy workflows, security policies, and operating runbooks. Unit tests cover the hardened contact boundary.
+
+GitHub rulesets, required checks, environments, reviewers, isolated deployment secrets, secret scanning, and Cloudflare WAF/rate-limit controls still require external human configuration. No deployment was performed as part of this implementation.
 
 ## Simulated orchestration
 

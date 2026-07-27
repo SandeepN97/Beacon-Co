@@ -10,9 +10,7 @@ const allWorkflows = [
   "mixed",
 ] as const;
 
-export function createProviderState(
-  provider: ProviderState["provider"],
-): ProviderState {
+export function createProviderState(provider: ProviderState["provider"]): ProviderState {
   return {
     provider,
     health: "healthy",

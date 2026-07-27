@@ -8,6 +8,7 @@ interface Props {
 const { number, status, href } = Astro.props;
 const Wrapper = href ? "a" : "div";
 ---
+
 <Wrapper class="decision-card" href={href}>
   <div class="decision-card__meta">
     <span>{number}</span>

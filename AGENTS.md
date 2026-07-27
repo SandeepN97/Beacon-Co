@@ -15,6 +15,7 @@ The published Astro + Markdoc decision system begins at `src/content/docs/index.
 - Read `src/content/docs/product/principles.mdoc`, `src/content/docs/product/scope-and-non-goals.mdoc`, and `docs/brand.md` before any UI, interaction, copy hierarchy, or styling change.
 - Read the relevant product and plan pages before changing an offer, price, guarantee, audience, business process, or business claim.
 - Read `src/content/docs/decisions/index.mdoc` for existing decisions and `src/content/docs/governance/` for operating rules.
+- Read `src/content/docs/security/secure-development-standard.mdoc` and the relevant security/runbook page before changing workflows, dependencies, the contact route, deployment configuration, or security-critical paths.
 - Treat ADR-0001 (business), ADR-0002 (design), and ADR-0003 (architecture evolution) as foundation decisions.
 - Every material change must update the relevant `.mdoc` page. Significant choices also require one reviewable ADR.
 - Keep planned and implemented state distinct. Documentation of a future component never authorizes its implementation.
@@ -51,6 +52,9 @@ npm run docs:validate # validate Markdoc metadata, links, sources, diagrams, and
 npm run typecheck # Astro and TypeScript diagnostics
 npm run test      # orchestration unit tests
 npm run docs:build # validate canonical docs and build the Astro site
+npm run ci:quality # complete repository quality gate
+npm run ci:security # secret, dependency, license, and workflow-policy gates
+npm run test:browser # smoke, accessibility, and responsive browser checks
 ```
 
 Run `npm run docs:build` after every material project change. Run `npm run typecheck` and `npm run test` after orchestration or structural changes. Do not report completion while a required check fails.

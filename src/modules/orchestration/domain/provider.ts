@@ -1,15 +1,7 @@
-import type {
-  DataClassification,
-  ProviderPreference,
-  WorkflowType,
-} from "./work-request";
+import type { DataClassification, ProviderPreference, WorkflowType } from "./work-request";
 
 export type ProviderId = "claude" | "codex";
-export type ProviderHealth =
-  | "healthy"
-  | "degraded"
-  | "rate-limited"
-  | "unavailable";
+export type ProviderHealth = "healthy" | "degraded" | "rate-limited" | "unavailable";
 
 export interface ProviderCapability {
   workflows: WorkflowType[];

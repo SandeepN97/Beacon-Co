@@ -6,8 +6,9 @@ import { documents } from "./fixtures";
 
 describe("documentation impact", () => {
   it("requires an ADR proposal for architecture change", () => {
-    const request = new IntentTranslator(new ContextRetriever(documents))
-      .translate("change the provider architecture after approval").request;
+    const request = new IntentTranslator(new ContextRetriever(documents)).translate(
+      "change the provider architecture after approval",
+    ).request;
     const impact = analyzeDocumentationImpact(request, {
       filesChanged: ["src/modules/orchestration/broker/router.ts"],
       behaviorChanged: true,
@@ -22,8 +23,9 @@ describe("documentation impact", () => {
   });
 
   it("returns no impact when a review makes no material change", () => {
-    const request = new IntentTranslator(new ContextRetriever(documents))
-      .translate("review the current tests").request;
+    const request = new IntentTranslator(new ContextRetriever(documents)).translate(
+      "review the current tests",
+    ).request;
     const impact = analyzeDocumentationImpact(request, {
       filesChanged: [],
       behaviorChanged: false,

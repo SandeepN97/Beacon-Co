@@ -1,7 +1,12 @@
 <form class="workspace-request" data-workspace-form>
   <label for="workspace-request">What are you trying to get done?</label>
-  <p>Write naturally. Misspellings and incomplete phrasing are okay. The translator will expose assumptions instead of hiding them.</p>
-  <textarea id="workspace-request" name="request" rows="5" data-workspace-request-input>improve the Markdoc architecture guide and make the provider fallback clear</textarea>
+  <p>
+    Write naturally. Misspellings and incomplete phrasing are okay. The translator will expose
+    assumptions instead of hiding them.
+  </p>
+  <textarea id="workspace-request" name="request" rows="5" data-workspace-request-input
+    >improve the Markdoc architecture guide and make the provider fallback clear</textarea
+  >
   <div class="workspace-file-row">
     <label class="workspace-file-control" for="workspace-request-file">
       <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -18,7 +23,9 @@
       accept=".md,text/markdown,text/plain"
       data-workspace-file
     />
-    <small class="workspace-file-status" data-workspace-file-status aria-live="polite">.md · read locally · 500 KB maximum</small>
+    <small class="workspace-file-status" data-workspace-file-status aria-live="polite"
+      >.md · read locally · 500 KB maximum</small
+    >
   </div>
   <button type="submit">Interpret request</button>
   <small>This creates a local prompt preview. It does not invoke Claude or Codex.</small>
@@ -26,7 +33,9 @@
 
 <script>
   const fileInput = document.querySelector<HTMLInputElement>("[data-workspace-file]");
-  const requestInput = document.querySelector<HTMLTextAreaElement>("[data-workspace-request-input]");
+  const requestInput = document.querySelector<HTMLTextAreaElement>(
+    "[data-workspace-request-input]",
+  );
   const fileStatus = document.querySelector<HTMLElement>("[data-workspace-file-status]");
   const maximumFileSize = 500 * 1024;
 

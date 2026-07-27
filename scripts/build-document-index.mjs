@@ -55,7 +55,9 @@ const catalog = await Promise.all(
   files.map(async (file) => {
     const source = await readFile(file, "utf8");
     const { data, body } = parseSource(source);
-    const id = relative(contentRoot, file).replace(/\.mdoc$/, "").replaceAll("\\", "/");
+    const id = relative(contentRoot, file)
+      .replace(/\.mdoc$/, "")
+      .replaceAll("\\", "/");
     return {
       id,
       title: data.title,
@@ -78,7 +80,8 @@ const searchIndex = catalog.map((document) => ({
   section: document.section,
   status: document.status,
   href: document.id === "index" ? "/docs/" : `/docs/${document.id}/`,
-  searchText: `${document.title} ${document.description} ${document.section} ${document.tags.join(" ")} ${document.body}`.toLowerCase(),
+  searchText:
+    `${document.title} ${document.description} ${document.section} ${document.tags.join(" ")} ${document.body}`.toLowerCase(),
 }));
 
 await mkdir(dirname(publicOutput), { recursive: true });

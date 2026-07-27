@@ -7,8 +7,9 @@ import { documents } from "./fixtures";
 
 describe("provider-neutral continuation", () => {
   it("contains every required field so fallback does not need raw chat reconstruction", () => {
-    const request = new IntentTranslator(new ContextRetriever(documents))
-      .translate("use codex to implement a small docs search fix").request;
+    const request = new IntentTranslator(new ContextRetriever(documents)).translate(
+      "use codex to implement a small docs search fix",
+    ).request;
     const workUnit: WorkUnit = {
       id: request.id,
       request,

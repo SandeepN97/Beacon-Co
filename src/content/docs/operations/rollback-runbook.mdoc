@@ -1,0 +1,33 @@
+---
+title: "Rollback runbook"
+description: "Decision, containment, previous-version restoration, verification, and evidence for failed releases."
+section: "operations"
+order: 908
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Release Manager","Incident Commander"]
+sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",".github/workflows/post-deploy-verify.yml"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["operations/deployment-runbook","operations/incident-response-plan"]
+tags: ["operations","rollback","runbook"]
+truthState: "target"
+---
+
+## Trigger
+
+Rollback for broken primary navigation or contact behavior, severe accessibility regression, missing security headers, elevated error rate, credential misuse, unexpected external calls, or any high-confidence security regression.
+
+## Procedure
+
+1. stop further promotion and name the incident owner;
+2. preserve the failed workflow, commit, artifact digest, timestamp, and observable symptom;
+3. select the last known-good production deployment from Cloudflare deployment history;
+4. confirm that its source commit and artifact evidence are known;
+5. use Cloudflare’s authenticated rollback mechanism or redeploy that exact known-good archive under the production environment gate;
+6. run post-deploy verification;
+7. communicate status without secrets or PII;
+8. fix forward only through a new pull request.
+
+## Stop conditions
+
+Do not guess at an artifact, rebuild an old commit with new dependencies, expose credentials for speed, or declare recovery before customer paths and headers are verified. If rollback access is unavailable, contain traffic using the provider’s safest reversible control and escalate.

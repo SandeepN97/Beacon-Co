@@ -1,0 +1,25 @@
+---
+title: "Security exception register"
+description: "Human-readable view of open, expiring, and pending security-control exceptions."
+section: "security"
+order: 707
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Security Architect"]
+sourceFiles: ["security/exception-register.yml","security/headers-policy.yml","security/approved-dependencies.yml"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
+relatedPages: ["security/threat-model","references/open-questions"]
+tags: ["security","exceptions","risk"]
+truthState: "current"
+---
+
+The machine-readable authority is `security/exception-register.yml`. This page explains its present entries.
+
+| ID | Gap | Mitigation | Expiry |
+|---|---|---|---|
+| SEC-GOV-001 | No independent human reviewer in the solo operation | deterministic gates plus explicit owner approval; no two-person claim | 2026-10-27 |
+| SEC-CSP-001 | preserved Phase 1 markup needs inline style and handler exceptions | scripts remain origin-restricted; objects and framing are denied | 2026-10-27 |
+| SEC-RATE-001 | no durable distributed contact rate limit configured | Turnstile, request cap, allowlists, honeypot, and duplicate damping | 2026-08-27 |
+| SEC-DEP-001 | Excalidraw Animate development tree carries one high and nine moderate transitive advisories | production audit is clear; trusted scenes only; scheduled full audit stays visible | 2026-08-26 |
+
+Exceptions do not turn a missing control into an implemented control. Owners review them before expiry and either remove the gap, replace the exception with fresh evidence, or stop the affected release.

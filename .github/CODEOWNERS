@@ -1,0 +1,11 @@
+# GitHub can enforce this owner only after a repository ruleset is configured.
+* @SandeepN97
+
+/.github/ @SandeepN97
+/security/ @SandeepN97
+/scripts/ci/ @SandeepN97
+/scripts/security/ @SandeepN97
+/src/worker.ts @SandeepN97
+/wrangler.jsonc @SandeepN97
+/package.json @SandeepN97
+/package-lock.json @SandeepN97

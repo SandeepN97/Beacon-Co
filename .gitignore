@@ -14,6 +14,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# local test and generated CI evidence
+test-results/
+playwright-report/
+evidence/
+
 
 # environment variables
 .env

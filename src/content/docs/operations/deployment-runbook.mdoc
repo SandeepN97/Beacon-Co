@@ -1,0 +1,42 @@
+---
+title: "Deployment runbook"
+description: "Artifact promotion, approval, verification, evidence, and stop conditions for preview, staging, and production."
+section: "operations"
+order: 907
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Release Manager","DevOps Engineer"]
+sourceFiles: [".github/workflows/preview-deploy.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml"]
+relatedAdrs: ["0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
+relatedPages: ["architecture/secure-cicd-architecture","operations/rollback-runbook"]
+tags: ["operations","deployment","runbook"]
+truthState: "target"
+---
+
+## Preconditions
+
+Do not deploy until required PR checks pass, the reviewed commit is on the intended branch, the promotion archive and SHA-256 exist, the target GitHub environment is configured, and the accountable human authorizes that environment.
+
+## Preview
+
+Run `Deploy preview` manually with the successful quality-run ID, full commit SHA, expected archive digest, and a validated isolated Worker name. Preview credentials must be separate from production. Treat preview content and URLs as public.
+
+## Staging
+
+Promote the same archive with `Deploy staging`. Verify the digest before extraction. Confirm primary pages, contact-route safe failure behavior, security headers, console errors, responsive layouts, and no unexpected external requests.
+
+## Production
+
+Run `Deploy production` only from `main`. The workflow verifies that the requested commit belongs to `main`, downloads the tested archive, checks its digest, and deploys under the production environment gate. It does not rebuild.
+
+## Verification and evidence
+
+Run `Post-deploy verification` against the exact HTTPS URL. Record workflow URLs, commit SHA, archive digest, approver, result, and any incident ID. Never record credentials or submitted contact data.
+
+## Stop conditions
+
+Stop on a missing approval, missing or mismatched digest, failing required check, unknown commit, unavailable rollback access, unexpected secret request, failed header check, or unhealthy customer path.
+
+## Activation note
+
+These workflows are definitions only until GitHub environments, secrets, required checks, and Cloudflare tokens are configured. This task did not deploy.

@@ -14,6 +14,7 @@ Start with [`src/content/docs/index.mdoc`](src/content/docs/index.mdoc) or the r
 |---|---|
 | `CLAUDE.md` / `AGENTS.md` | Project instructions for AI coding agents (`CLAUDE.md` is a symlink to `AGENTS.md` so both read the same source of truth). |
 | `src/content/docs/` | Canonical `.mdoc` business, product, architecture, agent, workflow, governance, ADR, roadmap, operations, and reference pages. |
+| `.github/workflows/` / `security/` | Secure delivery definitions and machine-readable dependency, Action, header, data, vulnerability, and exception policy. |
 | `src/modules/orchestration/` | Typed translator, Markdoc retrieval, broker, provider adapters, workflows, approvals, audit, and documentation-impact simulation. |
 | `src/pages/docs/` / `src/layouts/DocsLayout.astro` | Static Astro documentation route and reading experience. |
 | `src/pages/workspace/` | Truthfully labeled in-memory orchestration vertical slice and non-operational queue placeholders. |
@@ -37,6 +38,9 @@ npm run build    # outputs to dist/ — verify this succeeds before any task is 
 npm run preview  # serve the production build locally
 npm run typecheck # Astro and TypeScript diagnostics
 npm run test # orchestration unit tests
+npm run ci:quality # format, lint, type, unit, docs build, and built-link gates
+npm run ci:security # secret, dependency, license, and workflow-policy gates
+npm run test:browser # Playwright smoke, accessibility, and responsive checks
 npm run docs:validate # validate Markdoc, links, sources, diagrams, and search
 npm run docs:serve # localhost:8000, hot-reloading canonical handbook
 npm run docs:build # validate Markdoc and build the unified Astro site
@@ -55,7 +59,9 @@ The canonical handbook uses Astro, Markdoc, Beacon brand tokens, a generated cli
 
 ## Deploying
 
-Deployed as a Cloudflare Worker with static assets (`beaconco9`), connected to this repo — auto-deploys on every push to `main`. Build command `npm run build`, deploy command `npx wrangler deploy` (Cloudflare's dashboard runs this automatically; `wrangler.jsonc` configures the assets binding and the `/api/contact` route).
+The current Cloudflare Worker target is `beaconco9`; `wrangler.jsonc` configures static assets and `/api/contact`. Repository workflows now define manual preview, staging, production, and post-deploy stages that promote one tested archive by SHA-256.
+
+Those workflows are not active until GitHub rulesets, required checks, environments, environment reviewers, isolated secrets, and Cloudflare tokens are configured. Do not retain a competing Cloudflare dashboard auto-deploy after activating the gated production workflow. Follow `src/content/docs/operations/deployment-runbook.mdoc`.
 
 ### Contact form setup
 
@@ -95,3 +101,5 @@ See `src/content/docs/architecture/overview.mdoc` for the implemented boundary a
 - [x] Set `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `RESEND_API_KEY` in the Cloudflare dashboard — verified end-to-end (real submission → Turnstile pass → email delivered)
 - [x] Connect Cloudflare for auto-deploy on push
 - [ ] Resend is currently sending from `onboarding@resend.dev` (their shared test address) — verify a custom domain in Resend once one's registered, so it sends from `@beaconandco.com` instead
+- [ ] Activate and verify the secure CI/CD GitHub and Cloudflare settings listed in the deployment runbook
+- [ ] Triage the current dependency-audit findings and record any temporary exception

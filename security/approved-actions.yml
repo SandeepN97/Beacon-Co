@@ -1,0 +1,42 @@
+schemaVersion: 1
+policy:
+  requireFullLengthSha: true
+  requireReleaseComment: true
+  denyMutableTags: true
+actions:
+  actions/checkout:
+    major: 4
+    sha: 11bd71901bbe5b1630ceea73d27597364c9af683
+    release: v4.2.2
+  actions/setup-node:
+    major: 4
+    sha: 1e60f620b9541d16bece96c5465dc8ee9832be0b
+    release: v4.0.3
+  actions/upload-artifact:
+    major: 4
+    sha: ea165f8d65b6e75b540449e92b4886f43607fa02
+    release: v4.6.2
+  actions/download-artifact:
+    major: 4
+    sha: d3f86a106a0bac45b974a628896c90dbdf5c8093
+    release: v4.3.0
+  actions/dependency-review-action:
+    major: 4
+    sha: 595b5aeba73380359d98a5e087f648dbb0edce1b
+    release: v4.7.3
+  github/codeql-action/init:
+    major: 3
+    sha: 60168efe1c415ce0f5521ea06d5c2062adbeed1b
+    release: v3.28.17
+  github/codeql-action/analyze:
+    major: 3
+    sha: 60168efe1c415ce0f5521ea06d5c2062adbeed1b
+    release: v3.28.17
+  cloudflare/wrangler-action:
+    major: 3
+    sha: da0e0dfe58b7a431659754fdf3f186c529afbe65
+    release: v3.14.1
+review:
+  lastReviewed: 2026-07-27
+  owner: Security Architect
+  nextReview: 2026-10-27

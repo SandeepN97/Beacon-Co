@@ -1,10 +1,6 @@
 import type { WorkRequest } from "../../domain/work-request";
 import type { ContextPackage } from "../../knowledge/context-packager";
-import type {
-  ProviderAdapter,
-  ProviderPrompt,
-  SimulatedProviderResult,
-} from "../provider-adapter";
+import type { ProviderAdapter, ProviderPrompt, SimulatedProviderResult } from "../provider-adapter";
 import { compileClaudePrompt } from "./claude-prompt-compiler";
 
 export class ClaudeAdapter implements ProviderAdapter {
@@ -19,10 +15,7 @@ export class ClaudeAdapter implements ProviderAdapter {
     };
   }
 
-  simulate(
-    request: WorkRequest,
-    context: ContextPackage,
-  ): SimulatedProviderResult {
+  simulate(request: WorkRequest, context: ContextPackage): SimulatedProviderResult {
     return {
       provider: this.provider,
       status: "simulated-complete",

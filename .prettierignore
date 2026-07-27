@@ -1,0 +1,10 @@
+dist/
+docs/site/
+node_modules/
+public/search-index.json
+public/vendor/
+reference/
+src/content/docs/
+package-lock.json
+*.excalidraw
+*.svg

@@ -7,6 +7,7 @@ export const docsSectionOrder = [
   "agents",
   "workflows",
   "governance",
+  "security",
   "decisions",
   "operations",
   "references",
@@ -21,11 +22,13 @@ export const docsSectionLabels: Record<string, string> = {
   agents: "Agent organization",
   workflows: "Workflows",
   governance: "Governance",
+  security: "Security",
   decisions: "Decision book",
   operations: "Operations",
   references: "References",
 };
 
 export function docsHref(id: string): string {
-  return id === "index" ? "/docs/" : `/docs/${id}/`;
+  if (id === "index") return "/docs/";
+  return `/docs/${id.replace(/\/index$/, "")}/`;
 }

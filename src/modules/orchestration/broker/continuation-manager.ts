@@ -1,7 +1,4 @@
-import type {
-  ContinuationPackage,
-  WorkUnit,
-} from "../domain/work-unit";
+import type { ContinuationPackage, WorkUnit } from "../domain/work-unit";
 
 export type ContinuationInput = Omit<
   ContinuationPackage,

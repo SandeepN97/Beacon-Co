@@ -15,10 +15,7 @@ export interface ContextPackage {
   conflicts: DocumentationConflict[];
 }
 
-export function packageContext(
-  request: WorkRequest,
-  results: SearchResult[],
-): ContextPackage {
+export function packageContext(request: WorkRequest, results: SearchResult[]): ContextPackage {
   const documents = results.map(({ document }) => document);
   return {
     requestId: request.id,
