@@ -51,4 +51,4 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Analyze
-        uses: github/codeql-action/analyze@60168efe1c415ce0f5521ea06d5c2062adbeed1b # v3.28.17
+        uses: github/codeql-action/analyze@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
