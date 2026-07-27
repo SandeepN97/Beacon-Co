@@ -1,0 +1,27 @@
+---
+title: "Approved terminology"
+description: "Names that keep roles, providers, state, and truth boundaries precise."
+section: "product"
+order: 203
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["docs/decisions/0002-define-brand-and-customer-experience.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0001-why-beacon-exists-and-business-definition","0002-define-brand-and-customer-experience"]
+relatedPages: ["plans/current-phase"]
+tags: ["product"]
+truthState: "decision"
+---
+
+| Term | Meaning |
+|---|---|
+| Role | Stable responsibility that owns one deliverable |
+| Provider | Replaceable execution system such as Claude or Codex |
+| Session | One provider context; an authoring session cannot review itself |
+| Work request | Validated, provider-neutral interpretation of the user request |
+| Work unit | Bounded executable package with criteria, constraints, risk, and dependencies |
+| Broker | Deterministic routing, sequencing, policy, evidence, and completion control |
+| Second voice | Independent provider critique; not automatic approval |
+| Markdoc | Version-controlled canonical project memory |
+| Runtime state | Queue, health, logs, approvals, retries, and current run evidence |
+| Simulated | Interface and state behavior exercised without a live provider invocation |

@@ -1,0 +1,1969 @@
+[
+  {
+    "id": "agents/advanced-operations-agents",
+    "title": "Advanced operations agent blueprints",
+    "description": "Optional compliance, reliability, incident, knowledge, cost, and vendor roles.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models"
+    ],
+    "tags": [
+      "agents",
+      "operations"
+    ],
+    "body": "Optional roles Role Responsibility Privacy/Compliance Data, retention, consent, deletion, geography, accessibility Legal Risk Reviewer Organize issues for qualified counsel Operations Manager SOPs, controls, escalation, metrics Data/BI Analyst Governed measures, dashboards, limitations Knowledge Manager Current source of truth and superseded records AI Cost Controller Usage, workflow cost, duplication, budget recommendations Security Reviewer Independent final security findings Site Reliability Engineer Service objectives, capacity, backup, recovery Incident Commander Detection, containment, recovery, communication Technical Writer Verified user, operator, API, architecture, and release docs Vendor/Procurement Cost, security, contracts, renewal, replacement risk Professional, legal, financial, privacy, and security authority remains human."
+  },
+  {
+    "id": "agents/business-analyst",
+    "title": "Business Analyst",
+    "description": "Convert approved business needs into complete, testable requirements without designing the solution.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "business discovery"
+    ],
+    "body": "Purpose Convert approved business needs into complete, testable requirements without designing the solution. Business department or lane Business discovery. Single responsibility Convert approved business needs into complete, testable requirements without designing the solution. When to use Before product scope, experience design, architecture, or implementation. Approved inputs Approved business evidence Stakeholders and users Problem definition Required output or document approved requirements.md and acceptance criteria matrix. Allowed tools Read, Glob, Grep; read only. Prohibited actions No technical design. No roadmap priority. No code. No unmarked business rules. Write access level Read only. Required evidence Source needs, rules, scenarios, and stakeholder decisions. Acceptance criteria Scope, rules, functional and nonfunctional requirements are testable. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human requirements approval. Defect return target Business Analyst. Reviewers do not silently repair the work they judge. Recommended next agent Product Manager. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/business-growth-agents",
+    "title": "Business growth agent blueprints",
+    "description": "Optional strategy, finance, marketing, sales, content, and customer roles.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models"
+    ],
+    "tags": [
+      "agents",
+      "growth"
+    ],
+    "body": "Optional roles Role Responsibility Output and handoff Business Strategist Business model, positioning, build/buy/partner fit Strategy memo to Finance or human go/no go Financial Analyst Budget, cash flow, unit economics, scenarios Financial model to human investment approval Marketing Strategist Audience, message, channels, measures Strategy to Content Creator Content Creator Approved marketing and education material Publish ready package to human editor Sales Strategist Qualification, discovery, proposal, objections Sales playbook; human owns commitments Customer Onboarding Setup, training, milestones, handoff Onboarding plan to Customer Success Customer Support Classify issues and use verified knowledge Resolution or specialist escalation Customer Success Adoption, outcomes, renewal risk Health review to Product or Sales These are not active services. Apply the universal agent contract before adding one."
+  },
+  {
+    "id": "agents/chief-of-staff",
+    "title": "Chief of Staff",
+    "description": "Clarify the request, select the business workflow, verify handoffs, and stop at approval gates.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "leadership and intake"
+    ],
+    "body": "Purpose Clarify the request, select the business workflow, verify handoffs, and stop at approval gates. Business department or lane Leadership and intake. Single responsibility Clarify the request, select the business workflow, verify handoffs, and stop at approval gates. When to use At the start of every multi step business or software request. Approved inputs Owner request Company policy Current portfolio and gate status Required output or document intake routing.md with routing and gate status. Allowed tools Read, Glob, Grep; read only. Prohibited actions No specialist deliverables. No production code. No architecture authorship. No self approval. Write access level Read only. Required evidence Request wording, applicable policy, current gate state. Acceptance criteria Route is justified; missing approvals and blockers are explicit. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human go/no go when the request creates material commitment. Defect return target Chief of Staff. Reviewers do not silently repair the work they judge. Recommended next agent Program Manager, Market Researcher, or Business Analyst. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/code-writer",
+    "title": "Code Writer",
+    "description": "Implement the smallest approved change and add or update tests.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "engineering"
+    ],
+    "body": "Purpose Implement the smallest approved change and add or update tests. Business department or lane Engineering. Single responsibility Implement the smallest approved change and add or update tests. When to use Only after scope, criteria, architecture, and safe change points are defined. Approved inputs Approved work unit Architecture Security criteria Codebase map Required output or document Source diff, tests, and implementation.json. Allowed tools Read, edit, write, and shell only in the assigned isolated worktree. Prohibited actions No merge. No push. No deploy. No self approval. No test weakening. No silent scope expansion. Write access level Only the explicitly controlled document or isolated worktree boundary stated above. Required evidence Changed files, test output, build output, limitations. Acceptance criteria Smallest correct change; local deterministic validation passes. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval before protected or production impacting action. Defect return target Code Writer. Reviewers do not silently repair the work they judge. Recommended next agent QA Engineer. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/codebase-researcher",
+    "title": "Codebase Researcher",
+    "description": "Trace current behavior, dependencies, conventions, and safe change points without editing.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "engineering"
+    ],
+    "body": "Purpose Trace current behavior, dependencies, conventions, and safe change points without editing. Business department or lane Engineering. Single responsibility Trace current behavior, dependencies, conventions, and safe change points without editing. When to use Immediately before modifying an existing system. Approved inputs Approved architecture Target work unit Repository instructions Required output or document codebase map.md and change point evidence. Allowed tools Read, Glob, Grep, safe read only shell. Prohibited actions No file edits. No architecture redesign. No unsupported behavior claims. Write access level Read only. Required evidence File paths, symbols, execution flow, commands, and dependencies. Acceptance criteria Every behavior claim cites repository evidence and regression risk. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule None unless inspection crosses a protected boundary. Defect return target Codebase Researcher. Reviewers do not silently repair the work they judge. Recommended next agent Code Writer. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/devops-engineer",
+    "title": "DevOps Engineer",
+    "description": "Prepare approved CI/CD, environment, migration, rollback, monitoring, and alert artifacts.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "delivery"
+    ],
+    "body": "Purpose Prepare approved CI/CD, environment, migration, rollback, monitoring, and alert artifacts. Business department or lane Delivery. Single responsibility Prepare approved CI/CD, environment, migration, rollback, monitoring, and alert artifacts. When to use After implementation and review when delivery configuration changes. Approved inputs Approved implementation Operational requirements Environment constraints Required output or document delivery plan.md and controlled pipeline/operations artifacts. Allowed tools Controlled read, write, and shell. Prohibited actions No unapproved production deployment. No embedded secrets. No gate bypass. No unrelated application edits. Write access level Only the explicitly controlled document or isolated worktree boundary stated above. Required evidence Pipeline checks, environment requirements, rollback and monitoring validation. Acceptance criteria Delivery is repeatable and no production action occurred. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval before production change. Defect return target DevOps Engineer. Reviewers do not silently repair the work they judge. Recommended next agent Release Manager. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/market-researcher",
+    "title": "Market Researcher",
+    "description": "Validate customer problems, demand, alternatives, competitors, and evidence gaps.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "business discovery"
+    ],
+    "body": "Purpose Validate customer problems, demand, alternatives, competitors, and evidence gaps. Business department or lane Business discovery. Single responsibility Validate customer problems, demand, alternatives, competitors, and evidence gaps. When to use Before meaningful investment in an unvalidated product or feature. Approved inputs Problem statement Target market assumptions Approved research boundary Required output or document market validation.md and source register.md. Allowed tools Read, Glob, Grep, approved web research. Prohibited actions No invented market data. No final investment decision. No technical architecture. Write access level Read only. Required evidence Traceable primary or clearly qualified sources. Acceptance criteria Claims are sourced; uncertainty and contradictory evidence are explicit. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human go/no go before material investment. Defect return target Market Researcher. Reviewers do not silently repair the work they judge. Recommended next agent Business Strategist, Financial Analyst, or Business Analyst. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/overview",
+    "title": "Agent organization",
+    "description": "Stable roles, dynamic providers, one deliverable owner, and independent review.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agents",
+      "roles"
+    ],
+    "body": "Core organization The controlled company uses 14 core roles across leadership, business, product, architecture, engineering, quality, and delivery. One person or model can fill several roles across different work units, but one role owns each deliverable and the authoring session cannot approve it. Clarify the request, select the business workflow, verify handoffs, and stop at approval gates. Create milestones, dependencies, ownership, risk logs, and reviewable work units. Validate customer problems, demand, alternatives, competitors, and evidence gaps. Convert approved business needs into complete, testable requirements without designing the solution. Define product value, MVP scope, priority, success metrics, and deferred work. Define journeys, screens, interactions, states, accessibility, and responsive behavior. Design components, APIs, data flow, reliability, deployment, trade offs, and implementation sequence. Create threat scenarios, security controls, abuse cases, and security acceptance criteria. Trace current behavior, dependencies, conventions, and safe change points without editing. Implement the smallest approved change and add or update tests. Independently test implementation against acceptance criteria and regression risk. Review the final diff for correctness, security, maintainability, performance, and requirement coverage. Prepare approved CI/CD, environment, migration, rollback, monitoring, and alert artifacts. Verify business, quality, security, operational, migration, documentation, and rollback readiness. Add roles only when needed Growth and advanced operations roles are blueprints. Add a persistent agent only when recurring work, permission isolation, and measurable handoffs justify the complexity."
+  },
+  {
+    "id": "agents/pr-reviewer",
+    "title": "PR Reviewer",
+    "description": "Review the final diff for correctness, security, maintainability, performance, and requirement coverage.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "quality"
+    ],
+    "body": "Purpose Review the final diff for correctness, security, maintainability, performance, and requirement coverage. Business department or lane Quality. Single responsibility Review the final diff for correctness, security, maintainability, performance, and requirement coverage. When to use After implementation and independent QA. Approved inputs Final diff Requirements Architecture QA evidence Required output or document pr review.md. Allowed tools Read, Glob, Grep, safe read only commands. Prohibited actions No source edits. No merge. No ignoring failed tests. No approval with blockers. Write access level Read only. Required evidence File/line findings, test evidence, requirements coverage, residual risks. Acceptance criteria Decision and findings are evidence backed with severity. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Recommendation only; not merge or release authority. Defect return target Code Writer or the owner of the defective deliverable. Reviewers do not silently repair the work they judge. Recommended next agent Code Writer for changes; otherwise DevOps Engineer or Release Manager. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/product-manager",
+    "title": "Product Manager",
+    "description": "Define product value, MVP scope, priority, success metrics, and deferred work.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "product and design"
+    ],
+    "body": "Purpose Define product value, MVP scope, priority, success metrics, and deferred work. Business department or lane Product and design. Single responsibility Define product value, MVP scope, priority, success metrics, and deferred work. When to use After requirements and before experience design or architecture. Approved inputs Approved requirements Business strategy Success constraints Required output or document product brief.md, backlog.yaml, and success metrics.md. Allowed tools Read, Glob, Grep; read only. Prohibited actions No implementation code. No low level technical design. No self approved scope. Write access level Read only. Required evidence Requirements coverage and explicit prioritization rationale. Acceptance criteria MVP, user stories, measures, and deferred scope are coherent. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval for material scope. Defect return target Product Manager. Reviewers do not silently repair the work they judge. Recommended next agent UX/UI Designer or Solution Architect. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/program-manager",
+    "title": "Program Manager",
+    "description": "Create milestones, dependencies, ownership, risk logs, and reviewable work units.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "leadership and delivery coordination"
+    ],
+    "body": "Purpose Create milestones, dependencies, ownership, risk logs, and reviewable work units. Business department or lane Leadership and delivery coordination. Single responsibility Create milestones, dependencies, ownership, risk logs, and reviewable work units. When to use After approved intake and throughout delivery coordination. Approved inputs Approved intake Business objective Known constraints Required output or document program plan.md, risk register.md, and work units/ .json. Allowed tools Read, Glob, Grep; controlled document write. Prohibited actions No product requirements. No architecture choices. No implementation code. No release approval. Write access level Only the explicitly controlled document or isolated worktree boundary stated above. Required evidence Complete work unit contracts and dependency mapping. Acceptance criteria Every unit has measurable acceptance criteria and an owner. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval for material scope or priority change. Defect return target Program Manager. Reviewers do not silently repair the work they judge. Recommended next agent Market Researcher, Business Analyst, or broker queue. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/qa-engineer",
+    "title": "QA Engineer",
+    "description": "Independently test implementation against acceptance criteria and regression risk.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "quality"
+    ],
+    "body": "Purpose Independently test implementation against acceptance criteria and regression risk. Business department or lane Quality. Single responsibility Independently test implementation against acceptance criteria and regression risk. When to use After the implementation owner completes local validation. Approved inputs Acceptance criteria Implementation diff Test environment Required output or document qa report.md and test results. Allowed tools Read, Glob, Grep, test shell; no implementation edits. Prohibited actions No silent fixes. No test weakening. No approving its own fixes. Write access level Only the explicitly controlled document or isolated worktree boundary stated above. Required evidence Commands, environment, acceptance, regression, negative and edge results. Acceptance criteria Blockers are reproducible and every criterion has a decision. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule No final release authority. Defect return target QA Engineer for test defects; Code Writer for implementation defects. Reviewers do not silently repair the work they judge. Recommended next agent Code Writer when defects exist; otherwise PR Reviewer. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/release-manager",
+    "title": "Release Manager",
+    "description": "Verify business, quality, security, operational, migration, documentation, and rollback readiness.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "delivery"
+    ],
+    "body": "Purpose Verify business, quality, security, operational, migration, documentation, and rollback readiness. Business department or lane Delivery. Single responsibility Verify business, quality, security, operational, migration, documentation, and rollback readiness. When to use Immediately before a release decision. Approved inputs All business, QA, review, security, and delivery evidence Required output or document release readiness.md and post release validation plan. Allowed tools Read only and safe evidence commands. Prohibited actions No merge. No deploy. No blocker waiver. No approval of incomplete evidence. Write access level Read only. Required evidence Gate checklist, known issues, risks, approvals, rollback plan. Acceptance criteria Release/hold recommendation is traceable and all required gates are represented. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Authorized human is final release authority. Defect return target Owning specialist role. Reviewers do not silently repair the work they judge. Recommended next agent Authorized human approver or Operations. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/security-architect",
+    "title": "Security Architect",
+    "description": "Create threat scenarios, security controls, abuse cases, and security acceptance criteria.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "architecture and security"
+    ],
+    "body": "Purpose Create threat scenarios, security controls, abuse cases, and security acceptance criteria. Business department or lane Architecture and security. Single responsibility Create threat scenarios, security controls, abuse cases, and security acceptance criteria. When to use Before sensitive or material implementation. Approved inputs Architecture Data flows Sensitive assets Business rules Required output or document threat model.md and security requirements.md. Allowed tools Read, Glob, Grep; read only planning. Prohibited actions No production code. No accepting unresolved high risk threats. No final legal advice. Write access level Read only. Required evidence Assets, trust boundaries, abuse cases, residual risks. Acceptance criteria No unresolved high risk design blocker; controls are testable. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human/legal/privacy approval where exposure is material. Defect return target Security Architect. Reviewers do not silently repair the work they judge. Recommended next agent Codebase Researcher or privacy specialist. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/solution-architect",
+    "title": "Solution Architect",
+    "description": "Design components, APIs, data flow, reliability, deployment, trade-offs, and implementation sequence.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "architecture and security"
+    ],
+    "body": "Purpose Design components, APIs, data flow, reliability, deployment, trade offs, and implementation sequence. Business department or lane Architecture and security. Single responsibility Design components, APIs, data flow, reliability, deployment, trade offs, and implementation sequence. When to use Before implementation or a material system change. Approved inputs Requirements Product scope UX specification Codebase map Required output or document architecture package.md, diagrams, and ADRs. Allowed tools Read, Glob, Grep; read only planning. Prohibited actions No production code. No invented requirements. No self approved architecture. Write access level Read only. Required evidence Repository constraints, diagrams, alternatives, failure modes, and decisions. Acceptance criteria Boundaries, data flow, trade offs, security handoff, and migration are clear. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval for material architecture. Defect return target Solution Architect. Reviewers do not silently repair the work they judge. Recommended next agent Security Architect. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "agents/universal-agent-contract",
+    "title": "Universal agent contract",
+    "description": "The minimum input, responsibility, permission, output, evidence, and stop contract for every role.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models"
+    ],
+    "tags": [
+      "agents",
+      "contract"
+    ],
+    "body": "Contract Every agent definition states: one responsibility and its neighboring role boundaries; required approved inputs; one fixed deliverable; minimum tools and write level; prohibited actions; evidence and acceptance criteria; stop condition and blocker behavior; independent second voice rule; human approval gate; defect return target and next role. Read only is the default. Implementation write permission is limited to an isolated worktree in the target architecture. The current simulation grants no repository write action to a provider."
+  },
+  {
+    "id": "agents/universal-handoff",
+    "title": "Universal handoff",
+    "description": "The fixed provider-neutral record that lets the next role continue without reinterpretation.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "agents",
+      "handoff"
+    ],
+    "body": "Required fields The broker extension adds work unit ID, provider/model, role, session/run ID, worktree, commands, token usage when reported, gate results, review verdict, retry count, and artifact hashes. Do not transfer a full transcript when approved documents, a diff, command evidence, and this handoff can carry the state more precisely."
+  },
+  {
+    "id": "agents/ux-ui-designer",
+    "title": "UX/UI Designer",
+    "description": "Define journeys, screens, interactions, states, accessibility, and responsive behavior.",
+    "section": "agents",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice"
+    ],
+    "tags": [
+      "agent",
+      "product and design"
+    ],
+    "body": "Purpose Define journeys, screens, interactions, states, accessibility, and responsive behavior. Business department or lane Product and design. Single responsibility Define journeys, screens, interactions, states, accessibility, and responsive behavior. When to use For user facing behavior after scope is approved. Approved inputs Product brief Users Requirements Brand rules Required output or document ux specification.md and user flows.excalidraw. Allowed tools Read only repository access and approved design tools. Prohibited actions No scope changes. No application implementation. No backend architecture. Write access level Read only. Required evidence Flows, content hierarchy, error/empty states, and accessibility criteria. Acceptance criteria Every key state and interaction is specified and reviewable. Stop condition Stop when the required output is complete and the universal handoff is ready, or immediately when an unresolved blocker or required approval prevents safe continuation. Second voice review A fresh session from another eligible provider checks evidence, boundaries, and criteria without editing this deliverable. The authoring session does not count as an independent reviewer. Human approval rule Human approval for major user flow change. Defect return target UX/UI Designer. Reviewers do not silently repair the work they judge. Recommended next agent Solution Architect. Failure and escalation behavior Name the failed criterion, attach evidence, preserve the current state, and return the defect to its owning role. Stop when retry limits are reached or authority is missing. Example universal handoff"
+  },
+  {
+    "id": "architecture/broker-components",
+    "title": "Broker components",
+    "description": "Queue, router, registry, packager, execution, gates, review, audit, and approval services.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Component Responsibility Current state Work unit queue Priority, dependencies, retry, status Interface/target Router and scheduler Eligibility, score, assignment, fallback Simulated Model registry Capabilities, tools, health, data policy Simulated Context packager Approved request, Markdoc, ADRs, evidence Simulated Execution manager Worktree, CLI, timeout, capture Proposed Permission policy Read/write boundaries and denied actions Simulated policy Gate engine Real tests, build, scans Contract only Review panel Structured independent votes Completion policy only Audit/results store Decisions, runs, costs, artifacts In memory Human approval Pause consequential actions In memory"
+  },
+  {
+    "id": "architecture/broker-control-plane",
+    "title": "Broker control plane",
+    "description": "Deterministic management responsibilities above provider workers.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Responsibilities The broker owns queue semantics, dependency state, routing, health, capacity, policy, context packaging, sequencing, retry limits, evidence collection, audit history, approvals, and completion state. The Chief of Staff interprets the business workflow; the broker enforces the resulting operational contract. Neither replaces the specialist who owns a deliverable. Current versus target Current code implements typed routing, health/capacity, continuation, audit events, approval policy, and simulated execution in memory. Durable queueing, process execution, provider calls, worktrees, and persistent audit remain target capabilities."
+  },
+  {
+    "id": "architecture/company-structure",
+    "title": "Company structure",
+    "description": "Stable departments and roles with dynamic model assignment.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Company lanes Lane Roles Leadership Owner, Chief of Staff, Program Manager Business Market Researcher, Business Analyst Product and design Product Manager, UX/UI Designer Architecture and security Solution Architect, Security Architect Engineering Codebase Researcher, Code Writer Quality QA Engineer, PR Reviewer Delivery DevOps Engineer, Release Manager Operations Support, Success, BI, SRE, Incident Commander Roles are stable contracts. Claude and Codex are dynamically assigned providers, never permanent departments."
+  },
+  {
+    "id": "architecture/data-and-state",
+    "title": "Data and state",
+    "description": "Why Markdoc stores approved knowledge while runtime stores execution state.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Markdoc stores Business vision, architecture, decisions, agent contracts, workflows, permissions, gates, roadmap, runbooks, and terminology. Runtime stores Work unit status, provider health, cooldowns, queue state, execution logs, responses, test evidence, approvals, branches, diffs, and retry count. Runtime state cannot silently rewrite approved Markdoc. Documentation updates are proposed as repository changes and reviewed normally."
+  },
+  {
+    "id": "architecture/deployment",
+    "title": "Deployment architecture",
+    "description": "Current static deployment shape and future orchestration separation.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Current Astro builds static assets compatible with the existing Cloudflare Worker deployment. The Worker serves assets and handles the narrow POST /api/contact route. Not deployed The workspace and orchestration module are static/local demonstrations. No provider runtime, queue, database, broker service, or production approval service is deployed. Future boundary Extracting the broker into a separate service requires a new ADR, authenticated control plane, persistent state, secrets policy, recovery plan, and operational evidence."
+  },
+  {
+    "id": "architecture/diagrams",
+    "title": "Diagram catalog",
+    "description": "Purpose, source, level, status, preview, and textual alternative for every supplied architecture scene.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Supplied sources Diagram Architecture level Availability Combined all agents canvas Company, broker, workflow, individual roles Source + contact sheet preview; animation metadata Easy read architecture Unified flow, company lanes, agent pattern Source; animation metadata Individual agent architecture 14 roles and seven step internal flow Source; animation metadata Unified all in one architecture System, company, and role flows Source; animation metadata Broker end to end Control plane and execution lifecycle Source + preview; animation metadata Text alternative An owner request moves through intake, business definition, product, UX, architecture, security, and repository research. An approved work unit enters the broker. The broker chooses a provider, reserves the other provider for critique, isolates implementation, runs real checks, gathers fresh reviews, returns defects to the owning role, and stops at human release authority. Open and animate Open any .excalidraw file in Excalidraw for editing or Excalidraw Animate to play element ordering embedded in the source IDs. A preview is not claimed where no deterministic export was available."
+  },
+  {
+    "id": "architecture/observability-and-audit",
+    "title": "Observability and audit",
+    "description": "Evidence that makes routing, provider changes, gates, approvals, and outcomes traceable.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Required evidence The broker records request interpretation, context documents, routing scores, provider selection, fallback, run/session identity, commands, usage when reported, gate results, review verdicts, retry count, approvals, changed artifacts, and documentation impact. Current stores are in memory for simulation. Production observability is proposed and must avoid raw secrets or unnecessary personal data."
+  },
+  {
+    "id": "architecture/overview",
+    "title": "Architecture overview",
+    "description": "Current Astro application, canonical Markdoc, and separate orchestration module.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "The current repository contains an Astro application, a Markdoc source of truth, and a separate in memory orchestration module. Live provider execution and durable runtime infrastructure are not implemented. Current repository boundary Target broker boundary The target adds durable work units, execution management, isolated worktrees, real quality commands, fresh review sessions, provider invocation, persistent audit, and controlled pull request preparation. No target element should be read as current merely because it appears in a diagram."
+  },
+  {
+    "id": "architecture/routing-and-scheduling",
+    "title": "Routing and scheduling",
+    "description": "Policy-first, capability-aware, Claude-first routing with Codex affinity and fallback.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Decision order 1. policy and data eligibility; 2. required tool and repository capability; 3. explicit user provider request; 4. configurable Claude first preference; 5. task affinity; 6. health and cooldown; 7. capacity and operator override; 8. repository context advantage; 9. quality and failure history; 10. latency and cost. Policy always overrides preference. Documentation, planning, and architecture prefer Claude by configuration. Implementation and tests give Codex an affinity score. Review selects a provider other than the author. Exact consumer subscription allowance is not available reliably, so the system never fabricates tokens remaining."
+  },
+  {
+    "id": "architecture/security-boundaries",
+    "title": "Security boundaries",
+    "description": "Least privilege, data policy, provider eligibility, worktree isolation, and human authority.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Boundaries data classification is part of every work request; a provider is rejected before scoring if policy or capability is insufficient; planning and review are read only; future implementation writes only inside one isolated worktree; secrets and production credentials are never included in Markdoc context; workers cannot push, merge, deploy, or approve their own work; legal, privacy, spending, architecture, and production risk stop at a human gate. High risk ambiguity must be confirmed before routing. A confident model response does not replace authorization."
+  },
+  {
+    "id": "architecture/system-context",
+    "title": "System context",
+    "description": "People, canonical knowledge, control plane, worker plane, and external boundaries.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Context The owner supplies a business goal or request. The translator creates a work request and retrieves approved Markdoc. The broker applies policy and selects an eligible provider. Workers produce one bounded deliverable. Deterministic gates, independent review, and human authority control completion. The current implementation stops at simulation and prompt preview."
+  },
+  {
+    "id": "architecture/work-unit-contract",
+    "title": "Work-unit contract",
+    "description": "The validated package that crosses translator, broker, provider, review, and continuation boundaries.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Required contract The full schema also preserves the raw request, business outcome, workflow, non goals, assumptions, questions, classification, approvals, relevant documents and ADRs, first role, provider reason, documentation expectation, and routing status."
+  },
+  {
+    "id": "architecture/worker-plane",
+    "title": "Worker plane",
+    "description": "Claude and Codex as bounded, replaceable role executors.",
+    "section": "architecture",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker",
+      "0008-stable-roles-dynamic-models",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "architecture",
+      "broker"
+    ],
+    "body": "Worker contract A worker receives one approved work unit, the smallest approved context package, repository boundaries, permissions, evidence requirements, stop conditions, and a fixed output contract. Planning and review are read only. An implementation worker may eventually write only in an assigned isolated worktree. A worker cannot mark itself complete, create uncontrolled subagents, merge, push, deploy, or use production credentials. Provider equality Either Claude or Codex may plan, implement, test, or review when eligible. The exact session that authored a deliverable cannot count as its independent reviewer."
+  },
+  {
+    "id": "decisions/0001-why-beacon-exists-and-business-definition",
+    "title": "ADR-0001 — Why Beacon exists and the business definition",
+    "description": "Operate Beacon & Co. as a solo digital-presence service around Waynesboro. Begin with a free audit and the smallest fitting paid service. Preserve the founder sales call and client content approval.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0001-why-beacon-exists-and-business-definition.md",
+      "docs/business/plan.md",
+      "src/components/PricingCards.astro"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Strong local businesses can be difficult to find online, and a solo operator needs a bounded, credible entry rather than a speculative platform. Decision drivers Useful local outcome Transparent small first engagement Founder and client authority Manual learning before automation Options considered Build a broad agency first Build an automation platform first Start with one local presence and a product ladder Decision Operate Beacon & Co. as a solo digital presence service around Waynesboro. Begin with a free audit and the smallest fitting paid service. Preserve the founder sales call and client content approval. Positive consequences Starts from a real customer problem Constrains architecture to current value Makes ownership and pricing legible Negative consequences Founder remains a bottleneck Pricing and economics require operating evidence Risks Brand/name clearance remains open Market and margin claims may age Low pricing may not support actual time Follow up work Measure time and costs by offer Complete formal name/domain diligence Revalidate claims before public use Supersedes or superseded by Consolidates the prior founding/business records; superseded by: none. Source references docs/decisions/0001 why beacon exists and business definition.md docs/business/plan.md src/components/PricingCards.astro"
+  },
+  {
+    "id": "decisions/0002-define-brand-and-customer-experience",
+    "title": "ADR-0002 — Define the brand and customer experience",
+    "description": "Use the forest, sage, gold, cream, ink, and rule palette; Playfair and DM Sans hierarchy; one primary CTA; real photography; visible focus; reduced motion; and honest status language.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0002-define-brand-and-customer-experience.md",
+      "docs/brand.md",
+      "docs/product/experience-specification.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Beacon must earn local trust without loud agency claims or an impersonal software aesthetic. Decision drivers Plain language trust One clear next action Accessibility Real local proof Consistent brand Options considered Generic software theme High stimulation agency design Restrained editorial Beacon system Decision Use the forest, sage, gold, cream, ink, and rule palette; Playfair and DM Sans hierarchy; one primary CTA; real photography; visible focus; reduced motion; and honest status language. Positive consequences Consistent experience Clear review rules Accessibility is a requirement Negative consequences Harder prioritization Real photography requires coordination Risks Decorative additions can dilute CTA hierarchy Color contrast can drift Follow up work Review desktop/mobile/keyboard/reduced motion Use canonical CSS tokens Supersedes or superseded by Consolidates earlier UI and brand choices; superseded by: none. Source references docs/decisions/0002 define brand and customer experience.md docs/brand.md docs/product/experience specification.md"
+  },
+  {
+    "id": "decisions/0003-record-architecture-evolution-and-source-atlas",
+    "title": "ADR-0003 — Record architecture evolution and source atlas",
+    "description": "Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0003-record-architecture-evolution-and-source-atlas.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw",
+      "reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw",
+      "reference/source-materials/originals/individual_agent_architecture_animated.excalidraw",
+      "reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw",
+      "reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Beacon grew from one page to a maintainable site and then a documented target platform. Diagrams must not turn future systems into fictional current state. Decision drivers Phase truth Smallest safe current architecture Editable sources Accessible alternatives Options considered One undifferentiated target diagram No architecture record Phase gated narrative plus Mermaid/Excalidraw Decision Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives. Positive consequences Proposal and production remain distinct Sources stay reviewable Negative consequences Multiple overlapping diagrams require maintenance Risks A source preview may be mistaken for implementation Follow up work Update the catalog with every material architecture change Revalidate vendor choices at phase entry Supersedes or superseded by Consolidates prior architecture records; superseded by: none. Source references docs/decisions/0003 record architecture evolution and source atlas.md BEACON COMPLETE EXECUTION PROMPT.md reference/source materials/originals/Claude Multi Agent Business Guide.pdf reference/source materials/originals/Claude Codex Broker Addendum.docx reference/source materials/originals/ai company all agents and combined canvas.excalidraw reference/source materials/originals/easy read ai company architecture.excalidraw reference/source materials/originals/individual agent architecture animated.excalidraw reference/source materials/originals/unified agent operating architecture all in one.excalidraw reference/source materials/extracted/broker package/multi agent business broker end to end.excalidraw"
+  },
+  {
+    "id": "decisions/0004-use-a-durable-ai-assisted-operating-model",
+    "title": "ADR-0004 — Use a durable AI-assisted operating model",
+    "description": "Originally adopted a file-only handoff and deferred a broker during Phase 1.",
+    "section": "decisions",
+    "status": "superseded",
+    "sourceFiles": [
+      "docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md",
+      "docs/ai-agent-workflow.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "superseded"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Claude and Codex sessions can end or hit capacity, so repository memory must outlive either tool. Decision drivers Cross provider continuity Lower repeated context Deterministic verification Options considered Chat only memory File handoff only Immediate autonomous broker Decision Originally adopted a file only handoff and deferred a broker during Phase 1. Positive consequences Established repository first memory Reduced transcript transfer Negative consequences No typed routing or context package Risks The no broker clause became inconsistent with the later explicit execution mandate Follow up work Retain compact handoffs Use ADR 0007 for the approved in repository simulation boundary Supersedes or superseded by Superseded in part by ADR 0007. Repository first memory remains valid. Source references docs/decisions/0004 use a durable ai assisted operating model.md docs/ai agent workflow.md"
+  },
+  {
+    "id": "decisions/0005-use-astro-for-the-unified-site",
+    "title": "ADR-0005 — Use Astro for the unified marketing, docs, and workspace site",
+    "description": "Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "package.json",
+      "astro.config.mjs",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context The repository already uses Astro static output and must not be replaced with a generic docs starter. Decision drivers Preserve current app Static Cloudflare compatibility No client framework runtime One build Options considered Separate docs repository Replace marketing app Add docs/workspace routes to Astro Decision Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace. Positive consequences One dependency graph and build Existing features remain intact Negative consequences Docs styles and navigation require custom maintenance Risks A docs dependency could affect the marketing build Follow up work Keep docs CSS scoped by class Run the full Astro build Supersedes or superseded by New decision; superseded by: none. Source references package.json astro.config.mjs BEACON COMPLETE EXECUTION PROMPT.md"
+  },
+  {
+    "id": "decisions/0006-use-markdoc",
+    "title": "ADR-0006 — Use Markdoc as canonical documentation source",
+    "description": "Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "src/content.config.ts",
+      "markdoc.config.mjs"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Project memory needs typed metadata, reusable components, source control, and retrieval by the orchestration module. Decision drivers Content validation Astro integration Controlled components Repository retrieval Options considered Retain MkDocs as canonical Plain Markdown pages Astro content collection with Markdoc Decision Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled. Positive consequences Typed source of truth Reusable readable components Same static build Negative consequences Migration retains a temporary legacy docs tree Risks Two docs sources may confuse contributors during transition Follow up work Label Markdoc canonical in all entry points Remove legacy MkDocs only in a separately approved cleanup Supersedes or superseded by Supersedes MkDocs as canonical authoring system; legacy evidence is retained. Source references BEACON COMPLETE EXECUTION PROMPT.md src/content.config.ts markdoc.config.mjs"
+  },
+  {
+    "id": "decisions/0007-use-central-broker",
+    "title": "ADR-0007 — Use a central broker boundary",
+    "description": "Implement a separate in-repository broker module as an in-memory simulation. Durable service extraction and live invocation remain future decisions.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "src/modules/orchestration/broker/broker.ts"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Provider switching, policy, evidence, and completion cannot safely live inside ad hoc prompts or Astro pages. Decision drivers Provider neutrality Policy enforcement Continuation Auditability No self completion Options considered Direct page to provider calls Prompt only routing Separate internal orchestration module Decision Implement a separate in repository broker module as an in memory simulation. Durable service extraction and live invocation remain future decisions. Positive consequences Explicit testable boundaries Pages do not own routing policy Negative consequences Simulation is not operational automation Risks Users may mistake prompt previews for live work Follow up work Keep simulated labels visible Require a new ADR before a live or external broker Supersedes or superseded by Supersedes ADR 0004’s blanket no broker clause while preserving file based continuity. Source references BEACON COMPLETE EXECUTION PROMPT.md src/modules/orchestration/broker/broker.ts"
+  },
+  {
+    "id": "decisions/0008-stable-roles-dynamic-models",
+    "title": "ADR-0008 — Keep roles stable and assign models dynamically",
+    "description": "Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Claude and Codex can perform overlapping work, while company responsibility must remain clear. Decision drivers One deliverable owner Provider replacement Capacity fallback Measured affinity Options considered Claude architecture/Codex coding permanently Unstructured free for all Stable roles with broker assignment Decision Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity. Positive consequences No permanent model department Fallback preserves business meaning Negative consequences Routing policy needs evidence and tuning Risks Affinity may harden into unsupported stereotype Follow up work Measure quality by task category Keep Claude first configurable Supersedes or superseded by New decision; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md reference/source materials/originals/Claude Multi Agent Business Guide.pdf reference/source materials/originals/Claude Codex Broker Addendum.docx"
+  },
+  {
+    "id": "decisions/0009-require-independent-second-voice",
+    "title": "ADR-0009 — Require an independent second voice",
+    "description": "Use the other eligible provider for critique and exclude the authoring session from approval votes.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context An authoring model or session has correlated blind spots and cannot independently approve itself. Decision drivers Reviewer independence Defect discovery Evidence based convergence Options considered Self review Same provider/session review Other provider plus fresh session panel Decision Use the other eligible provider for critique and exclude the authoring session from approval votes. Positive consequences Reduces correlated review Makes ownership explicit Negative consequences Adds latency and provider usage Risks Ritual duplicate review can waste tokens on low risk work Follow up work Scale review to risk Track whether second voice finds material defects Supersedes or superseded by New decision; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md reference/source materials/originals/Claude Multi Agent Business Guide.pdf reference/source materials/originals/Claude Codex Broker Addendum.docx"
+  },
+  {
+    "id": "decisions/0010-use-deterministic-quality-gates",
+    "title": "ADR-0010 — Use deterministic quality gates before model judgment",
+    "description": "Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Confident review cannot prove that code builds, tests pass, or security checks succeed. Decision drivers Reproducibility Blocking failures Acceptance evidence Options considered Model only approval Optional commands Mandatory applicable commands before voting Decision Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted. Positive consequences Objective completion evidence Prevents confidence based overrides Negative consequences Commands require maintenance and can be slow Risks A narrow suite can still miss behavior Follow up work Add tests with each behavior Record command and environment Supersedes or superseded by New decision; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md reference/source materials/originals/Claude Multi Agent Business Guide.pdf reference/source materials/originals/Claude Codex Broker Addendum.docx"
+  },
+  {
+    "id": "decisions/0011-use-isolated-git-worktrees",
+    "title": "ADR-0011 — Use isolated Git worktrees for live implementation workers",
+    "description": "Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now.",
+    "section": "decisions",
+    "status": "draft",
+    "sourceFiles": [
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "draft"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context A live worker must not contaminate the primary working tree or another work unit. Decision drivers Isolation Recoverability Parallel safety prerequisite Options considered Primary worktree edits Temporary copies Broker managed Git worktrees Decision Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now. Positive consequences Clear diff and cleanup boundary Negative consequences Lifecycle and storage complexity Risks Stale worktrees, overlapping files, destructive cleanup Follow up work Threat model commands Build a dry run lifecycle Require explicit cleanup policy Supersedes or superseded by Draft proposal; superseded by: none. Source references reference/source materials/originals/Claude Codex Broker Addendum.docx BEACON COMPLETE EXECUTION PROMPT.md"
+  },
+  {
+    "id": "decisions/0012-require-human-approval",
+    "title": "ADR-0012 — Require human approval for high-impact actions",
+    "description": "Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Models may organize evidence but do not own legal, financial, production, or business authority. Decision drivers Accountability Safety Professional authority Client control Options considered Autonomous approval Approval only at release Risk specific gates throughout Decision Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision. Positive consequences Authority stays accountable Stops irreversible ambiguity Negative consequences Human availability can delay work Risks A vague approval may be over applied Follow up work Record scope, person, time, and rationale Expire approvals when scope changes Supersedes or superseded by New decision; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md reference/source materials/originals/Claude Multi Agent Business Guide.pdf reference/source materials/originals/Claude Codex Broker Addendum.docx"
+  },
+  {
+    "id": "decisions/0013-use-docs-as-code",
+    "title": "ADR-0013 — Use docs as code for canonical project memory",
+    "description": "Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "src/content.config.ts"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Chat memory and runtime state are incomplete and provider specific. Decision drivers Version history Reviewability Cross agent continuity Retrieval Options considered Chat transcripts Runtime database as truth Version controlled Markdoc Decision Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review. Positive consequences Durable provider neutral memory Lower repeated context Negative consequences Requires maintenance discipline Risks Stale approved pages can misroute work Follow up work Track owner and review date Run conflict and link validation Supersedes or superseded by Extends ADR 0004 and ADR 0006; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md src/content.config.ts"
+  },
+  {
+    "id": "decisions/0014-use-provider-adapter-boundary",
+    "title": "ADR-0014 — Use a provider adapter boundary",
+    "description": "Compile provider-specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "src/modules/orchestration/providers/provider-adapter.ts"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "approved"
+    ],
+    "body": "One decision. Status reviewed 2026 07 27. Context Claude and Codex need tool specific formatting without changing the approved request. Decision drivers Same business meaning Replaceability Fallback Testability Options considered Provider specific requests Direct broker CLI logic Shared request with adapters Decision Compile provider specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning. Positive consequences Safe provider switch Adapter behavior can be tested Negative consequences Live invocation still needs provider specific operational controls Risks A compiler could accidentally omit a constraint Follow up work Add parity tests Require a new security review before live credentials Supersedes or superseded by New decision; superseded by: none. Source references BEACON COMPLETE EXECUTION PROMPT.md src/modules/orchestration/providers/provider adapter.ts"
+  },
+  {
+    "id": "decisions/adr-template",
+    "title": "ADR template",
+    "description": "Required one-decision structure and truthful status guidance.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "template"
+    ],
+    "body": "Template Use one decision per record. Use approved only when repository behavior or an authorized governing decision supports it. Use draft when evidence is insufficient."
+  },
+  {
+    "id": "decisions/index",
+    "title": "Decision book",
+    "description": "Business, experience, architecture, documentation, orchestration, and governance decisions in dependency order.",
+    "section": "decisions",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/index.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [],
+    "tags": [
+      "adr",
+      "decisions"
+    ],
+    "body": "Foundation The first decisions remain business definition, customer experience, and architecture evolution. Orchestration decisions depend on them; they do not replace them. Why Beacon exists and the business definition Operate Beacon & Co. as a solo digital presence service around Waynesboro. Begin with a free audit and the smallest fitting paid service. Preserve the founder sales call and client content approval. Define the brand and customer experience Use the forest, sage, gold, cream, ink, and rule palette; Playfair and DM Sans hierarchy; one primary CTA; real photography; visible focus; reduced motion; and honest status language. Record architecture evolution and source atlas Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives. Use a durable AI assisted operating model Originally adopted a file only handoff and deferred a broker during Phase 1. Use Astro for the unified marketing, docs, and workspace site Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace. Use Markdoc as canonical documentation source Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled. Use a central broker boundary Implement a separate in repository broker module as an in memory simulation. Durable service extraction and live invocation remain future decisions. Keep roles stable and assign models dynamically Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity. Require an independent second voice Use the other eligible provider for critique and exclude the authoring session from approval votes. Use deterministic quality gates before model judgment Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted. Use isolated Git worktrees for live implementation workers Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now. Require human approval for high impact actions Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision. Use docs as code for canonical project memory Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review. Use a provider adapter boundary Compile provider specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning. Status rule Implemented and established repository choices may be approved. Target architecture not implemented is draft or under review unless the decision governs a simulation or policy boundary that now exists. Evidence alone does not accept an ADR."
+  },
+  {
+    "id": "getting-started/documentation-guide",
+    "title": "Documentation guide",
+    "description": "How to author, review, link, and validate canonical Markdoc pages.",
+    "section": "getting-started",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "AGENTS.md",
+      "package.json"
+    ],
+    "relatedAdrs": [
+      "0006-use-markdoc",
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "getting-started"
+    ],
+    "body": "Authoring contract Every page uses .mdoc , validated frontmatter, a truthful status, a review date, an owner, sources, related decisions, and related pages. Use controlled Markdoc tags instead of arbitrary HTML. Change rule A material change updates the relevant living page and a change record or ADR. Use one decision per ADR. Do not silently rewrite accepted history; supersede it and link both records. Statuses draft : incomplete or insufficient evidence under review : review is active approved : governs project work superseded : retained history, no longer governing Run npm run docs:validate and npm run build after material documentation changes."
+  },
+  {
+    "id": "getting-started/local-development",
+    "title": "Local development",
+    "description": "Install, run, test, and build the repository locally.",
+    "section": "getting-started",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "AGENTS.md",
+      "package.json"
+    ],
+    "relatedAdrs": [
+      "0006-use-markdoc",
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "getting-started"
+    ],
+    "body": "Prerequisites Node.js 22.12 or later npm Python only for retained MkDocs validation Commands Astro serves the marketing site, documentation, and workspace together. Static output is written to dist/ . No Claude or Codex API key is required. Provider adapters compile a prompt preview and return a clearly labeled simulated result."
+  },
+  {
+    "id": "getting-started/overview",
+    "title": "Overview",
+    "description": "How to read and use the Beacon source of truth.",
+    "section": "getting-started",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "AGENTS.md",
+      "package.json"
+    ],
+    "relatedAdrs": [
+      "0006-use-markdoc",
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "getting-started"
+    ],
+    "body": "What this system contains The repository has three deliberately different surfaces: 1. the marketing application at / ; 2. the canonical Markdoc handbook at /docs ; 3. the simulated orchestration workspace at /workspace . The handbook records stable business, product, architecture, agent, workflow, governance, operations, and decision knowledge. The workspace shows how ordinary language becomes a safe work request without requiring prompt engineering expertise. Reading order Read Current phase before reporting status. Read the controlling ADR before changing direction. Read agent and workflow contracts before assigning work. Read the source map when a claim’s authority is unclear."
+  },
+  {
+    "id": "getting-started/repository-guide",
+    "title": "Repository guide",
+    "description": "Where implementation, documentation, orchestration, and evidence live.",
+    "section": "getting-started",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "AGENTS.md",
+      "package.json"
+    ],
+    "relatedAdrs": [
+      "0006-use-markdoc",
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "getting-started"
+    ],
+    "body": "Primary paths Path Responsibility src/pages/index.astro Marketing entry src/components/ Marketing, docs, and workspace components src/content/docs/ Canonical Markdoc content src/modules/orchestration/ Provider neutral simulation and policy public/diagrams/ Public diagram sources, previews, and exports reference/source materials/ Hashed original and extracted evidence tests/orchestration/ Translator, retrieval, routing, continuation, and impact tests docs/ Retained pre Markdoc handbook evidence during migration Shared instructions AGENTS.md is the durable repository rule set. CLAUDE.md must continue to resolve to the same instructions. A handoff is a compact pointer to this repository state, not a transcript."
+  },
+  {
+    "id": "governance/audit-policy",
+    "title": "Audit policy",
+    "description": "The minimum event trail for translation, routing, execution, review, approval, and impact.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "Audit records preserve interpretation, retrieved sources, routing scores, provider changes, sessions, commands, gate evidence, reviews, repairs, approvals, outcome, and documentation impact. Current records exist only in memory during simulation. A durable store requires retention, access, deletion, backup, and recovery decisions."
+  },
+  {
+    "id": "governance/capacity-and-cost-routing",
+    "title": "Capacity and cost routing",
+    "description": "Observed health, cooldown, load, quality, and manual capacity without fabricated allowances.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "The capacity state records health, cooldown, manual capacity from 0 to 1, recent failures, active units, context pressure, and last success. Rate limits create a cooldown and fallback. Consumer CLI plans do not expose one reliable universal API for exact tokens remaining. The UI must say “manual capacity” or “observed pressure,” never an invented allowance."
+  },
+  {
+    "id": "governance/evidence-policy",
+    "title": "Evidence policy",
+    "description": "What must be cited before a decision, review, gate, or completion claim is valid.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "Evidence can be a source file, decision, command, test, diff, artifact hash, approval, or qualified external source. It must be relevant to an acceptance criterion and record limitations. Unsupported model confidence is not evidence. A deterministic failure is blocking."
+  },
+  {
+    "id": "governance/human-authority",
+    "title": "Human authority",
+    "description": "Decisions the owner, authorized professionals, and clients retain.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "The founder owns sales, pricing exceptions, scope approval, spending, credentials, external commitments, merge, deployment, and release. Qualified humans own legal, privacy, financial, and professional decisions. The client approves drafted client content before publication. Automation prepares evidence and recommendations; it does not inherit authority from confidence."
+  },
+  {
+    "id": "governance/model-independence",
+    "title": "Model independence",
+    "description": "Why roles and business meaning stay stable when Claude or Codex changes.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "Provider adapters receive the same work request, criteria, context, permissions, evidence rules, and stop conditions. They may format instructions for the target tool but cannot change business meaning. Claude first is configuration, not organizational identity. Codex may plan; Claude may implement; the broker selects per work unit."
+  },
+  {
+    "id": "governance/permissions-and-least-privilege",
+    "title": "Permissions and least privilege",
+    "description": "Read-only defaults, controlled write boundaries, and forbidden external actions.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "Planning and review are read only. Future implementation write access is limited to one isolated worktree. Workers cannot push, merge, deploy, change remotes, use production credentials, or recursively create uncontrolled workers. The broker applies policy before provider preference or scoring."
+  },
+  {
+    "id": "governance/privacy-and-data-classification",
+    "title": "Privacy and data classification",
+    "description": "Public, internal, confidential, and restricted request handling.",
+    "section": "governance",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models",
+      "0009-require-independent-second-voice",
+      "0012-require-human-approval",
+      "0014-use-provider-adapter-boundary"
+    ],
+    "tags": [
+      "governance"
+    ],
+    "body": "Every request is classified before routing. A provider must support the classification and required tools. Restricted data is not eligible for either simulated provider profile by default. Do not place secrets, credentials, private client data, or unnecessary personal information in Markdoc or a provider context package."
+  },
+  {
+    "id": "index",
+    "title": "Beacon Decision System",
+    "description": "The canonical, source-backed project memory for Beacon & Co.",
+    "section": "home",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx",
+      "AGENTS.md",
+      "docs/current-state.md",
+      "docs/architecture.md"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience",
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0006-use-markdoc"
+    ],
+    "tags": [
+      "source-of-truth",
+      "overview",
+      "beacon"
+    ],
+    "body": "Markdoc in this repository is the source of truth for business direction, product rules, architecture, roles, workflows, decisions, and operating policy. Runtime state and chat history do not replace it. Start with the current boundary Beacon & Co. is a solo operated digital presence business serving locally owned businesses around Waynesboro, Virginia. The implemented product is a static Astro marketing site plus one narrow Cloudflare Worker contact route. The orchestration module documented here is an in memory simulation . It validates requests, retrieves Markdoc context, recommends a provider, compiles provider specific prompt previews, models gates, and proposes documentation updates. It does not call Claude or Codex, create a durable queue, open worktrees, merge, deploy, or store runtime state in Markdoc. Read next Use it for Current phase What exists and what does not Product vision Why the business and system exist Architecture overview Current application and target broker boundaries Agent organization Stable roles and responsibilities Workflow overview Sequential delivery and review Decision book Why governing choices were made Source map Provenance and authority The operating rule One role owns one deliverable. Models are replaceable workers. Evidence comes before model confidence. A worker cannot approve its own output, failed deterministic gates cannot be outvoted, and an authorized human owns consequential decisions. “Accepted” describes a governing decision. “Current” describes verified repository behavior. “Target” and “proposal” do not claim production implementation."
+  },
+  {
+    "id": "operations/backup-and-recovery",
+    "title": "Backup and recovery",
+    "description": "Current repository recovery and future runtime-state requirements.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "Git and source controlled Markdoc preserve approved project memory. Imported source originals remain hashed and unchanged. Future runtime storage requires backup frequency, restore testing, retention, encryption, access, deletion, and regional decisions before adoption."
+  },
+  {
+    "id": "operations/configuration",
+    "title": "Configuration",
+    "description": "Claude-first preference, task affinity, provider profiles, workflow limits, and simulation settings.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "Configuration currently lives in typed defaults. Claude first is enabled for planning, architecture, and documentation. Codex is the code affinity provider. Both profiles allow public, internal, and confidential simulated work but not restricted data. Future external configuration must be validated, versioned, and must not contain secrets in Markdoc."
+  },
+  {
+    "id": "operations/incident-response",
+    "title": "Incident response",
+    "description": "Target detection, containment, recovery, communication, and learning flow.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "An Incident Commander coordinates the timeline, impact, containment, recovery, communication, and follow up. Relevant engineering, security, SRE, product, and human owners remain accountable for their deliverables. Production incidents cannot be simulated into a “resolved” state without evidence."
+  },
+  {
+    "id": "operations/model-health-and-cooldowns",
+    "title": "Model health and cooldowns",
+    "description": "Observed failure, degradation, rate limits, manual capacity, and recovery.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "Health states are healthy, degraded, rate limited, and unavailable. Cooldown timestamps, recent failures, active work, context pressure, last success, and manual capacity affect eligibility and score. A provider that is rate limited, unavailable, cooling down, or at zero capacity is rejected before preference. Fallback preserves the same work request and context."
+  },
+  {
+    "id": "operations/monitoring",
+    "title": "Monitoring",
+    "description": "Target signals for provider, workflow, quality, cost, and business outcomes.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "Target monitoring includes routing decisions, queue age, provider health, cooldown, latency, reported token/cost, failure category, gate pass rate, repair count, review findings, approval time, accepted outcome, and documentation freshness. No production monitoring stack exists for orchestration."
+  },
+  {
+    "id": "operations/operating-model",
+    "title": "Operating model",
+    "description": "How the controlled company runs one role, one phase, and one evidence-backed handoff at a time.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "Sequential execution is the default until isolation, ownership, and recovery are proven. The Chief of Staff selects the workflow; the broker enforces work unit, provider, policy, gate, and completion state; specialists own deliverables; humans own consequential decisions."
+  },
+  {
+    "id": "operations/release-runbook",
+    "title": "Release runbook",
+    "description": "Evidence and authority required before any future merge, deployment, or release.",
+    "section": "operations",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0007-use-central-broker",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "operations"
+    ],
+    "body": "1. verify approved scope and acceptance criteria; 2. run all applicable deterministic gates; 3. obtain independent QA, PR, and security decisions; 4. resolve blockers through the owning role; 5. verify documentation impact and rollback; 6. assemble the Release Manager recommendation; 7. record authorized human approval; 8. perform the separately authorized release action; 9. validate and record outcome. The current orchestration prototype stops before steps 7–9 and performs no release action."
+  },
+  {
+    "id": "plans/capability-map",
+    "title": "Capability map",
+    "description": "Current, simulated, proposed, and future capabilities in one map.",
+    "section": "plans",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "docs/roadmap.md",
+      "docs/current-state.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker"
+    ],
+    "tags": [
+      "roadmap",
+      "phase"
+    ],
+    "body": "Capability State Evidence Marketing experience Current Astro source and build Contact notification Current Cloudflare Worker source Markdoc source of truth Current Content collection and docs routes Natural language translation Simulated/local Unit tests and workspace Markdoc retrieval Simulated/local Reader, index, retriever tests Claude/Codex routing Simulated/local Policy and fallback tests Prompt compilation Simulated/local Provider adapter tests Provider invocation Proposed No credentials or CLI execution Durable queue/audit Proposed In memory interfaces only Isolated worktrees Proposed Policy documented; no executor Merge/deploy/release Human only future Explicitly outside this work unit"
+  },
+  {
+    "id": "plans/current-phase",
+    "title": "Current phase",
+    "description": "Verified repository state and explicit target boundaries.",
+    "section": "plans",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "docs/roadmap.md",
+      "docs/current-state.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker"
+    ],
+    "tags": [
+      "roadmap",
+      "phase"
+    ],
+    "body": "Current implementation The repository builds a static Astro marketing site, a Markdoc documentation site, a simulated workspace, and a narrow Cloudflare Worker contact handler. Simulated orchestration The orchestration module executes typed local logic only. Its adapters create prompt previews. Its stores are in memory. It does not run provider CLIs, alter Git branches, persist jobs, send messages, or perform production actions. Target architecture The supplied Tier 1 sources define a brokered company with durable work units, isolated worktrees, real deterministic commands, fresh independent reviewers, majority convergence, human approvals, and auditable outcomes. Those capabilities remain target state unless a current page and test prove otherwise."
+  },
+  {
+    "id": "plans/future-work",
+    "title": "Future work",
+    "description": "Unimplemented capabilities that require a new bounded decision and authorization.",
+    "section": "plans",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "docs/roadmap.md",
+      "docs/current-state.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker"
+    ],
+    "tags": [
+      "roadmap",
+      "phase"
+    ],
+    "body": "Next safe work The next unit should validate the local simulation against one low risk documentation change, record usability findings, and refine translation without adding live credentials. Later one live provider adapter with a timeout, policy envelope, and evidence capture; a second provider and independent review enforcement; real command gates in an isolated worktree; durable runtime and approval storage; operational dashboards, budget controls, and incident recovery; broker extraction into a separate service. Each item requires its own threat, cost, rollback, and human approval decision."
+  },
+  {
+    "id": "plans/milestones",
+    "title": "Capability milestones",
+    "description": "Evidence-based exit gates for growing from documentation to controlled orchestration.",
+    "section": "plans",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "docs/roadmap.md",
+      "docs/current-state.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker"
+    ],
+    "tags": [
+      "roadmap",
+      "phase"
+    ],
+    "body": "Milestone Exit evidence Documentation foundation Schema, navigation, links, search, and static build pass Broker prototype Informal request reaches a simulated impact result One agent execution One live provider runs one bounded low risk unit with full audit Second voice Other provider reviews without sharing the author session Deterministic gates Real repository commands block completion on failure Worktree isolation Changes occur only in a verified isolated worktree Human approval service High impact state cannot advance without recorded authority Operations loop Health, failure, cost, latency, and outcomes are measured"
+  },
+  {
+    "id": "plans/roadmap",
+    "title": "Roadmap",
+    "description": "Phase-based capability sequence without invented dates, budgets, or completion percentages.",
+    "section": "plans",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "docs/roadmap.md",
+      "docs/current-state.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0007-use-central-broker"
+    ],
+    "tags": [
+      "roadmap",
+      "phase"
+    ],
+    "body": "Completed Phase 1 marketing site and narrow contact Worker safe source import, hashing, extraction, and assessment Markdoc documentation foundation orchestration interfaces and simulated first vertical slice Currently implemented canonical Markdoc content collection, routes, navigation, search, and components typed translator, retriever, router, capacity manager, adapters, workflows, approvals, audit, and impact analyzer test fixtures and deterministic validation Planned 1. validate one low risk work unit using the simulation; 2. add real isolated worktree execution only after a separate approval and threat review; 3. integrate one live provider behind the adapter contract; 4. add the independent second provider; 5. introduce durable audit/runtime storage only when repeated volume justifies it; 6. add operations instrumentation before production use. Exploratory Additional providers, queue scaling, safe parallelism, automated pull request preparation, and a separately deployed broker service require new evidence and ADRs."
+  },
+  {
+    "id": "product/principles",
+    "title": "Product and experience principles",
+    "description": "The brand, CTA, imagery, accessibility, and motion rules all surfaces preserve.",
+    "section": "product",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0002-define-brand-and-customer-experience.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience"
+    ],
+    "tags": [
+      "product"
+    ],
+    "body": "Experience rules 1. One clear primary action per screen. 2. Put the plain language promise in the high value reading area. 3. Support claims with a deliverable, source, price boundary, or real example. 4. Use real local photography with permission or labeled neutral placeholders. 5. Never use generated stock people or testimonial avatars. 6. Keep keyboard focus visible and tables, code, and diagrams usable at narrow widths. 7. Every animation respects prefers reduced motion . 8. Never use localStorage or sessionStorage . The documentation experience favors long form readability over decorative animation while retaining the forest, sage, gold, cream, ink, and rule palette."
+  },
+  {
+    "id": "product/problem-and-outcomes",
+    "title": "Problem and outcomes",
+    "description": "The user problem, company outcome, and evidence boundaries.",
+    "section": "product",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0002-define-brand-and-customer-experience.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience"
+    ],
+    "tags": [
+      "product"
+    ],
+    "body": "Customer problem The intended customer is credible offline but incomplete online, wants founder access and plain language, and cannot justify a traditional agency retainer. Outcomes make the business easier to find and trust; make the smallest useful fix clear; give the owner control of files and consequential approvals; show delivered value in understandable terms; learn manually before automating recurring work. Evidence boundary Market counts, competitor prices, margins, churn, capacity, and acquisition economics in prior proposal material are hypotheses until revalidated. Named businesses are research leads, not customers or endorsements."
+  },
+  {
+    "id": "product/scope-and-non-goals",
+    "title": "Scope and non-goals",
+    "description": "What this implementation includes and what remains intentionally absent.",
+    "section": "product",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0002-define-brand-and-customer-experience.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience"
+    ],
+    "tags": [
+      "product"
+    ],
+    "body": "In scope Astro + Markdoc source of truth site; source inventory, provenance, search, and diagrams; typed request translation and context retrieval; configurable routing, capacity, health, fallback, and continuation; prompt previews for Claude and Codex; in memory workflows, approvals, evidence, and audit; documentation impact proposals; automated tests and a visible simulation workspace. Not in scope live Claude or Codex invocation; durable database, queue, or approval service; autonomous workers or background execution; real Git worktree creation; automatic commits, pull requests, merge, push, deployment, or release; production observability or secrets; runtime edits to canonical Markdoc."
+  },
+  {
+    "id": "product/terminology",
+    "title": "Approved terminology",
+    "description": "Names that keep roles, providers, state, and truth boundaries precise.",
+    "section": "product",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0002-define-brand-and-customer-experience.md",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience"
+    ],
+    "tags": [
+      "product"
+    ],
+    "body": "Term Meaning Role Stable responsibility that owns one deliverable Provider Replaceable execution system such as Claude or Codex Session One provider context; an authoring session cannot review itself Work request Validated, provider neutral interpretation of the user request Work unit Bounded executable package with criteria, constraints, risk, and dependencies Broker Deterministic routing, sequencing, policy, evidence, and completion control Second voice Independent provider critique; not automatic approval Markdoc Version controlled canonical project memory Runtime state Queue, health, logs, approvals, retries, and current run evidence Simulated Interface and state behavior exercised without a live provider invocation"
+  },
+  {
+    "id": "product/vision",
+    "title": "Product and business vision",
+    "description": "Why Beacon exists, who it serves, and what outcome the system must support.",
+    "section": "product",
+    "status": "approved",
+    "sourceFiles": [
+      "docs/decisions/0001-why-beacon-exists-and-business-definition.md",
+      "docs/business/plan.md",
+      "src/components/PricingCards.astro"
+    ],
+    "relatedAdrs": [
+      "0001-why-beacon-exists-and-business-definition",
+      "0002-define-brand-and-customer-experience"
+    ],
+    "tags": [
+      "product"
+    ],
+    "body": "Founding observation Good local businesses around Waynesboro, Staunton, Fishersville, and nearby communities can be difficult to find online even when their real world reputation is strong. Beacon began with a bounded question: can one useful website or profile improvement help one local owner become easier to find? Business definition Beacon & Co. is a solo operated digital presence service for locally owned small businesses within roughly 30 miles of Waynesboro, Virginia. It begins with a useful free audit, recommends the smallest fitting paid service, and earns a recurring relationship through visible results. Two human moments remain deliberate: the founder conducts the sales conversation, and the client approves drafted content before publication. Current offer Offer Working price Role : Spark $299 one time Google profile and review system entry Website From $799 Client owned static site Presence $450/month plus setup Website, Google, social, reviews, report Authority $750/month plus setup Presence plus broader local SEO and strategy Prices are current site offers, not proof of margin. The brand name remains provisional pending formal clearance."
+  },
+  {
+    "id": "references/document-statuses",
+    "title": "Document statuses",
+    "description": "Approved lifecycle and truth-state labels for canonical documentation.",
+    "section": "references",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "status"
+    ],
+    "body": "Status Meaning Draft Incomplete or insufficient evidence Under review Active review; not yet governing Approved Governing project knowledge Superseded Historical; replaced by a linked record Truth state Meaning Current Verified repository behavior Decision Accepted direction or rule Target Approved or described future architecture, not current Proposal Unaccepted or unimplemented option Reference Supporting explanation or provenance"
+  },
+  {
+    "id": "references/glossary",
+    "title": "Glossary",
+    "description": "Shared business, documentation, orchestration, provider, and evidence vocabulary.",
+    "section": "references",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0008-stable-roles-dynamic-models"
+    ],
+    "tags": [
+      "glossary"
+    ],
+    "body": "Business and product Beacon & Co. Working company name. Spark, Website, Presence, Authority. The current offer ladder. Free audit. Primary marketing conversion. Orchestration Translator. Converts ordinary language to a validated request. Broker. Enforces routing and completion. Provider. Claude or Codex. Second voice. Independent critique. Continuation package. Provider neutral current state. Evidence Deterministic gate. A real command or fixed check. Blocker. A condition that prevents safe completion. Human gate. Recorded authorization. Documentation impact. Required canonical update proposal."
+  },
+  {
+    "id": "references/open-questions",
+    "title": "Open questions and source conflicts",
+    "description": "Unresolved decisions, source tensions, and migration needs that must not be silently assumed.",
+    "section": "references",
+    "status": "under-review",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "AGENTS.md",
+      "docs/current-state.md",
+      "docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md"
+    ],
+    "relatedAdrs": [
+      "0004-use-a-durable-ai-assisted-operating-model",
+      "0007-use-central-broker",
+      "0011-use-isolated-git-worktrees"
+    ],
+    "tags": [
+      "questions",
+      "conflicts"
+    ],
+    "body": "Resolved for this implementation MkDocs versus Markdoc: Markdoc is now canonical; MkDocs is retained as migration evidence. Phase 1 versus broker request: only a typed in memory simulation is authorized; no speculative backend was added. ADR numbering: founding ADRs 0001–0004 remain in order; new decisions continue at 0005. Still open When, if ever, should one provider adapter invoke a live CLI? What threat model and operator approval are required for worktree creation? What durable store fits audit, approvals, retention, and recovery? Which measured tasks justify a Claude or Codex affinity adjustment? When can the legacy MkDocs tree be removed? What formal name/domain/trademark decision replaces the provisional Beacon name? Which proposal market, competitor, pricing, margin, and vendor claims remain valid after revalidation?"
+  },
+  {
+    "id": "references/source-map",
+    "title": "Source map",
+    "description": "Authority, provenance, extraction, and conflict rules for project claims and diagrams.",
+    "section": "references",
+    "status": "approved",
+    "sourceFiles": [
+      "reference/source-materials/inventory/source-inventory.json",
+      "reference/source-materials/inventory/source-assessment.json",
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md"
+    ],
+    "relatedAdrs": [
+      "0003-record-architecture-evolution-and-source-atlas",
+      "0013-use-docs-as-code"
+    ],
+    "tags": [
+      "sources",
+      "provenance"
+    ],
+    "body": "Tier 1: authoritative organization and broker content Claude Multi Agent Business Guide.pdf Claude Codex Broker Addendum.docx all supplied AI company, individual agent, unified, easy read, and broker Excalidraw/ZIP sources These define role contracts, workflow, broker target, routing, gates, approvals, audit, and diagram meaning. Tier 2: authoritative repository context Current source, configuration, instructions, docs, scripts, tests, and deployment files define what exists and what constraints apply. Tier 3: visual reference only v9 source.html , veslyn proposal.html , and smart home architecture.html inform layout, navigation, responsive behavior, cards, tabs, and diagram presentation. Their unrelated domain claims are not broker or product truth. Safe import evidence The importer discovered top level Downloads files, copied them without deletion, hashed them, and recorded original and repository paths. PDFKit extracted the PDF; textutil extracted the DOCX; ZIPs were listed and extracted without mutation; JSON scenes were parsed; HTML structures were inspected. See reference/source materials/inventory/source inventory.md and source assessment.md for exact sizes, hashes, labels, headings, and extracted contents. Conflict rule Current repository behavior controls current state claims. Approved ADRs control governing direction. Tier 1 target sources remain target until implemented. Conflicts are stated and added to Open questions."
+  },
+  {
+    "id": "workflows/bounded-repair-loop",
+    "title": "Bounded repair loop",
+    "description": "How evidence returns a defect to the role that owns it.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Requirement ambiguity returns to Business Analyst or Product Manager. Architecture defects return to Solution or Security Architect. Implementation defects return to Code Writer. Test defects return to QA. Delivery defects return to DevOps. Retries are capped by workflow policy. Reaching the cap stops execution and escalates to a human; it never creates an infinite loop."
+  },
+  {
+    "id": "workflows/broker-work-unit-lifecycle",
+    "title": "Broker work-unit lifecycle",
+    "description": "Draft, context, approval, routing, execution, review, repair, and completion states.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Workers cannot set complete . The broker may do so only after policy, evidence, criteria, blockers, and approvals satisfy the completion rule."
+  },
+  {
+    "id": "workflows/end-to-end-business-workflow",
+    "title": "End-to-end business workflow",
+    "description": "The 15 controlled phases from idea intake through operations learning.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage. One approved deliverable and universal handoff controls entry to the next stage."
+  },
+  {
+    "id": "workflows/human-approval-flow",
+    "title": "Human approval flow",
+    "description": "How consequential actions pause until an authorized person decides.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Architecture, spending, legal/privacy exposure, production changes, merge, deployment, and release require recorded human authority. An approval record names the work unit, kind, scope, requester, status, decision time, authorized person, and rationale. Provider sessions cannot approve themselves."
+  },
+  {
+    "id": "workflows/implementation-and-diff-review",
+    "title": "Implementation and diff review",
+    "description": "Smallest-change implementation followed by a read-only review from the other provider.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "The implementer receives write access only inside its assigned isolated worktree in the target architecture. It adds tests and reports local validation. The other provider then reviews the complete diff read only. The current prototype compiles prompts and simulates this state; it does not create a worktree or change files through a provider adapter."
+  },
+  {
+    "id": "workflows/majority-convergence",
+    "title": "Majority convergence",
+    "description": "The 2-of-3 panel policy with independence, blockers, evidence, and human gates.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Completion rule The three panel roles are a fresh Claude reviewer, fresh Codex reviewer, and a fresh broker selected arbiter. A session that authored the work is excluded."
+  },
+  {
+    "id": "workflows/operations-learning-loop",
+    "title": "Operations and learning loop",
+    "description": "How support, reliability, customer outcomes, quality, and cost become new controlled work.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Operational evidence feeds Product and Program Management: Learning records facts and uncertainty. It does not let runtime telemetry rewrite accepted Markdoc without a reviewed repository change."
+  },
+  {
+    "id": "workflows/overview",
+    "title": "Workflow overview",
+    "description": "Sequential role ownership, provider routing, deterministic gates, repair, and human authority.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Default operating shape Intake produces an approved request. Business and product roles define the outcome. Architecture and security define safe boundaries. Repository research locates change points. Implementation happens in one bounded workspace. QA and review are independent. Deterministic gates run before model voting. Release stops at authorized human authority. The current code simulates this shape; it does not execute provider sessions or production actions."
+  },
+  {
+    "id": "workflows/planning-and-second-voice",
+    "title": "Planning and second voice",
+    "description": "A primary planner owns the plan and the other provider independently challenges it.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "The broker selects the best eligible planner. The other provider receives the same approved goal, criteria, Markdoc context, ADR constraints, and evidence rules. It critiques assumptions, dependencies, risk, and testability without editing the plan. Disagreement returns to the planning owner or a human gate; it does not create silent hybrid ownership."
+  },
+  {
+    "id": "workflows/quality-gates",
+    "title": "Deterministic quality gates",
+    "description": "Real commands and acceptance evidence remain authoritative over model confidence.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "Required gates are selected from the repository’s actual format, lint, typecheck, unit, integration, build, and approved security commands. A failed blocking gate cannot be overruled by a reviewer vote. Gate evidence includes the command, exit status, relevant output, environment, and criterion it supports."
+  },
+  {
+    "id": "workflows/release-flow",
+    "title": "Release flow",
+    "description": "Evidence assembly, hold/release recommendation, human decision, and post-release validation.",
+    "section": "workflows",
+    "status": "approved",
+    "sourceFiles": [
+      "BEACON_COMPLETE_EXECUTION_PROMPT.md",
+      "reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf",
+      "reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"
+    ],
+    "relatedAdrs": [
+      "0009-require-independent-second-voice",
+      "0010-use-deterministic-quality-gates",
+      "0012-require-human-approval"
+    ],
+    "tags": [
+      "workflow"
+    ],
+    "body": "The Release Manager assembles requirements, gates, QA, reviews, security, delivery, rollback, documentation, and approvals. It recommends release, conditional release, or hold. The broker never silently merges or deploys. The current implementation performs no GitHub or production action."
+  }
+]

@@ -1,0 +1,18 @@
+---
+title: "Deterministic quality gates"
+description: "Real commands and acceptance evidence remain authoritative over model confidence."
+section: "workflows"
+order: 605
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+Required gates are selected from the repository’s actual format, lint, typecheck, unit, integration, build, and approved security commands. A failed blocking gate cannot be overruled by a reviewer vote.
+
+Gate evidence includes the command, exit status, relevant output, environment, and criterion it supports.

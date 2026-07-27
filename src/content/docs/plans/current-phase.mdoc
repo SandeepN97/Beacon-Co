@@ -1,0 +1,26 @@
+---
+title: "Current phase"
+description: "Verified repository state and explicit target boundaries."
+section: "plans"
+order: 301
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
+relatedPages: ["architecture/overview"]
+tags: ["roadmap","phase"]
+truthState: "current"
+---
+
+## Current implementation
+
+The repository builds a static Astro marketing site, a Markdoc documentation site, a simulated workspace, and a narrow Cloudflare Worker contact handler.
+
+## Simulated orchestration
+
+The orchestration module executes typed local logic only. Its adapters create prompt previews. Its stores are in-memory. It does not run provider CLIs, alter Git branches, persist jobs, send messages, or perform production actions.
+
+## Target architecture
+
+The supplied Tier 1 sources define a brokered company with durable work units, isolated worktrees, real deterministic commands, fresh independent reviewers, majority convergence, human approvals, and auditable outcomes. Those capabilities remain target state unless a current page and test prove otherwise.

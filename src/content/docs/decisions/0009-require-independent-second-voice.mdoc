@@ -1,0 +1,66 @@
+---
+title: "ADR-0009 — Require an independent second voice"
+description: "Use the other eligible provider for critique and exclude the authoring session from approval votes."
+section: "decisions"
+order: 818
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0009" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+An authoring model or session has correlated blind spots and cannot independently approve itself.
+
+## Decision drivers
+
+- Reviewer independence
+- Defect discovery
+- Evidence-based convergence
+
+## Options considered
+
+- Self-review
+- Same provider/session review
+- Other provider plus fresh-session panel
+
+## Decision
+
+Use the other eligible provider for critique and exclude the authoring session from approval votes.
+
+## Positive consequences
+
+- Reduces correlated review
+- Makes ownership explicit
+
+## Negative consequences
+
+- Adds latency and provider usage
+
+## Risks
+
+- Ritual duplicate review can waste tokens on low-risk work
+
+## Follow-up work
+
+- Scale review to risk
+- Track whether second voice finds material defects
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf`
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`

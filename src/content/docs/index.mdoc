@@ -1,0 +1,42 @@
+---
+title: "Beacon Decision System"
+description: "The canonical, source-backed project memory for Beacon & Co."
+section: "home"
+order: 0
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","AGENTS.md","docs/current-state.md","docs/architecture.md"]
+relatedAdrs: ["0001-why-beacon-exists-and-business-definition","0002-define-brand-and-customer-experience","0003-record-architecture-evolution-and-source-atlas","0006-use-markdoc"]
+relatedPages: ["getting-started/overview","plans/current-phase","architecture/overview","references/source-map"]
+tags: ["source-of-truth","overview","beacon"]
+truthState: "current"
+---
+
+{% source_of_truth state="current" label="Canonical project memory" %}
+Markdoc in this repository is the source of truth for business direction, product rules, architecture, roles, workflows, decisions, and operating policy. Runtime state and chat history do not replace it.
+{% /source_of_truth %}
+
+## Start with the current boundary
+
+Beacon & Co. is a solo-operated digital-presence business serving locally owned businesses around Waynesboro, Virginia. The implemented product is a static Astro marketing site plus one narrow Cloudflare Worker contact route.
+
+The orchestration module documented here is an **in-memory simulation**. It validates requests, retrieves Markdoc context, recommends a provider, compiles provider-specific prompt previews, models gates, and proposes documentation updates. It does not call Claude or Codex, create a durable queue, open worktrees, merge, deploy, or store runtime state in Markdoc.
+
+| Read next | Use it for |
+|---|---|
+| [Current phase](/docs/plans/current-phase/) | What exists and what does not |
+| [Product vision](/docs/product/vision/) | Why the business and system exist |
+| [Architecture overview](/docs/architecture/overview/) | Current application and target broker boundaries |
+| [Agent organization](/docs/agents/overview/) | Stable roles and responsibilities |
+| [Workflow overview](/docs/workflows/overview/) | Sequential delivery and review |
+| [Decision book](/docs/decisions/) | Why governing choices were made |
+| [Source map](/docs/references/source-map/) | Provenance and authority |
+
+## The operating rule
+
+One role owns one deliverable. Models are replaceable workers. Evidence comes before model confidence. A worker cannot approve its own output, failed deterministic gates cannot be outvoted, and an authorized human owns consequential decisions.
+
+{% callout type="warning" title="Truth boundary" %}
+“Accepted” describes a governing decision. “Current” describes verified repository behavior. “Target” and “proposal” do not claim production implementation.
+{% /callout %}

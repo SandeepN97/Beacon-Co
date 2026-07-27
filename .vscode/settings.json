@@ -1,0 +1,22 @@
+{
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
+  "errorLens.enabledDiagnosticLevels": [
+    "error",
+    "warning"
+  ],
+  "cSpell.words": [
+    "Astro",
+    "Axiom",
+    "Cloudflare",
+    "JSON2Video",
+    "Satori",
+    "Supabase",
+    "Turnstile",
+    "Waynesboro",
+    "Wrangler",
+    "pgboss",
+    "pgsodium"
+  ]
+}

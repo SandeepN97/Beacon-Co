@@ -1,0 +1,67 @@
+---
+title: "ADR-0005 — Use Astro for the unified marketing, docs, and workspace site"
+description: "Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace."
+section: "decisions"
+order: 814
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["package.json","astro.config.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0005" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+The repository already uses Astro static output and must not be replaced with a generic docs starter.
+
+## Decision drivers
+
+- Preserve current app
+- Static Cloudflare compatibility
+- No client framework runtime
+- One build
+
+## Options considered
+
+- Separate docs repository
+- Replace marketing app
+- Add docs/workspace routes to Astro
+
+## Decision
+
+Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace.
+
+## Positive consequences
+
+- One dependency graph and build
+- Existing features remain intact
+
+## Negative consequences
+
+- Docs styles and navigation require custom maintenance
+
+## Risks
+
+- A docs dependency could affect the marketing build
+
+## Follow-up work
+
+- Keep docs CSS scoped by class
+- Run the full Astro build
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `package.json`
+- `astro.config.mjs`
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`

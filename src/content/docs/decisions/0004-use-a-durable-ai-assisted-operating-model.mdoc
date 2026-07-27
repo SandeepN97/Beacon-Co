@@ -1,0 +1,65 @@
+---
+title: "ADR-0004 — Use a durable AI-assisted operating model"
+description: "Originally adopted a file-only handoff and deferred a broker during Phase 1."
+section: "decisions"
+order: 813
+status: "superseded"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md","docs/ai-agent-workflow.md"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","superseded"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0004" status="superseded" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Claude and Codex sessions can end or hit capacity, so repository memory must outlive either tool.
+
+## Decision drivers
+
+- Cross-provider continuity
+- Lower repeated context
+- Deterministic verification
+
+## Options considered
+
+- Chat-only memory
+- File handoff only
+- Immediate autonomous broker
+
+## Decision
+
+Originally adopted a file-only handoff and deferred a broker during Phase 1.
+
+## Positive consequences
+
+- Established repository-first memory
+- Reduced transcript transfer
+
+## Negative consequences
+
+- No typed routing or context package
+
+## Risks
+
+- The no-broker clause became inconsistent with the later explicit execution mandate
+
+## Follow-up work
+
+- Retain compact handoffs
+- Use ADR-0007 for the approved in-repository simulation boundary
+
+## Supersedes or superseded by
+
+Superseded in part by ADR-0007. Repository-first memory remains valid.
+
+## Source references
+
+- `docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md`
+- `docs/ai-agent-workflow.md`

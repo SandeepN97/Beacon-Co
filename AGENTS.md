@@ -2,30 +2,42 @@
 
 Digital presence agency for small businesses within 30 miles of Waynesboro, VA. Solo-operator business, automated end-to-end except two human touchpoints: the sales call and the content-approval tap.
 
-## Current phase: Phase 1 — Frontend only
+## Current phase: Phase 1 — Marketing and lead capture
 
-We are building **only the marketing site** right now. No backend services, no database, no queue workers yet — those come in later phases and must not be scaffolded speculatively. If a task seems to need backend logic (the contact form, for example), stub it clearly and note the TODO rather than building infrastructure early.
+The Astro marketing site and one narrow Cloudflare Worker contact route are implemented. Current work may maintain those surfaces, but no database, queue, admin dashboard, or automation workers may be scaffolded speculatively. Those systems remain later-phase plans until the user explicitly authorizes implementation.
 
-Full system context lives in `docs/architecture.md` — read it before making any structural decision, even in Phase 1, so nothing built now conflicts with what's planned later (naming, env vars, folder conventions).
+## Project source of truth
 
-Brand tokens (colors, fonts, logo usage) live in `docs/brand.md` — read it before writing any component styling.
+The published Astro + Markdoc decision system begins at `src/content/docs/index.mdoc` and renders at `/docs/`.
+
+- Read `src/content/docs/plans/current-phase.mdoc` before changing implementation or reporting project status.
+- Read the relevant pages in `src/content/docs/architecture/` before an architectural, structural, or phase-sequencing decision.
+- Read `src/content/docs/product/principles.mdoc`, `src/content/docs/product/scope-and-non-goals.mdoc`, and `docs/brand.md` before any UI, interaction, copy hierarchy, or styling change.
+- Read the relevant product and plan pages before changing an offer, price, guarantee, audience, business process, or business claim.
+- Read `src/content/docs/decisions/index.mdoc` for existing decisions and `src/content/docs/governance/` for operating rules.
+- Treat ADR-0001 (business), ADR-0002 (design), and ADR-0003 (architecture evolution) as foundation decisions.
+- Every material change must update the relevant `.mdoc` page. Significant choices also require one reviewable ADR.
+- Keep planned and implemented state distinct. Documentation of a future component never authorizes its implementation.
+- The older `docs/` MkDocs handbook is retained as migration evidence and a legacy build; it is not the canonical current source.
 
 ## Stack for this phase
 
-- **Astro 6**, static output — no SSR adapter needed for a static marketing site
-- **Cloudflare Pages** as the eventual deploy target (not configured yet, just keep output Cloudflare-compatible)
+- **Astro 7.1.3**, static output — no SSR adapter
+- **Cloudflare Worker** with static assets and the existing `/api/contact` route
 - Plain CSS (the existing design already has a clean token system — don't introduce Tailwind or a CSS-in-JS library)
 - Vanilla JS scoped per-component via `<script>` tags — no framework runtime (no React, no Vue) for this static site
+- **Astro Markdoc** and Astro content collections for the canonical project handbook
+- **MkDocs 1.6.1** retained only for the legacy handbook build
 
 ## Source material
 
-`reference/v9-source.html` is the existing single-file site (~3,350 lines) that this Astro project replaces. It is the source of truth for content and behavior — split it into components, don't rewrite the copy or redesign anything unless asked.
+`reference/v9-source.html` is the original single-file site (~3,350 lines) that the Astro project replaced. It remains the migration baseline for content and behavior; do not redesign or rewrite it without an explicit request and documentation of the resulting change.
 
 ## Non-negotiables
 
 - **No `localStorage`/`sessionStorage`** anywhere — not supported in some deploy targets this project may later use. Keep all state in memory or in Astro's build-time data.
 - **No AI-generated stock photos or avatars** in any placeholder content — real local photography only, even as placeholders (use clearly-labeled gray boxes instead of fake AI faces).
-- One clear call-to-action per screen — no competing secondary buttons or decorative badges near a CTA (this is a deliberate design rule from user-research, not a style preference — see `docs/architecture.md` § Design Principles).
+- One clear call-to-action per screen — no competing secondary buttons or decorative badges near a CTA (this is a deliberate experience rule, not a style preference — see `docs/product/experience-specification.md` and ADR-0002).
 - Every animation respects `prefers-reduced-motion`.
 
 ## Build & verify
@@ -34,9 +46,25 @@ Brand tokens (colors, fonts, logo usage) live in `docs/brand.md` — read it bef
 npm run dev      # localhost:4321, hot reload
 npm run build     # outputs to dist/ — verify this succeeds before considering any task done
 npm run preview   # serve the production build locally
+npm run docs:serve # documentation preview on localhost:8000
+npm run docs:validate # validate Markdoc metadata, links, sources, diagrams, and search
+npm run typecheck # Astro and TypeScript diagnostics
+npm run test      # orchestration unit tests
+npm run docs:build # validate canonical docs and build the Astro site
 ```
 
-After any structural change, run `npm run build` and confirm it completes without errors before reporting the task complete.
+Run `npm run docs:build` after every material project change. Run `npm run typecheck` and `npm run test` after orchestration or structural changes. Do not report completion while a required check fails.
+
+## Cross-agent continuity
+
+- `CLAUDE.md` must remain a symlink to this file so Claude Code and Codex share one durable instruction source.
+- `.ai/handoff.md` is the local, ignored checkpoint for unfinished work. Read it only when the user asks to continue, resume, recover, or switch agents.
+- When the user asks for a handoff, replace that file using `.ai/handoff.template.md`. Keep it under 60 lines and include only verified state, decisions, changed paths, validation, blockers, and the exact next action.
+- Never paste full chat transcripts, large logs, or full diffs into a handoff. Git and the working tree are the source of truth.
+
+## Compact instructions
+
+When compacting context, preserve the objective, hard constraints, decisions and reasons, exact changed paths, validation outcomes, blockers, and next action. Drop exploratory discussion, repeated instructions, and raw command output.
 
 ## Commit style
 

@@ -1,0 +1,18 @@
+---
+title: "Evidence policy"
+description: "What must be cited before a decision, review, gate, or completion claim is valid."
+section: "governance"
+order: 704
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+Evidence can be a source file, decision, command, test, diff, artifact hash, approval, or qualified external source. It must be relevant to an acceptance criterion and record limitations.
+
+Unsupported model confidence is not evidence. A deterministic failure is blocking.

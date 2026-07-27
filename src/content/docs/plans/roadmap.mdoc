@@ -1,0 +1,40 @@
+---
+title: "Roadmap"
+description: "Phase-based capability sequence without invented dates, budgets, or completion percentages."
+section: "plans"
+order: 300
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
+relatedPages: ["architecture/overview"]
+tags: ["roadmap","phase"]
+truthState: "target"
+---
+
+## Completed
+
+- Phase 1 marketing site and narrow contact Worker
+- safe source import, hashing, extraction, and assessment
+- Markdoc documentation foundation
+- orchestration interfaces and simulated first vertical slice
+
+## Currently implemented
+
+- canonical Markdoc content collection, routes, navigation, search, and components
+- typed translator, retriever, router, capacity manager, adapters, workflows, approvals, audit, and impact analyzer
+- test fixtures and deterministic validation
+
+## Planned
+
+1. validate one low-risk work unit using the simulation;
+2. add real isolated worktree execution only after a separate approval and threat review;
+3. integrate one live provider behind the adapter contract;
+4. add the independent second provider;
+5. introduce durable audit/runtime storage only when repeated volume justifies it;
+6. add operations instrumentation before production use.
+
+## Exploratory
+
+Additional providers, queue scaling, safe parallelism, automated pull-request preparation, and a separately deployed broker service require new evidence and ADRs.

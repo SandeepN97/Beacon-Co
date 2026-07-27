@@ -1,0 +1,40 @@
+---
+title: "Architecture overview"
+description: "Current Astro application, canonical Markdoc, and separate orchestration module."
+section: "architecture"
+order: 400
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "current"
+---
+
+{% source_of_truth state="current" label="Implemented boundary" %}
+The current repository contains an Astro application, a Markdoc source of truth, and a separate in-memory orchestration module. Live provider execution and durable runtime infrastructure are not implemented.
+{% /source_of_truth %}
+
+## Current repository boundary
+
+```text
+Beacon-Co
+├── Astro application
+│   ├── marketing site
+│   ├── /docs Markdoc renderer
+│   └── /workspace simulation
+├── Markdoc source of truth
+└── orchestration module
+    ├── translator + knowledge retriever
+    ├── broker + provider adapters
+    ├── workflows + approvals
+    └── audit + documentation impact
+```
+
+## Target broker boundary
+
+The target adds durable work units, execution management, isolated worktrees, real quality commands, fresh review sessions, provider invocation, persistent audit, and controlled pull-request preparation. No target element should be read as current merely because it appears in a diagram.
+
+{% architecture_diagram src="/diagrams/exports/beacon-system-static.svg" source="/diagrams/source/beacon-system.excalidraw" alt="Current Beacon marketing and contact architecture" caption="Current static application and narrow contact route." /%}

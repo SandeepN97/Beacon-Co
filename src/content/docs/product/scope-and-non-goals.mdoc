@@ -1,0 +1,35 @@
+---
+title: "Scope and non-goals"
+description: "What this implementation includes and what remains intentionally absent."
+section: "product"
+order: 204
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["docs/decisions/0002-define-brand-and-customer-experience.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0001-why-beacon-exists-and-business-definition","0002-define-brand-and-customer-experience"]
+relatedPages: ["plans/current-phase"]
+tags: ["product"]
+truthState: "current"
+---
+
+## In scope
+
+- Astro + Markdoc source-of-truth site;
+- source inventory, provenance, search, and diagrams;
+- typed request translation and context retrieval;
+- configurable routing, capacity, health, fallback, and continuation;
+- prompt previews for Claude and Codex;
+- in-memory workflows, approvals, evidence, and audit;
+- documentation-impact proposals;
+- automated tests and a visible simulation workspace.
+
+## Not in scope
+
+- live Claude or Codex invocation;
+- durable database, queue, or approval service;
+- autonomous workers or background execution;
+- real Git worktree creation;
+- automatic commits, pull requests, merge, push, deployment, or release;
+- production observability or secrets;
+- runtime edits to canonical Markdoc.

@@ -1,0 +1,106 @@
+---
+title: "Decision book"
+description: "Business, experience, architecture, documentation, orchestration, and governance decisions in dependency order."
+section: "decisions"
+order: 800
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["docs/decisions/index.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: []
+relatedPages: ["decisions/adr-template"]
+tags: ["adr","decisions"]
+truthState: "decision"
+---
+
+## Foundation
+
+The first decisions remain business definition, customer experience, and architecture evolution. Orchestration decisions depend on them; they do not replace them.
+
+{% decision_card number="ADR-0001" status="approved" href="/docs/decisions/0001-why-beacon-exists-and-business-definition/" %}
+### Why Beacon exists and the business definition
+
+Operate Beacon & Co. as a solo digital-presence service around Waynesboro. Begin with a free audit and the smallest fitting paid service. Preserve the founder sales call and client content approval.
+{% /decision_card %}
+
+{% decision_card number="ADR-0002" status="approved" href="/docs/decisions/0002-define-brand-and-customer-experience/" %}
+### Define the brand and customer experience
+
+Use the forest, sage, gold, cream, ink, and rule palette; Playfair and DM Sans hierarchy; one primary CTA; real photography; visible focus; reduced motion; and honest status language.
+{% /decision_card %}
+
+{% decision_card number="ADR-0003" status="approved" href="/docs/decisions/0003-record-architecture-evolution-and-source-atlas/" %}
+### Record architecture evolution and source atlas
+
+Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives.
+{% /decision_card %}
+
+{% decision_card number="ADR-0004" status="superseded" href="/docs/decisions/0004-use-a-durable-ai-assisted-operating-model/" %}
+### Use a durable AI-assisted operating model
+
+Originally adopted a file-only handoff and deferred a broker during Phase 1.
+{% /decision_card %}
+
+{% decision_card number="ADR-0005" status="approved" href="/docs/decisions/0005-use-astro-for-the-unified-site/" %}
+### Use Astro for the unified marketing, docs, and workspace site
+
+Keep one Astro static application with marketing at /, documentation at /docs, and simulation at /workspace.
+{% /decision_card %}
+
+{% decision_card number="ADR-0006" status="approved" href="/docs/decisions/0006-use-markdoc/" %}
+### Use Markdoc as canonical documentation source
+
+Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled.
+{% /decision_card %}
+
+{% decision_card number="ADR-0007" status="approved" href="/docs/decisions/0007-use-central-broker/" %}
+### Use a central broker boundary
+
+Implement a separate in-repository broker module as an in-memory simulation. Durable service extraction and live invocation remain future decisions.
+{% /decision_card %}
+
+{% decision_card number="ADR-0008" status="approved" href="/docs/decisions/0008-stable-roles-dynamic-models/" %}
+### Keep roles stable and assign models dynamically
+
+Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity.
+{% /decision_card %}
+
+{% decision_card number="ADR-0009" status="approved" href="/docs/decisions/0009-require-independent-second-voice/" %}
+### Require an independent second voice
+
+Use the other eligible provider for critique and exclude the authoring session from approval votes.
+{% /decision_card %}
+
+{% decision_card number="ADR-0010" status="approved" href="/docs/decisions/0010-use-deterministic-quality-gates/" %}
+### Use deterministic quality gates before model judgment
+
+Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted.
+{% /decision_card %}
+
+{% decision_card number="ADR-0011" status="draft" href="/docs/decisions/0011-use-isolated-git-worktrees/" %}
+### Use isolated Git worktrees for live implementation workers
+
+Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now.
+{% /decision_card %}
+
+{% decision_card number="ADR-0012" status="approved" href="/docs/decisions/0012-require-human-approval/" %}
+### Require human approval for high-impact actions
+
+Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision.
+{% /decision_card %}
+
+{% decision_card number="ADR-0013" status="approved" href="/docs/decisions/0013-use-docs-as-code/" %}
+### Use docs as code for canonical project memory
+
+Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review.
+{% /decision_card %}
+
+{% decision_card number="ADR-0014" status="approved" href="/docs/decisions/0014-use-provider-adapter-boundary/" %}
+### Use a provider adapter boundary
+
+Compile provider-specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning.
+{% /decision_card %}
+
+## Status rule
+
+Implemented and established repository choices may be approved. Target architecture not implemented is draft or under review unless the decision governs a simulation or policy boundary that now exists. Evidence alone does not accept an ADR.

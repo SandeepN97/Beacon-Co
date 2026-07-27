@@ -1,0 +1,18 @@
+---
+title: "Permissions and least privilege"
+description: "Read-only defaults, controlled write boundaries, and forbidden external actions."
+section: "governance"
+order: 700
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+Planning and review are read-only. Future implementation write access is limited to one isolated worktree. Workers cannot push, merge, deploy, change remotes, use production credentials, or recursively create uncontrolled workers.
+
+The broker applies policy before provider preference or scoring.

@@ -1,0 +1,66 @@
+---
+title: "ADR-0014 — Use a provider adapter boundary"
+description: "Compile provider-specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning."
+section: "decisions"
+order: 823
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","src/modules/orchestration/providers/provider-adapter.ts"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0014" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Claude and Codex need tool-specific formatting without changing the approved request.
+
+## Decision drivers
+
+- Same business meaning
+- Replaceability
+- Fallback
+- Testability
+
+## Options considered
+
+- Provider-specific requests
+- Direct broker CLI logic
+- Shared request with adapters
+
+## Decision
+
+Compile provider-specific prompts from the same work request and context package. Adapters cannot alter criteria, approvals, or business meaning.
+
+## Positive consequences
+
+- Safe provider switch
+- Adapter behavior can be tested
+
+## Negative consequences
+
+- Live invocation still needs provider-specific operational controls
+
+## Risks
+
+- A compiler could accidentally omit a constraint
+
+## Follow-up work
+
+- Add parity tests
+- Require a new security review before live credentials
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `src/modules/orchestration/providers/provider-adapter.ts`

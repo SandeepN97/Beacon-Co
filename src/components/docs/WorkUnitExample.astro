@@ -1,0 +1,13 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = "Validated work unit" } = Astro.props;
+---
+<section class="work-unit-example">
+  <div class="work-unit-example__head">
+    <span>JSON contract</span>
+    <strong>{title}</strong>
+  </div>
+  <slot />
+</section>

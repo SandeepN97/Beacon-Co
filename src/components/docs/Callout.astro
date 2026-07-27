@@ -1,0 +1,19 @@
+---
+interface Props {
+  type?: "note" | "decision" | "warning" | "human-approval" | "security" | "unresolved-question" | string;
+  title?: string;
+}
+const { type = "note", title } = Astro.props;
+const labels: Record<string, string> = {
+  note: "Note",
+  decision: "Decision",
+  warning: "Warning",
+  "human-approval": "Human approval",
+  security: "Security",
+  "unresolved-question": "Unresolved question",
+};
+---
+<aside class={`docs-callout docs-callout--${type}`} role={type === "warning" ? "alert" : undefined}>
+  <strong>{title ?? labels[type] ?? "Note"}</strong>
+  <div><slot /></div>
+</aside>

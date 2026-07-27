@@ -1,0 +1,10 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = "Evidence" } = Astro.props;
+---
+<section class="evidence-panel">
+  <div class="evidence-panel__label">{title}</div>
+  <slot />
+</section>

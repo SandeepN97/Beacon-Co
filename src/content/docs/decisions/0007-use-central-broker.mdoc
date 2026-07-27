@@ -1,0 +1,67 @@
+---
+title: "ADR-0007 — Use a central broker boundary"
+description: "Implement a separate in-repository broker module as an in-memory simulation. Durable service extraction and live invocation remain future decisions."
+section: "decisions"
+order: 816
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","src/modules/orchestration/broker/broker.ts"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0007" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Provider switching, policy, evidence, and completion cannot safely live inside ad hoc prompts or Astro pages.
+
+## Decision drivers
+
+- Provider neutrality
+- Policy enforcement
+- Continuation
+- Auditability
+- No self-completion
+
+## Options considered
+
+- Direct page-to-provider calls
+- Prompt-only routing
+- Separate internal orchestration module
+
+## Decision
+
+Implement a separate in-repository broker module as an in-memory simulation. Durable service extraction and live invocation remain future decisions.
+
+## Positive consequences
+
+- Explicit testable boundaries
+- Pages do not own routing policy
+
+## Negative consequences
+
+- Simulation is not operational automation
+
+## Risks
+
+- Users may mistake prompt previews for live work
+
+## Follow-up work
+
+- Keep simulated labels visible
+- Require a new ADR before a live or external broker
+
+## Supersedes or superseded by
+
+Supersedes ADR-0004’s blanket no-broker clause while preserving file-based continuity.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `src/modules/orchestration/broker/broker.ts`

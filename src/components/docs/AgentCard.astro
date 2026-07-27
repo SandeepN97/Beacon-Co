@@ -1,0 +1,14 @@
+---
+interface Props {
+  role: string;
+  lane: string;
+  href?: string;
+}
+const { role, lane, href } = Astro.props;
+const Wrapper = href ? "a" : "article";
+---
+<Wrapper class="agent-card" href={href}>
+  <span>{lane}</span>
+  <h3>{role}</h3>
+  <slot />
+</Wrapper>

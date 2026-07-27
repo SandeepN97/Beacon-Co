@@ -1,0 +1,34 @@
+---
+title: "Diagram catalog"
+description: "Purpose, source, level, status, preview, and textual alternative for every supplied architecture scene."
+section: "architecture"
+order: 412
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "target"
+---
+
+## Supplied sources
+
+| Diagram | Architecture level | Availability |
+|---|---|---|
+| Combined all-agents canvas | Company, broker, workflow, individual roles | Source + contact-sheet preview; animation metadata |
+| Easy-read architecture | Unified flow, company lanes, agent pattern | Source; animation metadata |
+| Individual-agent architecture | 14 roles and seven-step internal flow | Source; animation metadata |
+| Unified all-in-one architecture | System, company, and role flows | Source; animation metadata |
+| Broker end-to-end | Control plane and execution lifecycle | Source + preview; animation metadata |
+
+{% architecture_diagram src="/diagrams/previews/broker-end-to-end.png" source="/diagrams/source/multi_agent_business_broker_end_to_end.excalidraw" alt="End-to-end multi-agent broker architecture preview" caption="Broker package preview supplied with Tier 1 source." /%}
+
+## Text alternative
+
+An owner request moves through intake, business definition, product, UX, architecture, security, and repository research. An approved work unit enters the broker. The broker chooses a provider, reserves the other provider for critique, isolates implementation, runs real checks, gathers fresh reviews, returns defects to the owning role, and stops at human release authority.
+
+## Open and animate
+
+Open any `.excalidraw` file in [Excalidraw](https://excalidraw.com/) for editing or [Excalidraw Animate](https://dai-shi.github.io/excalidraw-animate/) to play element ordering embedded in the source IDs. A preview is not claimed where no deterministic export was available.

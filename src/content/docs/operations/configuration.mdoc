@@ -1,0 +1,18 @@
+---
+title: "Configuration"
+description: "Claude-first preference, task affinity, provider profiles, workflow limits, and simulation settings."
+section: "operations"
+order: 901
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["workflows/operations-learning-loop"]
+tags: ["operations"]
+truthState: "current"
+---
+
+Configuration currently lives in typed defaults. Claude-first is enabled for planning, architecture, and documentation. Codex is the code-affinity provider. Both profiles allow public, internal, and confidential simulated work but not restricted data.
+
+Future external configuration must be validated, versioned, and must not contain secrets in Markdoc.

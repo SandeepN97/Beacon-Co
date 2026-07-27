@@ -1,0 +1,40 @@
+---
+title: "Source map"
+description: "Authority, provenance, extraction, and conflict rules for project claims and diagrams."
+section: "references"
+order: 1000
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["reference/source-materials/inventory/source-inventory.json","reference/source-materials/inventory/source-assessment.json","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0013-use-docs-as-code"]
+relatedPages: ["references/open-questions","architecture/diagrams"]
+tags: ["sources","provenance"]
+truthState: "current"
+---
+
+## Tier 1: authoritative organization and broker content
+
+- `Claude_Multi_Agent_Business_Guide.pdf`
+- `Claude_Codex_Broker_Addendum.docx`
+- all supplied AI-company, individual-agent, unified, easy-read, and broker Excalidraw/ZIP sources
+
+These define role contracts, workflow, broker target, routing, gates, approvals, audit, and diagram meaning.
+
+## Tier 2: authoritative repository context
+
+Current source, configuration, instructions, docs, scripts, tests, and deployment files define what exists and what constraints apply.
+
+## Tier 3: visual reference only
+
+`v9-source.html`, `veslyn-proposal.html`, and `smart-home-architecture.html` inform layout, navigation, responsive behavior, cards, tabs, and diagram presentation. Their unrelated domain claims are not broker or product truth.
+
+## Safe import evidence
+
+The importer discovered top-level Downloads files, copied them without deletion, hashed them, and recorded original and repository paths. PDFKit extracted the PDF; `textutil` extracted the DOCX; ZIPs were listed and extracted without mutation; JSON scenes were parsed; HTML structures were inspected.
+
+See `reference/source-materials/inventory/source-inventory.md` and `source-assessment.md` for exact sizes, hashes, labels, headings, and extracted contents.
+
+## Conflict rule
+
+Current repository behavior controls current-state claims. Approved ADRs control governing direction. Tier 1 target sources remain target until implemented. Conflicts are stated and added to [Open questions](/docs/references/open-questions/).

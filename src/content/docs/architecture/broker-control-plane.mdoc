@@ -1,0 +1,26 @@
+---
+title: "Broker control plane"
+description: "Deterministic management responsibilities above provider workers."
+section: "architecture"
+order: 403
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "target"
+---
+
+## Responsibilities
+
+The broker owns queue semantics, dependency state, routing, health, capacity, policy, context packaging, sequencing, retry limits, evidence collection, audit history, approvals, and completion state.
+
+The Chief of Staff interprets the business workflow; the broker enforces the resulting operational contract. Neither replaces the specialist who owns a deliverable.
+
+## Current versus target
+
+Current code implements typed routing, health/capacity, continuation, audit events, approval policy, and simulated execution in memory. Durable queueing, process execution, provider calls, worktrees, and persistent audit remain target capabilities.
+
+{% mermaid_diagram src="/diagrams/mermaid/broker-control-plane.mmd" title="Broker control-plane relationships" /%}

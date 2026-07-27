@@ -1,0 +1,18 @@
+---
+title: "Bounded repair loop"
+description: "How evidence returns a defect to the role that owns it."
+section: "workflows"
+order: 607
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+Requirement ambiguity returns to Business Analyst or Product Manager. Architecture defects return to Solution or Security Architect. Implementation defects return to Code Writer. Test defects return to QA. Delivery defects return to DevOps.
+
+Retries are capped by workflow policy. Reaching the cap stops execution and escalates to a human; it never creates an infinite loop.

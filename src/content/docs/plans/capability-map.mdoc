@@ -1,0 +1,28 @@
+---
+title: "Capability map"
+description: "Current, simulated, proposed, and future capabilities in one map."
+section: "plans"
+order: 303
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
+relatedPages: ["architecture/overview"]
+tags: ["roadmap","phase"]
+truthState: "current"
+---
+
+| Capability | State | Evidence |
+|---|---|---|
+| Marketing experience | Current | Astro source and build |
+| Contact notification | Current | Cloudflare Worker source |
+| Markdoc source of truth | Current | Content collection and docs routes |
+| Natural-language translation | Simulated/local | Unit tests and workspace |
+| Markdoc retrieval | Simulated/local | Reader, index, retriever tests |
+| Claude/Codex routing | Simulated/local | Policy and fallback tests |
+| Prompt compilation | Simulated/local | Provider adapter tests |
+| Provider invocation | Proposed | No credentials or CLI execution |
+| Durable queue/audit | Proposed | In-memory interfaces only |
+| Isolated worktrees | Proposed | Policy documented; no executor |
+| Merge/deploy/release | Human-only future | Explicitly outside this work unit |

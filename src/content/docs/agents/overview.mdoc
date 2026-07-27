@@ -1,0 +1,78 @@
+---
+title: "Agent organization"
+description: "Stable roles, dynamic providers, one deliverable owner, and independent review."
+section: "agents"
+order: 500
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice"]
+relatedPages: ["agents/universal-agent-contract","workflows/end-to-end-business-workflow"]
+tags: ["agents","roles"]
+truthState: "target"
+---
+
+## Core organization
+
+The controlled company uses 14 core roles across leadership, business, product, architecture, engineering, quality, and delivery. One person or model can fill several roles across different work units, but one role owns each deliverable and the authoring session cannot approve it.
+
+{% agent_card role="Chief of Staff" lane="Leadership and intake" href="/docs/agents/chief-of-staff/" %}
+Clarify the request, select the business workflow, verify handoffs, and stop at approval gates.
+{% /agent_card %}
+
+{% agent_card role="Program Manager" lane="Leadership and delivery coordination" href="/docs/agents/program-manager/" %}
+Create milestones, dependencies, ownership, risk logs, and reviewable work units.
+{% /agent_card %}
+
+{% agent_card role="Market Researcher" lane="Business discovery" href="/docs/agents/market-researcher/" %}
+Validate customer problems, demand, alternatives, competitors, and evidence gaps.
+{% /agent_card %}
+
+{% agent_card role="Business Analyst" lane="Business discovery" href="/docs/agents/business-analyst/" %}
+Convert approved business needs into complete, testable requirements without designing the solution.
+{% /agent_card %}
+
+{% agent_card role="Product Manager" lane="Product and design" href="/docs/agents/product-manager/" %}
+Define product value, MVP scope, priority, success metrics, and deferred work.
+{% /agent_card %}
+
+{% agent_card role="UX/UI Designer" lane="Product and design" href="/docs/agents/ux-ui-designer/" %}
+Define journeys, screens, interactions, states, accessibility, and responsive behavior.
+{% /agent_card %}
+
+{% agent_card role="Solution Architect" lane="Architecture and security" href="/docs/agents/solution-architect/" %}
+Design components, APIs, data flow, reliability, deployment, trade-offs, and implementation sequence.
+{% /agent_card %}
+
+{% agent_card role="Security Architect" lane="Architecture and security" href="/docs/agents/security-architect/" %}
+Create threat scenarios, security controls, abuse cases, and security acceptance criteria.
+{% /agent_card %}
+
+{% agent_card role="Codebase Researcher" lane="Engineering" href="/docs/agents/codebase-researcher/" %}
+Trace current behavior, dependencies, conventions, and safe change points without editing.
+{% /agent_card %}
+
+{% agent_card role="Code Writer" lane="Engineering" href="/docs/agents/code-writer/" %}
+Implement the smallest approved change and add or update tests.
+{% /agent_card %}
+
+{% agent_card role="QA Engineer" lane="Quality" href="/docs/agents/qa-engineer/" %}
+Independently test implementation against acceptance criteria and regression risk.
+{% /agent_card %}
+
+{% agent_card role="PR Reviewer" lane="Quality" href="/docs/agents/pr-reviewer/" %}
+Review the final diff for correctness, security, maintainability, performance, and requirement coverage.
+{% /agent_card %}
+
+{% agent_card role="DevOps Engineer" lane="Delivery" href="/docs/agents/devops-engineer/" %}
+Prepare approved CI/CD, environment, migration, rollback, monitoring, and alert artifacts.
+{% /agent_card %}
+
+{% agent_card role="Release Manager" lane="Delivery" href="/docs/agents/release-manager/" %}
+Verify business, quality, security, operational, migration, documentation, and rollback readiness.
+{% /agent_card %}
+
+## Add roles only when needed
+
+Growth and advanced operations roles are blueprints. Add a persistent agent only when recurring work, permission isolation, and measurable handoffs justify the complexity.

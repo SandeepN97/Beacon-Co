@@ -1,0 +1,16 @@
+---
+interface Props {
+  number: number;
+  title: string;
+  owner?: string;
+}
+const { number, title, owner } = Astro.props;
+---
+<section class="workflow-step">
+  <span class="workflow-step__number">{String(number).padStart(2, "0")}</span>
+  <div>
+    <h3>{title}</h3>
+    {owner && <p class="workflow-step__owner">{owner}</p>}
+    <slot />
+  </div>
+</section>

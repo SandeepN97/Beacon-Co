@@ -1,0 +1,34 @@
+---
+title: "Universal handoff"
+description: "The fixed provider-neutral record that lets the next role continue without reinterpretation."
+section: "agents"
+order: 502
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/work-unit-contract"]
+tags: ["agents","handoff"]
+truthState: "decision"
+---
+
+## Required fields
+
+```text
+Task completed
+Inputs reviewed
+Decisions made
+Deliverables produced
+Files affected
+Assumptions
+Risks
+Open questions
+Acceptance criteria status
+Recommended next agent
+Human approval required
+```
+
+The broker extension adds work-unit ID, provider/model, role, session/run ID, worktree, commands, token usage when reported, gate results, review verdict, retry count, and artifact hashes.
+
+Do not transfer a full transcript when approved documents, a diff, command evidence, and this handoff can carry the state more precisely.

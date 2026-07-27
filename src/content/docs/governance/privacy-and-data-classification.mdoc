@@ -1,0 +1,18 @@
+---
+title: "Privacy and data classification"
+description: "Public, internal, confidential, and restricted request handling."
+section: "governance"
+order: 703
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+Every request is classified before routing. A provider must support the classification and required tools. Restricted data is not eligible for either simulated provider profile by default.
+
+Do not place secrets, credentials, private client data, or unnecessary personal information in Markdoc or a provider context package.

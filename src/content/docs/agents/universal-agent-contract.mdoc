@@ -1,0 +1,31 @@
+---
+title: "Universal agent contract"
+description: "The minimum input, responsibility, permission, output, evidence, and stop contract for every role."
+section: "agents"
+order: 501
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models"]
+relatedPages: ["agents/universal-handoff"]
+tags: ["agents","contract"]
+truthState: "decision"
+---
+
+## Contract
+
+Every agent definition states:
+
+- one responsibility and its neighboring-role boundaries;
+- required approved inputs;
+- one fixed deliverable;
+- minimum tools and write level;
+- prohibited actions;
+- evidence and acceptance criteria;
+- stop condition and blocker behavior;
+- independent second-voice rule;
+- human approval gate;
+- defect return target and next role.
+
+Read-only is the default. Implementation write permission is limited to an isolated worktree in the target architecture. The current simulation grants no repository write action to a provider.
