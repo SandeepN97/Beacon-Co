@@ -154,8 +154,7 @@ input {
 
 .docs-shell {
   display: grid;
-  grid-template-columns: minmax(250px, 300px) minmax(0, 780px) minmax(170px, 230px);
-  justify-content: start;
+  grid-template-columns: minmax(250px, 290px) minmax(0, 1fr) minmax(130px, 160px);
   min-height: calc(100vh - 72px);
 }
 .docs-sidebar {
@@ -231,7 +230,7 @@ input {
 
 .docs-main {
   min-width: 0;
-  padding: clamp(1.5rem, 4vw, 4rem) clamp(1.25rem, 5vw, 4.5rem);
+  padding: clamp(1.5rem, 3vw, 3.5rem) clamp(1.25rem, 4vw, 4rem);
 }
 .docs-breadcrumbs {
   display: flex;
@@ -748,8 +747,9 @@ input {
   align-self: start;
   max-height: calc(100vh - 72px);
   overflow: auto;
-  padding: 2rem 1.2rem;
-  font-size: 0.78rem;
+  padding: 1.5rem 0.75rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
 }
 .docs-toc > span {
   color: var(--docs-muted);
@@ -760,12 +760,13 @@ input {
 .docs-toc ol {
   list-style: none;
   padding: 0;
+  margin: 0.65rem 0 0;
 }
 .docs-toc li {
-  margin: 0.5rem 0;
+  margin: 0.35rem 0;
 }
 .docs-toc li.nested {
-  padding-left: 0.8rem;
+  padding-left: 0.6rem;
 }
 .docs-toc a {
   text-decoration: none;
@@ -836,7 +837,7 @@ input {
 
 @media (max-width: 1120px) {
   .docs-shell {
-    grid-template-columns: minmax(240px, 285px) minmax(0, 800px);
+    grid-template-columns: minmax(240px, 285px) minmax(0, 1fr);
   }
   .docs-toc {
     display: none;
