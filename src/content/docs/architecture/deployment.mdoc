@@ -1,0 +1,28 @@
+---
+title: "Deployment architecture"
+description: "Current static deployment shape and future orchestration separation."
+section: "architecture"
+order: 411
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "current"
+---
+
+## Current
+
+Astro builds static assets compatible with the existing Cloudflare Worker deployment. The Worker serves assets and handles the narrow `POST /api/contact` route.
+
+## Not deployed
+
+The workspace and orchestration module are static/local demonstrations. No provider runtime, queue, database, broker service, or production approval service is deployed.
+
+## Future boundary
+
+Extracting the broker into a separate service requires a new ADR, authenticated control plane, persistent state, secrets policy, recovery plan, and operational evidence.
+
+{% mermaid_diagram src="/diagrams/mermaid/deployment-boundary.mmd" title="Current and future deployment boundary" /%}

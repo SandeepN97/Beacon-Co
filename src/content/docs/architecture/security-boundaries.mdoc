@@ -1,0 +1,30 @@
+---
+title: "Security boundaries"
+description: "Least privilege, data policy, provider eligibility, worktree isolation, and human authority."
+section: "architecture"
+order: 409
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "target"
+---
+
+## Boundaries
+
+- data classification is part of every work request;
+- a provider is rejected before scoring if policy or capability is insufficient;
+- planning and review are read-only;
+- future implementation writes only inside one isolated worktree;
+- secrets and production credentials are never included in Markdoc context;
+- workers cannot push, merge, deploy, or approve their own work;
+- legal, privacy, spending, architecture, and production risk stop at a human gate.
+
+{% human_gate kind="security and production" %}
+High-risk ambiguity must be confirmed before routing. A confident model response does not replace authorization.
+{% /human_gate %}
+
+{% mermaid_diagram src="/diagrams/mermaid/security-boundaries.mmd" title="Security and permission boundaries" /%}

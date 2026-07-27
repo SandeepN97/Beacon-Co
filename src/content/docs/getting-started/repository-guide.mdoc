@@ -1,0 +1,31 @@
+---
+title: "Repository guide"
+description: "Where implementation, documentation, orchestration, and evidence live."
+section: "getting-started"
+order: 101
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","package.json"]
+relatedAdrs: ["0006-use-markdoc","0013-use-docs-as-code"]
+relatedPages: ["references/document-statuses"]
+tags: ["getting-started"]
+truthState: "current"
+---
+
+## Primary paths
+
+| Path | Responsibility |
+|---|---|
+| `src/pages/index.astro` | Marketing entry |
+| `src/components/` | Marketing, docs, and workspace components |
+| `src/content/docs/` | Canonical Markdoc content |
+| `src/modules/orchestration/` | Provider-neutral simulation and policy |
+| `public/diagrams/` | Public diagram sources, previews, and exports |
+| `reference/source-materials/` | Hashed original and extracted evidence |
+| `tests/orchestration/` | Translator, retrieval, routing, continuation, and impact tests |
+| `docs/` | Retained pre-Markdoc handbook evidence during migration |
+
+## Shared instructions
+
+`AGENTS.md` is the durable repository rule set. `CLAUDE.md` must continue to resolve to the same instructions. A handoff is a compact pointer to this repository state, not a transcript.

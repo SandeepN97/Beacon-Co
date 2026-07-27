@@ -1,0 +1,102 @@
+<svg class="sketch" viewBox="0 0 1080 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn diagram of the system architecture" aria-labelledby="title-2"><title id="title-2">Beacon &amp; Co. proposed platform architecture</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+      <!-- EDGE -->
+      <path class="st" style="--i:0" pathLength="1" d="M28 60 Q26 40 46 40 L192 38 Q212 39 211 58 L213 132 Q214 152 193 153 L48 155 Q26 156 28 136 Z"></path>
+      <text class="t-md" x="46" y="66" style="--i:0">☁ Edge — Cloudflare</text>
+      <text class="t-sm" x="46" y="90" style="--i:0">DNS · WAF · Pages</text>
+      <text class="t-sm" x="46" y="110" style="--i:0">Turnstile · Functions</text>
+      <text class="t-sm" x="46" y="130" style="--i:0">unlimited bandwidth</text>
+      <path class="st red" style="--i:1" pathLength="1" d="M216 96 Q252 90 286 96 M286 96 L272 87 M286 96 L272 106"></path>
+      <!-- INGRESS + ASYNC -->
+      <path class="st red" style="--i:2" pathLength="1" d="M292 60 Q291 40 311 40 L438 38 Q458 39 457 58 L459 132 Q460 152 439 153 L313 155 Q291 156 292 136 Z"></path>
+      <text class="t-md t-red" x="310" y="66" style="--i:2">🚪 Ingress</text>
+      <text class="t-sm" x="310" y="90" style="--i:2">webhook receiver</text>
+      <text class="t-sm" x="310" y="110" style="--i:2">HMAC verified</text>
+      <text class="t-sm" x="310" y="130" style="--i:2">idempotent</text>
+      <path class="st gold" style="--i:3" pathLength="1" d="M375 158 Q373 194 375 224"></path>
+      <path class="st gold" style="--i:3" pathLength="1" d="M375 224 L366 210 M375 224 L384 210"></path>
+      <path class="st gold" style="--i:4" pathLength="1" d="M290 234 Q289 216 307 216 L444 215 Q462 216 461 234 L462 296 Q463 314 445 314 L308 315 Q289 316 290 298 Z"></path>
+      <text class="t-md t-gold" x="308" y="240" style="--i:4">📦 Async Platform</text>
+      <text class="t-sm" x="308" y="262" style="--i:4">Actions cron scheduler</text>
+      <text class="t-sm" x="308" y="280" style="--i:4">pg-boss job queue</text>
+      <text class="t-sm" x="308" y="298" style="--i:4">dead-letter + retry</text>
+      <!-- WORKERS -->
+      <path class="st green" style="--i:5" pathLength="1" d="M470 96 Q506 90 540 96 M540 96 L526 87 M540 96 L526 106"></path>
+      <path class="st green" style="--i:6" pathLength="1" stroke-width="2.6" d="M546 56 Q544 38 566 38 L718 36 Q740 37 739 57 L742 208 Q743 228 720 228 L568 230 Q544 231 546 210 Z"></path>
+      <text class="t-md t-green" x="566" y="62" style="--i:6">⚙ Service Workers</text>
+      <text class="t-sm" x="566" y="86" style="--i:6">Lead Engine · Outreach</text>
+      <text class="t-sm" x="566" y="104" style="--i:6">Content · Media Pipeline</text>
+      <text class="t-sm" x="566" y="122" style="--i:6">Reviews+SEO · Reporting</text>
+      <text class="t-sm t-green" x="566" y="144" style="--i:6">six Node/TS workers</text>
+      <!-- AI + SECURITY -->
+      <path class="st" style="--i:7" pathLength="1" d="M748 90 Q784 84 818 90 M818 90 L804 81 M818 90 L804 100"></path>
+      <path class="st" style="--i:8" pathLength="1" d="M824 56 Q823 38 843 38 L960 36 Q980 37 979 56 L981 152 Q982 171 962 172 L845 174 Q823 175 824 156 Z"></path>
+      <text class="t-md" x="842" y="62" style="--i:8" fill="#7c5e99">🤖 AI Layer</text>
+      <text class="t-sm" x="842" y="86" style="--i:8">Claude — drafts + JSON</text>
+      <text class="t-sm" x="842" y="104" style="--i:8">prompt registry</text>
+      <text class="t-sm" x="842" y="122" style="--i:8">output guards</text>
+      <text class="t-sm" x="842" y="140" style="--i:8">human review fallback</text>
+      <path class="st gold" style="--i:9" pathLength="1" d="M900 178 Q900 200 900 220"></path>
+      <path class="st gold" style="--i:9" pathLength="1" d="M900 220 L891 206 M900 220 L909 206"></path>
+      <path class="st gold" style="--i:10" pathLength="1" d="M824 228 Q823 210 843 210 L960 208 Q980 209 979 228 L981 296 Q982 315 962 316 L845 318 Q823 319 824 300 Z"></path>
+      <text class="t-md t-gold" x="842" y="234" style="--i:10">🔐 Security</text>
+      <text class="t-sm" x="842" y="256" style="--i:10">token vault, pgsodium</text>
+      <text class="t-sm" x="842" y="274" style="--i:10">secrets, isolated envs</text>
+      <text class="t-sm" x="842" y="292" style="--i:10">no .env files, ever</text>
+      <!-- DATA -->
+      <path class="st green" style="--i:11" pathLength="1" d="M566 236 Q566 260 566 285"></path>
+      <path class="st green" style="--i:11" pathLength="1" d="M566 285 L557 271 M566 285 L575 271"></path>
+      <text class="t-sm t-green" x="576" y="264" style="--i:11">reads + writes</text>
+      <path class="st green" style="--i:12" pathLength="1" stroke-width="2.8" d="M474 292 Q472 270 496 270 L718 268 Q742 269 741 291 L743 400 Q744 421 719 421 L498 423 Q472 424 474 402 Z"></path>
+      <text class="t-md t-green" x="496" y="300" style="--i:12">🗄 Data — Supabase</text>
+      <text class="t-sm" x="496" y="324" style="--i:12">Postgres 15 + RLS</text>
+      <text class="t-sm" x="496" y="342" style="--i:12">Storage · audit_log</text>
+      <text class="t-sm" x="496" y="360" style="--i:12">Realtime · Migrations</text>
+      <text class="t-sm t-green" x="496" y="382" style="--i:12">PITR + weekly restore drill</text>
+      <!-- EXTERNAL -->
+      <path class="st gold" style="--i:13" pathLength="1" d="M747 340 Q784 334 818 340 M818 340 L804 331 M818 340 L804 350"></path>
+      <path class="st gold dash" style="--i:14" pathLength="1" d="M824 300 Q823 282 843 282 L1046 280 Q1066 281 1065 300 L1067 402 Q1068 421 1048 422 L845 424 Q823 425 824 406 Z"></path>
+      <text class="t-md t-gold" x="842" y="306" style="--i:14">🔌 External APIs</text>
+      <text class="t-sm" x="842" y="330" style="--i:14">Google · Meta · TikTok</text>
+      <text class="t-sm" x="842" y="348" style="--i:14">Stripe · Resend · Twilio</text>
+      <text class="t-sm" x="842" y="366" style="--i:14">DataForSEO · Cal.com</text>
+      <!-- OBSERVABILITY floor -->
+      <path class="st blue" style="--i:15" pathLength="1" d="M28 400 Q28 380 48 380 L440 378 Q460 379 460 398 L462 424 Q462 442 442 443 L50 445 Q28 446 28 428 Z"></path>
+      <text class="t-md" x="46" y="406" style="--i:15" fill="#3d6a8a">🔭 Observability</text>
+      <text class="t-sm" x="46" y="428" style="--i:15">Sentry · Axiom · Uptime Kuma · cost alarms → push to phone</text>
+      <path class="st blue dash" style="--i:16" pathLength="1" d="M370 378 Q370 350 370 320 M370 320 L361 334 M370 320 L379 334"></path>
+    </svg>

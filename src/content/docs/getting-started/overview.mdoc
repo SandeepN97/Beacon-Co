@@ -1,0 +1,28 @@
+---
+title: "Overview"
+description: "How to read and use the Beacon source of truth."
+section: "getting-started"
+order: 100
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","package.json"]
+relatedAdrs: ["0006-use-markdoc","0013-use-docs-as-code"]
+relatedPages: ["references/document-statuses"]
+tags: ["getting-started"]
+truthState: "current"
+---
+
+## What this system contains
+
+The repository has three deliberately different surfaces:
+
+1. the marketing application at `/`;
+2. the canonical Markdoc handbook at `/docs`;
+3. the simulated orchestration workspace at `/workspace`.
+
+The handbook records stable business, product, architecture, agent, workflow, governance, operations, and decision knowledge. The workspace shows how ordinary language becomes a safe work request without requiring prompt-engineering expertise.
+
+## Reading order
+
+Read [Current phase](/docs/plans/current-phase/) before reporting status. Read the controlling ADR before changing direction. Read agent and workflow contracts before assigning work. Read the source map when a claim’s authority is unclear.

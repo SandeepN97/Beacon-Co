@@ -1,0 +1,20 @@
+---
+title: "Workflow overview"
+description: "Sequential role ownership, provider routing, deterministic gates, repair, and human authority."
+section: "workflows"
+order: 600
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+## Default operating shape
+
+Intake produces an approved request. Business and product roles define the outcome. Architecture and security define safe boundaries. Repository research locates change points. Implementation happens in one bounded workspace. QA and review are independent. Deterministic gates run before model voting. Release stops at authorized human authority.
+
+The current code simulates this shape; it does not execute provider sessions or production actions.

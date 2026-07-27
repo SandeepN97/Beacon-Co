@@ -1,0 +1,38 @@
+---
+title: "Local development"
+description: "Install, run, test, and build the repository locally."
+section: "getting-started"
+order: 102
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","package.json"]
+relatedAdrs: ["0006-use-markdoc","0013-use-docs-as-code"]
+relatedPages: ["references/document-statuses"]
+tags: ["getting-started"]
+truthState: "current"
+---
+
+## Prerequisites
+
+- Node.js 22.12 or later
+- npm
+- Python only for retained MkDocs validation
+
+## Commands
+
+```sh
+npm install
+npm run dev
+npm run test
+npm run typecheck
+npm run docs:validate
+npm run build
+npm run preview
+```
+
+Astro serves the marketing site, documentation, and workspace together. Static output is written to `dist/`.
+
+{% callout type="note" title="Provider simulation" %}
+No Claude or Codex API key is required. Provider adapters compile a prompt preview and return a clearly labeled simulated result.
+{% /callout %}

@@ -1,0 +1,73 @@
+---
+title: "ADR-0003 — Record architecture evolution and source atlas"
+description: "Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives."
+section: "decisions"
+order: 812
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["docs/decisions/0003-record-architecture-evolution-and-source-atlas.md","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0003" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Beacon grew from one page to a maintainable site and then a documented target platform. Diagrams must not turn future systems into fictional current state.
+
+## Decision drivers
+
+- Phase truth
+- Smallest safe current architecture
+- Editable sources
+- Accessible alternatives
+
+## Options considered
+
+- One undifferentiated target diagram
+- No architecture record
+- Phase-gated narrative plus Mermaid/Excalidraw
+
+## Decision
+
+Keep current and target boundaries explicit. Maintain decision narrative, text diagrams, editable Excalidraw sources, previews, and textual alternatives.
+
+## Positive consequences
+
+- Proposal and production remain distinct
+- Sources stay reviewable
+
+## Negative consequences
+
+- Multiple overlapping diagrams require maintenance
+
+## Risks
+
+- A source preview may be mistaken for implementation
+
+## Follow-up work
+
+- Update the catalog with every material architecture change
+- Revalidate vendor choices at phase entry
+
+## Supersedes or superseded by
+
+Consolidates prior architecture records; superseded by: none.
+
+## Source references
+
+- `docs/decisions/0003-record-architecture-evolution-and-source-atlas.md`
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf`
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`
+- `reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw`
+- `reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw`
+- `reference/source-materials/originals/individual_agent_architecture_animated.excalidraw`
+- `reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw`
+- `reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw`

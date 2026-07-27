@@ -1,0 +1,282 @@
+16. Claude + Codex Broker Operating Model
+A broker-based extension to the controlled multi-agent business described in this guide
+Purpose of this addendum
+The original guide defines specialized business and software roles, strict handoffs, least privilege, independent review, and human gates. This addendum keeps those controls but moves orchestration above any single model. Claude and Codex become interchangeable workers behind a central broker, and both contribute as a second voice at every important stage.
+
+16.1 What stays the same
+One role owns one deliverable.
+Agents receive explicit inputs and return a fixed universal handoff.
+Planning and review roles remain read-only by default.
+No agent approves its own work.
+Deterministic evidence is required before release.
+Humans approve material architecture, spending, legal risk, production changes, and releases.
+16.2 What the broker adds
+A durable work-unit queue with dependencies, priority, status, and audit history.
+Dynamic routing: Claude or Codex may plan, code, test, or review based on suitability and current capacity.
+A required second voice from the other model during planning and implementation review.
+Isolated Git worktrees so one work unit cannot corrupt another.
+A three-session quality panel with majority convergence and blocker rules.
+Token, latency, failure, cooldown, and capacity-aware load balancing.
+A bounded repair loop that returns defects to the owning role rather than letting reviewers silently fix them.
+Core principle
+Roles are stable; models are replaceable. The Solution Architect, Code Writer, QA Engineer, and PR Reviewer remain distinct responsibilities, but the broker decides whether Claude or Codex fills each role for a particular work unit.
+
+
+17. Broker-Centered Company Architecture
+The broker sits between the company roles defined in Sections 3-4 and the model providers. It does not replace the Chief of Staff; it operationalizes the Chief of Staff rules as software-enforced routing, permissions, work isolation, quality gates, and audit records.
+
+Reading the diagram
+Ideas, requirements, roadmaps, or agent skills create work units. The broker queues and routes them to Claude Code CLI or Codex CLI, supervises execution in isolated worktrees, runs deterministic checks, convenes an independent review panel, and produces an approved branch, report, or pull request for human review.
+
+
+18. Company Structure with the Broker in Front
+Layer
+Stable responsibilities
+Who may execute
+Human leadership
+Vision, budget, legal responsibility, material approvals, production release
+Owner, executives, authorized humans
+Executive board
+Strategy, program planning, business analysis, product scope, risk decisions
+Claude or Codex selected per work unit; the other model critiques
+Broker management
+Queue, routing, model health, capacity, permissions, audit, retries, quality policy
+Deterministic broker service - not an LLM opinion
+Product and design
+Product management, user stories, UX flows, accessibility, success metrics
+Best eligible model plus an independent second voice
+Engineering
+Architecture, security design, code research, implementation, testing, DevOps
+Claude and Codex dynamically assigned by stage
+Quality board
+QA, PR review, security review, release recommendation
+Fresh independent sessions; reviewers are read-only
+Operations
+Monitoring, support, incident response, analytics, learning loop
+Specialized agents plus deterministic systems
+
+18.1 Chief of Staff and broker relationship
+The Chief of Staff interprets the request, chooses the business workflow, and confirms approval gates.
+The Program Manager and Product Manager break approved outcomes into epics and work units.
+The broker validates each work unit, selects the model, creates the isolated workspace, and enforces the execution policy.
+Specialist agents own deliverables; the broker owns sequencing, evidence collection, and completion status.
+The human owner can pause, reprioritize, reject, or require additional review at any point.
+18.2 The work-unit contract
+{   "id": "contact-form",   "goal": "Create a production-ready contact form",   "acceptanceCriteria": ["validates input", "tests pass"],   "constraints": ["follow existing Astro architecture"],   "risk": "medium",   "preferredProvider": "auto",   "dependencies": [] }
+
+19. End-to-End Broker Workflow
+Idea intake: the Chief of Staff clarifies the request, identifies the workflow, and stops at any required human go/no-go gate.
+Business and product definition: Market Researcher, Business Analyst, Product Manager, and UX Designer create approved input packages.
+Architecture panel: the broker selects a primary planner; the other model independently critiques assumptions, risks, and testability.
+Work-unit breakdown: the Program Manager converts the approved plan into small, dependency-aware feature requests.
+Routing: the broker filters ineligible providers and scores Claude and Codex for the current stage.
+Implementation: the selected model edits only inside an isolated Git worktree and must add or update tests.
+Second-voice review: the other model reviews the complete diff without editing it.
+Deterministic gates: lint, type checks, unit tests, integration tests, build, and security scanners run as real commands.
+Agent panel: Claude reviewer, Codex reviewer, and a load-balanced arbiter evaluate evidence and acceptance criteria.
+Repair loop: failures return to the owning implementation role with evidence; retries are bounded.
+Completion: approved work is committed to a broker branch and prepared for a pull request. The broker never silently merges or deploys.
+Human release gate: the Release Manager presents evidence and a release-or-hold recommendation to the authorized human.
+How this maps to the original 15-phase workflow
+Phases 1-9 still produce validated business, product, UX, architecture, security, and codebase inputs. The broker becomes the controlled execution layer for phases 10-14 and the audit/learning layer for phase 15. It can also broker planning stages so Claude and Codex provide independent perspectives before implementation begins.
+
+
+20. Stable Roles, Dynamic Model Assignment
+Do not permanently define Claude as the architect and Codex as the coder. Both are capable of planning, implementation, testing, and review. The broker assigns a model to a role for one work unit, then may reverse the assignment on the next unit.
+Stage / role
+Primary worker
+Required second voice
+Write access
+Program planning
+Best eligible Claude or Codex session
+Other model checks dependencies and risk
+No
+Business analysis
+Best eligible model
+Other model checks ambiguity and testability
+No
+Product and UX
+Best eligible model
+Other model challenges scope and edge cases
+No
+Solution architecture
+Best eligible model
+Other model critiques tradeoffs and migration risk
+No
+Security design
+Security-capable model
+Other model checks threat coverage
+No
+Codebase research
+Model with repository context advantage
+Other model validates change points when risk is material
+No
+Implementation
+Best eligible coding model
+Other model performs independent diff review
+Yes - isolated worktree only
+QA
+Fresh session not used as implementer
+Deterministic tests remain authoritative
+No
+PR / security review
+Fresh independent sessions
+Three-member panel convergence
+No
+DevOps preparation
+Eligible implementation model
+Independent reviewer checks rollback and safety
+Controlled
+Release decision
+Release Manager role
+Human owner is final authority
+No
+
+Independence rule
+A model may fill different roles across different work units, but the exact session that authored a deliverable cannot be counted as an independent approver of that same deliverable.
+
+
+21. Broker Core Components
+Component
+Responsibility
+Evidence stored
+Work Unit Queue
+Priority, dependencies, retries, current phase, status
+Work-unit JSON and timestamps
+Router and Scheduler
+Eligibility filtering, scoring, assignment, fallback, cooldown
+Routing scores and selected provider
+Model Registry
+Capabilities, context limits, tool support, health, privacy class
+Model profile and health history
+Context Packager
+Passes only approved requirements, plans, diffs, and test evidence
+Input manifest and hashes
+Execution Manager
+Creates worktree, invokes CLI, captures output, enforces timeout
+Logs, session IDs, duration, usage
+Permission Policy
+Read-only vs write, denied commands, repository boundaries
+Policy decision and violations
+Gate Engine
+Runs tests, build, lint, type checks, scanners, acceptance evidence
+Command, exit code, stdout, stderr
+Review Panel
+Collects structured votes from fresh reviewers
+Findings, confidence, criterion evidence
+Audit and Results Store
+Preserves every decision, change, failure, and approval
+Runs, costs, verdicts, branches, reports
+Human Approval Service
+Pauses high-impact actions until an authorized person approves
+Approver, decision, time, scope
+
+21.1 Control plane versus worker plane
+Control plane: queue, router, policy, gates, audit, human approvals. It must be deterministic wherever possible.
+Worker plane: Claude Code CLI and Codex CLI sessions that perform one assigned role using the approved context package.
+Workers cannot mark themselves complete; only the broker can transition a work unit after evidence satisfies policy.
+
+22. Token-Aware and Capacity-Aware Routing
+22.1 Eligibility comes before scoring
+Reject a provider when it is rate-limited, unhealthy, paused, missing required tool support, or disallowed for the data classification.
+Reject a model whose context window, structured-output support, or repository permissions are insufficient.
+High-risk tasks may require a premium model and mandatory human review even when a cheaper worker is available.
+22.2 Example routing score
+score =     0.30 * capability_match   + 0.20 * broker_budget_remaining   + 0.15 * historical_quality   + 0.10 * reliability   + 0.10 * context_cache_advantage   + 0.10 * manual_capacity_override   - 0.05 * current_load   - privacy_or_policy_penalties
+22.3 Practical signals
+Signal
+How the broker uses it
+Usage reported by completed calls
+Updates broker-maintained token and cost counters
+Rate-limit or capacity error
+Places that provider in a temporary cooldown and retries with the other model
+Manual capacity override 0-1
+Lets the operator express that one subscription is nearly exhausted or has reset
+Failure and acceptance history
+Reduces routing weight when a provider repeatedly fails a task category
+Latency and queue pressure
+Moves routine work to the less-loaded provider
+Task affinity
+Adds a small preference based on measured performance, never a permanent role assignment
+
+Known limitation
+Consumer subscription CLIs do not provide one dependable universal API for exact tokens remaining. The broker should use observed usage, provider headers when available, failures, cooldowns, and operator capacity overrides rather than pretending the remaining allowance is known precisely.
+
+
+23. Quality Gates and Majority Convergence
+23.1 Deterministic gates are mandatory
+Repository tests, lint, type checks, build, and approved security scanners run before model voting.
+A failed deterministic gate cannot be overruled by confident model opinions.
+Reviewers must cite files, diffs, commands, test output, and acceptance criteria evidence.
+23.2 Three-member agent panel
+Panel member
+Purpose
+Independence
+Claude reviewer
+Architecture, requirements, correctness, maintainability, security
+Fresh read-only session
+Codex reviewer
+Implementation quality, tests, regressions, edge cases, repository conventions
+Fresh read-only session
+Load-balanced arbiter
+Rechecks disputed criteria and determines whether evidence converges
+Fresh session chosen by broker
+
+23.3 Completion policy
+COMPLETE only when:   deterministic_gates == PASS   AND approvals >= 2 of 3   AND unresolved_blockers == 0   AND every acceptance criterion has evidence   AND required human approvals are recorded
+23.4 Defect return path
+Requirement ambiguity returns to Business Analyst or Product Manager.
+Architecture defect returns to Solution Architect or Security Architect.
+Implementation defect returns to the Code Writer role.
+Test defect returns to Test Designer or QA owner.
+Deployment defect returns to DevOps Engineer.
+Reviewers do not silently repair the work they are judging.
+
+24. Repository and Skill Structure
+your-business-project/ ├── CLAUDE.md ├── AGENTS.md ├── .claude/ │   ├── agents/                 # 14+ specialist role definitions │   └── skills/ai-broker/       # enqueue and broker-control skill ├── .codex/ │   └── skills/ai-broker/       # same broker contract for Codex ├── broker.config.json ├── work-units/ │   ├── queued/ │   ├── approved/ │   └── completed/ ├── docs/ │   ├── requirements/ │   ├── architecture/ │   ├── decisions/ │   ├── test-reports/ │   └── release-notes/ ├── .ai-broker/ │   ├── state.json │   ├── runs/ │   ├── logs/ │   └── verdicts/ └── src/  <repo-parent>/.ai-broker-worktrees/<repo>/<work-unit-id>/
+24.1 Invocation boundaries
+Interactive Claude or Codex may create and enqueue a work unit through the broker skill.
+A broker-spawned worker is a leaf worker: it cannot recursively call the broker or create uncontrolled subagents.
+Planning and review sessions run read-only; only the assigned implementer receives worktree write access.
+No worker may push, merge, deploy, change Git remotes, or use production credentials without explicit policy and human approval.
+24.2 Universal handoff extension
+Original fields: task completed, inputs reviewed, decisions, deliverables, affected files, assumptions, risks, open questions, acceptance status, next agent, human approval.
+Broker fields: work-unit ID, provider/model, role, session/run ID, worktree, commands executed, token usage, gate results, review verdict, retry count, and artifact hashes.
+
+25. Recommended Rollout for Claude + Codex
+Stage
+Implementation
+Exit requirement
+1. Two-model foundation
+Install Claude Code CLI, Codex CLI, the broker, shared skills, and strict permissions
+Both CLIs pass doctor checks; no production access
+2. Sequential sandbox
+Run one low-risk work unit at a time with isolated worktrees and full audit logs
+Role boundaries, handoffs, tests, and reviews work repeatedly
+3. Controlled pilot
+Use one real project; keep human approval before merge and deployment
+Accepted outcomes are consistent and costs are measured
+4. Queue scaling
+Line up multiple dependency-aware work units; still process sequentially by default
+No cross-unit contamination or stale context
+5. Safe parallelism
+Parallelize only units with non-overlapping files and explicit locks
+Conflict rate and recovery are proven acceptable
+6. Additional providers
+Add local or free models behind the same adapter contract for low-risk work
+Privacy, capability, and quality profiles are enforced
+
+25.1 Operator commands
+ai-broker doctor ai-broker enqueue work-units/contact-form.json ai-broker status ai-broker run  # Reduce Claude routing when its allowance is low ai-broker capacity claude 0.15 ai-broker capacity codex 1  # Restore after reset ai-broker capacity claude 1 ai-broker reset-usage claude ai-broker unblock claude
+25.2 First complete pilot
+Choose one low-risk feature with clear acceptance criteria.
+Have either Claude or Codex produce the plan; require the other to critique it.
+Approve the work-unit breakdown manually.
+Let the broker select the implementer and create the worktree.
+Run the independent review, deterministic gates, and three-member panel.
+Inspect the branch and audit report before merging.
+Score role fidelity, evidence, safety, handoff quality, time, and token use.
+Fix the workflow before adding more agents, providers, or parallelism.
+Recommended starting rule
+Use Claude and Codex as peers, not as permanently assigned departments. Every important stage gets one accountable primary worker, one independent second voice, deterministic evidence, and a broker-enforced completion policy. You remain the final owner.
+

@@ -7,15 +7,38 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "npm run docs:index",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run",
+    "typecheck": "astro check",
+    "docs:index": "node scripts/build-document-index.mjs",
+    "docs:generate": "node scripts/generate-markdoc-corpus.mjs && npm run docs:index",
+    "docs:inspect": "node scripts/inspect-source-materials.mjs",
+    "docs:sources": "node tools/extract-proposal-architecture-sources.mjs",
+    "docs:diagrams": "npm run docs:sources && node tools/generate-architecture-diagrams.mjs",
+    "docs:serve": "npm run docs:index && astro dev --host 127.0.0.1 --port 8000",
+    "docs:validate": "npm run docs:index && node scripts/validate-markdoc.mjs && node scripts/validate-mermaid.mjs",
+    "docs:validate-built": "node tools/validate-built-handbook.mjs",
+    "docs:build": "npm run docs:validate && astro build",
+    "docs:legacy:build": "npm run docs:diagrams && node tools/validate-documentation-assets.mjs && python3 -m mkdocs build --strict && npm run docs:validate-built"
   },
   "dependencies": {
+    "@astrojs/markdoc": "^2.0.4",
     "astro": "^7.1.3"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@cloudflare/workers-types": "^5.20260726.1",
+    "@types/node": "^26.1.1",
+    "excalidraw-animate": "0.7.2",
+    "jsdom": "27.4.0",
+    "mermaid": "11.16.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10",
     "wrangler": "^4.114.0"
   }
 }

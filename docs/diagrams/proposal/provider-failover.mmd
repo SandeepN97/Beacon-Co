@@ -1,0 +1,18 @@
+graph LR
+    T["Task arrives<br/>via /tighten or direct prompt"] --> C{"Try Claude"}
+    C -->|"succeeds"| D1["Done — implemented by Claude"]
+    C -->|"capped or fails"| CX{"Try Codex"}
+    CX -->|"succeeds"| D2["Done — implemented by Codex"]
+    CX -->|"also fails"| B["BLOCKED — both providers down<br/>stop, don't loop forever"]
+
+    D1 --> R["Independent review<br/>by the OTHER model"]
+    D2 --> R2["Independent review<br/>by the OTHER model"]
+    R --> G["Deterministic gate<br/>npm run build"]
+    R2 --> G
+
+    classDef ok fill:#eef3ec,stroke:#2a4228,color:#1a1712
+    classDef bad fill:#f7e8e6,stroke:#a03d2e,color:#1a1712
+    classDef check fill:#f7f0dc,stroke:#8a6a1a,color:#1a1712
+    class D1,D2,R,R2,G ok
+    class B bad
+    class C,CX check

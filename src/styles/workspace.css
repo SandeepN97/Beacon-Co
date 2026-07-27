@@ -1,0 +1,120 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap");
+
+:root {
+  --forest: #2a4228;
+  --deep: #1f321e;
+  --sage: #7a9e72;
+  --gold: #c49a48;
+  --cream: #fdfcf8;
+  --cream-deep: #f5f1e7;
+  --ink: #1a1712;
+  --muted: #6f6a5e;
+  --rule: #ded8ca;
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--cream);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: radial-gradient(circle at 85% 8%, rgba(122,158,114,.16), transparent 30rem), var(--cream); line-height: 1.6; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.workspace-skip { position: fixed; top: .5rem; left: 1rem; z-index: 100; transform: translateY(-150%); background: var(--ink); color: white; padding: .6rem .9rem; }
+.workspace-skip:focus { transform: none; }
+.workspace-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem clamp(1rem, 5vw, 5rem);
+  background: var(--deep);
+  color: white;
+}
+.workspace-nav > a { display: grid; text-decoration: none; line-height: 1.1; }
+.workspace-nav strong { font: 700 1.35rem "Playfair Display", Georgia, serif; }
+.workspace-nav span { color: #d3e0d1; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+.workspace-nav nav { display: flex; gap: 1rem; font-size: .82rem; }
+main { width: min(1160px, calc(100% - 2rem)); margin: auto; padding-bottom: 5rem; }
+.workspace-hero { padding: clamp(3rem, 7vw, 6rem) 0 2.5rem; }
+.workspace-hero > span, .workspace-card__eyebrow {
+  color: #55754f;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-size: .72rem;
+  font-weight: 700;
+}
+.workspace-hero h1 { max-width: 24ch; margin: 1rem 0; font: 700 clamp(2.4rem, 4vw, 3.75rem)/1.02 "Playfair Display", Georgia, serif; letter-spacing: -.035em; color: var(--deep); }
+.workspace-hero p { max-width: 66ch; color: #4f4b42; font-size: 1.08rem; }
+.workspace-hero--section h1 { font-size: clamp(3rem, 7vw, 5.5rem); }
+.workspace-request {
+  display: grid;
+  gap: .75rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: white;
+  padding: clamp(1.2rem, 4vw, 2.2rem);
+  box-shadow: 0 22px 65px rgba(31,50,30,.1);
+}
+.workspace-request label { font: 700 clamp(1.5rem, 3vw, 2.2rem) "Playfair Display", Georgia, serif; }
+.workspace-request p, .workspace-request small { margin: 0; color: var(--muted); }
+.workspace-request textarea { width: 100%; resize: vertical; border: 2px solid var(--rule); border-radius: .7rem; padding: 1rem; color: var(--ink); background: var(--cream); font: inherit; }
+.workspace-file-row { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem .8rem; }
+.workspace-file-control {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  color: var(--forest);
+  cursor: pointer;
+  font: 700 .82rem/1.2 "DM Sans", system-ui, sans-serif !important;
+  text-decoration: underline;
+  text-decoration-color: rgba(42, 66, 40, .35);
+  text-underline-offset: .2rem;
+}
+.workspace-file-control:hover { color: var(--deep); text-decoration-color: currentColor; }
+.workspace-file-control svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+.workspace-file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.workspace-file-row:focus-within .workspace-file-control { outline: 3px solid var(--gold); outline-offset: 3px; }
+.workspace-file-status { font-size: .75rem; }
+.workspace-request button { justify-self: start; border: 0; border-radius: 999px; background: var(--forest); color: white; padding: .8rem 1.2rem; font-weight: 700; cursor: pointer; }
+.workspace-request button:hover { background: var(--deep); }
+.workspace-truth { display: grid; grid-template-columns: auto 1fr; gap: 1rem; margin: 1.5rem 0; border-left: 4px solid var(--gold); background: #fff9ec; padding: 1rem; font-size: .85rem; }
+.workspace-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; scroll-margin-top: 2rem; }
+.workspace-card { min-width: 0; border: 1px solid var(--rule); border-radius: 1rem; background: rgba(255,255,255,.88); padding: 1.3rem; }
+.workspace-card--intent, .workspace-card--provider { grid-column: 1 / -1; }
+.workspace-card h2 { margin: .45rem 0 1rem; color: var(--deep); font: 700 2rem/1.1 "Playfair Display", Georgia, serif; text-transform: none; }
+.workspace-card h3 { margin: 1.2rem 0 .45rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.workspace-card dl { display: grid; gap: .7rem; }
+.workspace-card dl div { display: grid; grid-template-columns: minmax(7rem, .3fr) 1fr; gap: 1rem; padding-bottom: .65rem; border-bottom: 1px solid var(--rule); }
+.workspace-card dt { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.workspace-card dd { margin: 0; font-weight: 600; }
+.workspace-card pre { max-height: 30rem; overflow: auto; border-radius: .7rem; background: #172216; color: #eff6ed; padding: 1rem; white-space: pre-wrap; font-size: .78rem; }
+.workspace-card code { overflow-wrap: anywhere; }
+.simulation-label { display: inline-flex; border-radius: 99px; background: #f3e6c8; color: #674b16; padding: .35rem .6rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; }
+.workspace-section {
+  max-width: 52rem;
+  min-height: 18rem;
+  margin-bottom: 4rem;
+  border: 1px solid var(--rule);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, .9);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+.workspace-section h2 {
+  margin-top: 0;
+  color: var(--deep);
+  font: 700 clamp(2rem, 4vw, 3rem)/1.05 "Playfair Display", Georgia, serif;
+}
+.workspace-section h3 { margin-top: 2rem; color: var(--deep); }
+.workspace-section li + li { margin-top: .45rem; }
+footer { padding: 1.5rem; background: var(--deep); color: #dce6da; text-align: center; font-size: .82rem; }
+@media (max-width: 720px) {
+  .workspace-nav nav { display: none; }
+  .workspace-grid { grid-template-columns: 1fr; }
+  .workspace-card--intent, .workspace-card--provider { grid-column: auto; }
+  .workspace-card dl div { grid-template-columns: 1fr; gap: .2rem; }
+  .workspace-truth { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

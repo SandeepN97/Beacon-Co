@@ -1,0 +1,23 @@
+---
+interface Props {
+  goal: string;
+  workflow: string;
+  role: string;
+  deliverables: string[];
+  criteria: string[];
+}
+const { goal, workflow, role, deliverables, criteria } = Astro.props;
+---
+<section class="workspace-card workspace-card--intent" aria-labelledby="intent-heading">
+  <div class="workspace-card__eyebrow">01 · Intent and Prompt Translator</div>
+  <h2 id="intent-heading">I understood your request as</h2>
+  <dl>
+    <div><dt>Goal</dt><dd data-result-goal>{goal}</dd></div>
+    <div><dt>Workflow</dt><dd data-result-workflow>{workflow}</dd></div>
+    <div><dt>First role</dt><dd data-result-role>{role}</dd></div>
+  </dl>
+  <h3>Deliverables</h3>
+  <ul data-result-deliverables>{deliverables.map((item) => <li>{item}</li>)}</ul>
+  <h3>Definition of done</h3>
+  <ul data-result-criteria>{criteria.map((item) => <li>{item}</li>)}</ul>
+</section>

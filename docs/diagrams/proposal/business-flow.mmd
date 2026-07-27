@@ -1,0 +1,82 @@
+flowchart TB
+
+classDef engine fill:#eef3ec,stroke:#2a4228,stroke-width:2px,color:#1a1712
+classDef data fill:#2a4228,stroke:#1d2f1c,stroke-width:2px,color:#f7f4ee
+classDef money fill:#fdf6e3,stroke:#c49a48,stroke-width:2px,color:#1a1712
+classDef ai fill:#f3eef7,stroke:#7c5e99,stroke-width:2px,color:#1a1712
+classDef human fill:#fff,stroke:#8a8578,stroke-width:2px,stroke-dasharray:5 3,color:#1a1712
+classDef guard fill:#fbeeed,stroke:#a03d2e,stroke-width:2px,color:#1a1712
+classDef ops fill:#edf2f7,stroke:#3d6a8a,stroke-width:1.5px,color:#1a1712
+
+subgraph L1["1 · LEAD ENGINE — weekly, automatic"]
+    direction LR
+    A1["⏰ Scheduler<br/>GitHub Actions cron"]:::engine
+    A2["🔍 Source fetchers<br/>Places · Yelp · rate-limited"]:::engine
+    A2b["🧹 Dedupe + normalize<br/>phone/address fingerprint"]:::engine
+    A3["🧪 Gap auditor<br/>site · SSL · GBP · social · speed"]:::engine
+    A4["💯 Scorer 0–100<br/>weighted gap model"]:::engine
+    A1 --> A2 --> A2b --> A3 --> A4
+end
+
+DB[("🗄️ SUPABASE — source of truth<br/>leads · audits · clients · projects<br/>calendar · posts · metrics · events<br/>audit_log · suppression_list")]:::data
+
+subgraph L2["2 · OUTREACH — event-driven"]
+    direction LR
+    B0{"🚫 Compliance gate<br/>suppression list · DNC<br/>already-client check"}:::guard
+    B1["📄 Audit PDF<br/>queued render job"]:::engine
+    B2["✉️ Sequencer<br/>Resend · 3 touches<br/>SPF/DKIM/DMARC domain"]:::engine
+    B2b["🔗 Unsubscribe handler<br/>1-click → suppression list"]:::guard
+    B3["📞 Call booked<br/>Cal.com link"]:::human
+    B0 -->|pass| B1 --> B2 --> B3
+    B2 -.-> B2b
+end
+
+subgraph L3["3 · CLOSE & ONBOARD"]
+    direction LR
+    C1["📝 Intake form<br/>webhook · sig-verified"]:::engine
+    C2["💳 Stripe Checkout<br/>sub or invoice"]:::money
+    C2b["⚠️ Dunning<br/>failed payment retries"]:::guard
+    C3["🚀 Kickoff automation<br/>project · calendar · OAuth<br/>connects client accounts"]:::engine
+    C1 --> C2 --> C3
+    C2 -.->|fail| C2b -.-> C2
+end
+
+subgraph L4["4 · DELIVERY — the margin engine"]
+    direction LR
+    D1["🌐 Site factory<br/>Astro branch → CF Pages"]:::engine
+    D2["🤖 Claude drafts<br/>captions · brand voice"]:::ai
+    D3["✅ Approval queue<br/>edit or 1-click approve"]:::human
+    D4["📱 Publisher worker<br/>Meta · TikTok · retry+backoff"]:::engine
+    D5["⭐ Reviews + SEO<br/>Twilio SMS · GBP sync · ranks"]:::engine
+    D2 --> D3 --> D4
+end
+
+subgraph L5["5 · PROVE IT — monthly retention loop"]
+    direction LR
+    E1["📈 Metrics collector<br/>GA4 · GBP · social · ranks"]:::engine
+    E2["🤖 Claude summary<br/>plain-English wins"]:::ai
+    E3["📊 Report PDF → inbox<br/>renewal touchpoint"]:::engine
+    E1 --> E2 --> E3
+end
+
+subgraph OPS["⚙️ CROSS-CUTTING"]
+    direction LR
+    O1["🔔 Alerts<br/>Sentry errors · job failures<br/>→ your phone"]:::ops
+    O2["📦 Job queue + DLQ<br/>pg-boss · retries"]:::ops
+    O3["💾 Backups<br/>Supabase PITR daily"]:::ops
+end
+
+A4 -->|"score ≥ 75"| DB
+DB -->|"hot lead event"| B0
+B0 -->|"blocked"| DB
+B3 -->|"won"| C1
+B3 -.->|"lost → re-nurture 90d"| DB
+C3 --> DB
+DB --> D1 & D2 & D5
+D4 -->|"post IDs + metrics"| DB
+D5 <--> DB
+DB --> E1
+E3 --> DB
+L1 & L2 & L4 & L5 -.-> O2
+O2 -.->|"failures"| O1
+DB -.-> O3

@@ -1,0 +1,22 @@
+flowchart TB
+  queue["Work-unit state"]
+  router["Router + scheduler"]
+  health["Provider health + capacity"]
+  policy["Permission + data policy"]
+  context["Context packager"]
+  workflow["Workflow engine"]
+  gates["Deterministic gates"]
+  panel["Independent review panel"]
+  approvals["Human approval service"]
+  audit["Audit + results"]
+
+  queue --> router
+  health --> router
+  policy --> router
+  context --> router
+  router --> workflow
+  workflow --> gates
+  gates --> panel
+  panel --> approvals
+  approvals --> audit
+  gates -. failure .-> workflow

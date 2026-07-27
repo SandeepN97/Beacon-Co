@@ -1,0 +1,82 @@
+site_name: Beacon & Co. Decision Book
+site_description: Source-of-truth decisions for the Beacon & Co. business, experience, architecture, and operating model.
+docs_dir: docs
+site_dir: docs-site
+
+theme:
+  name: material
+  language: en
+  logo: assets/brand/beacon-mark.svg
+  favicon: assets/brand/beacon-mark.svg
+  font: false
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - toc.follow
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+  palette:
+    scheme: default
+    primary: custom
+    accent: custom
+
+extra_css:
+  - stylesheets/brand.css
+
+plugins:
+  - search
+  - mermaid2:
+      version: 11.16.0
+      javascript: assets/vendor/mermaid.min.js
+      arguments:
+        theme: base
+        themeVariables:
+          primaryColor: "#dfe9dc"
+          primaryTextColor: "#1a1712"
+          primaryBorderColor: "#2a4228"
+          lineColor: "#55754f"
+          secondaryColor: "#f7edda"
+          tertiaryColor: "#fdfcf8"
+          fontFamily: "DM Sans, sans-serif"
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - fenced_code
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.snippets:
+      base_path:
+        - docs
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Start Here:
+      - Source of Truth: index.md
+      - Decision Book: decisions/index.md
+      - Current Truth: current-state.md
+  - Decisions:
+      - Decision Book: decisions/index.md
+      - ADR-0001 — Why Beacon exists: decisions/0001-why-beacon-exists-and-business-definition.md
+      - ADR-0002 — Brand and experience: decisions/0002-define-brand-and-customer-experience.md
+      - ADR-0003 — Architecture evolution: decisions/0003-record-architecture-evolution-and-source-atlas.md
+      - ADR-0004 — AI-assisted operations: decisions/0004-use-a-durable-ai-assisted-operating-model.md
+  - Architecture:
+      - Source Atlas: decisions/0003-record-architecture-evolution-and-source-atlas.md
+      - Current Architecture: architecture.md
+      - Proposal Evidence: proposals/architecture-proposal.md
+  - Reference:
+      - Business Plan: business/plan.md
+      - Experience Specification: product/experience-specification.md
+      - Brand System: brand.md
+      - Roadmap: roadmap.md
+  - Operations:
+      - Change Register: changes/index.md
+      - Documentation Policy: governance/documentation-policy.md
+      - Change Process: governance/change-process.md
+      - Claude ↔ Codex Workflow: ai-agent-workflow.md

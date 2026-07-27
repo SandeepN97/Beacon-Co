@@ -1,0 +1,67 @@
+---
+title: "ADR-0008 — Keep roles stable and assign models dynamically"
+description: "Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity."
+section: "decisions"
+order: 817
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0008" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Claude and Codex can perform overlapping work, while company responsibility must remain clear.
+
+## Decision drivers
+
+- One deliverable owner
+- Provider replacement
+- Capacity fallback
+- Measured affinity
+
+## Options considered
+
+- Claude architecture/Codex coding permanently
+- Unstructured free-for-all
+- Stable roles with broker assignment
+
+## Decision
+
+Define role contracts independently of providers. Assign Claude or Codex per work unit using policy, capability, preference, health, capacity, context, and affinity.
+
+## Positive consequences
+
+- No permanent model department
+- Fallback preserves business meaning
+
+## Negative consequences
+
+- Routing policy needs evidence and tuning
+
+## Risks
+
+- Affinity may harden into unsupported stereotype
+
+## Follow-up work
+
+- Measure quality by task category
+- Keep Claude-first configurable
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf`
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`

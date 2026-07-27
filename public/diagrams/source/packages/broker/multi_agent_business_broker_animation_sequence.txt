@@ -1,0 +1,22 @@
+END-TO-END ANIMATION SEQUENCE
+
+0. Title and governing principle
+1–4. Human leadership, Chief of Staff, approval gates, operating rules
+5–16. Business workflow phases 1–9 and approved work package
+17–26. Broker control plane, policy, load balancing, context and audit
+27–38. Claude/Codex provider pool and one-work-unit execution cycle
+39–44. Delivery preparation, release decision, deployment, operations and learning loop
+
+HOW TO PLAY
+1. Open https://dai-shi.github.io/excalidraw-animate/
+2. Click Load File.
+3. Select multi_agent_business_broker_end_to_end.excalidraw.
+4. Use Animate mode to play.
+5. In Edit mode, select elements and change Animation Order or Duration as needed.
+
+COMPLETION POLICY
+- Deterministic checks pass.
+- At least 2 of 3 fresh panel reviewers approve.
+- No unresolved blocker exists.
+- Every acceptance criterion has evidence.
+- Required human approvals are recorded.

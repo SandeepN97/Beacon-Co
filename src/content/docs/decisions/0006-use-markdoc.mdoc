@@ -1,0 +1,68 @@
+---
+title: "ADR-0006 — Use Markdoc as canonical documentation source"
+description: "Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled."
+section: "decisions"
+order: 815
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","src/content.config.ts","markdoc.config.mjs"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0006" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Project memory needs typed metadata, reusable components, source control, and retrieval by the orchestration module.
+
+## Decision drivers
+
+- Content validation
+- Astro integration
+- Controlled components
+- Repository retrieval
+
+## Options considered
+
+- Retain MkDocs as canonical
+- Plain Markdown pages
+- Astro content collection with Markdoc
+
+## Decision
+
+Use .mdoc content entries, a strict Astro collection schema, controlled tags, and unsafe HTML disabled.
+
+## Positive consequences
+
+- Typed source of truth
+- Reusable readable components
+- Same static build
+
+## Negative consequences
+
+- Migration retains a temporary legacy docs tree
+
+## Risks
+
+- Two docs sources may confuse contributors during transition
+
+## Follow-up work
+
+- Label Markdoc canonical in all entry points
+- Remove legacy MkDocs only in a separately approved cleanup
+
+## Supersedes or superseded by
+
+Supersedes MkDocs as canonical authoring system; legacy evidence is retained.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `src/content.config.ts`
+- `markdoc.config.mjs`

@@ -1,0 +1,60 @@
+{
+  "generatedFrom": "docs/assets/adr-intake/ai-company/beacon-and-co-full-business-proposal.html",
+  "generatedAtBuildTime": true,
+  "mermaid": [
+    {
+      "file": "docs/diagrams/proposal/business-flow.mmd",
+      "title": "Business flow"
+    },
+    {
+      "file": "docs/diagrams/proposal/full-system-architecture.mmd",
+      "title": "Full system architecture"
+    },
+    {
+      "file": "docs/diagrams/proposal/end-to-end-sequence.mmd",
+      "title": "End-to-end sequence"
+    },
+    {
+      "file": "docs/diagrams/proposal/provider-failover.mmd",
+      "title": "Claude/Codex provider failover"
+    },
+    {
+      "file": "docs/diagrams/proposal/twelve-stage-agent-workflow.mmd",
+      "title": "Twelve-stage agent workflow"
+    }
+  ],
+  "svg": [
+    {
+      "file": "docs/assets/architecture/proposal/business-loop.svg",
+      "title": "Beacon & Co. business loop"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/platform-architecture-sketch.svg",
+      "title": "Beacon & Co. proposed platform architecture"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/lead-sequence-sketch.svg",
+      "title": "Lead-to-renewal sequence"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/full-system-map.svg",
+      "title": "Full proposed system map"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/content-media-pipeline.svg",
+      "title": "Content and media pipeline"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/website-motion-pipeline.svg",
+      "title": "Website motion pipeline"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/attention-before.svg",
+      "title": "Competing-attention example"
+    },
+    {
+      "file": "docs/assets/architecture/proposal/attention-after.svg",
+      "title": "Single-CTA attention example"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+<svg class="sketch" viewBox="0 0 850 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Detailed website motion layer pipeline" aria-labelledby="title-6"><title id="title-6">Website motion pipeline</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+  <path class="st " style="--i:0" pathLength="1" d="M30 30 L210 30 Q220 30 220 40 L220 110 Q220 120 210 120 L30 120 Q20 120 20 110 L20 40 Q20 30 30 30"></path>
+  <text class="t-md" x="36" y="58" style="--i:0">Astro build</text>
+  <text class="t-sm" x="36" y="80" style="--i:0">static HTML, zero JS</text>
+  <text class="t-sm" x="36" y="99" style="--i:0">baseline, islands</text>
+  <path class="st " style="--i:0" pathLength="1" d="M260 30 L440 30 Q450 30 450 40 L450 110 Q450 120 440 120 L260 120 Q250 120 250 110 L250 40 Q250 30 260 30"></path>
+  <text class="t-md" x="266" y="58" style="--i:0">Design tokens</text>
+  <text class="t-sm" x="266" y="80" style="--i:0">brand colors, fonts,</text>
+  <text class="t-sm" x="266" y="99" style="--i:0">spacing from Brand Kit</text>
+  <path class="st green" style="--i:1" pathLength="1" d="M30 160 L200 160 Q210 160 210 170 L210 240 Q210 250 200 250 L30 250 Q20 250 20 240 L20 170 Q20 160 30 160"></path>
+  <text class="t-md" x="36" y="188" style="--i:1">Motion (2.3kb core)</text>
+  <text class="t-sm" x="36" y="210" style="--i:1">scroll reveals, spring</text>
+  <text class="t-sm" x="36" y="229" style="--i:1">ease-out, &lt;300ms</text>
+  <path class="st green" style="--i:1" pathLength="1" d="M250 160 L430 160 Q440 160 440 170 L440 240 Q440 250 430 250 L250 250 Q240 250 240 240 L240 170 Q240 160 250 160"></path>
+  <text class="t-md" x="256" y="188" style="--i:1">Press micro-interaction</text>
+  <text class="t-sm" x="256" y="210" style="--i:1">.97 scale on :active</text>
+  <text class="t-sm" x="256" y="229" style="--i:1">CSS-only, zero JS</text>
+  <path class="st green" style="--i:1" pathLength="1" d="M480 160 L660 160 Q670 160 670 170 L670 240 Q670 250 660 250 L480 250 Q470 250 470 240 L470 170 Q470 160 480 160"></path>
+  <text class="t-md" x="486" y="188" style="--i:1">Tooltip warmth</text>
+  <text class="t-sm" x="486" y="210" style="--i:1">delay cold · instant warm</text>
+  <text class="t-sm" x="486" y="229" style="--i:1">Kowalski pattern</text>
+  <path class="st green" style="--i:1" pathLength="1" d="M120 120 L110 160 M110 160 L108 150 M110 160 L116 152"></path>
+  <path class="st green" style="--i:1" pathLength="1" d="M350 120 L320 160 M320 160 L322 150 M320 160 L329 155"></path>
+  <path class="st green" style="--i:1" pathLength="1" d="M350 120 L530 160 M530 160 L520 162 M530 160 L522 154"></path>
+  <path class="st purple dash" style="--i:2" pathLength="1" d="M30 290 L230 290 Q240 290 240 300 L240 380 Q240 390 230 390 L30 390 Q20 390 20 380 L20 300 Q20 290 30 290"></path>
+  <text class="t-md" x="36" y="318" style="--i:2" fill="#7c5e99">One 3D hero moment</text>
+  <text class="t-sm" x="36" y="340" style="--i:2">three.js, lazy-loaded island</text>
+  <text class="t-sm" x="36" y="359" style="--i:2">skipped: mobile · reduced-motion</text>
+  <path class="st green" style="--i:2" pathLength="1" d="M290 290 L480 290 Q490 290 490 300 L490 380 Q490 390 480 390 L290 390 Q280 390 280 380 L280 300 Q280 290 290 290"></path>
+  <text class="t-md" x="296" y="318" style="--i:2">Satori OG images</text>
+  <text class="t-sm" x="296" y="340" style="--i:2">auto social-preview image</text>
+  <text class="t-sm" x="296" y="359" style="--i:2">generated per page, $0</text>
+  <path class="st purple dash" style="--i:2" pathLength="1" d="M350 120 L120 290 M120 290 L125 281 M120 290 L130 288"></path>
+  <path class="st green" style="--i:2" pathLength="1" d="M350 120 L370 290 M370 290 L365 282 M370 290 L373 281"></path>
+  <path class="st red dash" style="--i:3" pathLength="1" d="M30 440 L230 440 Q240 440 240 450 L240 520 Q240 530 230 530 L30 530 Q20 530 20 520 L20 450 Q20 440 30 440"></path>
+  <text class="t-md" x="36" y="468" style="--i:3" fill="#a03d2e">Lighthouse / PageSpeed gate</text>
+  <text class="t-sm" x="36" y="490" style="--i:3">CI check before deploy</text>
+  <text class="t-sm" x="36" y="509" style="--i:3">90+ score required</text>
+  <path class="st red" style="--i:3" pathLength="1" d="M115 250 L110 440 M110 440 L106 431 M110 440 L115 431"></path>
+  <path class="st red" style="--i:3" pathLength="1" d="M370 250 L150 440 M150 440 L154 431 M150 440 L160 437"></path>
+  <path class="st red" style="--i:3" pathLength="1" d="M130 390 L130 440 M130 440 L126 431 M130 440 L134 431"></path>
+  <path class="st " style="--i:4" pathLength="1" d="M290 440 L490 440 Q500 440 500 450 L500 520 Q500 530 490 530 L290 530 Q280 530 280 520 L280 450 Q280 440 290 440"></path>
+  <text class="t-md" x="296" y="468" style="--i:4">Cloudflare Pages CDN</text>
+  <text class="t-sm" x="296" y="490" style="--i:4">ships final build</text>
+  <text class="t-sm" x="296" y="509" style="--i:4">edge-cached, 300+ locations</text>
+  <path class="st " style="--i:4" pathLength="1" d="M240 485 L280 485 M280 485 L271 489 M280 485 L271 481"></path>
+  <path class="st " style="--i:5" pathLength="1" d="M570 440 L790 440 Q800 440 800 450 L800 520 Q800 530 790 530 L570 530 Q560 530 560 520 L560 450 Q560 440 570 440"></path>
+  <text class="t-md" x="576" y="468" style="--i:5">Core Web Vitals feedback</text>
+  <text class="t-sm" x="576" y="490" style="--i:5">GA4 real-user metrics →</text>
+  <text class="t-sm" x="576" y="509" style="--i:5">informs next motion budget</text>
+  <path class="st " style="--i:5" pathLength="1" d="M500 485 L560 485 M560 485 L551 489 M560 485 L551 481"></path>
+  <path class="st green dash" style="--i:6" pathLength="1" d="M680 440 L280 70 M280 70 L290 73 M280 70 L284 79"></path>
+  <text class="t-sm" x="430" y="250" style="--i:6">feeds back into design tokens</text>
+</svg>

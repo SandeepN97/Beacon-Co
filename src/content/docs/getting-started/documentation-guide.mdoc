@@ -1,0 +1,31 @@
+---
+title: "Documentation guide"
+description: "How to author, review, link, and validate canonical Markdoc pages."
+section: "getting-started"
+order: 103
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","package.json"]
+relatedAdrs: ["0006-use-markdoc","0013-use-docs-as-code"]
+relatedPages: ["references/document-statuses"]
+tags: ["getting-started"]
+truthState: "current"
+---
+
+## Authoring contract
+
+Every page uses `.mdoc`, validated frontmatter, a truthful status, a review date, an owner, sources, related decisions, and related pages. Use controlled Markdoc tags instead of arbitrary HTML.
+
+## Change rule
+
+A material change updates the relevant living page and a change record or ADR. Use one decision per ADR. Do not silently rewrite accepted history; supersede it and link both records.
+
+## Statuses
+
+- `draft`: incomplete or insufficient evidence
+- `under-review`: review is active
+- `approved`: governs project work
+- `superseded`: retained history, no longer governing
+
+Run `npm run docs:validate` and `npm run build` after material documentation changes.

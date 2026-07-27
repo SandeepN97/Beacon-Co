@@ -1,0 +1,30 @@
+---
+title: "Broker work-unit lifecycle"
+description: "Draft, context, approval, routing, execution, review, repair, and completion states."
+section: "workflows"
+order: 602
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+```text
+draft
+→ waiting-for-context
+→ ready or waiting-for-user/approval
+→ routed
+→ executing
+→ deterministic gates
+→ independent review
+→ repair or completion
+→ documentation-impact proposal
+```
+
+Workers cannot set `complete`. The broker may do so only after policy, evidence, criteria, blockers, and approvals satisfy the completion rule.
+
+{% mermaid_diagram src="/diagrams/mermaid/work-unit-sequence.mmd" title="Work-unit sequence and provider handoff" /%}

@@ -1265,8 +1265,8 @@ function next() {
   if (cur < stages.length - 1) { cur++; render(); ensureDemoVisible(); }
 }
 function prev() { if (cur > 0) { cur--; render(); ensureDemoVisible(); } }
-function goTo(n) { if (n === cur) return; cur = n; render(); ensureDemoVisible(); }
-function smSwitch(p, btn) {
+function goTo(n: number) { if (n === cur) return; cur = n; render(); ensureDemoVisible(); }
+function smSwitch(p: number, btn: HTMLElement | null) {
   document.querySelectorAll('.sm-pane').forEach(el => el.classList.remove('sm-pane-active'));
   const pane = document.getElementById('smPane' + p);
   if (pane) pane.classList.add('sm-pane-active');
@@ -1276,8 +1276,14 @@ function smSwitch(p, btn) {
 
 render();
 
-window.goTo = goTo;
-window.next = next;
-window.prev = prev;
-window.smSwitch = smSwitch;
+const demoWindow = window as Window & typeof globalThis & {
+  goTo: typeof goTo;
+  next: typeof next;
+  prev: typeof prev;
+  smSwitch: typeof smSwitch;
+};
+demoWindow.goTo = goTo;
+demoWindow.next = next;
+demoWindow.prev = prev;
+demoWindow.smSwitch = smSwitch;
 </script>

@@ -6,13 +6,22 @@ Digital presence services for small businesses within 30 miles of Waynesboro, Vi
 
 ## What's in this repo
 
-This is an [Astro](https://astro.build) static site — the Phase 1 marketing site, per `docs/architecture.md`.
+This repository contains the Phase 1 marketing and lead-capture site, the canonical Astro + Markdoc decision system, and a provider-neutral orchestration simulation.
+
+Start with [`src/content/docs/index.mdoc`](src/content/docs/index.mdoc) or the rendered `/docs/` route for current status, architecture, product requirements, agent contracts, broker rules, ADRs, roadmap, operations, and provenance.
 
 | Path | What it is |
 |---|---|
 | `CLAUDE.md` / `AGENTS.md` | Project instructions for AI coding agents (`CLAUDE.md` is a symlink to `AGENTS.md` so both read the same source of truth). |
-| `docs/architecture.md` | The full planned system (frontend now, admin dashboard / data layer / job queue / AI layer in later phases) and the design principles behind Phase 1. |
+| `src/content/docs/` | Canonical `.mdoc` business, product, architecture, agent, workflow, governance, ADR, roadmap, operations, and reference pages. |
+| `src/modules/orchestration/` | Typed translator, Markdoc retrieval, broker, provider adapters, workflows, approvals, audit, and documentation-impact simulation. |
+| `src/pages/docs/` / `src/layouts/DocsLayout.astro` | Static Astro documentation route and reading experience. |
+| `src/pages/workspace/` | Truthfully labeled in-memory orchestration vertical slice and non-operational queue placeholders. |
+| `public/diagrams/` | Preserved Excalidraw sources, package contents, previews, Mermaid sources, and truthful exports. |
+| `reference/source-materials/` | Non-destructive source copies, extracted text/packages, hashes, inventories, and assessments. |
+| `docs/` / `mkdocs.yml` | Legacy MkDocs handbook retained as migration evidence and an optional legacy build. |
 | `docs/brand.md` | Brand tokens — colors, typography, logo usage, voice. |
+| `docs/ai-agent-workflow.md` | Low-token handoff workflow for switching between Claude Code and Codex. |
 | `reference/v9-source.html` | The original single-file site this Astro project replaces, kept as a content/behavior reference. |
 | `public/brand/*.svg` | Source brand identity and logo-showcase sheets. |
 | `src/layouts/BaseLayout.astro` | Page shell — nav, sticky contact pill, footer. |
@@ -26,7 +35,23 @@ npm install
 npm run dev      # localhost:4321, hot reload
 npm run build    # outputs to dist/ — verify this succeeds before any task is done
 npm run preview  # serve the production build locally
+npm run typecheck # Astro and TypeScript diagnostics
+npm run test # orchestration unit tests
+npm run docs:validate # validate Markdoc, links, sources, diagrams, and search
+npm run docs:serve # localhost:8000, hot-reloading canonical handbook
+npm run docs:build # validate Markdoc and build the unified Astro site
+npm run docs:legacy:build # optional retained MkDocs evidence build
 ```
+
+Markdoc is installed with the Node dependencies. MkDocs remains pinned in `requirements-docs.txt` only for the optional legacy build. If needed:
+
+```sh
+python3 -m pip install -r requirements-docs.txt
+```
+
+Every material project change must update the relevant `.mdoc` page. Significant decisions also require one ADR; start at `src/content/docs/decisions/index.mdoc`.
+
+The canonical handbook uses Astro, Markdoc, Beacon brand tokens, a generated client-side search index, preserved Excalidraw/Excalidraw Animate source material, and Mermaid views. It remains readable without JavaScript; JavaScript enhances search, diagram rendering, and the workspace simulation.
 
 ## Deploying
 
@@ -50,14 +75,16 @@ A solo-operator agency built around one idea: automate everything except the two
 
 ## Stack
 
-- **Frontend (Phase 1, this repo):** Astro static site → Cloudflare Workers (static assets)
+- **Frontend (implemented):** Astro 7 static site → Cloudflare Worker static assets
 - **Contact form:** Cloudflare Worker route (`src/worker.ts`) + Turnstile + Resend
-- **Data:** Supabase (Postgres, Storage, Realtime, RLS)
-- **Queue:** pg-boss on Postgres
-- **AI:** Claude API, versioned prompt registry, output guards
-- **Content:** Satori (static graphics) + JSON2Video (short video) for Phase 1; native Meta/TikTok APIs once platform approvals clear
+- **Documentation (implemented):** Astro + Markdoc source of truth with validated content, ADRs, provenance, search, and diagrams
+- **Orchestration (implemented simulation):** typed translator, Markdoc retrieval, broker/router, Claude/Codex prompt adapters, approvals, audit, continuation, workflow gates, and documentation impact
+- **Data (planned):** Supabase (Postgres, Storage, Realtime, RLS)
+- **Queue (planned):** pg-boss on Postgres
+- **AI (planned):** Claude API, versioned prompt registry, output guards
+- **Content (planned):** Satori + JSON2Video initially; native Meta/TikTok APIs after platform approval
 
-See `docs/architecture.md` for the full breakdown across all phases.
+See `src/content/docs/architecture/overview.mdoc` for the implemented boundary and `src/content/docs/plans/roadmap.mdoc` for phased direction.
 
 ## Open items
 

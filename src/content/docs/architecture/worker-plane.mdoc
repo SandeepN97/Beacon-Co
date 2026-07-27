@@ -1,0 +1,24 @@
+---
+title: "Worker plane"
+description: "Claude and Codex as bounded, replaceable role executors."
+section: "architecture"
+order: 404
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "target"
+---
+
+## Worker contract
+
+A worker receives one approved work unit, the smallest approved context package, repository boundaries, permissions, evidence requirements, stop conditions, and a fixed output contract.
+
+Planning and review are read-only. An implementation worker may eventually write only in an assigned isolated worktree. A worker cannot mark itself complete, create uncontrolled subagents, merge, push, deploy, or use production credentials.
+
+## Provider equality
+
+Either Claude or Codex may plan, implement, test, or review when eligible. The exact session that authored a deliverable cannot count as its independent reviewer.

@@ -1,0 +1,67 @@
+<svg class="sketch" viewBox="0 0 1080 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hand-drawn sequence diagram of one lead's path" aria-labelledby="title-3"><title id="title-3">Lead-to-renewal sequence</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+      <!-- lifelines -->
+      <path class="st" style="--i:0" pathLength="1" d="M70 70 L70 420" stroke-width="1.4"></path>
+      <path class="st" style="--i:0" pathLength="1" d="M290 70 L290 420" stroke-width="1.4"></path>
+      <path class="st" style="--i:0" pathLength="1" d="M510 70 L510 420" stroke-width="1.4"></path>
+      <path class="st" style="--i:0" pathLength="1" d="M730 70 L730 420" stroke-width="1.4"></path>
+      <path class="st" style="--i:0" pathLength="1" d="M960 70 L960 420" stroke-width="1.4"></path>
+      <text class="t-md" x="30" y="52" style="--i:0">Lead Engine</text>
+      <text class="t-md" x="250" y="52" style="--i:0">Outreach</text>
+      <text class="t-md" x="472" y="52" style="--i:0">Owner</text>
+      <text class="t-md" x="700" y="52" style="--i:0">Minjoon</text>
+      <text class="t-md" x="912" y="52" style="--i:0">Claude+Stripe</text>
+      <!-- messages, staggered -->
+      <path class="st green" style="--i:1" pathLength="1" d="M70 96 L286 96 M286 96 L272 88 M286 96 L272 104"></path>
+      <text class="t-sm t-green" x="76" y="88" style="--i:1">scored ≥ 75 → handoff</text>
+      <path class="st sage" style="--i:2" pathLength="1" d="M290 140 L506 140 M506 140 L492 132 M506 140 L492 148"></path>
+      <text class="t-sm" x="296" y="132" style="--i:2">audit PDF, email 1</text>
+      <path class="st" style="--i:3" pathLength="1" d="M510 178 L294 178 M294 178 L308 170 M294 178 L308 186" stroke-dasharray="4 5!important"></path>
+      <text class="t-sm" x="330" y="170" style="--i:3">opens · clicks (webhook)</text>
+      <path class="st red" style="--i:4" pathLength="1" d="M510 214 L726 214 M726 214 L712 206 M726 214 L712 222"></path>
+      <text class="t-sm t-red" x="530" y="206" style="--i:4">books the call</text>
+      <path class="st red" style="--i:5" pathLength="1" d="M730 250 L514 250 M514 250 L528 242 M514 250 L528 258"></path>
+      <text class="t-sm t-red" x="540" y="242" style="--i:5">15-min call — touchpoint #1</text>
+      <path class="st" style="--i:6" pathLength="1" d="M510 286 L956 286 M956 286 L942 278 M956 286 L942 294"></path>
+      <text class="t-sm" x="530" y="278" style="--i:6">Stripe checkout · $450/mo</text>
+      <path class="st purple" style="--i:7" pathLength="1" d="M960 318 L734 318 M734 318 L748 310 M734 318 L748 326"></path>
+      <text class="t-sm" x="756" y="310" style="--i:7">Claude drafts 12–20 posts</text>
+      <path class="st red" style="--i:8" pathLength="1" d="M730 350 L964 350 M964 350 L950 342 M964 350 L950 358"></path>
+      <text class="t-sm t-red" x="750" y="343" style="--i:8">approve — touchpoint #2</text>
+      <path class="st gold" style="--i:9" pathLength="1" d="M960 384 L514 384 M514 384 L528 376 M514 384 L528 392"></path>
+      <text class="t-sm t-gold" x="560" y="376" style="--i:9">published + report + renews</text>
+    </svg>

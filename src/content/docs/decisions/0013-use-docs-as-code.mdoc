@@ -1,0 +1,66 @@
+---
+title: "ADR-0013 — Use docs as code for canonical project memory"
+description: "Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review."
+section: "decisions"
+order: 822
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","src/content.config.ts"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0013" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Chat memory and runtime state are incomplete and provider-specific.
+
+## Decision drivers
+
+- Version history
+- Reviewability
+- Cross-agent continuity
+- Retrieval
+
+## Options considered
+
+- Chat transcripts
+- Runtime database as truth
+- Version-controlled Markdoc
+
+## Decision
+
+Store approved business, architecture, decisions, contracts, workflows, and runbooks in Markdoc. Propose all updates through repository review.
+
+## Positive consequences
+
+- Durable provider-neutral memory
+- Lower repeated context
+
+## Negative consequences
+
+- Requires maintenance discipline
+
+## Risks
+
+- Stale approved pages can misroute work
+
+## Follow-up work
+
+- Track owner and review date
+- Run conflict and link validation
+
+## Supersedes or superseded by
+
+Extends ADR-0004 and ADR-0006; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `src/content.config.ts`

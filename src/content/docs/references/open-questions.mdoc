@@ -1,0 +1,30 @@
+---
+title: "Open questions and source conflicts"
+description: "Unresolved decisions, source tensions, and migration needs that must not be silently assumed."
+section: "references"
+order: 1003
+status: "under-review"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","AGENTS.md","docs/current-state.md","docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md"]
+relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0007-use-central-broker","0011-use-isolated-git-worktrees"]
+relatedPages: ["plans/future-work"]
+tags: ["questions","conflicts"]
+truthState: "reference"
+---
+
+## Resolved for this implementation
+
+- **MkDocs versus Markdoc:** Markdoc is now canonical; MkDocs is retained as migration evidence.
+- **Phase 1 versus broker request:** only a typed in-memory simulation is authorized; no speculative backend was added.
+- **ADR numbering:** founding ADRs 0001–0004 remain in order; new decisions continue at 0005.
+
+## Still open
+
+- When, if ever, should one provider adapter invoke a live CLI?
+- What threat model and operator approval are required for worktree creation?
+- What durable store fits audit, approvals, retention, and recovery?
+- Which measured tasks justify a Claude or Codex affinity adjustment?
+- When can the legacy MkDocs tree be removed?
+- What formal name/domain/trademark decision replaces the provisional Beacon name?
+- Which proposal market, competitor, pricing, margin, and vendor claims remain valid after revalidation?

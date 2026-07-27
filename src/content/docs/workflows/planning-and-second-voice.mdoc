@@ -1,0 +1,18 @@
+---
+title: "Planning and second voice"
+description: "A primary planner owns the plan and the other provider independently challenges it."
+section: "workflows"
+order: 603
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+The broker selects the best eligible planner. The other provider receives the same approved goal, criteria, Markdoc context, ADR constraints, and evidence rules. It critiques assumptions, dependencies, risk, and testability without editing the plan.
+
+Disagreement returns to the planning owner or a human gate; it does not create silent hybrid ownership.

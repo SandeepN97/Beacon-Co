@@ -1,0 +1,18 @@
+---
+title: "Release flow"
+description: "Evidence assembly, hold/release recommendation, human decision, and post-release validation."
+section: "workflows"
+order: 609
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+The Release Manager assembles requirements, gates, QA, reviews, security, delivery, rollback, documentation, and approvals. It recommends release, conditional release, or hold.
+
+The broker never silently merges or deploys. The current implementation performs no GitHub or production action.

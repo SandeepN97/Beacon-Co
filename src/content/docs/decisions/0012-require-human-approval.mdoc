@@ -1,0 +1,67 @@
+---
+title: "ADR-0012 — Require human approval for high-impact actions"
+description: "Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision."
+section: "decisions"
+order: 821
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0012" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Models may organize evidence but do not own legal, financial, production, or business authority.
+
+## Decision drivers
+
+- Accountability
+- Safety
+- Professional authority
+- Client control
+
+## Options considered
+
+- Autonomous approval
+- Approval only at release
+- Risk-specific gates throughout
+
+## Decision
+
+Pause material architecture, spending, legal/privacy, production, merge, deployment, and release until an authorized human records a scoped decision.
+
+## Positive consequences
+
+- Authority stays accountable
+- Stops irreversible ambiguity
+
+## Negative consequences
+
+- Human availability can delay work
+
+## Risks
+
+- A vague approval may be over-applied
+
+## Follow-up work
+
+- Record scope, person, time, and rationale
+- Expire approvals when scope changes
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf`
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`

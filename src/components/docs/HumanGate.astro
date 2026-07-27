@@ -1,0 +1,13 @@
+---
+interface Props {
+  kind: string;
+}
+const { kind } = Astro.props;
+---
+<aside class="human-gate">
+  <span aria-hidden="true">◆</span>
+  <div>
+    <strong>Human gate · {kind}</strong>
+    <slot />
+  </div>
+</aside>

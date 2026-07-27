@@ -1,0 +1,29 @@
+---
+title: "Future work"
+description: "Unimplemented capabilities that require a new bounded decision and authorization."
+section: "plans"
+order: 304
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
+relatedPages: ["architecture/overview"]
+tags: ["roadmap","phase"]
+truthState: "target"
+---
+
+## Next safe work
+
+The next unit should validate the local simulation against one low-risk documentation change, record usability findings, and refine translation without adding live credentials.
+
+## Later
+
+- one live provider adapter with a timeout, policy envelope, and evidence capture;
+- a second provider and independent-review enforcement;
+- real command gates in an isolated worktree;
+- durable runtime and approval storage;
+- operational dashboards, budget controls, and incident recovery;
+- broker extraction into a separate service.
+
+Each item requires its own threat, cost, rollback, and human-approval decision.

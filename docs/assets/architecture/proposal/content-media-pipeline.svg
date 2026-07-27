@@ -1,0 +1,107 @@
+<svg class="sketch" viewBox="0 0 1450 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Detailed video and image content pipeline with phase split" aria-labelledby="title-5"><title id="title-5">Content and media pipeline</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+  <path class="st " style="--i:0" pathLength="1" d="M30 30 L200 30 Q210 30 210 40 L210 120 Q210 130 200 130 L30 130 Q20 130 20 120 L20 40 Q20 30 30 30"></path>
+  <text class="t-md" x="36" y="58" style="--i:0">Content Calendar</text>
+  <text class="t-sm" x="36" y="80" style="--i:0">Supabase · this week's</text>
+  <text class="t-sm" x="36" y="99" style="--i:0">topic + platform mix</text>
+  <path class="st " style="--i:1" pathLength="1" d="M260 30 L450 30 Q460 30 460 40 L460 120 Q460 130 450 130 L260 130 Q250 130 250 120 L250 40 Q250 30 260 30"></path>
+  <text class="t-md" x="266" y="58" style="--i:1" fill="#7c5e99">Claude — script + guards</text>
+  <text class="t-sm" x="266" y="80" style="--i:1">20–30s script, brand voice</text>
+  <text class="t-sm" x="266" y="99" style="--i:1">banned-claims lint</text>
+  <path class="st " style="--i:1" pathLength="1" d="M210 80 L250 80 M250 80 L241 84 M250 80 L241 76"></path>
+  <path class="st gold" style="--i:2" pathLength="1" d="M510 10 L720 10 Q730 10 730 20 L730 110 Q730 120 720 120 L510 120 Q500 120 500 110 L500 20 Q500 10 510 10"></path>
+  <text class="t-md" x="516" y="38" style="--i:2">JSON2Video render</text>
+  <text class="t-sm" x="516" y="60" style="--i:2">template + TTS voice</text>
+  <text class="t-sm" x="516" y="79" style="--i:2">B-roll · burned-in captions</text>
+  <text class="t-sm" x="516" y="98" style="--i:2">~$3/client</text>
+  <path class="st green" style="--i:2" pathLength="1" d="M510 150 L720 150 Q730 150 730 160 L730 250 Q730 260 720 260 L510 260 Q500 260 500 250 L500 160 Q500 150 510 150"></path>
+  <text class="t-md" x="516" y="178" style="--i:2">Satori render</text>
+  <text class="t-sm" x="516" y="200" style="--i:2">JSON template → PNG</text>
+  <text class="t-sm" x="516" y="219" style="--i:2">brand tokens, self-hosted</text>
+  <text class="t-sm" x="516" y="238" style="--i:2">$0/client</text>
+  <path class="st gold" style="--i:2" pathLength="1" d="M460 60 L500 55 M500 55 L492 60 M500 55 L491 52"></path>
+  <text class="t-sm" x="465" y="45" style="--i:2">→ video</text>
+  <path class="st green" style="--i:2" pathLength="1" d="M460 100 L500 195 M500 195 L492 188 M500 195 L501 185"></path>
+  <text class="t-sm" x="465" y="135" style="--i:2">→ image</text>
+  <path class="st " style="--i:3" pathLength="1" d="M780 80 L950 80 Q960 80 960 90 L960 170 Q960 180 950 180 L780 180 Q770 180 770 170 L770 90 Q770 80 780 80"></path>
+  <text class="t-md" x="786" y="108" style="--i:3">Media Storage</text>
+  <text class="t-sm" x="786" y="130" style="--i:3">Supabase Storage · S3 API</text>
+  <text class="t-sm" x="786" y="149" style="--i:3">landing zone, versioned</text>
+  <path class="st gold" style="--i:3" pathLength="1" d="M730 55 L770 110 M770 110 L761 105 M770 110 L768 100"></path>
+  <path class="st green" style="--i:3" pathLength="1" d="M730 205 L770 150 M770 150 L768 160 M770 150 L761 155"></path>
+  <path class="st red dash" style="--i:4" pathLength="1" d="M1010 55 L1220 55 Q1230 55 1230 65 L1230 165 Q1230 175 1220 175 L1010 175 Q1000 175 1000 165 L1000 65 Q1000 55 1010 55"></path>
+  <text class="t-md" x="1016" y="83" style="--i:4" fill="#a03d2e">👤 Approval Queue</text>
+  <text class="t-sm" x="1016" y="105" style="--i:4">one tap: approve, edit,</text>
+  <text class="t-sm" x="1016" y="124" style="--i:4">or reject — the only</text>
+  <text class="t-sm" x="1016" y="143" style="--i:4">human step in this loop</text>
+  <path class="st red" style="--i:4" pathLength="1" d="M960 120 L1000 115 M1000 115 L992 120 M1000 115 L991 112"></path>
+  <path class="st " style="--i:5" pathLength="1" d="M1030 175 L320 110 M320 110 L329 106 M320 110 L329 115"></path>
+  <text class="t-sm" x="650" y="190" style="--i:5">reject/edit → revise script</text>
+  <path class="st " style="--i:6" pathLength="1" d="M1010 230 L1220 230 Q1230 230 1230 240 L1230 310 Q1230 320 1220 320 L1010 320 Q1000 320 1000 310 L1000 240 Q1000 230 1010 230"></path>
+  <text class="t-md" x="1016" y="258" style="--i:6">Publisher Worker</text>
+  <text class="t-sm" x="1016" y="280" style="--i:6">per-platform formatting</text>
+  <text class="t-sm" x="1016" y="299" style="--i:6">retry + backoff</text>
+  <path class="st red" style="--i:6" pathLength="1" d="M1115 175 L1115 230 M1115 230 L1111 221 M1115 230 L1119 221"></path>
+  <path class="st gold dash" style="--i:7" pathLength="1" d="M1010 350 L1220 350 Q1230 350 1230 360 L1230 430 Q1230 440 1220 440 L1010 440 Q1000 440 1000 430 L1000 360 Q1000 350 1010 350"></path>
+  <text class="t-md" x="1016" y="378" style="--i:7" fill="#8a6a1a">PHASE 1: Upload-Post</text>
+  <text class="t-sm" x="1016" y="400" style="--i:7">one call, all platforms</text>
+  <text class="t-sm" x="1016" y="419" style="--i:7">~$16 → ~$105/mo as clients grow</text>
+  <path class="st gold dash" style="--i:7" pathLength="1" d="M1115 320 L1115 350 M1115 350 L1111 341 M1115 350 L1119 341"></path>
+  <path class="st dash" style="--i:8" pathLength="1" d="M30 470 L1220 470 Q1230 470 1230 480 L1230 510 Q1230 520 1220 520 L30 520 Q20 520 20 510 L20 480 Q20 470 30 470"></path>
+  <text class="t-md" x="36" y="498" style="--i:8">PHASE 2: swap to native APIs once both approvals clear — same three destinations, $0 in platform fees</text>
+  <path class="st dash" style="--i:8" pathLength="1" d="M1115 320 L630 470 M630 470 L637 463 M630 470 L640 471"></path>
+  <path class="st " style="--i:9" pathLength="1" d="M840 560 L1000 560 Q1010 560 1010 570 L1010 630 Q1010 640 1000 640 L840 640 Q830 640 830 630 L830 570 Q830 560 840 560"></path>
+  <text class="t-md" x="846" y="588" style="--i:9">Meta Graph API</text>
+  <text class="t-sm" x="846" y="610" style="--i:9">Instagram + Facebook</text>
+  <path class="st " style="--i:9" pathLength="1" d="M1040 560 L1200 560 Q1210 560 1210 570 L1210 630 Q1210 640 1200 640 L1040 640 Q1030 640 1030 630 L1030 570 Q1030 560 1040 560"></path>
+  <text class="t-md" x="1046" y="588" style="--i:9">TikTok Content API</text>
+  <text class="t-sm" x="1046" y="610" style="--i:9">Direct Post / draft fallback</text>
+  <path class="st " style="--i:9" pathLength="1" d="M1240 560 L1370 560 Q1380 560 1380 570 L1380 630 Q1380 640 1370 640 L1240 640 Q1230 640 1230 630 L1230 570 Q1230 560 1240 560"></path>
+  <text class="t-md" x="1246" y="588" style="--i:9">GBP Post</text>
+  <text class="t-sm" x="1246" y="610" style="--i:9">Google Business Profile</text>
+  <path class="st " style="--i:9" pathLength="1" d="M920 520 L930 560 M930 560 L924 552 M930 560 L932 550"></path>
+  <path class="st gold dash" style="--i:9" pathLength="1" d="M1115 440 L1115 560 M1115 560 L1111 551 M1115 560 L1119 551"></path>
+  <path class="st " style="--i:9" pathLength="1" d="M1160 520 L1300 560 M1300 560 L1290 562 M1300 560 L1293 553"></path>
+  <path class="st " style="--i:10" pathLength="1" d="M1010 670 L1290 670 Q1300 670 1300 680 L1300 720 Q1300 730 1290 730 L1010 730 Q1000 730 1000 720 L1000 680 Q1000 670 1010 670"></path>
+  <text class="t-md" x="1016" y="698" style="--i:10">Metrics Collector</text>
+  <text class="t-sm" x="1016" y="720" style="--i:10">post IDs · reach · views → next week's calendar</text>
+  <path class="st " style="--i:10" pathLength="1" d="M920 640 L1080 670 M1080 670 L1070 673 M1080 670 L1072 664"></path>
+  <path class="st " style="--i:10" pathLength="1" d="M1180 640 L1180 670 M1180 670 L1176 661 M1180 670 L1184 661"></path>
+  <path class="st " style="--i:10" pathLength="1" d="M1305 640 L1230 670 M1230 670 L1237 663 M1230 670 L1240 671"></path>
+  <path class="st green dash" style="--i:11" pathLength="1" d="M1000 700 L20 90 M20 90 L30 91 M20 90 L25 98"></path>
+  <text class="t-sm" x="300" y="715" style="--i:11">informs next week's topic pick</text>
+</svg>

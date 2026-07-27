@@ -1,0 +1,53 @@
+<svg viewBox="0 0 620 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title-7"><title id="title-7">Competing-attention example</title><style>
+  :root {
+    --forest: #2a4228;
+    --cream: #fdfcf8;
+    --ink: #1a1712;
+    --ink2: #5a5548;
+    --red: #a03d2e;
+  }
+  svg { background: var(--cream); }
+  text {
+    fill: var(--ink);
+    font-family: "DM Sans", Arial, sans-serif;
+  }
+  .sketch .st {
+    fill: none;
+    stroke: var(--ink);
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+  }
+  .sketch .st.green { stroke: var(--forest); }
+  .sketch .st.gold { stroke: #a8842e; }
+  .sketch .st.red { stroke: var(--red); }
+  .sketch .st.sage { stroke: #4a6640; }
+  .sketch .st.purple { stroke: #7c5e99; }
+  .sketch .st.blue { stroke: #3d6a8a; }
+  .sketch .st.dash { stroke-dasharray: 6 5 !important; }
+  .sketch .t-big { font-size: 23px; font-weight: 700; }
+  .sketch .t-md { font-size: 17px; font-weight: 600; }
+  .sketch .t-sm { fill: var(--ink2); font-size: 13.5px; }
+  .sketch .t-green { fill: var(--forest); }
+  .sketch .t-gold { fill: #a8842e; }
+  .sketch .t-red { fill: var(--red); }
+</style>
+<defs>
+  <radialGradient id="hotA" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#e63946" stop-opacity="0.75"></stop><stop offset="100%" stop-color="#e63946" stop-opacity="0"></stop></radialGradient>
+  <radialGradient id="hotB" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f4a340" stop-opacity="0.55"></stop><stop offset="100%" stop-color="#f4a340" stop-opacity="0"></stop></radialGradient>
+</defs>
+<rect width="620" height="340" fill="#fdfcf8"></rect>
+<rect x="20" y="20" width="580" height="40" rx="6" fill="#e2ddcf"></rect>
+<rect x="20" y="80" width="340" height="18" rx="3" fill="#c9c4b4"></rect>
+<rect x="20" y="106" width="260" height="14" rx="3" fill="#dcd7c8"></rect>
+<rect x="20" y="128" width="300" height="14" rx="3" fill="#dcd7c8"></rect>
+<rect x="400" y="80" width="180" height="46" rx="8" fill="#f4a340" stroke="#c49a48" stroke-width="2"></rect>
+<text x="490" y="108" font-family="'DM Sans',sans-serif" font-size="14" font-weight="700" fill="#5a3d0a" text-anchor="middle">No-Fee Badge</text>
+<rect x="20" y="180" width="200" height="44" rx="8" fill="#2a4228"></rect>
+<text x="120" y="207" font-family="'DM Sans',sans-serif" font-size="14" font-weight="700" fill="#fdfcf8" text-anchor="middle">Get Started →</text>
+<circle cx="490" cy="103" r="70" fill="url(#hotA)"></circle>
+<circle cx="490" cy="103" r="35" fill="url(#hotA)"></circle>
+<circle cx="120" cy="202" r="30" fill="url(#hotB)"></circle>
+</svg>

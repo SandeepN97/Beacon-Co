@@ -1,0 +1,65 @@
+---
+title: "ADR-0011 — Use isolated Git worktrees for live implementation workers"
+description: "Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now."
+section: "decisions"
+order: 820
+status: "draft"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","draft"]
+truthState: "proposal"
+---
+
+{% decision_card number="ADR-0011" status="draft" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+A live worker must not contaminate the primary working tree or another work unit.
+
+## Decision drivers
+
+- Isolation
+- Recoverability
+- Parallel-safety prerequisite
+
+## Options considered
+
+- Primary worktree edits
+- Temporary copies
+- Broker-managed Git worktrees
+
+## Decision
+
+Proposed: when live execution is authorized, assign one validated worktree per work unit. No worktree executor exists now.
+
+## Positive consequences
+
+- Clear diff and cleanup boundary
+
+## Negative consequences
+
+- Lifecycle and storage complexity
+
+## Risks
+
+- Stale worktrees, overlapping files, destructive cleanup
+
+## Follow-up work
+
+- Threat-model commands
+- Build a dry-run lifecycle
+- Require explicit cleanup policy
+
+## Supersedes or superseded by
+
+Draft proposal; superseded by: none.
+
+## Source references
+
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`

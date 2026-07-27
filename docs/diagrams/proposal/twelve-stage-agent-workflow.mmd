@@ -1,0 +1,37 @@
+graph TD
+    S1["1. Idea Intake<br/><i>either model — human gate</i>"]
+    S2["2. Business & Product Definition"]
+    S3["3. Architecture Plan"]
+    S3B["3b. Architecture Critique<br/><i>the OTHER model, never the planner</i>"]
+    S4["4. Work-Unit Breakdown<br/><i>→ JSON contract</i>"]
+    S5{"5. Routing<br/><i>deterministic, not an LLM call</i>"}
+    S6["6. Implementation<br/><i>Claude tries first</i>"]
+    S7["7. Independent Review<br/><i>whichever model did NOT implement</i>"]
+    S8["8. Deterministic Gate<br/><i>npm run build — no opinion overrides this</i>"]
+    S9{"9. Complete?<br/><i>gate PASS + review PASS</i>"}
+    S10["10. Repair Loop<br/><i>bounded — max 2 retries</i>"]
+    S11["11. Commit to broker branch<br/><i>never touches main</i>"]
+    S12["12. Human Release Gate<br/><i>never automated</i>"]
+
+    S1 -->|READY| S2
+    S1 -.->|BLOCKED: stop, ask human| STOP1(["Rerun once clarified"])
+    S2 --> S3
+    S3 --> S3B
+    S3B -->|APPROVED| S4
+    S3B -.->|REVISE: stop| STOP2(["Human reviews critique"])
+    S4 --> S5
+    S5 --> S6
+    S6 --> S7
+    S7 --> S8
+    S8 --> S9
+    S9 -->|No| S10
+    S10 --> S6
+    S9 -->|Yes| S11
+    S11 --> S12
+
+    classDef human fill:#f7e8e6,stroke:#a03d2e,color:#1a1712
+    classDef gate fill:#f7f0dc,stroke:#8a6a1a,color:#1a1712
+    classDef work fill:#eef3ec,stroke:#2a4228,color:#1a1712
+    class S1,S12 human
+    class S5,S9 gate
+    class S2,S3,S3B,S4,S6,S7,S8,S10,S11 work

@@ -1,0 +1,27 @@
+---
+title: "Majority convergence"
+description: "The 2-of-3 panel policy with independence, blockers, evidence, and human gates."
+section: "workflows"
+order: 606
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
+relatedPages: ["agents/overview","architecture/broker-control-plane"]
+tags: ["workflow"]
+truthState: "target"
+---
+
+## Completion rule
+
+```text
+COMPLETE only when:
+  deterministic gates pass
+  AND at least 2 of 3 independent votes approve
+  AND unresolved blockers = 0
+  AND every criterion has evidence
+  AND required human approvals are recorded
+```
+
+The three panel roles are a fresh Claude reviewer, fresh Codex reviewer, and a fresh broker-selected arbiter. A session that authored the work is excluded.

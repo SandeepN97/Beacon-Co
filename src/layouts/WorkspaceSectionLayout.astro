@@ -1,0 +1,50 @@
+---
+import "../styles/workspace.css";
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+}
+
+const { eyebrow, title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <title>{title} · Beacon orchestration workspace</title>
+    <link rel="icon" href="/favicon.svg" />
+  </head>
+  <body>
+    <a class="workspace-skip" href="#workspace-main">Skip to workspace</a>
+    <header class="workspace-nav">
+      <a href="/workspace/"><strong>Beacon</strong><span>Orchestration workspace</span></a>
+      <nav aria-label="Workspace links">
+        <a href="/workspace/requests/">Requests</a>
+        <a href="/workspace/approvals/">Approvals</a>
+        <a href="/workspace/runs/">Runs</a>
+        <a href="/docs/">Documentation</a>
+      </nav>
+    </header>
+    <main id="workspace-main">
+      <header class="workspace-hero workspace-hero--section">
+        <span>{eyebrow}</span>
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </header>
+      <div class="workspace-truth">
+        <strong>Simulation boundary</strong>
+        <span>This view is static and in-memory. It does not persist requests, invoke providers, approve actions, or report production activity.</span>
+      </div>
+      <section class="workspace-section">
+        <slot />
+      </section>
+    </main>
+    <footer>
+      <p>Runtime persistence is future work. Current policy lives in <a href="/docs/">Markdoc</a>.</p>
+    </footer>
+  </body>
+</html>

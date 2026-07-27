@@ -1,0 +1,66 @@
+---
+title: "ADR-0010 — Use deterministic quality gates before model judgment"
+description: "Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted."
+section: "decisions"
+order: 819
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: []
+relatedPages: ["decisions/index"]
+tags: ["adr","approved"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0010" status="approved" %}
+One decision. Status reviewed 2026-07-27.
+{% /decision_card %}
+
+## Context
+
+Confident review cannot prove that code builds, tests pass, or security checks succeed.
+
+## Decision drivers
+
+- Reproducibility
+- Blocking failures
+- Acceptance evidence
+
+## Options considered
+
+- Model-only approval
+- Optional commands
+- Mandatory applicable commands before voting
+
+## Decision
+
+Run real applicable repository commands before review convergence. A failed blocking gate cannot be outvoted.
+
+## Positive consequences
+
+- Objective completion evidence
+- Prevents confidence-based overrides
+
+## Negative consequences
+
+- Commands require maintenance and can be slow
+
+## Risks
+
+- A narrow suite can still miss behavior
+
+## Follow-up work
+
+- Add tests with each behavior
+- Record command and environment
+
+## Supersedes or superseded by
+
+New decision; superseded by: none.
+
+## Source references
+
+- `BEACON_COMPLETE_EXECUTION_PROMPT.md`
+- `reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf`
+- `reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx`

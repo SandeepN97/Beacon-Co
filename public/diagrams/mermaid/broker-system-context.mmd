@@ -1,0 +1,20 @@
+flowchart LR
+  owner["Owner / authorized human"]
+  translator["Intent & Prompt Translator"]
+  docs[("Approved Markdoc")]
+  broker["Broker control plane"]
+  claude["Claude adapter"]
+  codex["Codex adapter"]
+  evidence[("Audit + evidence")]
+  impact["Documentation impact"]
+
+  owner --> translator
+  docs --> translator
+  translator --> broker
+  broker --> claude
+  broker --> codex
+  claude -. simulated result .-> broker
+  codex -. simulated result .-> broker
+  broker --> evidence
+  broker --> impact
+  impact -. reviewable proposal .-> docs

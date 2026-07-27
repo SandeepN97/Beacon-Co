@@ -1,0 +1,31 @@
+---
+title: "Routing and scheduling"
+description: "Policy-first, capability-aware, Claude-first routing with Codex affinity and fallback."
+section: "architecture"
+order: 407
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
+relatedPages: ["plans/capability-map","references/source-map"]
+tags: ["architecture","broker"]
+truthState: "target"
+---
+
+## Decision order
+
+1. policy and data eligibility;
+2. required tool and repository capability;
+3. explicit user provider request;
+4. configurable Claude-first preference;
+5. task affinity;
+6. health and cooldown;
+7. capacity and operator override;
+8. repository context advantage;
+9. quality and failure history;
+10. latency and cost.
+
+Policy always overrides preference. Documentation, planning, and architecture prefer Claude by configuration. Implementation and tests give Codex an affinity score. Review selects a provider other than the author.
+
+Exact consumer-subscription allowance is not available reliably, so the system never fabricates tokens remaining.

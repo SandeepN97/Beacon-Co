@@ -1,0 +1,11 @@
+---
+interface Props {
+  path: string;
+  note?: string;
+}
+const { path, note } = Astro.props;
+---
+<div class="source-reference">
+  <code>{path}</code>
+  {note && <span>{note}</span>}
+</div>

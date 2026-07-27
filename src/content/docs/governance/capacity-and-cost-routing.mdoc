@@ -1,0 +1,18 @@
+---
+title: "Capacity and cost routing"
+description: "Observed health, cooldown, load, quality, and manual capacity without fabricated allowances."
+section: "governance"
+order: 702
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+The capacity state records health, cooldown, manual capacity from 0 to 1, recent failures, active units, context pressure, and last success. Rate limits create a cooldown and fallback.
+
+Consumer CLI plans do not expose one reliable universal API for exact tokens remaining. The UI must say “manual capacity” or “observed pressure,” never an invented allowance.

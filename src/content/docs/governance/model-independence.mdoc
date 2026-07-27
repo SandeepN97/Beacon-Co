@@ -1,0 +1,18 @@
+---
+title: "Model independence"
+description: "Why roles and business meaning stay stable when Claude or Codex changes."
+section: "governance"
+order: 701
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+Provider adapters receive the same work request, criteria, context, permissions, evidence rules, and stop conditions. They may format instructions for the target tool but cannot change business meaning.
+
+Claude-first is configuration, not organizational identity. Codex may plan; Claude may implement; the broker selects per work unit.

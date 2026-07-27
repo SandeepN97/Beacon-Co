@@ -1,0 +1,18 @@
+---
+title: "Audit policy"
+description: "The minimum event trail for translation, routing, execution, review, approval, and impact."
+section: "governance"
+order: 705
+status: "approved"
+lastReviewed: "2026-07-27"
+owners: ["Knowledge Manager"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
+relatedPages: ["architecture/security-boundaries"]
+tags: ["governance"]
+truthState: "decision"
+---
+
+Audit records preserve interpretation, retrieved sources, routing scores, provider changes, sessions, commands, gate evidence, reviews, repairs, approvals, outcome, and documentation impact.
+
+Current records exist only in memory during simulation. A durable store requires retention, access, deletion, backup, and recovery decisions.
