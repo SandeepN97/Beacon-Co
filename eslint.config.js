@@ -15,7 +15,20 @@ export default [
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  ...astro.configs.recommended,
+  ...astro.configs["flat/recommended"],
+  {
+    // eslint-plugin-astro's own TS-parser auto-detection doesn't resolve
+    // @typescript-eslint/parser in this project's node_modules layout, so
+    // .astro frontmatter falls back to plain espree and rejects TypeScript
+    // syntax (e.g. `interface`) without this explicit override.
+    files: ["**/*.astro"],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: [".astro"],
+      },
+    },
+  },
   {
     files: ["**/*.{js,mjs,ts,astro}"],
     rules: {
