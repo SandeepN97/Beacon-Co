@@ -33,9 +33,9 @@ actions:
     sha: e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81
     release: v4.37.3
   cloudflare/wrangler-action:
-    major: 3
-    sha: da0e0dfe58b7a431659754fdf3f186c529afbe65
-    release: v3.14.1
+    major: 4
+    sha: ebbaa1584979971c8614a24965b4405ff95890e0
+    release: v4.0.0
 review:
   lastReviewed: 2026-07-27
   owner: Security Architect
