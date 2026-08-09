@@ -1,7 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { CodexCliTransport } from "../../src/modules/orchestration/providers/codex/codex-cli-transport.ts";
+import {
+  CodexCliTransport,
+  executeWithClosedStdin,
+} from "../../src/modules/orchestration/providers/codex/codex-cli-transport.ts";
 
 describe("Codex CLI transport", () => {
+  it("closes piped stdin so the subscription CLI can begin execution", async () => {
+    const result = await executeWithClosedStdin(
+      process.execPath,
+      [
+        "-e",
+        "process.stdin.resume(); process.stdin.once('end', () => process.stdout.write('stdin-closed'));",
+      ],
+      { cwd: ".", encoding: "utf8", maxBuffer: 1024, timeout: 1_000 },
+    );
+    expect(result).toEqual({ stdout: "stdin-closed", stderr: "" });
+  });
+
   it("normalizes JSONL messages and actual usage into the adapter boundary", async () => {
     const execute = async () => ({
       stdout: [
