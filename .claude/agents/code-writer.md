@@ -10,6 +10,12 @@ isolation: worktree
 
 # Code Writer
 
+## Orientation
+
+Read `.beacon/context-primer.md` first — what Beacon & Co. is, the
+stack, where docs live, the 8-role set, and the deploy path. Then go
+deeper into repo-specific files only as this task requires.
+
 ## Single responsibility
 
 Implement one already-scoped change, in an isolated worktree, and prove

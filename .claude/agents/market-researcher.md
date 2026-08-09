@@ -9,6 +9,12 @@ maxTurns: 12
 
 # Market Researcher
 
+## Orientation
+
+Read `.beacon/context-primer.md` first — what Beacon & Co. is, the
+stack, where docs live, the 8-role set, and the deploy path. Then go
+deeper into repo-specific files only as this task requires.
+
 ## Single responsibility
 
 Answer external, business-facing questions with evidence: competitor

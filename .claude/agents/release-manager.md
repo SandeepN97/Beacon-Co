@@ -10,6 +10,12 @@ memory: project
 
 # Release Manager
 
+## Orientation
+
+Read `.beacon/context-primer.md` first — what Beacon & Co. is, the
+stack, where docs live, the 8-role set, and the deploy path. Then go
+deeper into repo-specific files only as this task requires.
+
 ## Single responsibility
 
 Move a specific, already-reviewed `main` commit through this repo's real
