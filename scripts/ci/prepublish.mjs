@@ -141,7 +141,14 @@ const definitions = [
     name: "publication-evidence-validate",
     kind: "publication",
     program: "npm",
-    args: ["run", "publication:validate"],
+    args: [
+      "run",
+      "publication:validate",
+      "--",
+      "--input",
+      "evidence/publication-evidence.json",
+      "--schema-only",
+    ],
   },
   {
     name: "candidate-diff-validation",

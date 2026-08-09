@@ -10,15 +10,17 @@ function valueAfter(flag, fallback = null) {
   return index === -1 ? fallback : process.argv[index + 1];
 }
 
-const baseSha = valueAfter("--base");
-const headSha = valueAfter("--head", process.env.GITHUB_SHA);
+const baseRef = valueAfter("--base");
+const headRef = valueAfter("--head", process.env.GITHUB_SHA);
 const output = valueAfter("--output", "evidence/publication-evidence.json");
-if (!baseSha || !headSha) {
+if (!baseRef || !headRef) {
   console.error(
     "Usage: generate-publication-evidence --base <git-sha> --head <git-sha> [--output <path>]",
   );
   process.exitCode = 2;
 } else {
+  const baseSha = execFileSync("git", ["rev-parse", baseRef], { encoding: "utf8" }).trim();
+  const headSha = execFileSync("git", ["rev-parse", headRef], { encoding: "utf8" }).trim();
   const diff = execFileSync("git", ["diff", "--binary", baseSha, headSha], {
     encoding: "utf8",
     maxBuffer: 20 * 1024 * 1024,
