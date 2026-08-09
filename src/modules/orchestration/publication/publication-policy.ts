@@ -21,6 +21,11 @@ export interface PublicationDecision {
 export function evaluatePublicationEvidence(input: unknown): PublicationDecision {
   const evidence: PublicationEvidence = PublicationEvidenceSchema.parse(input);
   const reasons: string[] = [];
+  if (!evidence.prepublication) {
+    reasons.push("Prepublication readiness evidence is missing.");
+  } else if (evidence.prepublication.candidateSha !== evidence.headSha) {
+    reasons.push("Prepublication readiness evidence is bound to a stale candidate SHA.");
+  }
   if (!evidence.author) reasons.push("Author run evidence is missing.");
   if (!evidence.qa) reasons.push("Independent QA evidence is missing.");
   if (evidence.reviews.length === 0) reasons.push("Independent review evidence is missing.");
@@ -36,7 +41,7 @@ export function evaluatePublicationEvidence(input: unknown): PublicationDecision
   if (!evidence.externalAuthorityRecorded)
     reasons.push("External publication authority is not recorded.");
   const ready = reasons.length === 0;
-  if (evidence.publicationReady !== ready)
-    reasons.push("publicationReady does not match the deterministic gate result.");
+  if (evidence.mergeReady !== ready)
+    reasons.push("mergeReady does not match the deterministic merge gate result.");
   return { ready: reasons.length === 0 && ready, reasons };
 }

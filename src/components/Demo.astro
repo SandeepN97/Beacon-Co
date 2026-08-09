@@ -1346,7 +1346,10 @@
     const inView = r.top >= navH && r.top < window.innerHeight * 0.5;
     if (!inView) {
       const y = window.scrollY + r.top - navH - 12;
-      window.scrollTo({ top: y, behavior: "smooth" });
+      window.scrollTo({
+        top: y,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      });
     }
   }
 
@@ -1354,7 +1357,13 @@
     const s = stages[cur];
     if (s.btnAction === "contact") {
       const c = document.getElementById("contact");
-      if (c) c.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (c)
+        c.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+          block: "start",
+        });
       return;
     }
     if (cur < stages.length - 1) {

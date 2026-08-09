@@ -6,18 +6,23 @@ import {
 
 const DIFF = "a".repeat(64);
 const evidence = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   repository: "Beacon/Co",
   baseSha: "b".repeat(40),
   headSha: "c".repeat(40),
   diffSha256: DIFF,
   generatedAt: "2026-08-09T12:00:00.000Z",
+  prepublication: {
+    evidenceId: "prepublish-1",
+    candidateSha: "c".repeat(40),
+    publicationReady: true as const,
+  },
   author: { runId: "author-1", diffSha256: DIFF },
   qa: { runId: "qa-1", diffSha256: DIFF },
   reviews: [{ runId: "review-1", diffSha256: DIFF }],
   requiredChecks: REQUIRED_PR_CHECKS.map((name) => ({ name, status: "passed" as const })),
   externalAuthorityRecorded: true,
-  publicationReady: true,
+  mergeReady: true,
 };
 
 describe("diff-bound publication policy", () => {
@@ -29,7 +34,7 @@ describe("diff-bound publication policy", () => {
     const stale = {
       ...evidence,
       qa: { runId: "qa-1", diffSha256: "d".repeat(64) },
-      publicationReady: false,
+      mergeReady: false,
     };
     expect(evaluatePublicationEvidence(stale)).toMatchObject({
       ready: false,
@@ -43,7 +48,7 @@ describe("diff-bound publication policy", () => {
       requiredChecks: evidence.requiredChecks.map((check) =>
         check.name === "PR security / codeql" ? { ...check, status: "failed" as const } : check,
       ),
-      publicationReady: false,
+      mergeReady: false,
     };
     expect(evaluatePublicationEvidence(failed).reasons).toContain(
       "Required check is not passed: PR security / codeql.",
@@ -55,7 +60,7 @@ describe("diff-bound publication policy", () => {
       evaluatePublicationEvidence({
         ...evidence,
         externalAuthorityRecorded: false,
-        publicationReady: false,
+        mergeReady: false,
       }).reasons,
     ).toContain("External publication authority is not recorded.");
   });
@@ -64,11 +69,24 @@ describe("diff-bound publication policy", () => {
     const result = evaluatePublicationEvidence({
       ...evidence,
       reviews: [],
-      publicationReady: true,
+      mergeReady: true,
     });
     expect(result.ready).toBe(false);
     expect(result.reasons).toContain(
-      "publicationReady does not match the deterministic gate result.",
+      "mergeReady does not match the deterministic merge gate result.",
     );
+  });
+
+  it("rejects missing or stale prepublication readiness", () => {
+    expect(
+      evaluatePublicationEvidence({ ...evidence, prepublication: null, mergeReady: false }).reasons,
+    ).toContain("Prepublication readiness evidence is missing.");
+    expect(
+      evaluatePublicationEvidence({
+        ...evidence,
+        prepublication: { ...evidence.prepublication, candidateSha: "d".repeat(40) },
+        mergeReady: false,
+      }).reasons,
+    ).toContain("Prepublication readiness evidence is bound to a stale candidate SHA.");
   });
 });

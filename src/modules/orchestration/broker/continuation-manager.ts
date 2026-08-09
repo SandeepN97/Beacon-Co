@@ -25,7 +25,7 @@ export class ContinuationManager {
       "acceptedAdrConstraints",
       "filesInspected",
       "filesChanged",
-      "currentDiff",
+      "currentDiffRef",
       "commandsRun",
       "testEvidence",
       "decisionsMade",
@@ -33,10 +33,50 @@ export class ContinuationManager {
       "openBlockers",
       "requiredNextAction",
       "stopCondition",
+      "publicationState",
     ];
     return required.filter((key) => {
       const value = packageValue[key];
       return value === undefined || value === null || value === "";
     });
+  }
+
+  forCandidate(packageValue: ContinuationPackage, candidateSha: string): ContinuationPackage {
+    const state = packageValue.publicationState;
+    if (state.candidateSha === candidateSha) return packageValue;
+
+    const invalidated = new Set(
+      state.requiredGates.filter((gate) => gate.candidateShaBound).map((gate) => gate.name),
+    );
+    const completedGates = state.completedGates.filter((gate) => !invalidated.has(gate));
+    const failedGates = state.failedGates.filter((gate) => !invalidated.has(gate));
+    const outstandingGates = [
+      ...new Set([
+        ...state.outstandingGates,
+        ...state.requiredGates.filter((gate) => gate.candidateShaBound).map((gate) => gate.name),
+      ]),
+    ].sort();
+    const isTierReady = (tier: "local" | "publication" | "external") =>
+      state.requiredGates
+        .filter((gate) => gate.tier === tier)
+        .every((gate) => completedGates.includes(gate.name));
+
+    return {
+      ...packageValue,
+      publicationState: {
+        ...state,
+        candidateSha,
+        localReady: isTierReady("local"),
+        publicationReady: isTierReady("publication"),
+        externalReady: isTierReady("external"),
+        completedGates,
+        failedGates,
+        outstandingGates,
+        evidenceRefs: state.evidenceRefs.filter(
+          (reference) => reference.candidateSha === null || reference.candidateSha === candidateSha,
+        ),
+        nextAuthorizedAction: "Run the invalidated candidate-bound gates before publication.",
+      },
+    };
   }
 }

@@ -412,7 +412,7 @@ roles:
 
   - id: release-manager
     agentFile: .claude/agents/release-manager.md
-    sourceSha256: 574f6a646d5213cde8575e5e91556023af92de10a064f5d58d1c78ee6b3cd2c5
+    sourceSha256: 0a8da73384bc9a73cb63ec023a8f1cb66d12f1d03ab194a690601431f9de6f89
     responsibility: Verify release evidence and walk an authorized reviewed commit through the repository's workflow-dispatch staging, verification, production, and rollback path.
     allowedTools: [Read, Glob, Grep, Bash]
     forbiddenToolClasses:
@@ -474,7 +474,7 @@ roles:
 
   - id: token-auditor
     agentFile: .claude/agents/token-auditor.md
-    sourceSha256: 940a8067d72802e98f564c48330a8846748f55f7c9599eca0b2bb566cd08d744
+    sourceSha256: 06c9ddc5b943cf9c63ea304bbc8f3089a2eecaebdb6a88aab58bc7c45d7535f4
     responsibility: Conditionally optimize abnormal or over-budget context, route Claude or Codex by capacity then task fit, and return metadata-only evidence without persisting it.
     allowedTools: [Read, Glob, Grep]
     forbiddenToolClasses:

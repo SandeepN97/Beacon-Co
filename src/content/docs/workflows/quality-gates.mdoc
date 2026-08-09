@@ -4,15 +4,37 @@ description: "Real commands and acceptance evidence remain authoritative over mo
 section: "workflows"
 order: 605
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+sourceFiles: ["scripts/ci/prepublish.mjs","scripts/ci/validate-pr-policy.mjs","src/modules/orchestration/domain/publication-readiness.ts","tests/browser/reduced-motion.spec.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
 relatedAdrs: ["0009-require-independent-second-voice","0010-use-deterministic-quality-gates","0012-require-human-approval"]
 relatedPages: ["agents/overview","architecture/broker-control-plane"]
 tags: ["workflow"]
-truthState: "target"
+truthState: "current"
 ---
 
 Required gates are selected from the repository’s actual format, lint, typecheck, unit, integration, build, and approved security commands. A failed blocking gate cannot be overruled by a reviewer vote.
 
 Gate evidence includes the command, exit status, relevant output, environment, and criterion it supports.
+
+## Readiness states
+
+Beacon keeps three independent states:
+
+- `localReady` means ordinary repository development validation passed;
+- `publicationReady` means the exact candidate SHA passed every deterministic prepublication gate;
+- `externalReady` means the required real GitHub, provider, attestation, promotion, approval, verification, and rollback evidence passed.
+
+No state implies the next one. Phase 1.5 freezes only when the completion audit reports all three true.
+
+## Authoritative prepublication gate
+
+`npm run ci:prepublish` is the final deterministic publication command. It binds machine-readable evidence to `HEAD` and runs the local phase audit, formatting, lint, typecheck, unit and agent tests, telemetry/eval/model checks, secret/dependency/license/workflow policy, documentation build and links, the full prebuilt browser suite, deterministic PR metadata, publication scope/evidence, changed-path classification, and `git diff --check`. It writes `publicationReady: false` and prints `PUBLICATION DENIED` when any required gate fails or is missing.
+
+Changed-path classification selects efficient checks during iteration. It never removes a check from the final prepublication command.
+
+The publication manifest owns the required PR sections. The same policy validates generated local metadata, the GitHub pull-request event, and the title/body read back from GitHub. GitHub workflows remain independent verifiers.
+
+## Motion accessibility contract
+
+With `prefers-reduced-motion: reduce`, decorative CSS animation and transition are absent, reveal content is immediately visible, counters and progress resolve to their final values, tilt/parallax/autoplay are disabled, and automatic scrolling is not smooth. Browser tests also prove normal motion remains enabled; removing all animation is not a passing implementation.

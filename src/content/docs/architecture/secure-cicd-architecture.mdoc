@@ -6,7 +6,7 @@ order: 412
 status: "approved"
 lastReviewed: "2026-08-09"
 owners: ["Security Architect","DevOps Engineer"]
-sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/agent-platform-checks.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml",".github/workflows/rollback-production.yml","security/approved-actions.yml","src/modules/orchestration/publication/publication-policy.ts","src/modules/orchestration/publication/release-evidence-policy.ts","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
+sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/agent-platform-checks.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml",".github/workflows/rollback-production.yml","security/approved-actions.yml","scripts/ci/prepublish.mjs","scripts/ci/validate-pr-policy.mjs","scripts/ci/verify-github-pr-metadata.mjs","src/modules/orchestration/publication/publication-policy.ts","src/modules/orchestration/publication/release-evidence-policy.ts","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
 relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
 relatedPages: ["security/secure-development-standard","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["architecture","security","cicd"]
@@ -31,7 +31,7 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 
 | Boundary | Trusted input | Prohibited shortcut |
 |---|---|---|
-| Authoring | scoped branch and canonical project context | direct production change |
+| Authoring | scoped branch, canonical context, and candidate-bound prepublication evidence | publication when `publicationReady` is not true |
 | Pull request | repository code and unprivileged CI token | PR secrets or `pull_request_target` execution |
 | Main | passing required checks and explicit owner approval | force push or check bypass |
 | Promotion | tested archive, expected SHA-256, approved environment | rebuilding differently for production |
@@ -46,6 +46,8 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 - deterministic build packaging and SHA-256 verification before promotion;
 - signed GitHub build-provenance generation and verification before promotion;
 - diff-bound publication evidence and a dedicated deterministic agent-platform PR job;
+- manifest-owned PR metadata, one local/GitHub validation policy, and GitHub metadata readback;
+- an authoritative candidate-bound prepublication command with structured publication denial;
 - separate manual preview, staging, production, and post-deploy workflows;
 - a production-gated known-good artifact rollback workflow with post-rollback verification evidence;
 - production branch check, environment boundary, and single-flight concurrency;
@@ -56,15 +58,14 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 
 Repository ruleset `Protect main` (ID `19806104`) is active for the default branch. GitHub reports that it blocks deletion and non-fast-forward updates, requires all changes through a pull request, requires review conversations to be resolved, and grants no bypass. The rule allows the repository's existing merge, squash, and rebase methods and requires zero approving reviews while Beacon has only one accountable operator.
 
-Six required status contexts are active: metadata, quality, CodeQL, browser, dependency review, and security policy. The new `Agent platform / contracts-policy-evals` context is not yet required and must be added only after its first successful run confirms the exact name.
+Seven required status contexts are active: metadata, quality, CodeQL, browser, dependency review, security policy, and `Agent platform / contracts-policy-evals`.
 
 ## Requires human activation outside the repository
 
 These controls are **not active merely because their files exist**:
 
-- add the agent-platform job to the required-check ruleset;
 - create the `agent-evals` environment and configure its provider credential boundary;
-- add a non-bypassable required reviewer to production and confirm the workflow actor cannot approve itself;
+- add a required reviewer to production and confirm the workflow actor cannot approve itself; administrator bypass is already disabled;
 - verify environment-scoped deployment secrets and branch policies;
 - create separate least-privilege Cloudflare tokens;
 - configure Cloudflare preview behavior, WAF/rate limiting, alerts, and rollback access;

@@ -1,7 +1,8 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-09T17:25:00-04:00",
+  "observedAt": "2026-08-09T19:12:06-04:00",
+  "observedMainSha": "f91b96586401f6bada7b2014e6fa6c601bf1adef",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -23,9 +24,10 @@
       "codeql",
       "browser",
       "dependency-review",
-      "policy"
+      "policy",
+      "contracts-policy-evals"
     ],
-    "agentPlatformCheckRequired": false
+    "agentPlatformCheckRequired": true
   },
   "environments": {
     "preview": { "exists": true, "requiredReviewers": 0, "adminsCanBypass": true },
@@ -33,10 +35,29 @@
     "production": {
       "exists": true,
       "requiredReviewers": 0,
-      "adminsCanBypass": true,
+      "adminsCanBypass": false,
       "customBranchPolicy": true
     },
     "agent-evals": { "exists": false, "requiredReviewers": 0, "adminsCanBypass": null }
   },
-  "conclusion": "Repository rules are active, but the new agent-platform check and non-bypassable external production reviewer gate are not configured."
+  "evidenceGates": {
+    "representativeLiveProviderRun": true,
+    "repeatedLiveEvalBaseline": false,
+    "agentPlatformRequiredCheck": true,
+    "verifiedBuildAttestation": false,
+    "stagingPromotionAndVerification": false,
+    "productionPromotionAndVerification": false,
+    "knownGoodRollbackDrill": false
+  },
+  "evidenceReferences": {
+    "representativeLiveProviderRun": [
+      "agent-platform/baselines/live-codex-representative-2026-08-09.json"
+    ],
+    "agentPlatformRequiredCheck": ["ruleset:19806104:contracts-policy-evals"],
+    "historicalAttestation": ["workflow:31340065968"],
+    "historicalStagingPromotion": ["workflow:31340177116"],
+    "failedStagingVerification": ["workflow:31340297255"],
+    "latestUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
+  },
+  "conclusion": "The Agent Platform check is required and production administrator bypass is disabled. Three successful real Codex subscription runs close the representative-run gate, but no accepted repeated live aggregate exists. Independent production review, final-candidate attestation verification, staging verification, production verification, and rollback remain open."
 }

@@ -4,7 +4,7 @@ description: "The fixed provider-neutral record that lets the next role continue
 section: "agents"
 order: 502
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
 sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
 relatedAdrs: ["0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
@@ -27,8 +27,9 @@ Open questions
 Acceptance criteria status
 Recommended next agent
 Human approval required
+Publication state: candidate branch/SHA/PR; localReady/publicationReady/externalReady; required/completed/failed/outstanding gates; bounded evidence references; next authorized action
 ```
 
-The broker extension adds work-unit ID, provider/model, role, session/run ID, worktree, commands, token usage when reported, gate results, review verdict, retry count, and artifact hashes.
+The broker extension adds work-unit ID, provider/model, role, session/run ID, worktree, commands, token usage when reported, gate results, review verdict, retry count, artifact hashes, and candidate-bound publication state. A candidate SHA change invalidates stale publication evidence; a provider change alone does not.
 
 Do not transfer a full transcript when approved documents, a diff, command evidence, and this handoff can carry the state more precisely.

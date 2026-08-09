@@ -15,7 +15,7 @@ truthState: "current"
 
 ## Preconditions
 
-Do not deploy until required PR checks pass, the reviewed commit is on the intended branch, the promotion archive and SHA-256 exist, its GitHub provenance attestation verifies, the target environment is configured, and the accountable human authorizes that environment.
+Do not deploy until candidate-bound evidence reports `publicationReady: true`, required PR checks pass, the reviewed commit is on the intended branch, the promotion archive and SHA-256 exist, its GitHub provenance attestation verifies, the target environment is configured, and the accountable human authorizes that environment.
 
 ## Preview
 
@@ -39,4 +39,4 @@ Stop on a missing approval, missing or mismatched digest, failing required check
 
 ## Activation note
 
-The workflows and evidence validators are implemented. They have not yet produced a verified attestation or staging/production deployment record. Production currently lacks a required reviewer and permits administrator bypass, so the external approval gate is not complete.
+The workflows and evidence validators are implemented. A historical artifact attestation was independently verified and a staging artifact was promoted, but its post-deploy header verification failed; a corrected build has not yet been promoted. Production administrator bypass is disabled, but production still lacks an independent required reviewer. Final-candidate staging, production, and rollback evidence remain incomplete.

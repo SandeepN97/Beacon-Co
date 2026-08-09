@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "title": "Harden Phase 1.5 publication readiness",
+  "summary": [
+    "Separate local, publication, and external readiness in the authoritative Phase 1.5 audit.",
+    "Add deterministic prepublication, PR metadata, reduced-motion, publication-denial, and provider-continuity controls."
+  ],
+  "risk": [
+    "Medium: publication policy, browser motion behavior, and provider handoff contracts change without altering product scope.",
+    "The candidate is denied publication if any deterministic gate, metadata field, scope check, or diff validation fails."
+  ],
+  "testEvidence": [
+    "The authoritative npm run ci:prepublish result is bound to the candidate SHA and appended to the published PR body.",
+    "GitHub independently reruns all protected workflows after publication."
+  ],
+  "documentationImpact": [
+    "Update only canonical Phase 1.5 audit, current-phase, release, accessibility, and continuity documentation affected by these controls.",
+    "Phase 1.6 remains blocked until the external completion audit passes."
+  ],
+  "rollback": [
+    "Revert this bounded closure-hardening commit through the protected pull-request workflow.",
+    "No database, business data, production deployment, or irreversible migration is introduced."
+  ],
+  "allowedPathPrefixes": [
+    ".claude/agents/release-manager.md",
+    ".claude/agents/token-auditor.md",
+    ".ai/handoff.template.md",
+    ".github/workflows",
+    "agent-platform",
+    "package.json",
+    "public/search-index.json",
+    "scripts/agents",
+    "scripts/ci",
+    "src/components",
+    "src/layouts",
+    "src/modules/orchestration",
+    "src/pages",
+    "src/styles",
+    "src/content/docs",
+    "src/data",
+    "tests/browser",
+    "tests/orchestration"
+  ]
+}

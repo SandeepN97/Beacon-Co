@@ -463,6 +463,8 @@
 </style>
 
 <script>
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   function animateCounter(el: HTMLElement, target: number, duration: number) {
     let start: number | null = null;
     const step = (ts: number) => {
@@ -476,24 +478,33 @@
   }
   const auditFillEl = document.getElementById("auditFill");
   if (auditFillEl && auditFillEl.parentElement) {
-    const auditObs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            (auditFillEl as HTMLElement).style.width = "90%";
-            const numEl = document.getElementById("auditNum");
-            if (numEl) animateCounter(numEl, 90, 1200);
-            auditObs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.5 },
-    );
-    auditObs.observe(auditFillEl.parentElement);
+    const revealAuditState = () => {
+      (auditFillEl as HTMLElement).style.width = "90%";
+      const numEl = document.getElementById("auditNum");
+      if (numEl) {
+        if (prefersReducedMotion) numEl.textContent = "90/100";
+        else animateCounter(numEl, 90, 1200);
+      }
+    };
+    if (prefersReducedMotion) {
+      revealAuditState();
+    } else {
+      const auditObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              revealAuditState();
+              auditObs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      auditObs.observe(auditFillEl.parentElement);
+    }
   }
 
   const founderCard = document.getElementById("founderCard");
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (founderCard && !prefersReducedMotion) {
     founderCard.addEventListener("mousemove", (e: MouseEvent) => {
       const r = founderCard.getBoundingClientRect();

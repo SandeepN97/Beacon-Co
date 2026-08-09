@@ -27,6 +27,35 @@ export interface WorkUnit {
   retryCount: number;
 }
 
+export type ReadinessTier = "local" | "publication" | "external";
+
+export interface ContinuationGate {
+  name: string;
+  tier: ReadinessTier;
+  candidateShaBound: boolean;
+}
+
+export interface ContinuationEvidenceReference {
+  id: string;
+  gate: string;
+  candidateSha: string | null;
+}
+
+export interface PublicationContinuationState {
+  localReady: boolean;
+  publicationReady: boolean;
+  externalReady: boolean;
+  requiredGates: ContinuationGate[];
+  completedGates: string[];
+  failedGates: string[];
+  outstandingGates: string[];
+  evidenceRefs: ContinuationEvidenceReference[];
+  branch: string;
+  candidateSha: string;
+  prNumber: number | null;
+  nextAuthorizedAction: string;
+}
+
 export interface ContinuationPackage {
   workUnit: WorkUnit;
   originalUserRequest: string;
@@ -35,7 +64,7 @@ export interface ContinuationPackage {
   acceptedAdrConstraints: string[];
   filesInspected: string[];
   filesChanged: string[];
-  currentDiff: string;
+  currentDiffRef: string;
   commandsRun: string[];
   testEvidence: string[];
   decisionsMade: string[];
@@ -43,4 +72,5 @@ export interface ContinuationPackage {
   openBlockers: string[];
   requiredNextAction: string;
   stopCondition: string;
+  publicationState: PublicationContinuationState;
 }

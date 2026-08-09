@@ -4,23 +4,23 @@ description: "Evidence and authority required before any future merge, deploymen
 section: "operations"
 order: 906
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+sourceFiles: ["scripts/ci/prepublish.mjs","scripts/ci/authorize-publication.mjs","scripts/ci/verify-github-pr-metadata.mjs",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/rollback-production.yml","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
 relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
 relatedPages: ["workflows/operations-learning-loop","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["operations"]
-truthState: "target"
+truthState: "current"
 ---
 
-1. verify approved scope and acceptance criteria;
-2. run all applicable deterministic gates;
-3. obtain independent QA, PR, and security decisions;
-4. resolve blockers through the owning role;
-5. verify documentation impact and rollback;
-6. assemble the Release Manager recommendation;
-7. record authorized human approval;
-8. perform the separately authorized release action;
-9. validate and record outcome.
+1. verify approved scope, acceptance criteria, and the exact candidate SHA;
+2. require `publicationReady: true` from `npm run ci:prepublish` and deny any override request;
+3. generate the PR title/body from the publication manifest and validate them locally;
+4. publish the branch/PR, read the title/body back from GitHub, and validate the observed values with the same policy;
+5. require GitHub's independent protected checks and review evidence;
+6. after merge, select the exact CI artifact, verify its digest and attestation, and promote it unchanged to staging;
+7. verify staging, then request the non-bypassable independent production approval;
+8. promote the same artifact to production only after approval and verify production;
+9. run the dedicated known-good rollback workflow, verify recovery, and record bounded evidence.
 
-The orchestration prototype stops before steps 7–9 and performs no release action. Repository deployment workflows are separately manual and environment-gated. They promote a tested archive by digest, but cannot run successfully until external GitHub and Cloudflare controls are configured.
+Local readiness never authorizes publication, and publication readiness never substitutes for external evidence. The production gate remains blocked until a real reviewer distinct from the deployment initiator is configured with repository access; no agent or owner self-review can replace it.
