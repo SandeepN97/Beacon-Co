@@ -4,6 +4,14 @@ import { parse } from "yaml";
 import worker, { type Env } from "../../src/worker";
 
 describe("response header policy", () => {
+  it("routes static assets through the Worker before serving them", async () => {
+    const config = JSON.parse(await readFile("wrangler.jsonc", "utf8")) as {
+      assets?: { binding?: string; run_worker_first?: boolean };
+    };
+
+    expect(config.assets).toMatchObject({ binding: "ASSETS", run_worker_first: true });
+  });
+
   it("matches every required machine-readable header assertion", async () => {
     const policy = parse(await readFile("security/headers-policy.yml", "utf8"));
     const env: Env = {
