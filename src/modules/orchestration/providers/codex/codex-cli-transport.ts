@@ -1,5 +1,4 @@
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
 import { ProviderExecutionError, type ProviderTransport } from "../provider-adapter.ts";
 
 type ExecFile = (
@@ -8,7 +7,24 @@ type ExecFile = (
   options: { cwd: string; encoding: "utf8"; maxBuffer: number; timeout: number },
 ) => Promise<{ stdout: string; stderr: string }>;
 
-const defaultExecFile = promisify(execFile) as unknown as ExecFile;
+export function executeWithClosedStdin(
+  file: string,
+  args: string[],
+  options: { cwd: string; encoding: "utf8"; maxBuffer: number; timeout: number },
+): Promise<{ stdout: string; stderr: string }> {
+  return new Promise((resolve, reject) => {
+    const child = execFile(file, args, options, (error, stdout, stderr) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+    child.stdin?.end();
+  });
+}
+
+const defaultExecFile: ExecFile = executeWithClosedStdin;
 
 function numeric(record: Record<string, unknown>, ...keys: string[]): number | null {
   for (const key of keys) {
