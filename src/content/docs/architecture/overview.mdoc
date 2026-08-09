@@ -1,20 +1,20 @@
 ---
 title: "Architecture overview"
-description: "Current Astro application, canonical Markdoc, and separate orchestration module."
+description: "Current Astro application, canonical Markdoc, Phase 1.5 engineering control plane, and separate simulated orchestration module."
 section: "architecture"
 order: 400
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
-relatedPages: ["plans/capability-map","references/source-map"]
-tags: ["architecture","broker"]
+sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","src/modules/orchestration/context/compiler.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/policy/council-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/publication/release-evidence-policy.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["plans/current-phase","plans/capability-map","references/source-map"]
+tags: ["architecture","broker","agents","phase-1-5"]
 truthState: "current"
 ---
 
 {% source_of_truth state="current" label="Implemented boundary" %}
-The current repository contains an Astro application, a Markdoc source of truth, and a separate in-memory orchestration module. Live provider execution and durable runtime infrastructure are not implemented.
+The current repository contains an Astro application, a Markdoc source of truth, an eight-role engineering-agent platform, and a separate in-memory business-orchestration simulation. Controlled engineering eval adapters exist; durable business-runtime infrastructure does not.
 {% /source_of_truth %}
 
 ## Current repository boundary
@@ -26,6 +26,13 @@ Beacon-Co
 │   ├── /docs Markdoc renderer
 │   └── /workspace simulation
 ├── Markdoc source of truth
+├── engineering agent platform
+│   ├── fixed eight-role human definitions
+│   ├── machine-readable contract manifest
+│   ├── context/eval/tool/council/tuning policies
+│   ├── credential-gated provider adapters
+│   ├── agent publication and release evidence gates
+│   └── redacted AgentRun/ProviderRun recording
 └── orchestration module
     ├── translator + knowledge retriever
     ├── broker + provider adapters
@@ -33,7 +40,22 @@ Beacon-Co
     └── audit + documentation impact
 ```
 
-## Target broker boundary
+## Phase 1.5 engineering control plane
+
+```text
+canonical work request
+  -> approved, budgeted context
+  -> provider-specific prompt compiler
+  -> explainable Claude/Codex router
+  -> bounded agent execution
+  -> normalized tool-policy decision
+  -> deterministic QA and independent review
+  -> correlated run/build/release evidence
+```
+
+PR-A through PR-I are implemented repository-side and locally tested. The remaining work is evidence and external activation: a successful representative live run and repeated baseline, the required agent-platform server check, non-bypassable production approval, and real attestation/promotion/verification/rollback records. The control plane governs engineering work; it does not make the simulated broker a live business runtime.
+
+## Broader target broker boundary
 
 The target adds durable work units, execution management, isolated worktrees, real quality commands, fresh review sessions, provider invocation, persistent audit, and controlled pull-request preparation. No target element should be read as current merely because it appears in a diagram.
 

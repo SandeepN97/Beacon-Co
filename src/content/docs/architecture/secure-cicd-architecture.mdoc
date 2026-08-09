@@ -4,9 +4,9 @@ description: "Repository controls, trust boundaries, promotion flow, and activat
 section: "architecture"
 order: 412
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Security Architect","DevOps Engineer"]
-sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","security/approved-actions.yml","secure-cicd-build-plan.md","secure-cicd-implementation-report.md"]
+sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/agent-platform-checks.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml",".github/workflows/rollback-production.yml","security/approved-actions.yml","src/modules/orchestration/publication/publication-policy.ts","src/modules/orchestration/publication/release-evidence-policy.ts","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
 relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
 relatedPages: ["security/secure-development-standard","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["architecture","security","cicd"]
@@ -44,7 +44,10 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 - full-length, reviewed Action pins recorded in `security/approved-actions.yml`;
 - separate policy, quality, security, and browser gates;
 - deterministic build packaging and SHA-256 verification before promotion;
+- signed GitHub build-provenance generation and verification before promotion;
+- diff-bound publication evidence and a dedicated deterministic agent-platform PR job;
 - separate manual preview, staging, production, and post-deploy workflows;
+- a production-gated known-good artifact rollback workflow with post-rollback verification evidence;
 - production branch check, environment boundary, and single-flight concurrency;
 - contact-route validation, request caps, timeout handling, redacted logs, bot controls, and headers;
 - canonical standards, runbooks, exception records, and machine-readable policy.
@@ -53,18 +56,20 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 
 Repository ruleset `Protect main` (ID `19806104`) is active for the default branch. GitHub reports that it blocks deletion and non-fast-forward updates, requires all changes through a pull request, requires review conversations to be resolved, and grants no bypass. The rule allows the repository's existing merge, squash, and rebase methods and requires zero approving reviews while Beacon has only one accountable operator.
 
-Required status checks are not yet active. The PR workflows must first run successfully so their exact GitHub check names can be selected without creating an unmergeable branch rule.
+Six required status contexts are active: metadata, quality, CodeQL, browser, dependency review, and security policy. The new `Agent platform / contracts-policy-evals` context is not yet required and must be added only after its first successful run confirms the exact name.
 
 ## Requires human activation outside the repository
 
 These controls are **not active merely because their files exist**:
 
-- select the required check names after their first successful run;
-- create preview, staging, and production environments;
-- configure environment reviewers, deployment branches, and secrets;
+- add the agent-platform job to the required-check ruleset;
+- create the `agent-evals` environment and configure its provider credential boundary;
+- add a non-bypassable required reviewer to production and confirm the workflow actor cannot approve itself;
+- verify environment-scoped deployment secrets and branch policies;
 - create separate least-privilege Cloudflare tokens;
 - configure Cloudflare preview behavior, WAF/rate limiting, alerts, and rollback access;
 - enable GitHub secret scanning, push protection, and Dependabot settings.
+- execute and verify a real signed artifact, staging/production promotion, post-deploy checks, and known-good rollback drill.
 
 Beacon currently has one human operator. Independent two-person approval cannot be claimed until a second accountable reviewer is added.
 

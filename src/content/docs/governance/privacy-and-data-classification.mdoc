@@ -4,15 +4,19 @@ description: "Public, internal, confidential, and restricted request handling."
 section: "governance"
 order: 703
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
-relatedPages: ["architecture/security-boundaries"]
-tags: ["governance"]
+sourceFiles: ["src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/telemetry/redaction.ts","src/modules/orchestration/telemetry/sink.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/observability-and-audit","architecture/security-boundaries"]
+tags: ["governance","privacy","telemetry"]
 truthState: "decision"
 ---
 
 Every request is classified before routing. A provider must support the classification and required tools. Restricted data is not eligible for either simulated provider profile by default.
 
 Do not place secrets, credentials, private client data, or unnecessary personal information in Markdoc or a provider context package.
+
+Telemetry follows the same classification. It records metadata, fingerprints, counts, repository-relative references, hashes, and evidence identifiers. It does not define fields for raw prompts, transcripts, environment contents, customer content, or tool outputs. Provider-specific metadata is bounded and redacted before validation or persistence.
+
+Raw local telemetry is gitignored. CI/eval telemetry is a redacted bounded-retention artifact, not a public documentation source. Committing any aggregate baseline requires review proving that it contains no secret, customer content, or reconstructable sensitive prompt data.

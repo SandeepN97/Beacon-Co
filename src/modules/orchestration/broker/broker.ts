@@ -1,7 +1,10 @@
-import type { ProviderAdapter, SimulatedProviderResult } from "../providers/provider-adapter";
+import type {
+  SimulatedProviderAdapter,
+  SimulatedProviderResult,
+} from "../providers/provider-adapter";
 import type { RoutingDecision } from "../domain/provider";
 import type { WorkUnit } from "../domain/work-unit";
-import type { ContextPackage } from "../knowledge/context-packager";
+import type { RetrievedContextPackage } from "../knowledge/context-packager";
 import type { AuditService } from "../audit/audit-service";
 import type { ProviderRouter } from "./router";
 
@@ -12,17 +15,17 @@ export interface BrokerSimulation {
 }
 
 export class Broker {
-  private readonly adapters: Map<string, ProviderAdapter>;
+  private readonly adapters: Map<string, SimulatedProviderAdapter>;
 
   constructor(
     private readonly router: ProviderRouter,
     private readonly audit: AuditService,
-    adapters: ProviderAdapter[],
+    adapters: SimulatedProviderAdapter[],
   ) {
     this.adapters = new Map(adapters.map((adapter) => [adapter.provider, adapter]));
   }
 
-  simulate(workUnit: WorkUnit, context: ContextPackage): BrokerSimulation {
+  simulate(workUnit: WorkUnit, context: RetrievedContextPackage): BrokerSimulation {
     const routing = this.router.route({
       workflowType: workUnit.request.workflowType,
       dataClassification: workUnit.request.dataClassification,

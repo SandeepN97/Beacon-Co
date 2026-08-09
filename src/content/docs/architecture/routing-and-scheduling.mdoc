@@ -1,31 +1,31 @@
 ---
 title: "Routing and scheduling"
-description: "Policy-first, capability-aware, Claude-first routing with Codex affinity and fallback."
+description: "Policy-first provider routing, deterministic context preflight, capacity signals, and evidence-gated task affinity."
 section: "architecture"
 order: 407
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+sourceFiles: ["agent-platform/context-policy.yml","agent-platform/model-policy.yml","src/modules/orchestration/broker/routing-policy.ts","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/model-tuning.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
 relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
 relatedPages: ["plans/capability-map","references/source-map"]
 tags: ["architecture","broker"]
-truthState: "target"
+truthState: "current"
 ---
 
 ## Decision order
 
-1. policy and data eligibility;
-2. required tool and repository capability;
-3. explicit user provider request;
-4. configurable Claude-first preference;
-5. task affinity;
-6. health and cooldown;
-7. capacity and operator override;
-8. repository context advantage;
-9. quality and failure history;
-10. latency and cost.
+1. explicit user provider requirement;
+2. security and data-classification eligibility;
+3. required tool and capability availability;
+4. provider health and capacity;
+5. independent-review requirement;
+6. benchmarked task-fit evidence;
+7. cost and latency among equally qualified choices;
+8. configured default only when earlier factors are neutral.
 
-Policy always overrides preference. Documentation, planning, and architecture prefer Claude by configuration. Implementation and tests give Codex an affinity score. Review selects a provider other than the author.
+Policy always overrides preference. The current router is rule-based and its existing Claude-first/code-affinity defaults remain an unevaluated contract baseline. `model-policy.yml` prohibits a learned router and accepts no tuning until repeated live results meet quality and security guardrails.
+
+Deterministic preflight performs normal context inventory, estimation, deduplication, and stable-prefix compilation. Token-auditor is conditional: budget breach, significant duplication, routing ambiguity, unusual context growth, or capacity/fallback signal only.
 
 Exact consumer-subscription allowance is not available reliably, so the system never fabricates tokens remaining.

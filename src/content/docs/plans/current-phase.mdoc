@@ -1,32 +1,63 @@
 ---
 title: "Current phase"
-description: "Verified repository state and explicit target boundaries."
+description: "Phase 1.5 agent-platform completion scope, verified repository state, and explicit product/runtime boundaries."
 section: "plans"
 order: 301
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_EXECUTION_PROMPT_10_OF_10.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model"]
-relatedPages: ["architecture/overview","architecture/secure-cicd-architecture"]
-tags: ["roadmap","phase"]
+sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit"]
+tags: ["roadmap","phase","agents","phase-1-5"]
 truthState: "current"
 ---
 
-## Current implementation
+## Current phase
+
+Phase 1.5 completes Beacon's engineering agent platform before major business-domain or UI expansion. The product implementation remains the Phase 1 marketing and lead-capture surface; Phase 1.5 changes the engineering factory used to build future work, not the product's deployed business scope.
+
+No CRM, customer portal, project dashboard, billing surface, database, durable queue, or automation worker is authorized by this phase. The current in-memory orchestration simulation must not be presented or expanded as a live business runtime.
+
+## Verified implementation baseline
 
 The repository builds a static Astro marketing site, a Markdoc documentation site, a simulated workspace, and a narrow Cloudflare Worker contact handler.
 
 Repository-native secure delivery definitions now include PR policy, quality, security, browser gates, immutable Action pins, artifact digest promotion, manual environment-gated deploy workflows, security policies, and operating runbooks. Unit tests cover the hardened contact boundary.
 
-GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and force pushes, requires pull requests with resolved review conversations, and grants no bypass. Required checks remain intentionally pending until the repository-native PR workflows have completed successfully and GitHub has observed their check names.
+GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and non-fast-forward updates, requires pull requests with resolved review conversations, requires signed commits and CodeQL, and grants no bypass. Six existing status contexts are required, but the new agent-platform check is not yet in the ruleset.
 
-GitHub environments, reviewers, isolated deployment secrets, secret scanning, and Cloudflare WAF/rate-limit controls still require external human configuration. No deployment was performed as part of this implementation.
+Preview, staging, and production GitHub environments exist. Production has no required reviewer and permits administrator bypass, so it is not the non-bypassable external gate required by Phase 1.5. The agent-evals environment, live provider evidence, deployment verification, and rollback drill also remain pending. No deployment was performed as part of this implementation.
 
-## Simulated orchestration
+The fixed eight-role set, strict run schemas, deterministic context compiler, conditional token auditor, sixteen-family eval harness, role-aware tool gateway, Claude/OpenAI/Codex CLI adapter boundary, risk-tiered council engine, evidence-gated tuning policy, diff-bound publication gate, attestation-aware promotion definitions, and rollback workflow are implemented locally and tested. These controls do not by themselves prove a successful live provider run or deployment.
 
-The orchestration module executes typed local logic only. Its adapters create prompt previews. Its stores are in-memory. It does not run provider CLIs, alter Git branches, persist jobs, send messages, or perform production actions.
+## Milestone sequence status
 
-## Target architecture
+| Increment | State | Evidence boundary |
+|---|---|---|
+| Milestone 1 — contracts and governance | Implemented locally | ADR-0017, fixed manifest, source hashes, validator, tests, CI command |
+| PR-A — telemetry foundation | Implemented locally | Runtime/JSON schemas, normalizers, redaction, sinks, CLI, deterministic tests |
+| PR-B through PR-I | Implemented locally | Context, eval, policy, provider, council, tuning, publication, provenance, and rollback contracts/tests |
+| PR-J — completion audit/freeze | In progress | Local audit passes; eight real live/external evidence gates remain open |
 
-The supplied Tier 1 sources define a brokered company with durable work units, isolated worktrees, real deterministic commands, fresh independent reviewers, majority convergence, human approvals, and auditable outcomes. Those capabilities remain target state unless a current page and test prove otherwise.
+## Simulated orchestration boundary
+
+The orchestration module remains a simulation for the business broker. The engineering-agent platform now has credential-gated HTTP adapters and a read-only ephemeral Codex CLI transport for controlled evals, but no persistent worker or autonomous production executor. Provider transports have no deployment authority.
+
+## Authorized Phase 1.5 scope
+
+- machine-readable role contracts and deterministic agent CI;
+- automatic metadata-only run, token, context, cache, latency, retry, routing, and quality telemetry;
+- bounded context selection and canonical provider-neutral prompt compilation;
+- explainable provider-routing benchmarks and failure/capacity handoff;
+- deterministic pre-tool allow, ask, or deny policy;
+- functional, security, handoff, failure, and regression eval fixtures;
+- correlated agent, quality, artifact, deployment, verification, approval, and rollback evidence.
+
+Provider-native caching may be used and measured. Embeddings, vector storage, full RAG, graph indexing, semantic caching, and learned routing remain reserved extension points, not Phase 1.5 implementation work.
+
+## Completion boundary
+
+Phase 1.5 completes only when every gate in ADR-0017 and the completion audit has executable evidence. Current status is **in progress**, not frozen. See the [Phase 1.5 completion audit](/docs/plans/phase-1-5-completion-audit/) for the exact remaining external gates.
+
+The supplied Tier 1 sources still define a broader brokered company with durable business work units, isolated execution, provider invocation, persistent audit, majority convergence, and human approvals. Those capabilities remain target state unless a current page, implementation, and test prove otherwise.

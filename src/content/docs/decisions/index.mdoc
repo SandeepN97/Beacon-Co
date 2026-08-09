@@ -4,7 +4,7 @@ description: "Business, experience, architecture, documentation, orchestration, 
 section: "decisions"
 order: 800
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
 sourceFiles: ["docs/decisions/index.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
 relatedAdrs: []
@@ -105,6 +105,18 @@ Compile provider-specific prompts from the same work request and context package
 ### Adopt a secure CI/CD control model
 
 Separate untrusted authoring, deterministic pull-request gates, protected main, immutable artifact promotion, environment approval, production verification, and rollback. External settings remain pending until explicitly activated.
+{% /decision_card %}
+
+{% decision_card number="ADR-0016" status="approved" href="/docs/decisions/0016-token-auditor-pilot/" %}
+### Pilot a narrow, rule-based token-auditor role
+
+Estimate and tighten context, route Claude or Codex by explicit rules and capacity, and log decisions before considering advanced retrieval or learned routing.
+{% /decision_card %}
+
+{% decision_card number="ADR-0017" status="approved" href="/docs/decisions/0017-complete-agent-platform-before-business-expansion/" %}
+### Complete the agent platform before business expansion
+
+Finish and freeze a measurable, provider-neutral, policy-gated engineering platform before major business-domain or UI expansion becomes the primary focus.
 {% /decision_card %}
 
 ## Status rule

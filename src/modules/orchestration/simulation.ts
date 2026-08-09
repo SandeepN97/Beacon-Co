@@ -11,8 +11,7 @@ import { createUpdateProposal } from "./documentation/update-proposal";
 import type { DocumentIndexEntry } from "./knowledge/document-index";
 import { ContextRetriever } from "./knowledge/context-retriever";
 import { packageContext } from "./knowledge/context-packager";
-import { ClaudeAdapter } from "./providers/claude/claude-adapter";
-import { CodexAdapter } from "./providers/codex/codex-adapter";
+import { ClaudeSimulationAdapter, CodexSimulationAdapter } from "./providers/simulated-adapters";
 import { IntentTranslator } from "./translator/intent-translator";
 
 export interface SimulationOptions {
@@ -67,7 +66,10 @@ export function runOrchestrationSimulation(
 
   const capacity = new CapacityManager(options.providerState);
   const router = new ProviderRouter(capacity);
-  const broker = new Broker(router, audit, [new ClaudeAdapter(), new CodexAdapter()]);
+  const broker = new Broker(router, audit, [
+    new ClaudeSimulationAdapter(),
+    new CodexSimulationAdapter(),
+  ]);
   const execution =
     translation.request.status === "ready-for-routing"
       ? broker.simulate(workUnit, context)

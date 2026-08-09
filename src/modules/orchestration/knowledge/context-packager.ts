@@ -2,7 +2,7 @@ import type { WorkRequest } from "../domain/work-request";
 import type { SearchResult } from "./document-index";
 import { detectConflicts, type DocumentationConflict } from "./conflict-detector";
 
-export interface ContextPackage {
+export interface RetrievedContextPackage {
   requestId: string;
   approvedDocuments: Array<{
     id: string;
@@ -15,7 +15,10 @@ export interface ContextPackage {
   conflicts: DocumentationConflict[];
 }
 
-export function packageContext(request: WorkRequest, results: SearchResult[]): ContextPackage {
+export function packageContext(
+  request: WorkRequest,
+  results: SearchResult[],
+): RetrievedContextPackage {
   const documents = results.map(({ document }) => document);
   return {
     requestId: request.id,

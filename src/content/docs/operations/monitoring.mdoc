@@ -1,18 +1,18 @@
 ---
 title: "Monitoring"
-description: "Target signals for provider, workflow, quality, cost, and business outcomes."
+description: "Current agent-run telemetry contracts and target provider, workflow, quality, cost, and business signals."
 section: "operations"
 order: 903
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval"]
-relatedPages: ["workflows/operations-learning-loop"]
-tags: ["operations"]
-truthState: "target"
+sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/telemetry/normalize-usage.ts","src/modules/orchestration/telemetry/sink.ts","src/modules/orchestration/workflows/live-work-unit.ts",".github/workflows/live-agent-evals.yml","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0007-use-central-broker","0010-use-deterministic-quality-gates","0012-require-human-approval","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/observability-and-audit","workflows/operations-learning-loop"]
+tags: ["operations","telemetry"]
+truthState: "current"
 ---
 
 Target monitoring includes routing decisions, queue age, provider health, cooldown, latency, reported token/cost, failure category, gate pass rate, repair count, review findings, approval time, accepted outcome, and documentation freshness.
 
-No production monitoring stack exists for orchestration.
+The platform validates and stores redacted run/eval metadata locally or at the CI evidence boundary. Credential-gated provider transports and a manual live-eval workflow can populate it, but no successful representative live record exists yet. Cost remains `null` when the provider does not expose it. No dashboard or production monitoring stack is claimed.

@@ -1,14 +1,14 @@
 ---
 title: "Universal agent contract"
-description: "The minimum input, responsibility, permission, output, evidence, and stop contract for every role."
+description: "The minimum human-readable and machine-validatable input, responsibility, permission, output, evidence, budget, and stop contract for every role."
 section: "agents"
 order: 501
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0008-stable-roles-dynamic-models"]
-relatedPages: ["agents/universal-handoff"]
+sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","agent-platform/agent-contracts.yml"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["agents/universal-handoff","security/ai-agent-security-standard"]
 tags: ["agents","contract"]
 truthState: "decision"
 ---
@@ -27,5 +27,11 @@ Every agent definition states:
 - independent second-voice rule;
 - human approval gate;
 - defect return target and next role.
+
+## Machine-readable contract
+
+`agent-platform/agent-contracts.yml` is the canonical machine projection for the fixed eight-role engineering set. For every role it declares the source agent file, single responsibility, allowed tools, forbidden action classes, provider eligibility and routing strategy, context/output/turn budgets, required input fields, output sections, handoff destinations, data-classification limit, approval requirements, deterministic tests, and live-eval scenarios.
+
+`npm run agents:validate` checks the manifest schema, the fixed role set, reference integrity, policy catalogs, budgets, handoff graph, and drift from `.claude/agents/*.md` frontmatter. The manifest makes contract drift blocking; it does not yet execute providers or replace the planned deterministic pre-tool policy gateway.
 
 Read-only is the default. Implementation write permission is limited to an isolated worktree in the target architecture. The current simulation grants no repository write action to a provider.

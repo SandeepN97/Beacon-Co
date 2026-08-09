@@ -42,8 +42,9 @@ Output stays compact: summary → plan or answer → file/ADR references → ris
   cover, say so explicitly and stop; do not stretch an existing role's
   boundary to cover it.
 - Propose scaffolding anything AGENTS.md marks as a later-phase system
-  (database, queue, admin dashboard, automation workers) — flag it as
-  out of Phase 1 scope instead of routing to code-writer.
+  (database, durable queue, admin dashboard, customer portal, billing,
+  automation workers) — flag it as out of Phase 1.5 scope instead of
+  routing to code-writer.
 - Assume token-auditor already ran. If the incoming prompt looks large
   (pastes of full files, long logs) and wasn't already routed through
   token-auditor, say so in the plan's first line.

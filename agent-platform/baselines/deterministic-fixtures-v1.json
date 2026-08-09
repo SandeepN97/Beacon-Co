@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "baselineId": "phase-1.5-deterministic-fixtures-v1",
+  "lane": "deterministic-fixture-validation",
+  "scenarioCatalog": "agent-platform/evals/scenarios/phase-1.5.json",
+  "scenarioCount": 16,
+  "validatedFamilies": 16,
+  "liveMeasurementsAvailable": false,
+  "tokens": null,
+  "cachedTokens": null,
+  "latencyMs": null,
+  "costUsd": null,
+  "tuningEligible": false,
+  "note": "This baseline proves fixture coverage and schema validity only. It cannot authorize model, effort, turn, or context-budget tuning."
+}

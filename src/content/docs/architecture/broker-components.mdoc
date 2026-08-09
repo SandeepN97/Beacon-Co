@@ -4,9 +4,9 @@ description: "Queue, router, registry, packager, execution, gates, review, audit
 section: "architecture"
 order: 405
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
+sourceFiles: ["agent-platform/context-policy.yml","agent-platform/risk-policy.yml","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/policy/council-policy.ts","src/modules/orchestration/telemetry/sink.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
 relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
 relatedPages: ["plans/capability-map","references/source-map"]
 tags: ["architecture","broker"]
@@ -18,10 +18,10 @@ truthState: "target"
 | Work-unit queue | Priority, dependencies, retry, status | Interface/target |
 | Router and scheduler | Eligibility, score, assignment, fallback | Simulated |
 | Model registry | Capabilities, tools, health, data policy | Simulated |
-| Context packager | Approved request, Markdoc, ADRs, evidence | Simulated |
-| Execution manager | Worktree, CLI, timeout, capture | Proposed |
-| Permission policy | Read/write boundaries and denied actions | Simulated policy |
-| Gate engine | Real tests, build, scans | Contract only |
-| Review panel | Structured independent votes | Completion policy only |
-| Audit/results store | Decisions, runs, costs, artifacts | In-memory |
+| Context packager | Approved request, references, exact data, hashes, budgets | Deterministic local implementation |
+| Execution manager | Provider-neutral HTTP/CLI invocation, timeout, normalized capture | Credential-gated engineering eval slice; business runtime remains simulated |
+| Permission policy | Role/path/action allow, ask, deny | Deterministic gateway and Claude hook |
+| Gate engine | Tests, schemas, policy, eval fixtures, build, scans | Repository CI definitions |
+| Review panel | Risk 0–3 isolated lanes and finding adjudication | Deterministic local implementation |
+| Audit/results store | Runs, usage, evidence, release identity | Append-only ignored local/CI files; no durable service |
 | Human approval | Pause consequential actions | In-memory |

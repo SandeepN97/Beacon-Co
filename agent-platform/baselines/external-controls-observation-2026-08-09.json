@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "repository": "SandeepN97/Beacon-Co",
+  "observedAt": "2026-08-09T17:25:00-04:00",
+  "visibility": "public",
+  "defaultBranch": "main",
+  "ruleset": {
+    "id": 19806104,
+    "name": "Protect main",
+    "active": true,
+    "deletionBlocked": true,
+    "nonFastForwardBlocked": true,
+    "pullRequestRequired": true,
+    "reviewThreadsResolved": true,
+    "signedCommitsRequired": true,
+    "codeQlRequired": true,
+    "bypassActors": 0,
+    "currentUserCanBypass": false,
+    "strictRequiredChecks": false,
+    "requiredCheckContexts": [
+      "metadata",
+      "quality",
+      "codeql",
+      "browser",
+      "dependency-review",
+      "policy"
+    ],
+    "agentPlatformCheckRequired": false
+  },
+  "environments": {
+    "preview": { "exists": true, "requiredReviewers": 0, "adminsCanBypass": true },
+    "staging": { "exists": true, "requiredReviewers": 0, "adminsCanBypass": true },
+    "production": {
+      "exists": true,
+      "requiredReviewers": 0,
+      "adminsCanBypass": true,
+      "customBranchPolicy": true
+    },
+    "agent-evals": { "exists": false, "requiredReviewers": 0, "adminsCanBypass": null }
+  },
+  "conclusion": "Repository rules are active, but the new agent-platform check and non-bypassable external production reviewer gate are not configured."
+}

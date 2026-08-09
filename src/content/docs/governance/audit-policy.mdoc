@@ -1,18 +1,24 @@
 ---
 title: "Audit policy"
-description: "The minimum event trail for translation, routing, execution, review, approval, and impact."
+description: "The minimum event trail and current redacted run-telemetry persistence rules."
 section: "governance"
 order: 705
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
-relatedPages: ["architecture/security-boundaries"]
-tags: ["governance"]
+sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/telemetry/sink.ts","src/modules/orchestration/domain/review.ts","src/modules/orchestration/domain/publication-evidence.ts","src/modules/orchestration/domain/release-evidence.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/observability-and-audit","architecture/security-boundaries","governance/privacy-and-data-classification"]
+tags: ["governance","audit","telemetry"]
 truthState: "decision"
 ---
 
 Audit records preserve interpretation, retrieved sources, routing scores, provider changes, sessions, commands, gate evidence, reviews, repairs, approvals, outcome, and documentation impact.
 
-Current records exist only in memory during simulation. A durable store requires retention, access, deletion, backup, and recovery decisions.
+`AgentRun` and `ProviderRun` add a current metadata-only execution contract. Local records are append-only NDJSON beneath ignored `.beacon/telemetry/`. CI/eval records use the ignored `evidence/telemetry/` artifact boundary. Both paths receive validated, redacted records; neither path is canonical project truth or a durable production audit store.
+
+Best-effort local persistence failures are observable but nonblocking. Controlled live eval and release paths select required mode and fail closed. Provider adapters and the live-work-unit path can populate records, but no representative successful live record exists yet; the one bounded Codex attempt timed out without events and wrote nothing.
+
+Council evidence binds author and reviewer runs to the same diff while preserving reviewer isolation. Publication evidence binds author, QA, reviews, named server checks, and external authority to the current diff. Release evidence binds build, attestation, staging, production approval, verification, and rollback identities without raw secrets or deployment output.
+
+A durable service still requires separate retention, access, deletion, backup, recovery, and authorization decisions. Phase 1.5 does not introduce a database or queue for telemetry.

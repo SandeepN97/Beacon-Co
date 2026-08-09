@@ -1,0 +1,86 @@
+schemaVersion: 1
+status: contract-baseline-frozen-pending-live-evals
+resolvedModelIdRecordingRequired: true
+learnedRouterAllowed: false
+minimumRepeatedLiveRuns: 3
+materialImprovementRatio: 0.1
+
+approvedModelClasses:
+  claude: [sonnet, haiku]
+  codex: [approved-coding-model]
+
+roles:
+  chief-of-staff:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 8,
+      maxContextTokens: 12000,
+      maxOutputTokens: 1800,
+    }
+  market-researcher:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 12,
+      maxContextTokens: 14000,
+      maxOutputTokens: 2600,
+    }
+  codebase-researcher:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 15,
+      maxContextTokens: 18000,
+      maxOutputTokens: 2800,
+    }
+  code-writer:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 20,
+      maxContextTokens: 24000,
+      maxOutputTokens: 4000,
+    }
+  qa-engineer:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 15,
+      maxContextTokens: 16000,
+      maxOutputTokens: 3000,
+    }
+  pr-reviewer:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: high,
+      maxTurns: 12,
+      maxContextTokens: 18000,
+      maxOutputTokens: 3000,
+    }
+  release-manager:
+    {
+      defaultProvider: claude,
+      modelClass: sonnet,
+      effort: medium,
+      maxTurns: 15,
+      maxContextTokens: 16000,
+      maxOutputTokens: 2600,
+    }
+  token-auditor:
+    {
+      defaultProvider: claude,
+      modelClass: haiku,
+      effort: low,
+      maxTurns: 8,
+      maxContextTokens: 8000,
+      maxOutputTokens: 1800,
+    }
+
+acceptedTuning: []

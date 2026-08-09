@@ -30,9 +30,33 @@ Remaining:
 - Perform a final naming/copy pass after the name is locked
 - Establish automated application checks beyond the production build
 
+## Phase 1.5 — Engineering agent platform completion
+
+Status: **in progress; repository implementation ready, external evidence incomplete**
+
+Implemented locally:
+
+- fixed eight-role contracts and drift validation;
+- provider-neutral run telemetry and redaction;
+- deterministic context preflight and prompt compilation;
+- agent eval fixtures and evidence-gated model tuning;
+- deterministic tool policy and risk-tiered council review;
+- Claude/OpenAI/Codex CLI adapter contracts;
+- agent publication checks, artifact attestation, same-artifact promotion, verification, and rollback workflow definitions;
+- executable completion audit.
+
+Remaining hard gates:
+
+- successful representative live provider run and repeated benchmark baseline;
+- required agent-platform GitHub check;
+- non-bypassable external production reviewer gate;
+- real attestation, staging/production verification, and rollback-drill evidence.
+
+Phase 2 cannot start until `npm run phase15:audit` passes and Phase 1.5 is explicitly frozen.
+
 ## Phase 2 — Data, security, and job foundation
 
-Status: **planned; do not build without explicit authorization**
+Status: **planned; blocked by Phase 1.5 completion**
 
 Planned outcomes:
 

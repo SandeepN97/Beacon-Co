@@ -4,11 +4,11 @@ description: "Current, simulated, proposed, and future capabilities in one map."
 section: "plans"
 order: 303
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
-relatedPages: ["architecture/overview"]
+sourceFiles: ["agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","src/modules/orchestration/context/compiler.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/policy/council-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/overview","architecture/observability-and-audit"]
 tags: ["roadmap","phase"]
 truthState: "current"
 ---
@@ -21,8 +21,17 @@ truthState: "current"
 | Natural-language translation | Simulated/local | Unit tests and workspace |
 | Markdoc retrieval | Simulated/local | Reader, index, retriever tests |
 | Claude/Codex routing | Simulated/local | Policy and fallback tests |
-| Prompt compilation | Simulated/local | Provider adapter tests |
-| Provider invocation | Proposed | No credentials or CLI execution |
+| Deterministic context/prompt compilation | Current/local | Reference-first inventory, hashes, dedupe, budget, and exact-data tests |
+| Agent role contract validation | Current/local | Fixed manifest, source SHA bindings, schema validator and tests |
+| Run/token telemetry foundation | Current/local | AgentRun/ProviderRun schemas, normalizers, redaction and append-only sink tests |
+| Agent eval harness | Current/local | Sixteen scenario families, deterministic result schema, live lane separated |
+| Deterministic tool policy | Current/local | Role/path/action gateway, Claude hook, and bypass tests |
+| Provider adapters | Current/credential-gated | Claude/OpenAI HTTP and read-only ephemeral Codex CLI contracts; no successful live record yet |
+| Risk-tiered council | Current/local | Risk 0–3, isolated lanes, cross-provider and blocker/adjudication tests |
+| Evidence-gated tuning | Current/local | Frozen baseline and no-regression candidate gate; live baseline absent |
+| Agent publication CI | Current/local | Diff hash, author/QA/review/check/authority evidence policy and workflow |
+| Release provenance and rollback | Current definitions | Signed-attestation, same-artifact, verification, and rollback workflows; no real drill yet |
+| Automatic real-run telemetry | Pending evidence | One attempted Codex smoke timed out without records; controlled live run still required |
 | Durable queue/audit | Proposed | In-memory interfaces only |
 | Isolated worktrees | Proposed | Policy documented; no executor |
-| Merge/deploy/release | Human-only future | Explicitly outside this work unit |
+| Merge/deploy/release | External human-controlled | Workflow definitions exist; environment approval and real promotion evidence remain incomplete |

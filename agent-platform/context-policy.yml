@@ -1,0 +1,33 @@
+schemaVersion: 1
+
+tokenEstimate:
+  bytesPerToken: 4
+  unusualGrowthRatio: 1.5
+
+compilation:
+  referenceFirst: true
+  deduplicateBy: [path, sha256]
+  stablePrefixSections: [platform, role, contract, tools, paths, invariants]
+  maximumReferences: 200
+  maximumEmbeddedBytes: 12000
+  exactDataKinds: [code, path, error, identifier, command, diff, sha, acceptance-criterion]
+
+tokenAuditor:
+  defaultInvocation: conditional
+  triggers:
+    - budget-breach
+    - significant-duplication
+    - routing-ambiguity
+    - unusual-context-growth
+    - capacity-or-fallback
+  duplicationThreshold: 3
+
+roleBudgets:
+  chief-of-staff: 12000
+  market-researcher: 14000
+  codebase-researcher: 18000
+  code-writer: 24000
+  qa-engineer: 16000
+  pr-reviewer: 18000
+  release-manager: 16000
+  token-auditor: 8000

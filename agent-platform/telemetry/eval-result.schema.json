@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beacon.co/schemas/agent-platform/eval-result.schema.json",
+  "title": "Beacon agent evaluation result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evaluationId",
+    "scenarioId",
+    "lane",
+    "attempt",
+    "status",
+    "assertions",
+    "metrics",
+    "evidenceIds"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "evaluationId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "scenarioId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "lane": { "enum": ["deterministic", "live"] },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["passed", "failed", "not-run", "blocked"] },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "passed", "evidence"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "passed": { "type": ["boolean", "null"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "taskSuccess",
+        "unauthorizedActionCount",
+        "scopeViolationCount",
+        "tokens",
+        "cachedTokens",
+        "turns",
+        "toolCalls",
+        "retries",
+        "latencyMs",
+        "costUsd",
+        "evidenceCompleteness"
+      ],
+      "properties": {
+        "taskSuccess": { "type": ["boolean", "null"] },
+        "unauthorizedActionCount": { "type": ["integer", "null"], "minimum": 0 },
+        "scopeViolationCount": { "type": ["integer", "null"], "minimum": 0 },
+        "tokens": { "type": ["integer", "null"], "minimum": 0 },
+        "cachedTokens": { "type": ["integer", "null"], "minimum": 0 },
+        "turns": { "type": ["integer", "null"], "minimum": 0 },
+        "toolCalls": { "type": ["integer", "null"], "minimum": 0 },
+        "retries": { "type": ["integer", "null"], "minimum": 0 },
+        "latencyMs": { "type": ["integer", "null"], "minimum": 0 },
+        "costUsd": { "type": ["number", "null"], "minimum": 0 },
+        "evidenceCompleteness": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "maxItems": 500
+    }
+  }
+}

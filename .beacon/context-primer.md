@@ -13,11 +13,23 @@ touchpoints: the sales call and the content-approval tap.
 
 ## Current phase
 
-Phase 1 — marketing and lead capture. Only the Astro marketing site and
-one narrow Cloudflare Worker contact route (`/api/contact`) are
-implemented. No database, queue, admin dashboard, or automation worker
-may be scaffolded speculatively — those are later-phase plans requiring
-explicit user authorization, not inferred from a doc describing them.
+Phase 1.5 — agent platform completion. The implemented product remains
+the Phase 1 Astro marketing site and one narrow Cloudflare Worker contact
+route (`/api/contact`). Current priority is the measurable agent,
+context, routing, policy, eval, and release-evidence platform in
+ADR-0017. Major business-domain and UI expansion stays paused until its
+completion gate passes. No database, durable queue, admin dashboard,
+customer portal, billing surface, or automation worker may be
+scaffolded speculatively, and the current broker remains a simulation.
+
+M1 and PR-A through PR-I are implemented locally: fixed contracts,
+telemetry, deterministic context compilation, eval fixtures, tool policy,
+provider adapters, risk/council logic, tuning guardrails, agent CI, signed
+provenance definitions, same-artifact promotion, verification, and rollback.
+The PR-J audit reports `localReady: true` and `externalReady: false`.
+Representative live run/baseline records, the new required GitHub check,
+non-bypassable production approval, real attestation/promotion evidence,
+and a rollback drill remain hard gates. Phase 1.5 is not frozen.
 
 ## Tech stack
 
@@ -54,18 +66,21 @@ evolution) are foundation decisions.
    approves or merges.
 7. **release-manager** — walks a merged commit through the real
    `workflow_dispatch` deploy path; never deploys locally.
-8. **token-auditor** — runs ahead of every other invocation: estimates
-   cost, compresses, routes Claude vs. Codex, logs the decision.
+8. **token-auditor** — conditionally handles budget breaches, material
+   duplication, routing ambiguity, unusual context growth, or provider
+   capacity/fallback events. Deterministic preflight handles normal
+   inventory, estimation, deduplication, and stable prompt compilation.
 
 The role set is fixed at 8 for this stage — none of the 8 may invent a
 9th.
 
 ## Deploy path (3 environments)
 
-`preview-deploy.yml` (per-PR preview) → `deploy-staging.yml` →
-`post-deploy-verify.yml` → explicit human confirmation →
-`deploy-production.yml` → `post-deploy-verify.yml`. All are
-environment-gated GitHub Actions `workflow_dispatch` jobs — never a
-local `wrangler deploy`, never a direct push or merge to `main`.
-Production has no GitHub-side approval gate; release-manager's
-checklist is the actual safety gate.
+`pr-quality.yml` builds and attests once → `deploy-staging.yml` verifies
+and promotes that artifact → `post-deploy-verify.yml` records staging →
+`deploy-production.yml` promotes the same artifact under the production
+environment → `post-deploy-verify.yml` records production.
+`rollback-production.yml` restores a verified known-good artifact.
+These are manual GitHub Actions workflows—never local `wrangler deploy`.
+Production currently has no required reviewer and permits admin bypass,
+so the required external human gate is not yet active.

@@ -4,15 +4,21 @@ description: "What must be cited before a decision, review, gate, or completion 
 section: "governance"
 order: 704
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx"]
-relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary"]
-relatedPages: ["architecture/security-boundaries"]
-tags: ["governance"]
+sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/review.ts","src/modules/orchestration/domain/publication-evidence.ts","src/modules/orchestration/domain/release-evidence.ts","agent-platform/completion-gates.yml","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0009-require-independent-second-voice","0012-require-human-approval","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/observability-and-audit","architecture/security-boundaries"]
+tags: ["governance","evidence","telemetry"]
 truthState: "decision"
 ---
 
 Evidence can be a source file, decision, command, test, diff, artifact hash, approval, or qualified external source. It must be relevant to an acceptance criterion and record limitations.
 
 Unsupported model confidence is not evidence. A deterministic failure is blocking.
+
+Normalized token/cache counts are evidence only when they come from an executed provider response or are explicitly labeled estimates. A schema, test fixture, or simulated run proves contract behavior, not actual cost or savings. Unknown provider fields remain `null`; they are never reconstructed as confident values.
+
+Raw prompts, transcripts, tool output, secrets, environment values, and customer content are not acceptable telemetry evidence. Use contract hashes, task fingerprints, repository-relative file references and hashes, counts, classifications, bounded redacted provider metadata, and evidence IDs.
+
+A workflow definition proves policy shape, not a deployment. A synthetic provider fixture proves normalization, not live quality or cost. A generated attestation step proves repository intent, not that an attestation exists. Phase completion requires the actual live run, check, attestation, environment approval, promotion, verification, and rollback evidence enumerated by the completion audit.

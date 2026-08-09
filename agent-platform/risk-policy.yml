@@ -1,0 +1,30 @@
+schemaVersion: 1
+
+tiers:
+  risk-0:
+    description: Documentation, copy, or non-behavioral low-risk change.
+    reviewLanes: 0
+    crossProviderRequired: false
+    humanOnUnresolvedMajor: false
+  risk-1:
+    description: Ordinary application code or bounded UI change.
+    reviewLanes: 1
+    crossProviderRequired: false
+    humanOnUnresolvedMajor: false
+  risk-2:
+    description: Agent contracts, workflows, dependencies, data handling, integrations, or security configuration.
+    reviewLanes: 2
+    crossProviderRequired: true
+    humanOnUnresolvedMajor: true
+  risk-3:
+    description: Authentication, secrets, production, payments, tool gateways, or destructive migration.
+    reviewLanes: 3
+    crossProviderRequired: true
+    humanOnUnresolvedMajor: true
+
+rules:
+  blockerAlwaysBlocks: true
+  deterministicFailureAlwaysBlocks: true
+  reviewerOutputsHiddenUntilComplete: true
+  duplicateFindingsMergeBy: [rootCause, evidence]
+  productionRequiresHumanDecision: true

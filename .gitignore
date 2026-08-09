@@ -18,6 +18,7 @@ pnpm-debug.log*
 test-results/
 playwright-report/
 evidence/
+.beacon/telemetry/
 
 
 # environment variables

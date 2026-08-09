@@ -4,7 +4,7 @@ description: "Unresolved decisions, source tensions, and migration needs that mu
 section: "references"
 order: 1003
 status: "under-review"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
 sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md","AGENTS.md","docs/current-state.md","docs/decisions/0004-use-a-durable-ai-assisted-operating-model.md"]
 relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0007-use-central-broker","0011-use-isolated-git-worktrees","0015-adopt-secure-cicd-control-model"]
@@ -19,18 +19,20 @@ truthState: "reference"
 - **Phase 1 versus broker request:** only a typed in-memory simulation is authorized; no speculative backend was added.
 - **ADR numbering:** founding ADRs 0001–0004 remain in order; new decisions continue at 0005.
 - **Default-branch protection:** GitHub ruleset `Protect main` is active without bypass and blocks deletion, force pushes, and direct changes outside a pull request.
+- **Provider invocation boundary:** controlled engineering evals may use credential-gated Claude/OpenAI HTTP adapters or an ephemeral read-only Codex CLI transport; the business broker remains simulated.
+- **Artifact attestation design:** PR quality uses the pinned official GitHub attestation action, and promotion workflows verify the attestation before extraction.
 
 ## Still open
 
-- When, if ever, should one provider adapter invoke a live CLI?
+- Which provider credential/capacity path will produce the first successful representative live run and repeated baseline?
 - What threat model and operator approval are required for worktree creation?
 - What durable store fits audit, approvals, retention, and recovery?
 - Which measured tasks justify a Claude or Codex affinity adjustment?
 - When can the legacy MkDocs tree be removed?
 - Who can serve as a genuinely independent human reviewer for production changes?
-- When will required GitHub checks, environments, reviewers, secrets, scanning, and push protection be activated and verified?
+- When will the new agent-platform check be required and a non-bypassable production reviewer gate be configured?
 - When will Cloudflare distributed rate limiting, WAF, alerts, and isolated tokens be configured?
 - Which current npm advisories are production-reachable and which need expiring exceptions?
-- Should public artifact attestations be added after their verification path is tested?
+- When will the first real attestation, staging/production verification, and rollback drill evidence be recorded?
 - What formal name/domain/trademark decision replaces the provisional Beacon name?
 - Which proposal market, competitor, pricing, margin, and vendor claims remain valid after revalidation?
