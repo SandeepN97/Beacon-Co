@@ -1,0 +1,156 @@
+---
+title: "ADR-0016 — Pilot a narrow, rule-based token-auditor role"
+description: "Build and benchmark a minimal prompt-cost estimator, compressor, and Claude/Codex router as a plain log file, before any larger token-optimization system is attempted."
+section: "decisions"
+order: 825
+status: "approved"
+lastReviewed: "2026-08-08"
+owners: ["Repository Owner"]
+sourceFiles: [".claude/agents/token-auditor.md", "reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png"]
+relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0008-stable-roles-dynamic-models","0009-require-independent-second-voice"]
+relatedPages: ["decisions/index"]
+tags: ["adr","approved","agents","pilot"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0016" status="approved" %}
+One decision. Status reviewed 2026-08-08.
+{% /decision_card %}
+
+## Context
+
+Beacon-Co's eight-subagent build (ADR-0008) needs a routing/cost layer
+ahead of the other seven roles: something to estimate prompt cost, tighten
+context, and choose between Claude and the second provider actually
+available on this machine (Codex CLI, confirmed installed and
+authenticated). No token-optimization system exists yet in this repo —
+there is no knowledge-compiler, retrieval layer, or context-budgeter to
+build against or narrow down from. This decision is standalone, not a
+slice of a larger prior design.
+
+## Decision drivers
+
+- avoid re-pasting context that already exists as a repo file;
+- keep routing between Claude and Codex explicit and auditable, not
+  vibes-based;
+- avoid building infrastructure (embeddings, vector store, RAG, a
+  fine-tuned router) this solo-operator, pre-revenue repo does not need
+  yet;
+- produce local, logged evidence before any larger claim about savings is
+  made.
+
+## Options considered
+
+- no prompt-optimization step at all — every agent invocation carries
+  full, unfiltered context;
+- a full token-optimization system (compiler, index, embeddings, semantic
+  routing) built up front;
+- a narrow, rule-based pilot: estimate, compress via five ordered
+  extractive tactics, route via explicit rules, log to a plain file.
+
+## Decision
+
+Build the narrow pilot. `token-auditor` (Read/Glob/Grep only,
+`permissionMode: plan`) estimates token cost, applies reference-first and
+extractive-only compression (never paraphrase-compressing code, paths,
+SHAs, or exact error text), and routes to Claude by default or to Codex
+CLI when ADR-0009's independent-second-voice rationale applies. It does
+not persist its own log — no `Write`/`Edit`/`Bash` — it returns the log
+line as text for the invoking context to append to
+`.beacon/telemetry/token-audit.log`.
+
+This continues ADR-0004's still-valid part (repository-first,
+file-based memory over an early broker) applied to exactly one narrow
+job, and operationalizes ADR-0008's "assign per work unit using policy"
+for the one deliverable this role actually has: a routing decision with a
+stated reason.
+
+Two extensions, added the same day the pilot was first built:
+
+**Context primer.** `.beacon/context-primer.md` is a short (~450-word),
+hand-maintained orientation file — what Beacon & Co. is, the stack,
+where docs live, the 8-role set, the deploy path — that all 8 agent
+files now read first, before any task-specific exploration.
+`token-auditor`'s compression tactics gained a tactic 0: check whether
+the primer already answers the orientation question before assembling
+that context from scratch. This reduces repeated cold-context assembly
+across invocations; it does not replace reading the actual source file
+a task specifically needs.
+
+**Capacity-aware routing.** A capacity check now runs before task-type
+routing: if the invoking context (e.g. `chief-of-staff`) reports Claude's
+session near/at its usage limit, or that Codex CLI returned a
+rate-limit/quota error, `token-auditor` routes to the other provider
+regardless of task-fit, and logs the reason as `capacity` rather than
+`task-fit`. `token-auditor` has no `Bash` and does not check capacity
+itself — the signal is always supplied by the caller. This is
+precautionary design, not backfilled from a real Claude/Codex capacity
+incident: no such event has occurred in this project yet. The one real
+operational interruption during this same build session was an SSH
+commit-signing passphrase block during a `git merge` — a credential/
+tooling stop, not a capacity one — recorded here as evidence that
+real interruptions do happen, not as evidence for this specific case.
+
+## Positive consequences
+
+- every agent invocation can be tightened before it spends context;
+- Claude/Codex routing decisions are explicit and logged, not silent;
+- the log itself becomes the evidence base for later deciding whether to
+  expand, keep flat, or drop this role;
+- no new infrastructure, no database, no embeddings — nothing to
+  maintain beyond one subagent file and one log file.
+
+## Negative consequences
+
+- an extra step ahead of every other agent invocation adds latency;
+- rule-based routing will misclassify some tasks until the rules are
+  tuned against real logged outcomes;
+- `haiku` (chosen for cost/frequency fit) may under-judge ambiguous
+  compression calls that a larger model would catch — acceptable for a
+  pilot, not yet proven for scale.
+
+## Risks
+
+- log entries could go unwritten if the invoking context forgets to
+  persist the returned line — there is no automatic enforcement of this
+  handoff;
+- routing rules could harden into unsupported preference the same way
+  ADR-0008 already flags as a risk for the broader role/provider system;
+- without real logged data yet, any early savings claim would be
+  unsupported — none is made here.
+
+## Follow-up work
+
+- accumulate real entries in `.beacon/telemetry/token-audit.log` before
+  claiming any savings percentage;
+- revisit `haiku` vs. a larger model once misrouted or under-compressed
+  cases show up in the log;
+- do not build embeddings/RAG/a fine-tuned router until this pilot's own
+  data shows a specific, recurring gap it cannot cover.
+
+A full target architecture exists as a reference diagram
+(`reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png`),
+laying out seven layers: source & input, ingestion/compilation, knowledge
+storage & index, retrieval & decision, prompt & orchestration, execution,
+and governance/audit/feedback. `token-auditor` is a deliberately narrow
+pilot slice of that diagram's prompt-orchestration layer — a token
+estimator, compressor, and Claude/Codex router — and nothing else in the
+picture. None of the other six layers (knowledge compiler, graph/code
+index, retrieval engine, execution adapters, governance/audit pipeline,
+etc.) are in scope until this pilot's own logged data in
+`.beacon/telemetry/token-audit.log` justifies expanding toward them. The
+diagram is kept as a reference for direction, not as an implemented or
+authorized design; nothing in it should be built or treated as already
+in place on the strength of this ADR alone.
+
+## Supersedes or superseded by
+
+New decision; superseded by: none. Not a slice of any prior ADR — none
+existed to slice from.
+
+## Source references
+
+- `.claude/agents/token-auditor.md`
+- `reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png`
+  (full target architecture — reference only, not implemented; see
+  Follow-up work)

@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(rm -rf *)",
+      "Bash(wrangler deploy *)",
+      "Bash(npx wrangler deploy *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/.dev.vars)",
+      "Edit(**/.env)",
+      "Edit(**/.env.*)",
+      "Edit(**/.dev.vars)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Write(**/.dev.vars)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git push --force-with-lease *)",
+      "Bash(gh workflow run deploy-staging.yml *)",
+      "Bash(gh workflow run deploy-production.yml *)",
+      "Bash(gh workflow run deploy-*)",
+      "Bash(gh workflow run preview-deploy.yml *)",
+      "Bash(gh api *dispatches*)",
+      "Bash(gh pr merge *)"
+    ]
+  }
+}

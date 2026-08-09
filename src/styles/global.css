@@ -28,7 +28,8 @@
   --rule-2: rgba(26, 23, 18, 0.15);
   --forest: #2a4228;
   --sage: #4a6640;
-  --sage-lt: #7a9e72;
+  --sage-lt: #5b7655;
+  --sage-lt-on-dark: #7a9e72;
   --gold: #9a7230;
   --gold-lt: #c49a48;
   --gold-glow: rgba(196, 154, 72, 0.18);
@@ -3631,7 +3632,7 @@ footer {
 }
 .hf-review-card-ver::before {
   content: "✓";
-  color: var(--sage-lt);
+  color: var(--sage-lt-on-dark);
 }
 
 /* hf-about: logo-mark, address, hours */
@@ -4161,7 +4162,7 @@ footer {
 }
 .hf-rv-ver::before {
   content: "✓";
-  color: var(--sage-lt);
+  color: var(--sage-lt-on-dark);
 }
 .hf-visit {
   background: rgba(3, 1, 0, 0.4);
@@ -5522,5 +5523,5 @@ a[data-tip],
   font-family: var(--fc);
   font-style: italic;
   font-size: 0.75rem;
-  color: var(--sage-lt);
+  color: var(--sage-lt-on-dark);
 }
