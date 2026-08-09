@@ -65,6 +65,32 @@ job, and operationalizes ADR-0008's "assign per work unit using policy"
 for the one deliverable this role actually has: a routing decision with a
 stated reason.
 
+Two extensions, added the same day the pilot was first built:
+
+**Context primer.** `.beacon/context-primer.md` is a short (~450-word),
+hand-maintained orientation file — what Beacon & Co. is, the stack,
+where docs live, the 8-role set, the deploy path — that all 8 agent
+files now read first, before any task-specific exploration.
+`token-auditor`'s compression tactics gained a tactic 0: check whether
+the primer already answers the orientation question before assembling
+that context from scratch. This reduces repeated cold-context assembly
+across invocations; it does not replace reading the actual source file
+a task specifically needs.
+
+**Capacity-aware routing.** A capacity check now runs before task-type
+routing: if the invoking context (e.g. `chief-of-staff`) reports Claude's
+session near/at its usage limit, or that Codex CLI returned a
+rate-limit/quota error, `token-auditor` routes to the other provider
+regardless of task-fit, and logs the reason as `capacity` rather than
+`task-fit`. `token-auditor` has no `Bash` and does not check capacity
+itself — the signal is always supplied by the caller. This is
+precautionary design, not backfilled from a real Claude/Codex capacity
+incident: no such event has occurred in this project yet. The one real
+operational interruption during this same build session was an SSH
+commit-signing passphrase block during a `git merge` — a credential/
+tooling stop, not a capacity one — recorded here as evidence that
+real interruptions do happen, not as evidence for this specific case.
+
 ## Positive consequences
 
 - every agent invocation can be tightened before it spends context;
