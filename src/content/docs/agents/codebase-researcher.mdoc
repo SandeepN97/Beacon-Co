@@ -37,7 +37,11 @@ Immediately before modifying an existing system.
 
 ## Required output or document
 
-codebase-map.md and change-point evidence.
+A findings report returned in the invoking response — execution flow,
+dependencies, and change-point evidence, each claim cited by
+`file:line`. Not persisted as a `codebase-map.md` file: the role has no
+`Write`/`Edit` tool, by design, so nothing it produces can land in the
+repo without a human or code-writer acting on it.
 
 ## Allowed tools
 
@@ -88,11 +92,12 @@ Name the failed criterion, attach evidence, preserve the current state, and retu
 ## Example universal handoff
 
 ```text
-Task completed: codebase-map.md and change-point evidence
+Task completed: findings report (execution flow, dependencies,
+  change-point evidence — returned in-response, not a persisted file)
 Inputs reviewed: Approved architecture; Target work unit; Repository instructions
 Decisions made: role-bounded decisions only
-Deliverables produced: codebase-map.md and change-point evidence
-Files affected: listed with the artifact
+Deliverables produced: findings report, as above
+Files affected: none — this role has no Write/Edit tool
 Assumptions: explicit and reversible
 Risks: residual risks recorded
 Open questions: none, or blocker stated
