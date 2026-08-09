@@ -1,0 +1,28 @@
+schemaVersion: 1
+phase: "1.5"
+closureSentence: "Phase 1.5 closed. Beacon may proceed to the next business-domain/UI phase."
+
+localGates:
+  - contracts-and-governance
+  - telemetry-foundation
+  - context-preflight-compiler
+  - deterministic-eval-harness
+  - tool-policy-gateway
+  - provider-adapter-contracts
+  - risk-council-engine
+  - evidence-gated-tuning
+  - publication-evidence-gate
+  - release-provenance-workflows
+  - scope-control
+
+externalEvidenceGates:
+  - representative-live-provider-run
+  - repeated-live-eval-baseline
+  - agent-platform-required-check
+  - non-bypassable-external-production-approval
+  - verified-build-attestation
+  - staging-promotion-and-verification
+  - production-promotion-and-verification
+  - known-good-rollback-drill
+
+freezeRule: every-local-and-external-gate-must-pass

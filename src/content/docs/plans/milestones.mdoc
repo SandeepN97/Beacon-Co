@@ -4,22 +4,35 @@ description: "Evidence-based exit gates for growing from documentation to contro
 section: "plans"
 order: 302
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker"]
-relatedPages: ["architecture/overview"]
+sourceFiles: ["agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/policy/council-policy.ts","scripts/agents/audit-phase-1.5.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["architecture/overview","architecture/observability-and-audit"]
 tags: ["roadmap","phase"]
-truthState: "target"
+truthState: "current"
 ---
 
 | Milestone | Exit evidence |
 |---|---|
 | Documentation foundation | Schema, navigation, links, search, and static build pass |
 | Broker prototype | Informal request reaches a simulated impact result |
+| Agent contract foundation | Exactly eight role contracts and source hashes validate in CI |
+| Telemetry recording foundation | Provider usage normalization, redaction, strict schemas, local/CI sinks, and malformed/failure tests pass |
+| Context preflight/compiler | Determinism, reference-first retrieval, deduplication, exact-data preservation, budgets, and stable-prefix tests pass |
+| Agent eval foundation | Sixteen required families and result schema validate; deterministic and live lanes remain separate |
+| Tool policy gateway | Role-aware allow/ask/deny decisions and bypass tests pass independently of prompt compliance |
+| Provider adapter contracts | Claude, OpenAI, and Codex CLI responses/errors normalize into the same domain records |
+| Council/risk engine | Risk 0–3 lane counts, reviewer independence, cross-provider review, and blocker semantics pass |
+| Evidence-gated tuning | Unevaluated role configuration remains frozen and candidate guardrail tests pass |
+| Agent publication CI | Diff-bound author/QA/review evidence and uniquely named required checks validate |
+| Release/provenance definitions | Build attestation, same-artifact promotion, post-deploy evidence, and rollback workflows validate locally |
+| Automatic run evidence | Representative live Claude/Codex records populate the telemetry foundation without manual copying |
 | One-agent execution | One live provider runs one bounded low-risk unit with full audit |
 | Second voice | Other provider reviews without sharing the author session |
 | Deterministic gates | Real repository commands block completion on failure |
 | Worktree isolation | Changes occur only in a verified isolated worktree |
 | Human approval service | High-impact state cannot advance without recorded authority |
 | Operations loop | Health, failure, cost, latency, and outcomes are measured |
+
+The milestones above distinguish implementation from evidence. The local platform definitions through release/rollback exist; automatic run evidence, live baselines, external production approval, real promotion verification, and rollback-drill evidence remain open.

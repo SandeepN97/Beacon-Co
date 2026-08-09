@@ -1,0 +1,533 @@
+schemaVersion: 1
+phase: "1.5"
+
+roleSet:
+  fixed: true
+  count: 8
+
+providers:
+  - claude
+  - codex
+
+toolCatalog:
+  - Read
+  - Glob
+  - Grep
+  - Write
+  - Edit
+  - Bash
+  - WebSearch
+  - WebFetch
+
+forbiddenToolClassCatalog:
+  secret-access: Read, write, print, transmit, or infer credentials, environment secrets, or contact-form PII.
+  scope-escape: Read or write outside the assigned repository, worktree, paths, or approved task scope.
+  source-mutation: Change repository source, documentation, tests, configuration, or generated assets.
+  mutating-shell: Run shell commands that alter files, dependencies, Git state, services, or external systems.
+  dependency-mutation: Install, remove, or update packages or lockfiles without an approved dependency change.
+  git-history-rewrite: Force push, reset published history, rewrite commits, or delete protected refs.
+  git-remote-mutation: Push commits or tags, change remotes, or mutate protected repository state.
+  pr-state-mutation: Approve, merge, close, label, or otherwise mutate pull-request state.
+  direct-deploy: Deploy from a local shell or bypass the reviewed workflow-dispatch promotion path.
+  external-side-effect: Send messages, submit forms, purchase services, change vendor settings, or contact third parties.
+  self-certification: Author and independently approve, review, QA, or release the same work.
+  approval-bypass: Continue through a required human, security, architecture, merge, or production gate without recorded authority.
+
+approvalCatalog:
+  - architecture-change
+  - business-scope-change
+  - dependency-or-workflow-change
+  - external-contact
+  - merge
+  - staging-deploy
+  - production-deploy
+
+deterministicTestCatalog:
+  - manifest-schema
+  - fixed-role-set
+  - frontmatter-drift
+  - tool-policy
+  - budget-bounds
+  - handoff-graph
+  - output-contract
+  - approval-contract
+
+liveEvalScenarioCatalog:
+  - documentation-only-change
+  - bounded-typescript-bug
+  - multi-file-refactor
+  - security-sensitive-worker-change
+  - accessibility-ui-change
+  - architecture-request-must-stop
+  - failing-test-repair-loop
+  - ambiguous-request-decomposition
+  - provider-unavailable-handoff
+  - context-overflow
+  - prompt-injection-attempt
+  - forbidden-destructive-or-deploy-attempt
+
+roles:
+  - id: chief-of-staff
+    agentFile: .claude/agents/chief-of-staff.md
+    sourceSha256: 0cd22ae0d79fdbd08d5cc96475159bcfc579afe3fcebdf01e7b2988652ac799b
+    responsibility: Turn an ambiguous or multi-step request into a sourced direct answer or an ordered delegation plan across the fixed role set.
+    allowedTools: [Read, Glob, Grep]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - mutating-shell
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: claude-first
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: project
+    limits:
+      maxContextTokens: 12000
+      maxOutputTokens: 1800
+      maxTurns: 8
+    requiredInputFields: [objective, constraints, acceptanceCriteria, capacitySignal]
+    output:
+      format: markdown
+      requiredSections: [summary, delegationPlanOrDirectAnswer, sources, riskLevel]
+    allowedHandoffs:
+      - token-auditor
+      - market-researcher
+      - codebase-researcher
+      - code-writer
+      - qa-engineer
+      - pr-reviewer
+      - release-manager
+    security:
+      maxDataClassification: internal
+      approvalRequirements: [architecture-change, business-scope-change]
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - ambiguous-request-decomposition
+      - architecture-request-must-stop
+      - prompt-injection-attempt
+
+  - id: market-researcher
+    agentFile: .claude/agents/market-researcher.md
+    sourceSha256: c52690e39427a35fb3b684627c0d4efb92a9dc8fc648e2a3b3cc1f3d498a06cd
+    responsibility: Research external local-market, pricing, positioning, messaging, and audience questions and return a sourced memo without deciding or editing.
+    allowedTools: [Read, Glob, Grep, WebSearch, WebFetch]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - mutating-shell
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: claude-first
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: none
+    limits:
+      maxContextTokens: 14000
+      maxOutputTokens: 2600
+      maxTurns: 12
+    requiredInputFields: [researchQuestion, serviceRadius, existingClaims, sourceRequirements]
+    output:
+      format: markdown
+      requiredSections: [question, findings, claimComparison, recommendation, riskLevel]
+    allowedHandoffs: [chief-of-staff]
+    security:
+      maxDataClassification: public
+      approvalRequirements: [business-scope-change, external-contact]
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - documentation-only-change
+      - ambiguous-request-decomposition
+      - prompt-injection-attempt
+
+  - id: codebase-researcher
+    agentFile: .claude/agents/codebase-researcher.md
+    sourceSha256: a5c524432cf1fbdf35c82b803960af57308f484fdb94ec052d1bada2e833b901
+    responsibility: Trace existing repository behavior, dependencies, conventions, and safe change points with exact citations without editing or verifying.
+    allowedTools: [Read, Glob, Grep, Bash]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - mutating-shell
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: code-affinity
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: none
+    limits:
+      maxContextTokens: 18000
+      maxOutputTokens: 2800
+      maxTurns: 15
+    requiredInputFields: [objective, repositoryScope, relevantDocs, knownConstraints]
+    output:
+      format: markdown
+      requiredSections:
+        [
+          objective,
+          findings,
+          executionFlow,
+          dependenciesAndConventions,
+          safeChangePoints,
+          risksAndUnknowns,
+        ]
+    allowedHandoffs: [chief-of-staff, code-writer]
+    security:
+      maxDataClassification: internal
+      approvalRequirements: []
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - bounded-typescript-bug
+      - multi-file-refactor
+      - context-overflow
+      - prompt-injection-attempt
+
+  - id: code-writer
+    agentFile: .claude/agents/code-writer.md
+    sourceSha256: a263b5a8d4c6666e976e27b537382a8e8f21395e3dc944b9f4029b3f5fc10ca3
+    responsibility: Implement one approved, already-scoped repository change in an isolated worktree and return the diff and deterministic validation evidence.
+    allowedTools: [Read, Glob, Grep, Write, Edit, Bash]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: code-affinity
+    execution:
+      permissionMode: default
+      isolation: worktree
+      memory: none
+    limits:
+      maxContextTokens: 24000
+      maxOutputTokens: 4000
+      maxTurns: 20
+    requiredInputFields:
+      [objective, scopedPaths, acceptanceCriteria, constraints, researchEvidence, requiredChecks]
+    output:
+      format: markdown
+      requiredSections: [objective, filesChanged, validationRun, worktree, riskLevel]
+    allowedHandoffs: [qa-engineer, pr-reviewer]
+    security:
+      maxDataClassification: internal
+      approvalRequirements:
+        [architecture-change, business-scope-change, dependency-or-workflow-change]
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - documentation-only-change
+      - bounded-typescript-bug
+      - multi-file-refactor
+      - security-sensitive-worker-change
+      - accessibility-ui-change
+      - failing-test-repair-loop
+      - forbidden-destructive-or-deploy-attempt
+
+  - id: qa-engineer
+    agentFile: .claude/agents/qa-engineer.md
+    sourceSha256: 52fab71c2161fe53428f290875e1e9191aa82b3f95beab3f3f9304eeb3aa303a
+    responsibility: Run the repository's applicable deterministic verification commands against a named change and report exact pass or failure evidence without fixing it.
+    allowedTools: [Read, Glob, Grep, Bash]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: code-affinity
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: none
+    limits:
+      maxContextTokens: 16000
+      maxOutputTokens: 3000
+      maxTurns: 15
+    requiredInputFields:
+      [objective, worktreeOrDiff, changedPaths, requiredChecks, acceptanceCriteria]
+    output:
+      format: markdown
+      requiredSections: [objective, commandsRun, failures, riskLevel]
+    allowedHandoffs: [code-writer, pr-reviewer]
+    security:
+      maxDataClassification: internal
+      approvalRequirements: []
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - bounded-typescript-bug
+      - security-sensitive-worker-change
+      - accessibility-ui-change
+      - failing-test-repair-loop
+      - context-overflow
+
+  - id: pr-reviewer
+    agentFile: .claude/agents/pr-reviewer.md
+    sourceSha256: 9f0a7a36b55cd368f017fd796e6648551e5e5b5a63c2b868cf67f3f1e73ed3ae
+    responsibility: Independently review a worktree or pull-request diff for correctness, conventions, and risks not covered by automated gates without mutating review state.
+    allowedTools: [Read, Glob, Grep, Bash]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - mutating-shell
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: independent-second-voice
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: none
+    limits:
+      maxContextTokens: 18000
+      maxOutputTokens: 3000
+      maxTurns: 12
+    requiredInputFields:
+      [objective, pullRequestOrWorktree, authorProvider, completeDiff, checkStatus, relevantAdrs]
+    output:
+      format: markdown
+      requiredSections:
+        [objective, findings, conventionCheck, ciCoverage, recommendation, riskLevel]
+    allowedHandoffs: [code-writer, release-manager]
+    security:
+      maxDataClassification: internal
+      approvalRequirements: []
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - documentation-only-change
+      - multi-file-refactor
+      - security-sensitive-worker-change
+      - accessibility-ui-change
+      - prompt-injection-attempt
+
+  - id: release-manager
+    agentFile: .claude/agents/release-manager.md
+    sourceSha256: 574f6a646d5213cde8575e5e91556023af92de10a064f5d58d1c78ee6b3cd2c5
+    responsibility: Verify release evidence and walk an authorized reviewed commit through the repository's workflow-dispatch staging, verification, production, and rollback path.
+    allowedTools: [Read, Glob, Grep, Bash]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: sonnet
+      routingStrategy: capacity-aware
+    execution:
+      permissionMode: default
+      isolation: none
+      memory: project
+    limits:
+      maxContextTokens: 16000
+      maxOutputTokens: 2600
+      maxTurns: 15
+    requiredInputFields:
+      [commitSha, pullRequest, requiredChecks, reviewEvidence, artifactIdentity, authorization]
+    output:
+      format: markdown
+      requiredSections:
+        [
+          objective,
+          preflight,
+          staging,
+          productionAuthorization,
+          production,
+          rollbackIdentity,
+          riskLevel,
+        ]
+    allowedHandoffs: [codebase-researcher]
+    security:
+      maxDataClassification: confidential
+      approvalRequirements: [merge, staging-deploy, production-deploy]
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - provider-unavailable-handoff
+      - security-sensitive-worker-change
+      - forbidden-destructive-or-deploy-attempt
+
+  - id: token-auditor
+    agentFile: .claude/agents/token-auditor.md
+    sourceSha256: 940a8067d72802e98f564c48330a8846748f55f7c9599eca0b2bb566cd08d744
+    responsibility: Conditionally optimize abnormal or over-budget context, route Claude or Codex by capacity then task fit, and return metadata-only evidence without persisting it.
+    allowedTools: [Read, Glob, Grep]
+    forbiddenToolClasses:
+      - secret-access
+      - scope-escape
+      - source-mutation
+      - mutating-shell
+      - dependency-mutation
+      - git-history-rewrite
+      - git-remote-mutation
+      - pr-state-mutation
+      - direct-deploy
+      - external-side-effect
+      - self-certification
+      - approval-bypass
+    provider:
+      default: claude
+      eligible: [claude, codex]
+      claudeModelClass: haiku
+      routingStrategy: capacity-aware
+    execution:
+      permissionMode: plan
+      isolation: none
+      memory: none
+    limits:
+      maxContextTokens: 8000
+      maxOutputTokens: 1800
+      maxTurns: 8
+    requiredInputFields: [objective, incomingPrompt, candidateContext, taskClass, capacitySignal]
+    output:
+      format: markdown
+      requiredSections: [estimate, appliedTactics, rewrittenPrompt, routingDecision, logLine]
+    allowedHandoffs:
+      - chief-of-staff
+      - market-researcher
+      - codebase-researcher
+      - code-writer
+      - qa-engineer
+      - pr-reviewer
+      - release-manager
+    security:
+      maxDataClassification: internal
+      approvalRequirements: []
+    deterministicTests:
+      - manifest-schema
+      - fixed-role-set
+      - frontmatter-drift
+      - tool-policy
+      - budget-bounds
+      - handoff-graph
+      - output-contract
+      - approval-contract
+    liveEvalScenarios:
+      - provider-unavailable-handoff
+      - context-overflow
+      - prompt-injection-attempt

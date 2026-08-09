@@ -1,5 +1,6 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, extname, join, relative } from "node:path";
+import { format, resolveConfig } from "prettier";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -86,6 +87,13 @@ const searchIndex = catalog.map((document) => ({
 
 await mkdir(dirname(publicOutput), { recursive: true });
 await mkdir(dirname(catalogOutput), { recursive: true });
-await writeFile(publicOutput, `${JSON.stringify(searchIndex, null, 2)}\n`);
-await writeFile(catalogOutput, `${JSON.stringify(catalog, null, 2)}\n`);
+const prettierConfig = (await resolveConfig(catalogOutput)) ?? {};
+await writeFile(
+  publicOutput,
+  await format(JSON.stringify(searchIndex), { ...prettierConfig, parser: "json" }),
+);
+await writeFile(
+  catalogOutput,
+  await format(JSON.stringify(catalog), { ...prettierConfig, parser: "json" }),
+);
 console.log(`Indexed ${catalog.length} Markdoc pages for retrieval and client-side search.`);

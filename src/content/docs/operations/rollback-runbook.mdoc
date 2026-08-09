@@ -4,13 +4,13 @@ description: "Decision, containment, previous-version restoration, verification,
 section: "operations"
 order: 908
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Release Manager","Incident Commander"]
-sourceFiles: ["reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md",".github/workflows/post-deploy-verify.yml"]
+sourceFiles: [".github/workflows/rollback-production.yml",".github/workflows/post-deploy-verify.yml","scripts/agents/record-release-evidence.mjs","src/modules/orchestration/publication/release-evidence-policy.ts","reference/source-materials/originals/BEACON_SECURE_CICD_IMPLEMENTATION_PLAN_10_OF_10.md"]
 relatedAdrs: ["0015-adopt-secure-cicd-control-model"]
 relatedPages: ["operations/deployment-runbook","operations/incident-response-plan"]
 tags: ["operations","rollback","runbook"]
-truthState: "target"
+truthState: "current"
 ---
 
 ## Trigger
@@ -23,11 +23,13 @@ Rollback for broken primary navigation or contact behavior, severe accessibility
 2. preserve the failed workflow, commit, artifact digest, timestamp, and observable symptom;
 3. select the last known-good production deployment from Cloudflare deployment history;
 4. confirm that its source commit and artifact evidence are known;
-5. use Cloudflare’s authenticated rollback mechanism or redeploy that exact known-good archive under the production environment gate;
-6. run post-deploy verification;
+5. dispatch `Rollback production` with the known-good artifact run, reviewed commit, expected digest, replaced digest, incident/drill ID, and exact production URL;
+6. let the workflow verify signed provenance and both distinct digests, promote the known-good archive under the production environment gate, and run post-rollback header verification;
 7. communicate status without secrets or PII;
 8. fix forward only through a new pull request.
 
 ## Stop conditions
 
 Do not guess at an artifact, rebuild an old commit with new dependencies, expose credentials for speed, or declare recovery before customer paths and headers are verified. If rollback access is unavailable, contain traffic using the provider’s safest reversible control and escalate.
+
+The rollback workflow and evidence contract are implemented and locally validated. A real known-good rollback drill has not run, so Phase 1.5 cannot use this definition alone as completion evidence.

@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beacon-co.local/schemas/agent-run.schema.json",
+  "title": "Beacon AgentRun telemetry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "workUnitId",
+    "taskFingerprint",
+    "agentRole",
+    "contractVersion",
+    "contractSha256",
+    "riskClass",
+    "provider",
+    "resolvedModelId",
+    "requestedEffort",
+    "startedAt",
+    "completedAt",
+    "durationMs",
+    "status",
+    "stopReason",
+    "providerRunIds",
+    "context",
+    "execution",
+    "outcome",
+    "evidenceIds"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "workUnitId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "taskFingerprint": { "$ref": "#/$defs/sha256" },
+    "agentRole": {
+      "enum": [
+        "chief-of-staff",
+        "market-researcher",
+        "codebase-researcher",
+        "code-writer",
+        "qa-engineer",
+        "pr-reviewer",
+        "release-manager",
+        "token-auditor"
+      ]
+    },
+    "contractVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "contractSha256": { "$ref": "#/$defs/sha256" },
+    "riskClass": { "enum": ["risk-0", "risk-1", "risk-2", "risk-3"] },
+    "provider": {
+      "anyOf": [{ "enum": ["claude", "codex"] }, { "type": "null" }]
+    },
+    "resolvedModelId": {
+      "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 160 }, { "type": "null" }]
+    },
+    "requestedEffort": {
+      "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 64 }, { "type": "null" }]
+    },
+    "startedAt": { "$ref": "#/$defs/timestamp" },
+    "completedAt": {
+      "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+    },
+    "durationMs": { "$ref": "#/$defs/nullableCount" },
+    "status": { "$ref": "#/$defs/runStatus" },
+    "stopReason": {
+      "anyOf": [{ "$ref": "#/$defs/stopReason" }, { "type": "null" }]
+    },
+    "providerRunIds": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contextBytes",
+        "estimatedInputTokens",
+        "usage",
+        "referencedFiles",
+        "readFileCount",
+        "changedFileCount",
+        "compilationHash"
+      ],
+      "properties": {
+        "contextBytes": { "$ref": "#/$defs/count" },
+        "estimatedInputTokens": { "$ref": "#/$defs/nullableCount" },
+        "usage": { "$ref": "provider-run.schema.json#/$defs/normalizedTokenUsage" },
+        "referencedFiles": {
+          "type": "array",
+          "maxItems": 500,
+          "items": { "$ref": "#/$defs/referencedFile" }
+        },
+        "readFileCount": { "$ref": "#/$defs/count" },
+        "changedFileCount": { "$ref": "#/$defs/count" },
+        "compilationHash": {
+          "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }]
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "turns",
+        "toolCallCount",
+        "retryCount",
+        "fallbackUsed",
+        "handoffUsed",
+        "policyDecisions"
+      ],
+      "properties": {
+        "turns": { "$ref": "#/$defs/count" },
+        "toolCallCount": { "$ref": "#/$defs/count" },
+        "retryCount": { "$ref": "#/$defs/count" },
+        "fallbackUsed": { "type": "boolean" },
+        "handoffUsed": { "type": "boolean" },
+        "policyDecisions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allow", "ask", "deny"],
+          "properties": {
+            "allow": { "$ref": "#/$defs/count" },
+            "ask": { "$ref": "#/$defs/count" },
+            "deny": { "$ref": "#/$defs/count" }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorValidationPassed",
+        "qaPassed",
+        "reviewDisposition",
+        "blockingFindingCount",
+        "majorFindingCount",
+        "finalState"
+      ],
+      "properties": {
+        "authorValidationPassed": {
+          "anyOf": [{ "type": "boolean" }, { "type": "null" }]
+        },
+        "qaPassed": { "anyOf": [{ "type": "boolean" }, { "type": "null" }] },
+        "reviewDisposition": {
+          "enum": [
+            "not-reviewed",
+            "approved",
+            "approved-with-follow-up",
+            "changes-requested",
+            "blocked"
+          ]
+        },
+        "blockingFindingCount": { "$ref": "#/$defs/count" },
+        "majorFindingCount": { "$ref": "#/$defs/count" },
+        "finalState": {
+          "enum": ["in-progress", "review", "complete", "failed", "blocked", "cancelled"]
+        }
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "maxItems": 500,
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "nullableCount": {
+      "anyOf": [{ "$ref": "#/$defs/count" }, { "type": "null" }]
+    },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "runStatus": {
+      "enum": ["queued", "running", "succeeded", "failed", "blocked", "cancelled", "simulated"]
+    },
+    "stopReason": {
+      "enum": [
+        "completed",
+        "max-turns",
+        "tool-denied",
+        "budget-exceeded",
+        "provider-error",
+        "capacity",
+        "user-cancelled",
+        "blocked",
+        "unknown"
+      ]
+    },
+    "referencedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "classification"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "description": "Repository-relative reference only; no file contents."
+        },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "classification": { "enum": ["public", "internal", "confidential", "restricted"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+name: Rollback production
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_run_id:
+        description: "Workflow run containing the last known-good tested artifact"
+        required: true
+        type: string
+      commit_sha:
+        description: "Full reviewed commit SHA of the known-good artifact"
+        required: true
+        type: string
+      expected_sha256:
+        description: "SHA-256 of the known-good beacon-dist.tar.gz"
+        required: true
+        type: string
+      replaced_sha256:
+        description: "SHA-256 of the production artifact being replaced"
+        required: true
+        type: string
+      incident_id:
+        description: "Non-secret incident or rollback drill identifier"
+        required: true
+        type: string
+      target_url:
+        description: "Production workers.dev URL to verify after rollback"
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    permissions:
+      actions: read
+      attestations: read
+      contents: read
+    steps:
+      - name: Check out known-good reviewed deployment code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.commit_sha }}
+      - name: Set up Node
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Download known-good tested artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: beacon-build-${{ inputs.commit_sha }}
+          path: promotion
+          run-id: ${{ inputs.artifact_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify signed provenance, digest, and inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
+          REPLACED_SHA256: ${{ inputs.replaced_sha256 }}
+          INCIDENT_ID: ${{ inputs.incident_id }}
+        run: |
+          node -e "for(const k of ['EXPECTED_SHA256','REPLACED_SHA256'])if(!/^[a-f0-9]{64}$/.test(process.env[k]))process.exit(1);if(!/^[A-Za-z0-9._-]{3,100}$/.test(process.env.INCIDENT_ID))process.exit(1);if(process.env.EXPECTED_SHA256===process.env.REPLACED_SHA256)process.exit(1)"
+          gh attestation verify promotion/beacon-dist.tar.gz --repo "$GITHUB_REPOSITORY"
+          test "$(sha256sum promotion/beacon-dist.tar.gz | cut -d' ' -f1)" = "$EXPECTED_SHA256"
+          tar -xzf promotion/beacon-dist.tar.gz
+      - name: Promote known-good artifact under production approval
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PRODUCTION_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --name beaconco9
+      - name: Verify recovered production boundary
+        env:
+          TARGET_URL: ${{ inputs.target_url }}
+        run: |
+          node -e "const u=new URL(process.env.TARGET_URL);if(u.protocol!=='https:'||!/(^|\\.)workers\\.dev$/.test(u.hostname))process.exit(1)"
+          curl --fail --silent --show-error --location --max-time 20 --output /dev/null --dump-header headers.txt "$TARGET_URL"
+          grep -iq '^content-security-policy:' headers.txt
+          grep -iq '^strict-transport-security:' headers.txt
+          grep -iq '^x-content-type-options: nosniff' headers.txt
+      - name: Record rollback evidence
+        run: npm run release:evidence:record -- --type rollback --environment production --commit "${{ inputs.commit_sha }}" --artifact-sha256 "${{ inputs.expected_sha256 }}" --rollback-from "${{ inputs.replaced_sha256 }}" --evidence-ref "incident:${{ inputs.incident_id }}"
+      - name: Upload rollback evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: beacon-rollback-${{ inputs.incident_id }}
+          path: evidence/release/*.json
+          if-no-files-found: error
+          retention-days: 90

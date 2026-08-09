@@ -1,24 +1,36 @@
 ---
 title: "Security boundaries"
-description: "Least privilege, data policy, provider eligibility, worktree isolation, and human authority."
+description: "Current guardrails and the Phase 1.5 deterministic policy boundary for tools, data, isolation, and human authority."
 section: "architecture"
 order: 409
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
-relatedPages: ["plans/capability-map","references/source-map"]
-tags: ["architecture","broker"]
-truthState: "target"
+sourceFiles: [".claude/settings.json","agent-platform/agent-contracts.yml","agent-platform/risk-policy.yml","src/modules/orchestration/domain/tool-call.ts","src/modules/orchestration/policy/tool-policy.ts","scripts/agents/policy-gateway.mjs","tests/orchestration/tool-policy.test.ts","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["plans/current-phase","security/ai-agent-security-standard","plans/capability-map","references/source-map"]
+tags: ["architecture","broker","security","policy"]
+truthState: "current"
 ---
 
-## Boundaries
+## Current boundaries
+
+Repository instructions, role frontmatter, Claude permission patterns, CI permissions, branch policy, environment separation, and human approval rules provide current guardrails. A deterministic role/path/action gateway is now the engineering-agent pre-tool boundary; prompt settings remain defense in depth.
+
+The machine-readable manifest makes role tools, forbidden action classes, data limits, approvals, and handoffs testable. The Claude PreToolUse hook invokes the same gateway used by standalone policy tests.
+
+## Deterministic policy gateway
+
+Before a tool executes, the gateway evaluates run/role identity, tool, command class, requested path, allowed scope, and dependency authority, then returns `allow`, `ask`, or `deny`. It fails closed for secret access, history rewrite, recursive deletion, scope escape, direct deploy, reviewer/QA mutation, and tested shell-indirection forms. Commit, push, PR mutation, and workflow dispatch require `ask` unless the role is forbidden entirely.
+
+The hook cannot replace server-side branch/environment controls. Production remains blocked until its external approval boundary is non-bypassable.
+
+## Stable boundaries
 
 - data classification is part of every work request;
 - a provider is rejected before scoring if policy or capability is insufficient;
 - planning and review are read-only;
-- future implementation writes only inside one isolated worktree;
+- implementation writes only inside its assigned scope; automatic isolated-worktree enforcement remains target state;
 - secrets and production credentials are never included in Markdoc context;
 - workers cannot push, merge, deploy, or approve their own work;
 - legal, privacy, spending, architecture, and production risk stop at a human gate.

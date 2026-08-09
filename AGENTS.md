@@ -2,9 +2,9 @@
 
 Digital presence agency for small businesses within 30 miles of Waynesboro, VA. Solo-operator business, automated end-to-end except two human touchpoints: the sales call and the content-approval tap.
 
-## Current phase: Phase 1 — Marketing and lead capture
+## Current phase: Phase 1.5 — Agent platform completion
 
-The Astro marketing site and one narrow Cloudflare Worker contact route are implemented. Current work may maintain those surfaces, but no database, queue, admin dashboard, or automation workers may be scaffolded speculatively. Those systems remain later-phase plans until the user explicitly authorizes implementation.
+The product remains the Phase 1 Astro marketing site and one narrow Cloudflare Worker contact route. Current engineering priority is to complete and freeze the measurable agent, context, routing, policy, eval, and release-evidence platform defined by ADR-0017. Major business-domain and UI expansion stays paused until that completion gate passes. No database, durable queue, admin dashboard, customer portal, billing surface, or automation worker may be scaffolded speculatively. The business broker remains a simulation; only bounded, credential-gated engineering eval WorkUnits may use the provider adapter boundary.
 
 ## Project source of truth
 
@@ -51,6 +51,10 @@ npm run docs:serve # documentation preview on localhost:8000
 npm run docs:validate # validate Markdoc metadata, links, sources, diagrams, and search
 npm run typecheck # Astro and TypeScript diagnostics
 npm run test      # orchestration unit tests
+npm run telemetry:validate # AgentRun/ProviderRun schema and catalog drift checks
+npm run agents:check # contracts, policies, deterministic evals, and platform fixtures
+npm run phase15:audit:local # repository-side completion controls
+npm run phase15:audit # hard final audit; expected to fail while external evidence is missing
 npm run docs:build # validate canonical docs and build the Astro site
 npm run ci:quality # complete repository quality gate
 npm run ci:security # secret, dependency, license, and workflow-policy gates
@@ -88,9 +92,15 @@ or multi-step request. It either answers directly (for questions
 `src/content/docs/` already answers) or returns an ordered delegation
 plan across the other 6 execution/review roles.
 
-**Ahead of every invocation.** token-auditor runs before any other
-subagent is invoked — including chief-of-staff's own downstream steps.
-It:
+**Ahead of every invocation.** Deterministic context preflight runs before
+expensive model work. It inventories and deduplicates context, checks the
+role budget, emits stable-prefix and variable-context hashes, and keeps
+exact code, paths, errors, commands, diffs, identifiers, and SHAs intact.
+The token-auditor is invoked only when preflight reports a budget breach,
+significant duplication, routing ambiguity, unusual context growth, or a
+capacity/fallback event. Small already-scoped tasks do not pay for a
+separate auditor call. When invoked, token-auditor:
+
 1. Estimates the incoming prompt's token cost and tightens it via its
    six ordered compression tactics — tactic 0 checks whether
    `.beacon/context-primer.md` already answers the orientation question

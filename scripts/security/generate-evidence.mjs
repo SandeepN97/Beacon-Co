@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 
 const sha256 = (buffer) => createHash("sha256").update(buffer).digest("hex");
-const files = ["package-lock.json", "dist/_worker.js/index.js"];
+const files = ["package-lock.json", "dist/_worker.js/index.js", "beacon-dist.tar.gz"];
 const artifacts = [];
 for (const path of files) {
   try {

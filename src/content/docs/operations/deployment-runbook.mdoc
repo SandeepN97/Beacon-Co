@@ -4,18 +4,18 @@ description: "Artifact promotion, approval, verification, evidence, and stop con
 section: "operations"
 order: 907
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Release Manager","DevOps Engineer"]
-sourceFiles: [".github/workflows/preview-deploy.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml"]
+sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/preview-deploy.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml","scripts/agents/record-release-evidence.mjs","src/modules/orchestration/publication/release-evidence-policy.ts"]
 relatedAdrs: ["0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
 relatedPages: ["architecture/secure-cicd-architecture","operations/rollback-runbook"]
 tags: ["operations","deployment","runbook"]
-truthState: "target"
+truthState: "current"
 ---
 
 ## Preconditions
 
-Do not deploy until required PR checks pass, the reviewed commit is on the intended branch, the promotion archive and SHA-256 exist, the target GitHub environment is configured, and the accountable human authorizes that environment.
+Do not deploy until required PR checks pass, the reviewed commit is on the intended branch, the promotion archive and SHA-256 exist, its GitHub provenance attestation verifies, the target environment is configured, and the accountable human authorizes that environment.
 
 ## Preview
 
@@ -23,15 +23,15 @@ Run `Deploy preview` manually with the successful quality-run ID, full commit SH
 
 ## Staging
 
-Promote the same archive with `Deploy staging`. Verify the digest before extraction. Confirm primary pages, contact-route safe failure behavior, security headers, console errors, responsive layouts, and no unexpected external requests.
+Promote the same archive with `Deploy staging`. Verify its signed provenance and digest before extraction. Run `Post-deploy verification` with `environment` set to `staging`, commit, and artifact digest. The workflow records redacted promotion and verification evidence.
 
 ## Production
 
-Run `Deploy production` only from `main`. The workflow verifies that the requested commit belongs to `main`, downloads the tested archive, checks its digest, and deploys under the production environment gate. It does not rebuild.
+Run `Deploy production` only from `main` after staging verification. The workflow verifies that the requested commit belongs to `main`, downloads the exact tested archive, verifies attestation and digest, and deploys under the production environment gate. It does not rebuild. The job records approval-boundary and promotion evidence only after the environment gate releases it.
 
 ## Verification and evidence
 
-Run `Post-deploy verification` against the exact HTTPS URL. Record workflow URLs, commit SHA, archive digest, approver, result, and any incident ID. Never record credentials or submitted contact data.
+Run `Post-deploy verification` separately for staging and production against each exact HTTPS URL. Correlate workflow URL, commit SHA, archive digest, environment, result, and any incident ID. Never record credentials or submitted contact data.
 
 ## Stop conditions
 
@@ -39,4 +39,4 @@ Stop on a missing approval, missing or mismatched digest, failing required check
 
 ## Activation note
 
-These workflows are definitions only until GitHub environments, secrets, required checks, and Cloudflare tokens are configured. This task did not deploy.
+The workflows and evidence validators are implemented. They have not yet produced a verified attestation or staging/production deployment record. Production currently lacks a required reviewer and permits administrator bypass, so the external approval gate is not complete.

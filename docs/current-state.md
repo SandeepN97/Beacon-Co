@@ -5,7 +5,7 @@ date: 2026-07-26
 
 # Current Truth
 
-This page is the compact, verified repository baseline as of **July 26, 2026**. Decisions explain why; this page says what exists.
+This page is a retained historical snapshot from **July 26, 2026**. It is not the current authority. Use `src/content/docs/plans/current-phase.mdoc` and `src/content/docs/plans/phase-1-5-completion-audit.mdoc` for the verified August 9 Phase 1.5 state.
 
 ## Business
 

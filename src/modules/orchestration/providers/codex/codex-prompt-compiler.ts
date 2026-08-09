@@ -1,7 +1,7 @@
-import type { WorkRequest } from "../../domain/work-request";
-import type { ContextPackage } from "../../knowledge/context-packager";
+import type { WorkRequest } from "../../domain/work-request.ts";
+import type { RetrievedContextPackage } from "../../knowledge/context-packager.ts";
 
-export function compileCodexPrompt(request: WorkRequest, context: ContextPackage): string {
+export function compileCodexPrompt(request: WorkRequest, context: RetrievedContextPackage): string {
   return [
     "Execute one bounded Beacon work unit from the current repository.",
     "",

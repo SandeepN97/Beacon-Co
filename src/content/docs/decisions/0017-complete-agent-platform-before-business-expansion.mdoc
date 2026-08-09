@@ -1,0 +1,140 @@
+---
+title: "ADR-0017 — Complete the agent platform before business expansion"
+description: "Finish and freeze a measurable, provider-neutral, policy-gated engineering agent platform before major business-domain or UI expansion."
+section: "decisions"
+order: 826
+status: "approved"
+lastReviewed: "2026-08-09"
+owners: ["Repository Owner"]
+sourceFiles: ["AGENTS.md",".beacon/context-primer.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/policy/council-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/publication/release-evidence-policy.ts","scripts/agents/audit-phase-1.5.mjs",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
+relatedAdrs: ["0008-stable-roles-dynamic-models","0010-use-deterministic-quality-gates","0014-use-provider-adapter-boundary","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot"]
+relatedPages: ["plans/current-phase","architecture/overview","architecture/security-boundaries","security/ai-agent-security-standard"]
+tags: ["adr","approved","agents","cicd","context","phase-1-5"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0017" status="approved" %}
+Phase 1.5 platform-completion boundary approved 2026-08-09.
+{% /decision_card %}
+
+## Context
+
+Beacon has a fixed eight-role Claude subagent set, a compact context primer, a narrow token-auditor pilot, provider-neutral orchestration domain types, deterministic repository quality gates, and an immutable build-and-promotion path. These are useful foundations, but they do not yet form a measurable agent platform contract.
+
+Agent definitions can drift without dedicated CI. Token and context claims are not backed by an automatic evidence stream. Routing rules lack a Beacon-owned benchmark. Prompt assembly has no enforced role budget. Prompt-level permission guidance is not a deterministic tool-policy boundary. Agent-run evidence is not yet correlated through the release lifecycle.
+
+Expanding into CRM, customer portal, billing, project-management, or major UI work while these controls are still moving would mix platform experimentation into every product feature.
+
+## Decision drivers
+
+- make all eight role contracts machine-validatable and resistant to drift;
+- measure token, cache, context, latency, retry, routing, and quality outcomes before optimizing them;
+- preserve the same approved task meaning across Claude and Codex;
+- make tool safety and blocking gates deterministic rather than advisory;
+- connect agent-run evidence to build, promotion, verification, and rollback evidence;
+- avoid embeddings, vector storage, learned routing, and other infrastructure until Beacon-owned data proves a recurring need;
+- keep the current orchestration module truthful as a simulation until live execution is separately authorized.
+
+## Options considered
+
+- continue major product and UI expansion while improving agent tooling opportunistically;
+- replace the current role set and orchestration simulation with a large autonomous-agent framework;
+- complete a bounded Phase 1.5 engineering control plane, pass measurable gates, freeze the contract, then resume business expansion;
+- immediately build embeddings, full RAG, a vector database, graph indexing, semantic caching, and a learned router.
+
+## Decision
+
+Adopt Phase 1.5 as the current repository phase and finish the engineering agent platform before major business-domain or UI expansion becomes the primary focus.
+
+Build now:
+
+- one machine-readable manifest for the fixed eight-role set and deterministic CI validation against the human-readable role files;
+- automatic run and token telemetry with role, provider, model, context, cache, output, latency, retry, routing, and quality fields;
+- bounded context selection and provider-specific prompt compilation from the same canonical work request;
+- an explainable Claude/Codex routing benchmark with capacity and failure overrides;
+- deterministic pre-tool policy evaluation that returns allow, ask, or deny;
+- functional, security, handoff, failure, budget, and routing evaluation fixtures;
+- scoped deterministic agent CI plus visible, separately triggered live-provider evaluations;
+- one correlated evidence lifecycle from agent run through immutable artifact, staging, production authorization, verification, and rollback identity.
+
+Use provider-native prompt caching when available, but record actual cache evidence before making savings claims. Continue rule-based routing until Beacon owns a sufficiently large labeled outcome set.
+
+Reserve extension interfaces, but do not implement embeddings, a vector database, full RAG, graph indexing, a semantic cache, or fine-tuned routing during Phase 1.5 without a new evidence-backed decision.
+
+Phase 1.5 authorizes only controlled, credential-gated engineering eval invocation through the provider adapter boundary. It does not authorize an autonomous business runtime, durable business queue, database, automation workers, admin dashboard, customer portal, or billing.
+
+The platform completion gate requires validated contracts, deterministic agent regression checks, explicit and logged provider routing, real token/context evidence, bounded repeatable context, quality-preserving optimization, deterministic safety enforcement, controlled execution scope, independent QA/review, non-overridable blocking gates, correlated evidence, immutable release identity with proven rollback, and documentation that matches the implementation. Components existing without this evidence do not pass the gate.
+
+## Implementation status
+
+Milestone 1 is implemented: the phase decision, synchronized canonical docs, fixed eight-role manifest, source hashes, validator, tests, and CI wiring exist.
+
+PR-A adds the telemetry recording foundation: strict `AgentRun` and `ProviderRun` runtime/JSON schemas, Anthropic and OpenAI usage normalization, bounded provider-metadata redaction, ignored append-only local NDJSON, a redacted CI evidence sink, a recording CLI, and deterministic schema/redaction/normalization/failure tests. This is not evidence of real live-provider runs. Representative live records and automatic adapter population remain required during the later provider-execution milestone before the telemetry completion gate can pass.
+
+PR-B through PR-I are implemented locally: deterministic context preflight/compiler, conditional token-auditor policy, sixteen-family eval harness, role-aware tool gateway and Claude hook, Claude/OpenAI/Codex CLI adapters, live-work-unit evidence flow, risk-tiered council, evidence-gated tuning, diff-bound publication policy, dedicated agent CI, GitHub provenance generation/verification, same-artifact promotion, environment-specific verification, and a known-good rollback workflow.
+
+PR-J is an executable completion audit. Its local-only mode passes. Full closure remains blocked by representative live run/baseline evidence, the new required server check, non-bypassable external production approval, a real verified attestation, staging and production verification, and a rollback drill. An approved Codex CLI smoke timed out without events and produced no record; it does not satisfy the live gate.
+
+## Positive consequences
+
+- business features can rely on a stable, tested engineering factory;
+- role, prompt, routing, context, and permission drift becomes reviewable;
+- cost reductions must remain coupled to quality and security outcomes;
+- Claude and Codex remain interchangeable at the task-contract boundary;
+- advanced retrieval and routing infrastructure is deferred until justified;
+- the distinction between engineering tooling and the simulated business broker remains explicit.
+
+## Negative consequences
+
+- major business-domain and UI work is intentionally delayed;
+- agent-platform changes add CI maintenance and benchmark cost;
+- live evaluations consume provider budget and therefore cannot run on every unrelated pull request;
+- initial context budgets and routing rules will need adjustment as telemetry accumulates;
+- the solo operation still cannot claim independent human review.
+
+## Risks
+
+- the phase could become open-ended unless each completion-gate result has executable evidence;
+- telemetry could collect secrets, PII, or unnecessary prompt content unless records stay metadata-only and redacted;
+- a rule-based router can encode preference without sufficient outcome data;
+- a policy gateway can be bypassed if it evaluates raw command strings instead of normalized actions;
+- documentation may overstate live execution when the current broker is still a simulation;
+- generated evidence can become unauditable if run, commit, artifact, deployment, and rollback identifiers are not correlated.
+
+## Follow-up work
+
+1. Produce a successful representative live provider run and repeated benchmark baseline.
+2. Run the new agent-platform job and add its exact check context to the protected-main ruleset.
+3. Configure a non-bypassable external production reviewer gate and the agent-evals environment.
+4. Generate and verify a real build attestation, then promote and verify the same artifact through staging and production.
+5. Execute the known-good rollback drill and correlate its evidence.
+6. Run `npm run phase15:audit`; freeze only when it passes every hard gate.
+
+## Supersedes or superseded by
+
+New decision; superseded by: none. It extends ADR-0016 from a narrow pilot into an evidence-gated platform-completion phase without superseding the pilot's build-later boundary.
+
+## Source references
+
+- `AGENTS.md`
+- `.beacon/context-primer.md`
+- `.claude/agents/token-auditor.md`
+- `src/content/docs/decisions/0016-token-auditor-pilot.mdoc`
+- `src/modules/orchestration/domain/work-unit.ts`
+- `src/modules/orchestration/domain/evidence.ts`
+- `src/modules/orchestration/domain/agent-run.ts`
+- `src/modules/orchestration/domain/provider-run.ts`
+- `src/modules/orchestration/telemetry/normalize-usage.ts`
+- `src/modules/orchestration/telemetry/redaction.ts`
+- `src/modules/orchestration/telemetry/sink.ts`
+- `agent-platform/telemetry/agent-run.schema.json`
+- `agent-platform/telemetry/provider-run.schema.json`
+- `.github/workflows/pr-quality.yml`
+- `.github/workflows/agent-platform-checks.yml`
+- `.github/workflows/live-agent-evals.yml`
+- `.github/workflows/rollback-production.yml`
+- `agent-platform/context-policy.yml`
+- `agent-platform/model-policy.yml`
+- `agent-platform/risk-policy.yml`
+- `agent-platform/completion-gates.yml`
+- `scripts/agents/audit-phase-1.5.mjs`

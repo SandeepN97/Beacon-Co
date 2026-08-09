@@ -1,20 +1,38 @@
 ---
 title: "Observability and audit"
-description: "Evidence that makes routing, provider changes, gates, approvals, and outcomes traceable."
+description: "Current provider-neutral AgentRun/ProviderRun telemetry foundation and the remaining live audit boundary."
 section: "architecture"
 order: 410
 status: "approved"
-lastReviewed: "2026-07-27"
+lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary"]
-relatedPages: ["plans/capability-map","references/source-map"]
-tags: ["architecture","broker"]
-truthState: "target"
+sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/telemetry/normalize-usage.ts","src/modules/orchestration/telemetry/redaction.ts","src/modules/orchestration/telemetry/sink.ts","src/modules/orchestration/workflows/live-work-unit.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","scripts/agents/run-live-work-unit.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+relatedPages: ["governance/audit-policy","governance/evidence-policy","governance/privacy-and-data-classification","plans/capability-map"]
+tags: ["architecture","broker","telemetry","evidence"]
+truthState: "current"
 ---
 
-## Required evidence
+## Current telemetry foundation
 
-The broker records request interpretation, context documents, routing scores, provider selection, fallback, run/session identity, commands, usage when reported, gate results, review verdicts, retry count, approvals, changed artifacts, and documentation impact.
+Beacon now has strict provider-neutral runtime and JSON contracts for `AgentRun` and `ProviderRun`. They record role/contract identity, work-unit and task fingerprints, risk, provider/model/effort, timestamps and status, normalized token/cache usage, context counts and file references, turns/tools/retries/fallback/handoff, policy decision counts, QA/review outcomes, findings, completion state, and evidence identifiers.
 
-Current stores are in memory for simulation. Production observability is proposed and must avoid raw secrets or unnecessary personal data.
+Anthropic usage maps uncached input, cache-read input, cache-write input, output, and exposed reasoning into the common token model. OpenAI usage maps input, cached-input detail, output, and reasoning-output detail into the same fields. Domain consumers use only the Beacon fields; bounded redacted `providerMetadata` is an escape hatch, not a domain dependency.
+
+## Privacy and persistence
+
+The schemas contain no raw prompt, transcript, tool output, secret value, environment value, or customer-content field. File evidence stores repository-relative paths, hashes, classifications, and counts rather than contents. Provider metadata is recursively redacted by sensitive key and value patterns, depth, string length, array length, object key count, and total node budget before validation and persistence.
+
+Local records append as NDJSON under ignored `.beacon/telemetry/`. Controlled CI/eval workflows can write the same redacted contracts beneath ignored `evidence/telemetry/` for bounded-retention artifact upload. Only reviewed sanitized aggregates may later be committed under `agent-platform/baselines/`.
+
+## Provider population path
+
+Claude and OpenAI HTTP responses and Codex CLI JSONL events normalize behind one adapter interface. The controlled live-work-unit runner correlates provider usage, redacted tool-call fingerprints, deterministic QA, independent review evidence, `ProviderRun`, and `AgentRun`. The live-eval workflow is manual, environment-gated, and separate from ordinary pull-request CI.
+
+Adapter contract tests and a synthetic end-to-end slice pass. One authorized Codex CLI smoke produced no events within the bounded window and was terminated; because it wrote no run records, it does not satisfy the live telemetry gate.
+
+## Failure semantics and remaining boundary
+
+Malformed or privacy-unsafe events fail schema validation. A local best-effort storage failure returns an observable `telemetry-write-failed` result without invalidating an otherwise correct agent result. A controlled eval or release caller can select required mode, where the same persistence failure blocks evidence completion.
+
+Provider transports are implemented but credential-gated. Real representative run records, repeated live benchmark aggregates, durable production audit, and retention operations remain external evidence work. The completion audit treats their absence as blocking.

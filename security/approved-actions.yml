@@ -20,6 +20,10 @@ actions:
     major: 4
     sha: d3f86a106a0bac45b974a628896c90dbdf5c8093
     release: v4.3.0
+  actions/attest:
+    major: 4
+    sha: a1948c3f048ba23858d222213b7c278aabede763
+    release: v4.1.1
   actions/dependency-review-action:
     major: 4
     sha: 595b5aeba73380359d98a5e087f648dbb0edce1b
@@ -37,6 +41,6 @@ actions:
     sha: ebbaa1584979971c8614a24965b4405ff95890e0
     release: v4.0.0
 review:
-  lastReviewed: 2026-07-27
+  lastReviewed: 2026-08-09
   owner: Security Architect
   nextReview: 2026-10-27

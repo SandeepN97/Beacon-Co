@@ -26,5 +26,18 @@
       "Bash(gh api *dispatches*)",
       "Bash(gh pr merge *)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/policy-gateway.mjs"
+          }
+        ]
+      }
+    ]
   }
 }

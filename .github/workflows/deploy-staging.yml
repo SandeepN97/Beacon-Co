@@ -29,6 +29,7 @@ jobs:
     environment: staging
     permissions:
       actions: read
+      attestations: read
       contents: read
     steps:
       - name: Check out reviewed deployment code
@@ -42,6 +43,10 @@ jobs:
           path: promotion
           run-id: ${{ inputs.artifact_run_id }}
           github-token: ${{ github.token }}
+      - name: Verify signed build provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh attestation verify promotion/beacon-dist.tar.gz --repo "$GITHUB_REPOSITORY"
       - name: Verify and extract artifact
         env:
           EXPECTED_SHA256: ${{ inputs.expected_sha256 }}
@@ -55,3 +60,18 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --name beaconco9-staging
+      - name: Set up Node for evidence validation
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Record staging promotion evidence
+        run: npm run release:evidence:record -- --type promotion --environment staging --commit "${{ inputs.commit_sha }}" --artifact-sha256 "${{ inputs.expected_sha256 }}"
+      - name: Upload staging promotion evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: beacon-staging-promotion-${{ inputs.commit_sha }}
+          path: evidence/release/*.json
+          if-no-files-found: error
+          retention-days: 30

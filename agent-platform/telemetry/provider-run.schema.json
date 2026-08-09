@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beacon-co.local/schemas/provider-run.schema.json",
+  "title": "Beacon ProviderRun telemetry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "agentRunId",
+    "workUnitId",
+    "taskFingerprint",
+    "provider",
+    "resolvedModelId",
+    "requestedEffort",
+    "startedAt",
+    "completedAt",
+    "durationMs",
+    "status",
+    "stopReason",
+    "usage",
+    "turns",
+    "toolCallCount",
+    "retryCount",
+    "fallbackUsed",
+    "handoffUsed",
+    "providerMetadata"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "agentRunId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "workUnitId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "taskFingerprint": { "$ref": "#/$defs/sha256" },
+    "provider": { "enum": ["claude", "codex"] },
+    "resolvedModelId": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "requestedEffort": {
+      "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 64 }, { "type": "null" }]
+    },
+    "startedAt": { "$ref": "#/$defs/timestamp" },
+    "completedAt": {
+      "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+    },
+    "durationMs": { "$ref": "#/$defs/nullableCount" },
+    "status": { "$ref": "#/$defs/runStatus" },
+    "stopReason": {
+      "anyOf": [{ "$ref": "#/$defs/stopReason" }, { "type": "null" }]
+    },
+    "usage": { "$ref": "#/$defs/normalizedTokenUsage" },
+    "turns": { "$ref": "#/$defs/count" },
+    "toolCallCount": { "$ref": "#/$defs/count" },
+    "retryCount": { "$ref": "#/$defs/count" },
+    "fallbackUsed": { "type": "boolean" },
+    "handoffUsed": { "type": "boolean" },
+    "providerMetadata": {
+      "type": "object",
+      "description": "Bounded provider-specific metadata after Beacon redaction. Domain logic must not depend on these fields."
+    }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "nullableCount": {
+      "anyOf": [{ "$ref": "#/$defs/count" }, { "type": "null" }]
+    },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "runStatus": {
+      "enum": ["queued", "running", "succeeded", "failed", "blocked", "cancelled", "simulated"]
+    },
+    "stopReason": {
+      "enum": [
+        "completed",
+        "max-turns",
+        "tool-denied",
+        "budget-exceeded",
+        "provider-error",
+        "capacity",
+        "user-cancelled",
+        "blocked",
+        "unknown"
+      ]
+    },
+    "normalizedTokenUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "totalInputTokens",
+        "cachedInputTokens",
+        "cacheWriteTokens",
+        "uncachedInputTokens",
+        "outputTokens",
+        "reasoningTokens",
+        "totalTokens"
+      ],
+      "properties": {
+        "totalInputTokens": { "$ref": "#/$defs/nullableCount" },
+        "cachedInputTokens": { "$ref": "#/$defs/nullableCount" },
+        "cacheWriteTokens": { "$ref": "#/$defs/nullableCount" },
+        "uncachedInputTokens": { "$ref": "#/$defs/nullableCount" },
+        "outputTokens": { "$ref": "#/$defs/nullableCount" },
+        "reasoningTokens": { "$ref": "#/$defs/nullableCount" },
+        "totalTokens": { "$ref": "#/$defs/nullableCount" }
+      }
+    }
+  }
+}

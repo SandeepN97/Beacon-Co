@@ -3,6 +3,7 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "docs-site", "node_modules", "public", "reference"],
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "allowImportingTsExtensions": true
   }
 }
