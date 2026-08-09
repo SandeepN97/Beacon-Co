@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "title": "Record Phase 1.5 attestation and staging evidence",
+  "summary": [
+    "Record the exact closure-hardening merge, verified build attestation, and same-artifact staging promotion and verification evidence.",
+    "Keep Phase 1.5 in progress with the four still-unmet external gates stated explicitly."
+  ],
+  "risk": [
+    "Low: this candidate changes only bounded external evidence, the canonical completion audit, and generated documentation indexes.",
+    "No production promotion, environment protection, provider policy, application behavior, or Phase 1.6 scope is changed."
+  ],
+  "testEvidence": [
+    "GitHub workflow 31342391343 built and attested merge 7dc157d2f84670145c4f1b5fcba274cf06f6f4dc; strict independent verification matched the workflow, ref, source SHA, and artifact digest.",
+    "Staging promotion 31342520379 and post-deploy verification 31342578773 passed with the same artifact digest; the authoritative audit still fails only the four recorded external gates."
+  ],
+  "documentationImpact": [
+    "Refresh the canonical Phase 1.5 completion audit and its generated search/catalog entries from real observed evidence.",
+    "Phase 1.5 remains unfrozen and Phase 1.6 remains blocked."
+  ],
+  "rollback": [
+    "Revert this evidence-only commit through the protected pull-request workflow if any identifier is shown to be inaccurate.",
+    "Reverting the record does not alter or roll back the independently recorded staging deployment."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/baselines/external-controls-observation-2026-08-09.json",
+    "agent-platform/publication/phase-1.5-external-evidence-refresh.json",
+    "public/search-index.json",
+    "src/content/docs/plans/phase-1-5-completion-audit.mdoc",
+    "src/data/document-catalog.json"
+  ]
+}

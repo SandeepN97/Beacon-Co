@@ -30,31 +30,31 @@ Phase 1.5 remains **in progress**. Repository implementation and closure hardeni
 | PR-B — context preflight/compiler | Implemented | Determinism, reference-first, deduplication, exact-data, budget, and conditional-auditor tests pass |
 | PR-C — eval harness | Implemented | Sixteen required fixture families validate; deterministic baseline is explicitly not tuning-eligible |
 | PR-D — tool policy gateway | Implemented | Role/path/action allow-ask-deny and bypass tests pass; Claude PreToolUse hook is configured |
-| PR-E — provider vertical slice | Implemented locally | Claude, OpenAI, and Codex CLI adapter contracts pass; representative live record still missing |
+| PR-E — provider vertical slice | Implemented locally | Claude, OpenAI, and Codex CLI adapter contracts pass; three real Codex subscription runs close the representative-run gate only |
 | PR-F — risk/council engine | Implemented | Risk 0–3, independence, cross-provider, stale-diff, blocker, and adjudication tests pass |
 | PR-G — tuning gate | Implemented | Contract baseline is frozen; no tuning accepted without repeated live evidence |
 | PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, candidate-bound prepublication evidence, readback verification, and deterministic denial are covered |
-| PR-I — release/provenance | Implemented as workflow definitions | Attestation, promotion, verification, rollback contracts pass locally; real runs are pending |
-| PR-J — completion audit/freeze | Audit implemented | Freeze is blocked by the external gates below |
+| PR-I — release/provenance | Implemented and exercised through staging | Exact-candidate attestation and staging promotion/verification pass; production and rollback remain blocked |
+| PR-J — completion audit/freeze | Audit implemented | Freeze remains blocked by the four external gates below |
 
 ## External observation
 
-The refreshed read-only GitHub observation on August 9, 2026 found a public repository and an active `Protect main` ruleset with pull requests, resolved conversations, signed commits, CodeQL, deletion/non-fast-forward protection, no bypass actors, and the required `Agent platform / contracts-policy-evals` job.
+The refreshed read-only GitHub observation on August 9, 2026 found a public repository and an active `Protect main` ruleset with pull requests, resolved conversations, signed commits, CodeQL, deletion/non-fast-forward protection, no bypass actors, and the required `Agent platform / contracts-policy-evals` job. Closure-hardening PR #32 passed every required check and merged as `7dc157d2f84670145c4f1b5fcba274cf06f6f4dc`.
 
 Preview, staging, and production environments exist. Production has a custom branch policy and administrator bypass is disabled, but it has no required reviewer. The `agent-evals` environment does not exist. These facts are recorded without secrets in `agent-platform/baselines/external-controls-observation-2026-08-09.json`.
 
 Three successful subscription-authenticated Codex executions share one task fingerprint and deterministic context compilation hash. Their normalized bounded telemetry is preserved in `agent-platform/baselines/live-codex-representative-2026-08-09.json`; prompts, responses, credentials, and provider metadata are not stored. This closes the representative-run gate only. It does not create the required repeated multi-scenario comparison aggregate, and no Claude run is claimed.
 
+The exact merge candidate was built and attested in PR-quality run `31342391343`. Independent `gh attestation verify` enforcement bound `beacon-dist.tar.gz` digest `f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed` to `.github/workflows/pr-quality.yml`, `refs/heads/main`, and the merge SHA. Staging run `31342520379` verified and promoted that same artifact as Worker version `3e4de117-f432-4a3a-b3fd-aecedf295c9f`; post-deploy run `31342578773` then passed the live status and security-header checks. The bounded promotion and verification records are artifacts `9046260894` and `9046271178`.
+
 ## Failed hard gates
 
 - repeated live eval baseline eligible for configuration comparison;
 - non-bypassable external human-controlled production approval;
-- real final-candidate signed build attestation generated and independently verified;
-- real staging promotion and post-deploy verification;
 - real production promotion and post-deploy verification;
 - real known-good rollback drill.
 
-A historical attestation verification and staging promotion are preserved as evidence, but staging post-deploy verification failed before the Worker-first header correction. A newer corrected build exists but has not been promoted. Neither history is substituted for the exact final closure candidate.
+Production administrator bypass is disabled, but the environment has zero required reviewers. Production dispatch and rollback remain prohibited until a distinct real GitHub user with repository read access or greater is named and configured as the required production reviewer; the deployment initiator must not satisfy their own approval where self-review prevention applies.
 
 ## Freeze rule
 

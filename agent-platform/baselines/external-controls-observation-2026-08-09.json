@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-09T19:12:06-04:00",
-  "observedMainSha": "f91b96586401f6bada7b2014e6fa6c601bf1adef",
+  "observedAt": "2026-08-09T19:47:34-04:00",
+  "observedMainSha": "7dc157d2f84670145c4f1b5fcba274cf06f6f4dc",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -44,8 +44,8 @@
     "representativeLiveProviderRun": true,
     "repeatedLiveEvalBaseline": false,
     "agentPlatformRequiredCheck": true,
-    "verifiedBuildAttestation": false,
-    "stagingPromotionAndVerification": false,
+    "verifiedBuildAttestation": true,
+    "stagingPromotionAndVerification": true,
     "productionPromotionAndVerification": false,
     "knownGoodRollbackDrill": false
   },
@@ -54,10 +54,28 @@
       "agent-platform/baselines/live-codex-representative-2026-08-09.json"
     ],
     "agentPlatformRequiredCheck": ["ruleset:19806104:contracts-policy-evals"],
+    "closureHardeningPublication": ["pr:32", "merge:7dc157d2f84670145c4f1b5fcba274cf06f6f4dc"],
+    "verifiedBuildAttestation": [
+      "workflow:31342391343",
+      "artifact:9046224032",
+      "artifact-archive-digest:sha256:d9215c0c542eb5805d9a2674be9a94a47febc7a2f133a16e21bf3eb9681d66f1",
+      "subject:beacon-dist.tar.gz:sha256:f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed",
+      "verifier:gh-attestation-verify:pr-quality.yml:refs/heads/main:7dc157d2f84670145c4f1b5fcba274cf06f6f4dc"
+    ],
+    "stagingPromotionAndVerification": [
+      "promotion-workflow:31342520379",
+      "promotion-artifact:9046260894",
+      "staging-version:3e4de117-f432-4a3a-b3fd-aecedf295c9f",
+      "staging-url:https://beaconco9-staging.beaconco57.workers.dev",
+      "verification-workflow:31342578773",
+      "verification-artifact:9046271178",
+      "deployment:5824080390:success",
+      "deployment-verification:5824090176:success"
+    ],
     "historicalAttestation": ["workflow:31340065968"],
     "historicalStagingPromotion": ["workflow:31340177116"],
     "failedStagingVerification": ["workflow:31340297255"],
-    "latestUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
+    "supersededUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
   },
-  "conclusion": "The Agent Platform check is required and production administrator bypass is disabled. Three successful real Codex subscription runs close the representative-run gate, but no accepted repeated live aggregate exists. Independent production review, final-candidate attestation verification, staging verification, production verification, and rollback remain open."
+  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Three successful real Codex subscription runs close the representative-run gate only; no accepted repeated multi-scenario live aggregate or Claude subscription run exists. Independent production review, production verification, and rollback remain open."
 }
