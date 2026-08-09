@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 import { access, readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { parse } from "yaml";
 import { evaluatePhase15Completion } from "../../src/modules/orchestration/completion/completion-audit.ts";
+import { validatePublicationCandidate } from "../../src/modules/orchestration/domain/publication-readiness.ts";
+
+function valueAfter(flag, fallback = null) {
+  const index = process.argv.indexOf(flag);
+  return index === -1 ? fallback : process.argv[index + 1];
+}
 
 const requiredFiles = [
   "agent-platform/agent-contracts.yml",
@@ -37,6 +44,24 @@ const observation = JSON.parse(
 );
 const localReady =
   fileResults.every(Boolean) && manifest.roleSet?.count === 8 && manifest.roles?.length === 8;
+const candidateSha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const publicationEvidencePath = valueAfter(
+  "--publication-evidence",
+  "evidence/publication-readiness.json",
+);
+let publicationEvidence = null;
+try {
+  publicationEvidence = JSON.parse(await readFile(publicationEvidencePath, "utf8"));
+} catch {
+  publicationEvidence = null;
+}
+const publicationDecision = publicationEvidence
+  ? validatePublicationCandidate(publicationEvidence, candidateSha)
+  : { ready: false };
+const publicationGateStatus = (name) =>
+  publicationEvidence?.gates?.some((gate) => gate.name === name && gate.status === "passed") ===
+  true;
+const observedExternal = observation.evidenceGates ?? {};
 
 const state = {
   local: {
@@ -52,17 +77,28 @@ const state = {
     "release-provenance-workflows": localReady,
     "scope-control": true,
   },
+  publication: {
+    "authoritative-prepublication-check": publicationDecision.ready === true,
+    "deterministic-pr-metadata":
+      publicationGateStatus("deterministic-pr-metadata-render") &&
+      publicationGateStatus("pr-metadata-policy"),
+    "publication-scope": publicationGateStatus("publication-scope"),
+    "candidate-diff-validation": publicationGateStatus("candidate-diff-validation"),
+  },
   external: {
-    "representative-live-provider-run": false,
-    "repeated-live-eval-baseline": false,
-    "agent-platform-required-check": observation.ruleset.agentPlatformCheckRequired === true,
+    "representative-live-provider-run": observedExternal.representativeLiveProviderRun === true,
+    "repeated-live-eval-baseline": observedExternal.repeatedLiveEvalBaseline === true,
+    "agent-platform-required-check":
+      observedExternal.agentPlatformRequiredCheck === true ||
+      observation.ruleset.agentPlatformCheckRequired === true,
     "non-bypassable-external-production-approval":
       observation.environments.production.requiredReviewers > 0 &&
       observation.environments.production.adminsCanBypass === false,
-    "verified-build-attestation": false,
-    "staging-promotion-and-verification": false,
-    "production-promotion-and-verification": false,
-    "known-good-rollback-drill": false,
+    "verified-build-attestation": observedExternal.verifiedBuildAttestation === true,
+    "staging-promotion-and-verification": observedExternal.stagingPromotionAndVerification === true,
+    "production-promotion-and-verification":
+      observedExternal.productionPromotionAndVerification === true,
+    "known-good-rollback-drill": observedExternal.knownGoodRollbackDrill === true,
   },
 };
 const result = evaluatePhase15Completion(state);

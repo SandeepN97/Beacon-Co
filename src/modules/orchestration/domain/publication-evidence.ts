@@ -12,12 +12,20 @@ export const DiffBoundRunSchema = z
 
 export const PublicationEvidenceSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(2),
     repository: z.string().min(1).max(300),
     baseSha: GitShaSchema,
     headSha: GitShaSchema,
     diffSha256: Sha256Schema,
     generatedAt: z.iso.datetime({ offset: true }),
+    prepublication: z
+      .object({
+        evidenceId: z.string().min(1).max(160),
+        candidateSha: GitShaSchema,
+        publicationReady: z.literal(true),
+      })
+      .strict()
+      .nullable(),
     author: DiffBoundRunSchema.nullable(),
     qa: DiffBoundRunSchema.nullable(),
     reviews: z.array(DiffBoundRunSchema).max(3),
@@ -30,7 +38,7 @@ export const PublicationEvidenceSchema = z
         .strict(),
     ),
     externalAuthorityRecorded: z.boolean(),
-    publicationReady: z.boolean(),
+    mergeReady: z.boolean(),
   })
   .strict();
 

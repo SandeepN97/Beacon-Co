@@ -174,9 +174,12 @@ const prompt =
           setText("[data-result-status]", result.execution.workUnit.status);
           setText("[data-result-impact]", result.documentationImpact.level);
           setList("[data-result-impact-pages]", result.documentationImpact.pagesToUpdate);
-          document
-            .querySelector("[data-workspace-results]")
-            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+          document.querySelector("[data-workspace-results]")?.scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+            block: "start",
+          });
         } catch (error) {
           setText("[data-result-status]", `Could not interpret request: ${String(error)}`);
         }

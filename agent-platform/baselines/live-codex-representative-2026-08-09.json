@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "evidenceType": "bounded-redacted-live-provider-observation",
+  "provider": "codex",
+  "authenticationPath": "subscription-cli",
+  "taskFingerprint": "b44b35434c75df4ae85fefb65428b741e5de8e7c7929a78268f1208ee8b05ac8",
+  "contextCompilationHash": "66680bb6e6ba2e180ac9371fbae82a6c66c890ad9e6f43c604e1a068133a45ce",
+  "observedRuns": [
+    {
+      "providerRunId": "provider-83f88cec-aa4c-474b-a998-9784db72785f",
+      "agentRunId": "agent-e2127cf0-b34c-467c-a2be-0096d6a5a48b",
+      "workUnitId": "live-smoke-1cbae6c5-6736-4062-a55c-3251b3bc336b",
+      "model": "gpt-5.6-sol",
+      "status": "succeeded",
+      "durationMs": 4237,
+      "contextBytes": 541,
+      "estimatedContextTokens": 136,
+      "usage": {
+        "totalInputTokens": 15474,
+        "cachedInputTokens": 9984,
+        "uncachedInputTokens": 5490,
+        "outputTokens": 10,
+        "totalTokens": 15484
+      },
+      "turns": 1,
+      "toolCallCount": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "handoffUsed": false,
+      "qaPassed": true,
+      "reviewDisposition": "approved"
+    },
+    {
+      "providerRunId": "provider-22bb16e5-6640-4f59-ada1-2bc48e42e3bb",
+      "agentRunId": "agent-be3d484a-4541-48f3-a278-ee3ea7cd98e5",
+      "workUnitId": "live-smoke-718bc9a6-f58f-4df0-b96e-3dc5026a89fb",
+      "model": "gpt-5.6-sol",
+      "status": "succeeded",
+      "durationMs": 4010,
+      "contextBytes": 541,
+      "estimatedContextTokens": 136,
+      "usage": {
+        "totalInputTokens": 15372,
+        "cachedInputTokens": 6912,
+        "uncachedInputTokens": 8460,
+        "outputTokens": 10,
+        "totalTokens": 15382
+      },
+      "turns": 1,
+      "toolCallCount": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "handoffUsed": false,
+      "qaPassed": true,
+      "reviewDisposition": "approved"
+    },
+    {
+      "providerRunId": "provider-228f6df4-21f8-4064-8eef-97ac37f739a2",
+      "agentRunId": "agent-58459cdb-89b6-4c55-a984-516155cd3ddf",
+      "workUnitId": "live-smoke-9b0b9d86-8fb6-44f4-8851-f547b1ab6b5c",
+      "model": "gpt-5.6-sol",
+      "status": "succeeded",
+      "durationMs": 3788,
+      "contextBytes": 541,
+      "estimatedContextTokens": 136,
+      "usage": {
+        "totalInputTokens": 15474,
+        "cachedInputTokens": 9984,
+        "uncachedInputTokens": 5490,
+        "outputTokens": 10,
+        "totalTokens": 15484
+      },
+      "turns": 1,
+      "toolCallCount": 0,
+      "retryCount": 0,
+      "fallbackUsed": false,
+      "handoffUsed": false,
+      "qaPassed": true,
+      "reviewDisposition": "approved"
+    }
+  ],
+  "representativeRunGatePassed": true,
+  "repeatedBaselineEligible": false,
+  "repeatedBaselineBlocker": "The three real repetitions cover one smoke fingerprint and do not form the accepted multi-scenario configuration-comparison aggregate.",
+  "claudeEvidencePresent": false,
+  "redaction": {
+    "promptsStored": false,
+    "responsesStored": false,
+    "credentialsStored": false,
+    "providerMetadataStored": false
+  }
+}

@@ -24,18 +24,19 @@ if (!baseSha || !headSha) {
     maxBuffer: 20 * 1024 * 1024,
   });
   const record = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     repository: process.env.GITHUB_REPOSITORY ?? "local/Beacon-Co",
     baseSha,
     headSha,
     diffSha256: createHash("sha256").update(diff).digest("hex"),
     generatedAt: new Date().toISOString(),
+    prepublication: null,
     author: null,
     qa: null,
     reviews: [],
     requiredChecks: REQUIRED_PR_CHECKS.map((name) => ({ name, status: "pending" })),
     externalAuthorityRecorded: false,
-    publicationReady: false,
+    mergeReady: false,
   };
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, `${JSON.stringify(record, null, 2)}\n`, {

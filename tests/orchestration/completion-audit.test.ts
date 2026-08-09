@@ -5,11 +5,13 @@ describe("Phase 1.5 completion audit", () => {
   it("never emits the closure sentence while an external hard gate is missing", () => {
     const result = evaluatePhase15Completion({
       local: { contracts: true, policy: true },
+      publication: { prepublication: true },
       external: { liveRun: false, productionApproval: false },
     });
     expect(result).toMatchObject({
       status: "in-progress",
       localReady: true,
+      publicationReady: true,
       externalReady: false,
       closureSentence: null,
     });
@@ -18,15 +20,32 @@ describe("Phase 1.5 completion audit", () => {
   it("reports local failures separately", () => {
     const result = evaluatePhase15Completion({
       local: { contracts: false, policy: true },
+      publication: { prepublication: true },
       external: { liveRun: true },
     });
     expect(result.failedLocalGates).toEqual(["contracts"]);
     expect(result.failedExternalGates).toEqual([]);
+    expect(result.failedPublicationGates).toEqual([]);
+  });
+
+  it("reports publication readiness independently from local and external readiness", () => {
+    const result = evaluatePhase15Completion({
+      local: { contracts: true },
+      publication: { prepublication: false },
+      external: { liveRun: false },
+    });
+    expect(result).toMatchObject({
+      localReady: true,
+      publicationReady: false,
+      externalReady: false,
+      failedPublicationGates: ["prepublication"],
+    });
   });
 
   it("closes and freezes only when every gate passes", () => {
     const result = evaluatePhase15Completion({
       local: { contracts: true, policy: true },
+      publication: { prepublication: true },
       external: { liveRun: true, productionApproval: true },
     });
     expect(result).toMatchObject({

@@ -6,7 +6,7 @@ order: 304
 status: "under-review"
 lastReviewed: "2026-08-09"
 owners: ["Repository Owner","Knowledge Manager"]
-sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","src/modules/orchestration/completion/completion-audit.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
+sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
 relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion"]
 relatedPages: ["plans/current-phase","architecture/observability-and-audit","architecture/secure-cicd-architecture","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["phase-1-5","audit","evidence","closure"]
@@ -15,9 +15,11 @@ truthState: "current"
 
 ## Audit conclusion
 
-Phase 1.5 remains **in progress**. The repository-side implementation for PR-A through PR-I is present and the local-only audit passes, but the master completion gate requires real external evidence that code and fixtures cannot manufacture.
+Phase 1.5 remains **in progress**. Repository implementation and closure hardening are present, but the master completion gate requires candidate-bound publication evidence and real external evidence that code and fixtures cannot manufacture.
 
-`npm run phase15:audit:local` currently reports `localReady: true`. `npm run phase15:audit` intentionally exits nonzero until every live and external gate passes. The closure sentence is emitted only by the latter command after all gates are true.
+`npm run phase15:audit:local` reports only `localReady`. `npm run ci:prepublish` produces `publicationReady` for the exact candidate SHA. `npm run phase15:audit` intentionally exits nonzero until `localReady`, `publicationReady`, and `externalReady` are all true. The closure sentence is emitted only by the latter command.
+
+`localReady` never authorizes publication. `publicationReady` never claims GitHub/provider/deployment evidence. A changed SHA invalidates candidate-bound evidence.
 
 ## Increment status
 
@@ -31,28 +33,28 @@ Phase 1.5 remains **in progress**. The repository-side implementation for PR-A t
 | PR-E — provider vertical slice | Implemented locally | Claude, OpenAI, and Codex CLI adapter contracts pass; representative live record still missing |
 | PR-F — risk/council engine | Implemented | Risk 0–3, independence, cross-provider, stale-diff, blocker, and adjudication tests pass |
 | PR-G — tuning gate | Implemented | Contract baseline is frozen; no tuning accepted without repeated live evidence |
-| PR-H — publication gate | Implemented | Diff-bound author/QA/review/check/authority policy and agent-platform workflow pass locally |
+| PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, candidate-bound prepublication evidence, readback verification, and deterministic denial are covered |
 | PR-I — release/provenance | Implemented as workflow definitions | Attestation, promotion, verification, rollback contracts pass locally; real runs are pending |
 | PR-J — completion audit/freeze | Audit implemented | Freeze is blocked by the external gates below |
 
 ## External observation
 
-The read-only GitHub observation on August 9, 2026 found a public repository and an active `Protect main` ruleset with pull requests, resolved conversations, signed commits, CodeQL, deletion/non-fast-forward protection, and no bypass actors. Its required checks do not yet include the new `Agent platform / contracts-policy-evals` job.
+The refreshed read-only GitHub observation on August 9, 2026 found a public repository and an active `Protect main` ruleset with pull requests, resolved conversations, signed commits, CodeQL, deletion/non-fast-forward protection, no bypass actors, and the required `Agent platform / contracts-policy-evals` job.
 
-Preview, staging, and production environments exist. Production has a custom branch policy, but it has no required reviewer and permits administrator bypass. The `agent-evals` environment does not exist. These facts are recorded without secrets in `agent-platform/baselines/external-controls-observation-2026-08-09.json`.
+Preview, staging, and production environments exist. Production has a custom branch policy and administrator bypass is disabled, but it has no required reviewer. The `agent-evals` environment does not exist. These facts are recorded without secrets in `agent-platform/baselines/external-controls-observation-2026-08-09.json`.
+
+Three successful subscription-authenticated Codex executions share one task fingerprint and deterministic context compilation hash. Their normalized bounded telemetry is preserved in `agent-platform/baselines/live-codex-representative-2026-08-09.json`; prompts, responses, credentials, and provider metadata are not stored. This closes the representative-run gate only. It does not create the required repeated multi-scenario comparison aggregate, and no Claude run is claimed.
 
 ## Failed hard gates
 
-- representative successful live `AgentRun` and `ProviderRun` with real usage;
 - repeated live eval baseline eligible for configuration comparison;
-- new agent-platform job required by the main ruleset;
 - non-bypassable external human-controlled production approval;
-- real signed build attestation generated and verified;
+- real final-candidate signed build attestation generated and independently verified;
 - real staging promotion and post-deploy verification;
 - real production promotion and post-deploy verification;
 - real known-good rollback drill.
 
-One approved, read-only Codex CLI smoke was attempted. The external process produced no JSON events within the bounded window, was terminated, and wrote no telemetry. It is runtime-failure evidence, not a successful live run.
+A historical attestation verification and staging promotion are preserved as evidence, but staging post-deploy verification failed before the Worker-first header correction. A newer corrected build exists but has not been promoted. Neither history is substituted for the exact final closure candidate.
 
 ## Freeze rule
 

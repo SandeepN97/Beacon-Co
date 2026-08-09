@@ -6,7 +6,7 @@ order: 301
 status: "approved"
 lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
-sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
 relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion"]
 relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit"]
 tags: ["roadmap","phase","agents","phase-1-5"]
@@ -23,11 +23,11 @@ No CRM, customer portal, project dashboard, billing surface, database, durable q
 
 The repository builds a static Astro marketing site, a Markdoc documentation site, a simulated workspace, and a narrow Cloudflare Worker contact handler.
 
-Repository-native secure delivery definitions now include PR policy, quality, security, browser gates, immutable Action pins, artifact digest promotion, manual environment-gated deploy workflows, security policies, and operating runbooks. Unit tests cover the hardened contact boundary.
+Repository-native secure delivery now includes separate local/publication/external readiness, deterministic PR metadata, an authoritative candidate-bound prepublication gate, quality/security/browser gates, immutable Action pins, artifact digest promotion, manual environment-gated deploy workflows, security policies, and operating runbooks.
 
-GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and non-fast-forward updates, requires pull requests with resolved review conversations, requires signed commits and CodeQL, and grants no bypass. Six existing status contexts are required, but the new agent-platform check is not yet in the ruleset.
+GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and non-fast-forward updates, requires pull requests with resolved review conversations, requires signed commits and CodeQL, grants no bypass, and now requires the `contracts-policy-evals` Agent Platform context with the six existing checks.
 
-Preview, staging, and production GitHub environments exist. Production has no required reviewer and permits administrator bypass, so it is not the non-bypassable external gate required by Phase 1.5. The agent-evals environment, live provider evidence, deployment verification, and rollback drill also remain pending. No deployment was performed as part of this implementation.
+Preview, staging, and production GitHub environments exist. Production administrator bypass is disabled, but no independent required reviewer is configured, so the production gate remains open. Three bounded real Codex subscription runs close the representative-run gate; they do not form the accepted repeated multi-scenario comparison baseline, and Claude is not authenticated. A real historical attestation was verified and staging promotion was attempted, but the staging verification failed before the Worker-first header correction; those historical runs do not close final-candidate promotion gates. Production verification and rollback remain pending.
 
 The fixed eight-role set, strict run schemas, deterministic context compiler, conditional token auditor, sixteen-family eval harness, role-aware tool gateway, Claude/OpenAI/Codex CLI adapter boundary, risk-tiered council engine, evidence-gated tuning policy, diff-bound publication gate, attestation-aware promotion definitions, and rollback workflow are implemented locally and tested. These controls do not by themselves prove a successful live provider run or deployment.
 
@@ -38,7 +38,13 @@ The fixed eight-role set, strict run schemas, deterministic context compiler, co
 | Milestone 1 — contracts and governance | Implemented locally | ADR-0017, fixed manifest, source hashes, validator, tests, CI command |
 | PR-A — telemetry foundation | Implemented locally | Runtime/JSON schemas, normalizers, redaction, sinks, CLI, deterministic tests |
 | PR-B through PR-I | Implemented locally | Context, eval, policy, provider, council, tuning, publication, provenance, and rollback contracts/tests |
-| PR-J — completion audit/freeze | In progress | Local audit passes; eight real live/external evidence gates remain open |
+| PR-J — completion audit/freeze | In progress | Readiness states are distinct; the authoritative audit still blocks freeze on publication and remaining external evidence |
+
+## Publication readiness boundary
+
+`localReady` reports normal repository validation. `publicationReady` is produced only by `npm run ci:prepublish` for the exact candidate SHA. `externalReady` requires real external evidence. A SHA change invalidates candidate-bound prepublication evidence; provider handoff preserves compact gate/evidence state without transferring transcripts.
+
+The publication manifest supplies the required PR title/body structure. One policy validates local files, GitHub pull-request events, and the title/body read back after GitHub creation or update. GitHub remains an independent verifier and cannot be replaced by model confidence.
 
 ## Simulated orchestration boundary
 

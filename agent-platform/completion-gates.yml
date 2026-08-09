@@ -15,6 +15,12 @@ localGates:
   - release-provenance-workflows
   - scope-control
 
+publicationGates:
+  - authoritative-prepublication-check
+  - deterministic-pr-metadata
+  - publication-scope
+  - candidate-diff-validation
+
 externalEvidenceGates:
   - representative-live-provider-run
   - repeated-live-eval-baseline
