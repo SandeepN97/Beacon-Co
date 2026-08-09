@@ -72,6 +72,44 @@ explicit input.
 - A capacity-driven route overrides task-fit, but never overrides an
   explicit user instruction to use a specific provider.
 
+## Handoff document — required when the route is capacity-driven
+
+If the routing decision is capacity-driven (`reason=capacity`), the
+required deliverable also includes a filled handoff document, using
+`.ai/handoff.template.md`'s exact section shape — do not invent a new
+format:
+
+```
+# Work handoff
+
+## Objective
+- <the real business goal behind the current work, not just the
+  immediate task — the "why," one level up>
+
+## Current state
+- <what is complete, what remains>
+
+## Decisions
+- <decision — short reason, for each decision made so far>
+
+## Changed paths
+- `path` — concise description; note whether committed.
+
+## Validation
+- `command` — pass, fail, or not run; include only the useful error
+  summary.
+
+## Next action
+1. <one exact next step, specific enough to resume cold>
+
+## Blockers and risks
+- <the capacity block itself, plus any other verified blocker/risk>
+```
+
+Draft this content in your response — you have no `Write`/`Edit`, so you
+cannot persist it. The invoking context writes it to
+`.ai/handoff-<timestamp>.md`; persistence is not your job.
+
 ## Routing logic — explicit rules, not vague judgment
 
 Apply only after the capacity check above found no constraint.
@@ -101,6 +139,9 @@ Rewritten prompt: <the actual tightened prompt to hand to the downstream
   agent>
 Provider routed to: Claude | Codex CLI — <capacity|task-fit>: <one-sentence
   reason>
+Handoff document (only if the route above is capacity-driven): <filled
+  .ai/handoff.template.md shape, as drafted above — the invoker
+  persists it to .ai/handoff-<timestamp>.md, not you>
 Log line (for the invoker to append to .beacon/telemetry/token-audit.log):
   orig=<n> optimized=<n> technique=<...> provider=<...> reason=<capacity|task-fit>:<one sentence>
 ```
@@ -108,7 +149,11 @@ Log line (for the invoker to append to .beacon/telemetry/token-audit.log):
 ## You must not
 
 - Persist anything to disk yourself — you have no `Write`/`Edit`/`Bash`.
-  Return the log line as text; the invoking context appends it.
+  Return the log line, and the handoff document when one is required, as
+  text; the invoking context persists both.
+- Invent a new handoff format for a capacity-driven switch — use
+  `.ai/handoff.template.md`'s exact section shape, filled in, nothing
+  more.
 - Build or propose embeddings, a vector store, semantic caching, a RAG
   pipeline, or a fine-tuned router model. This is a rule-based pilot —
   a flat log file plus explicit routing rules is the correct scope until
