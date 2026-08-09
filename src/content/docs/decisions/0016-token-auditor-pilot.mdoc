@@ -6,7 +6,7 @@ order: 825
 status: "approved"
 lastReviewed: "2026-08-08"
 owners: ["Repository Owner"]
-sourceFiles: [".claude/agents/token-auditor.md"]
+sourceFiles: [".claude/agents/token-auditor.md", "reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png"]
 relatedAdrs: ["0004-use-a-durable-ai-assisted-operating-model","0008-stable-roles-dynamic-models","0009-require-independent-second-voice"]
 relatedPages: ["decisions/index"]
 tags: ["adr","approved","agents","pilot"]
@@ -128,6 +128,21 @@ real interruptions do happen, not as evidence for this specific case.
 - do not build embeddings/RAG/a fine-tuned router until this pilot's own
   data shows a specific, recurring gap it cannot cover.
 
+A full target architecture exists as a reference diagram
+(`reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png`),
+laying out seven layers: source & input, ingestion/compilation, knowledge
+storage & index, retrieval & decision, prompt & orchestration, execution,
+and governance/audit/feedback. `token-auditor` is a deliberately narrow
+pilot slice of that diagram's prompt-orchestration layer — a token
+estimator, compressor, and Claude/Codex router — and nothing else in the
+picture. None of the other six layers (knowledge compiler, graph/code
+index, retrieval engine, execution adapters, governance/audit pipeline,
+etc.) are in scope until this pilot's own logged data in
+`.beacon/telemetry/token-audit.log` justifies expanding toward them. The
+diagram is kept as a reference for direction, not as an implemented or
+authorized design; nothing in it should be built or treated as already
+in place on the strength of this ADR alone.
+
 ## Supersedes or superseded by
 
 New decision; superseded by: none. Not a slice of any prior ADR — none
@@ -136,3 +151,6 @@ existed to slice from.
 ## Source references
 
 - `.claude/agents/token-auditor.md`
+- `reference/source-materials/originals/beaconprojectawareknowledgeandtokenoptimized_.png`
+  (full target architecture — reference only, not implemented; see
+  Follow-up work)
