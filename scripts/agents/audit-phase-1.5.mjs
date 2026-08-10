@@ -4,6 +4,10 @@ import { execFileSync } from "node:child_process";
 import { parse } from "yaml";
 import { evaluatePhase15Completion } from "../../src/modules/orchestration/completion/completion-audit.ts";
 import { validatePublicationCandidate } from "../../src/modules/orchestration/domain/publication-readiness.ts";
+import {
+  LiveBaselineAggregateSchema,
+  compileLiveBaselineAggregate,
+} from "../../src/modules/orchestration/evals/live-baseline.ts";
 
 function valueAfter(flag, fallback = null) {
   const index = process.argv.indexOf(flag);
@@ -42,6 +46,36 @@ const manifest = parse(await readFile("agent-platform/agent-contracts.yml", "utf
 const observation = JSON.parse(
   await readFile("agent-platform/baselines/external-controls-observation-2026-08-09.json", "utf8"),
 );
+const modelPolicy = parse(await readFile("agent-platform/model-policy.yml", "utf8"));
+const repeatedBaselinePath = "agent-platform/baselines/live-codex-multiscenario-2026-08-09.json";
+const repeatedBaselineValid = await (async () => {
+  try {
+    const recordedBaseline = LiveBaselineAggregateSchema.parse(
+      JSON.parse(await readFile(repeatedBaselinePath, "utf8")),
+    );
+    const compiledBaseline = compileLiveBaselineAggregate({
+      runs: recordedBaseline.runs,
+      candidateSha: recordedBaseline.candidateSha,
+      generatedAt: recordedBaseline.generatedAt,
+      minimumScenarios: modelPolicy.minimumLiveScenarios,
+      minimumRepeatedRuns: modelPolicy.minimumRepeatedLiveRuns,
+    });
+    const references = observation.evidenceReferences?.repeatedLiveEvalBaseline ?? [];
+    return (
+      recordedBaseline.accepted === true &&
+      compiledBaseline.accepted === true &&
+      recordedBaseline.totalRuns === compiledBaseline.totalRuns &&
+      JSON.stringify(recordedBaseline.scenarioIds) ===
+        JSON.stringify(compiledBaseline.scenarioIds) &&
+      JSON.stringify(recordedBaseline.benchmarkAggregate) ===
+        JSON.stringify(compiledBaseline.benchmarkAggregate) &&
+      references.includes(repeatedBaselinePath) &&
+      references.includes(`candidate:${recordedBaseline.candidateSha}`)
+    );
+  } catch {
+    return false;
+  }
+})();
 const localReady =
   fileResults.every(Boolean) && manifest.roleSet?.count === 8 && manifest.roles?.length === 8;
 const candidateSha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
@@ -87,7 +121,8 @@ const state = {
   },
   external: {
     "representative-live-provider-run": observedExternal.representativeLiveProviderRun === true,
-    "repeated-live-eval-baseline": observedExternal.repeatedLiveEvalBaseline === true,
+    "repeated-live-eval-baseline":
+      observedExternal.repeatedLiveEvalBaseline === true && repeatedBaselineValid,
     "agent-platform-required-check":
       observedExternal.agentPlatformRequiredCheck === true ||
       observation.ruleset.agentPlatformCheckRequired === true,
