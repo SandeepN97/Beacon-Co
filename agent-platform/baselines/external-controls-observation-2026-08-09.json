@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-09T21:05:13-04:00",
-  "observedMainSha": "e27ddcb7026059b48c5e97277c6e9d386511b8a5",
+  "observedAt": "2026-08-10T09:05:00-04:00",
+  "observedMainSha": "bcdb9ff9d4a47231c3df6507d9b25a4e298f80fc",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -36,10 +36,10 @@
       "id": 18857193164,
       "name": "production",
       "exists": true,
-      "requiredReviewers": 0,
+      "requiredReviewers": 1,
       "adminsCanBypass": false,
       "customBranchPolicy": true,
-      "preventSelfReview": null
+      "preventSelfReview": false
     },
     "agent-evals": { "exists": false, "requiredReviewers": 0, "adminsCanBypass": null }
   },
@@ -93,5 +93,5 @@
     "failedStagingVerification": ["workflow:31340297255"],
     "supersededUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
   },
-  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production still has zero required reviewers, so independent production approval, production verification, and rollback remain open."
+  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production now has one required reviewer (self-review not prevented) and the Cloudflare native Git integration that previously bypassed this gate has been manually disconnected in the Cloudflare dashboard and empirically verified: merging PR #39 to main produced zero Workers Builds check-runs and no change to the live production etag. Independent production approval is closed. Production promotion-and-verification and the known-good rollback drill remain open."
 }
