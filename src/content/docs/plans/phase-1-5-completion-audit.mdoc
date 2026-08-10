@@ -4,7 +4,7 @@ description: "Executable local gate results, observed external-control state, an
 section: "plans"
 order: 304
 status: "under-review"
-lastReviewed: "2026-08-09"
+lastReviewed: "2026-08-10"
 owners: ["Repository Owner","Knowledge Manager"]
 sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
 relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion"]
@@ -49,11 +49,10 @@ The exact merge candidate was built and attested in PR-quality run `31342391343`
 
 ## Failed hard gates
 
-- non-bypassable external human-controlled production approval;
 - real production promotion and post-deploy verification;
 - real known-good rollback drill.
 
-Production administrator bypass is disabled, but the environment has zero required reviewers. Production dispatch and rollback remain prohibited until a distinct real GitHub user with repository read access or greater is named and configured as the required production reviewer; the deployment initiator must not satisfy their own approval where self-review prevention applies.
+Non-bypassable external production approval is now closed. Production administrator bypass is disabled, and the environment has one required reviewer (self-review not prevented). A separate, previously-undocumented bypass path was found and closed the same day: the Cloudflare native Git integration for the `beaconco9` Worker auto-deployed independent of this GitHub environment gate. It was manually disconnected and the disconnect was empirically verified — merging a trivial change to `main` produced zero Workers Builds check-runs and no change to the live production `etag`. Production dispatch and rollback remain prohibited until the two gates above have real evidence.
 
 ## Freeze rule
 
