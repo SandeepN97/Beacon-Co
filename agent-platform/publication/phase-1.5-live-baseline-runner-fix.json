@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "title": "Bind live baseline scenarios to allowed paths",
+  "summary": [
+    "Add explicit bounded repository paths to each accepted live-baseline scenario.",
+    "Pass those paths into context preflight so the real Codex baseline can execute under the existing ContextPackage contract."
+  ],
+  "risk": [
+    "Low: this corrects only the pre-provider validation defect exposed by the first real baseline attempt.",
+    "The runner remains risk-0, read-only, no-tool, subscription-only, candidate-bound, and redacted."
+  ],
+  "testEvidence": [
+    "A focused regression proves live scenarios cannot omit bounded allowed paths.",
+    "The authoritative prepublication gate must pass on the exact committed fix before publication."
+  ],
+  "documentationImpact": [
+    "No readiness or completion status changes from this repair alone.",
+    "No Phase 1.6 documentation or implementation is changed."
+  ],
+  "rollback": [
+    "Revert this bounded repair through the protected pull-request workflow if the scenario path contract is incorrect.",
+    "The failed pre-provider attempt produced no claimed live run or external state change."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/evals/live-baseline-scenarios.json",
+    "agent-platform/publication/phase-1.5-live-baseline-runner-fix.json",
+    "scripts/agents/run-live-baseline.mjs",
+    "src/modules/orchestration/evals/live-baseline.ts",
+    "tests/orchestration/live-baseline.test.ts"
+  ]
+}

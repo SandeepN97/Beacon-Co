@@ -137,7 +137,7 @@ if (!model || !outputPath) {
         riskClass: scenario.riskClass,
         contractSha256: role.sourceSha256,
         maxContextTokens: role.limits.maxContextTokens,
-        allowedPaths: [],
+        allowedPaths: scenario.allowedPaths,
         allowedTools: [],
         acceptanceCriteria: scenario.acceptanceCriteria,
         searchTerms: scenario.searchTerms,
