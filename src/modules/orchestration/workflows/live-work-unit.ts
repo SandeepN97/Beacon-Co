@@ -13,7 +13,7 @@ export interface ValidationOutcome {
 }
 
 export interface ReviewOutcome extends ValidationOutcome {
-  provider: ProviderId;
+  provider: ProviderId | "deterministic-policy";
   sessionId: string;
   blockerCount: number;
   majorCount: number;

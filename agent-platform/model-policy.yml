@@ -3,6 +3,7 @@ status: contract-baseline-frozen-pending-live-evals
 resolvedModelIdRecordingRequired: true
 learnedRouterAllowed: false
 minimumRepeatedLiveRuns: 3
+minimumLiveScenarios: 2
 materialImprovementRatio: 0.1
 
 approvedModelClasses:

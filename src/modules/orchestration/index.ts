@@ -18,6 +18,7 @@ export * from "./context/compiler";
 export * from "./context/preflight";
 export * from "./completion/completion-audit";
 export * from "./evals/eval-runner";
+export * from "./evals/live-baseline";
 export * from "./policy/tool-policy";
 export * from "./policy/council-policy";
 export * from "./policy/risk-classifier";

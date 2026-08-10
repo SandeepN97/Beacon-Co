@@ -12,6 +12,13 @@ const errors = [];
 if (modelPolicy.schemaVersion !== 1) errors.push("model-policy schemaVersion must be 1.");
 if (modelPolicy.learnedRouterAllowed !== false)
   errors.push("Phase 1.5 does not permit a learned router.");
+if (!Number.isInteger(modelPolicy.minimumLiveScenarios) || modelPolicy.minimumLiveScenarios < 2)
+  errors.push("model-policy minimumLiveScenarios must enforce a multi-scenario baseline.");
+if (
+  !Number.isInteger(modelPolicy.minimumRepeatedLiveRuns) ||
+  modelPolicy.minimumRepeatedLiveRuns < 3
+)
+  errors.push("model-policy minimumRepeatedLiveRuns must be at least three.");
 for (const role of contracts.roles) {
   const configured = modelPolicy.roles?.[role.id];
   if (!configured) {

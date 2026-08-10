@@ -7,12 +7,12 @@ export const BenchmarkAggregateSchema = z
     repeatedRunsPerScenario: z.number().int().positive(),
     taskSuccessRate: z.number().min(0).max(1),
     securityFailures: z.number().int().nonnegative(),
-    reviewerDetectionRate: z.number().min(0).max(1),
+    reviewerDetectionRate: z.number().min(0).max(1).nullable(),
     scopeViolations: z.number().int().nonnegative(),
     evidenceCompleteness: z.number().min(0).max(1),
     medianTokens: z.number().nonnegative(),
     medianLatencyMs: z.number().nonnegative(),
-    medianCostUsd: z.number().nonnegative(),
+    medianCostUsd: z.number().nonnegative().nullable(),
   })
   .strict();
 
@@ -51,7 +51,13 @@ export function evaluateTuningCandidate(
     reasons.push("Candidate task success regressed below the baseline guardrail.");
   if (candidate.securityFailures !== 0)
     reasons.push("Candidate has one or more security failures.");
-  if (candidate.reviewerDetectionRate < baseline.reviewerDetectionRate)
+  if (baseline.reviewerDetectionRate !== null && candidate.reviewerDetectionRate === null)
+    reasons.push("Candidate reviewer detection evidence is unavailable.");
+  if (
+    baseline.reviewerDetectionRate !== null &&
+    candidate.reviewerDetectionRate !== null &&
+    candidate.reviewerDetectionRate < baseline.reviewerDetectionRate
+  )
     reasons.push("Candidate reviewer detection regressed below the baseline guardrail.");
   if (candidate.scopeViolations !== 0) reasons.push("Candidate has one or more scope violations.");
   if (candidate.evidenceCompleteness < baseline.evidenceCompleteness)
@@ -64,11 +70,17 @@ export function evaluateTuningCandidate(
     materialImprovementRatio
   )
     improvements.push("latency");
-  if (ratioImprovement(baseline.medianCostUsd, candidate.medianCostUsd) >= materialImprovementRatio)
+  if (
+    baseline.medianCostUsd !== null &&
+    candidate.medianCostUsd !== null &&
+    ratioImprovement(baseline.medianCostUsd, candidate.medianCostUsd) >= materialImprovementRatio
+  )
     improvements.push("cost");
   if (
     candidate.taskSuccessRate > baseline.taskSuccessRate ||
-    candidate.reviewerDetectionRate > baseline.reviewerDetectionRate ||
+    (candidate.reviewerDetectionRate !== null &&
+      baseline.reviewerDetectionRate !== null &&
+      candidate.reviewerDetectionRate > baseline.reviewerDetectionRate) ||
     candidate.evidenceCompleteness > baseline.evidenceCompleteness
   )
     improvements.push("quality");

@@ -62,4 +62,30 @@ describe("evidence-gated model tuning", () => {
       "Candidate has no material efficiency or quality improvement.",
     );
   });
+
+  it("does not fabricate cost improvement when subscription cost is unavailable", () => {
+    const result = evaluateTuningCandidate(
+      { ...baseline, medianCostUsd: null },
+      { ...baseline, medianCostUsd: null, medianTokens: 850 },
+    );
+    expect(result).toMatchObject({ accepted: true, improvements: ["tokens"] });
+  });
+
+  it("does not fabricate independent-review evidence for a deterministic-only baseline", () => {
+    const result = evaluateTuningCandidate(
+      { ...baseline, reviewerDetectionRate: null },
+      { ...baseline, reviewerDetectionRate: null, medianLatencyMs: 850 },
+    );
+    expect(result).toMatchObject({ accepted: true, improvements: ["latency"] });
+  });
+
+  it("rejects a candidate that drops measured reviewer evidence", () => {
+    const result = evaluateTuningCandidate(baseline, {
+      ...baseline,
+      reviewerDetectionRate: null,
+      medianTokens: 850,
+    });
+    expect(result.accepted).toBe(false);
+    expect(result.reasons).toContain("Candidate reviewer detection evidence is unavailable.");
+  });
 });

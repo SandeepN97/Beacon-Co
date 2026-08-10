@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "title": "Measure the Phase 1.5 repeated live baseline",
+  "summary": [
+    "Add a candidate-bound Codex subscription runner for the minimum accepted multi-scenario repeated live baseline.",
+    "Compile bounded redacted run evidence into the existing tuning aggregate without claiming Claude review or unmeasured cost."
+  ],
+  "risk": [
+    "Medium: this candidate extends the external-evidence path and tuning aggregate schema but does not change product behavior or provider billing policy.",
+    "The live command permits only accepted risk-0 scenarios, a clean candidate SHA, the Codex CLI subscription path, and deterministic no-tool validation."
+  ],
+  "testEvidence": [
+    "Focused live-baseline, tuning, and provider-adapter regression tests cover accepted repetitions, one-fingerprint rejection, incomplete evidence, and unknown subscription measurements.",
+    "The authoritative prepublication gate must pass on the committed candidate before publication."
+  ],
+  "documentationImpact": [
+    "No canonical status is advanced by tooling alone; Phase 1.5 remains incomplete until a real accepted aggregate and the remaining production evidence exist.",
+    "Phase 1.6 remains blocked and no Phase 1.6 document or implementation is changed."
+  ],
+  "rollback": [
+    "Revert this bounded tooling commit through the protected pull-request workflow if the runner or aggregate contract is defective.",
+    "Ignored local telemetry can be discarded without altering repository, GitHub, staging, or production state."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/evals/live-baseline-scenarios.json",
+    "agent-platform/model-policy.yml",
+    "agent-platform/publication/phase-1.5-live-baseline-tooling.json",
+    "package.json",
+    "scripts/agents/run-live-baseline.mjs",
+    "scripts/agents/run-live-work-unit.mjs",
+    "scripts/agents/validate-model-policy.mjs",
+    "src/modules/orchestration/evals/live-baseline.ts",
+    "src/modules/orchestration/index.ts",
+    "src/modules/orchestration/policy/model-tuning.ts",
+    "src/modules/orchestration/workflows/live-work-unit.ts",
+    "tests/orchestration/live-baseline.test.ts",
+    "tests/orchestration/model-tuning.test.ts"
+  ]
+}
