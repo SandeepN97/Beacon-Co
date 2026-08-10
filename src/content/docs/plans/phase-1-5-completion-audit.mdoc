@@ -6,7 +6,7 @@ order: 304
 status: "under-review"
 lastReviewed: "2026-08-09"
 owners: ["Repository Owner","Knowledge Manager"]
-sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
+sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
 relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion"]
 relatedPages: ["plans/current-phase","architecture/observability-and-audit","architecture/secure-cicd-architecture","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["phase-1-5","audit","evidence","closure"]
@@ -30,12 +30,12 @@ Phase 1.5 remains **in progress**. Repository implementation and closure hardeni
 | PR-B — context preflight/compiler | Implemented | Determinism, reference-first, deduplication, exact-data, budget, and conditional-auditor tests pass |
 | PR-C — eval harness | Implemented | Sixteen required fixture families validate; deterministic baseline is explicitly not tuning-eligible |
 | PR-D — tool policy gateway | Implemented | Role/path/action allow-ask-deny and bypass tests pass; Claude PreToolUse hook is configured |
-| PR-E — provider vertical slice | Implemented locally | Claude, OpenAI, and Codex CLI adapter contracts pass; three real Codex subscription runs close the representative-run gate only |
+| PR-E — provider vertical slice | Implemented and exercised | Claude, OpenAI, and Codex CLI adapter contracts pass; real subscription-authenticated Codex evidence closes the representative and repeated-baseline gates |
 | PR-F — risk/council engine | Implemented | Risk 0–3, independence, cross-provider, stale-diff, blocker, and adjudication tests pass |
-| PR-G — tuning gate | Implemented | Contract baseline is frozen; no tuning accepted without repeated live evidence |
+| PR-G — tuning gate | Implemented and baselined | Two distinct risk-0 scenarios have three real Codex repetitions each; the accepted bounded aggregate applies no tuning and claims neither Claude review nor unmeasured cost |
 | PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, candidate-bound prepublication evidence, readback verification, and deterministic denial are covered |
 | PR-I — release/provenance | Implemented and exercised through staging | Exact-candidate attestation and staging promotion/verification pass; production and rollback remain blocked |
-| PR-J — completion audit/freeze | Audit implemented | Freeze remains blocked by the four external gates below |
+| PR-J — completion audit/freeze | Audit implemented | Freeze remains blocked by the three external gates below |
 
 ## External observation
 
@@ -43,13 +43,12 @@ The refreshed read-only GitHub observation on August 9, 2026 found a public repo
 
 Preview, staging, and production environments exist. Production has a custom branch policy and administrator bypass is disabled, but it has no required reviewer. The `agent-evals` environment does not exist. These facts are recorded without secrets in `agent-platform/baselines/external-controls-observation-2026-08-09.json`.
 
-Three successful subscription-authenticated Codex executions share one task fingerprint and deterministic context compilation hash. Their normalized bounded telemetry is preserved in `agent-platform/baselines/live-codex-representative-2026-08-09.json`; prompts, responses, credentials, and provider metadata are not stored. This closes the representative-run gate only. It does not create the required repeated multi-scenario comparison aggregate, and no Claude run is claimed.
+The representative Codex evidence remains preserved in `agent-platform/baselines/live-codex-representative-2026-08-09.json`. A separate accepted aggregate in `agent-platform/baselines/live-codex-multiscenario-2026-08-09.json` binds six successful ChatGPT-authenticated Codex CLI runs to candidate `e27ddcb7026059b48c5e97277c6e9d386511b8a5`: `bounded-typescript-bug` and `documentation-only-change`, each repeated three times with distinct WorkUnit, AgentRun, ProviderRun, and EvalResult correlations. Task success and evidence completeness are 1.0 with zero tool calls, retries, security failures, or scope violations. Prompts, responses, credentials, provider metadata, unmeasured cost, and unperformed independent provider review are not claimed; no tuning was applied. These risk-0 evals do not require cross-provider council evidence, and no Claude run is claimed.
 
 The exact merge candidate was built and attested in PR-quality run `31342391343`. Independent `gh attestation verify` enforcement bound `beacon-dist.tar.gz` digest `f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed` to `.github/workflows/pr-quality.yml`, `refs/heads/main`, and the merge SHA. Staging run `31342520379` verified and promoted that same artifact as Worker version `3e4de117-f432-4a3a-b3fd-aecedf295c9f`; post-deploy run `31342578773` then passed the live status and security-header checks. The bounded promotion and verification records are artifacts `9046260894` and `9046271178`.
 
 ## Failed hard gates
 
-- repeated live eval baseline eligible for configuration comparison;
 - non-bypassable external human-controlled production approval;
 - real production promotion and post-deploy verification;
 - real known-good rollback drill.

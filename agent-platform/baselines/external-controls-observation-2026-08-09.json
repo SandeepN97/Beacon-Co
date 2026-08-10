@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-09T19:47:34-04:00",
-  "observedMainSha": "7dc157d2f84670145c4f1b5fcba274cf06f6f4dc",
+  "observedAt": "2026-08-09T21:05:13-04:00",
+  "observedMainSha": "e27ddcb7026059b48c5e97277c6e9d386511b8a5",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -33,16 +33,19 @@
     "preview": { "exists": true, "requiredReviewers": 0, "adminsCanBypass": true },
     "staging": { "exists": true, "requiredReviewers": 0, "adminsCanBypass": true },
     "production": {
+      "id": 18857193164,
+      "name": "production",
       "exists": true,
       "requiredReviewers": 0,
       "adminsCanBypass": false,
-      "customBranchPolicy": true
+      "customBranchPolicy": true,
+      "preventSelfReview": null
     },
     "agent-evals": { "exists": false, "requiredReviewers": 0, "adminsCanBypass": null }
   },
   "evidenceGates": {
     "representativeLiveProviderRun": true,
-    "repeatedLiveEvalBaseline": false,
+    "repeatedLiveEvalBaseline": true,
     "agentPlatformRequiredCheck": true,
     "verifiedBuildAttestation": true,
     "stagingPromotionAndVerification": true,
@@ -52,6 +55,19 @@
   "evidenceReferences": {
     "representativeLiveProviderRun": [
       "agent-platform/baselines/live-codex-representative-2026-08-09.json"
+    ],
+    "repeatedLiveEvalBaseline": [
+      "agent-platform/baselines/live-codex-multiscenario-2026-08-09.json",
+      "candidate:e27ddcb7026059b48c5e97277c6e9d386511b8a5",
+      "provider:codex:subscription-cli:gpt-5.6-sol",
+      "scenarios:bounded-typescript-bug,documentation-only-change",
+      "repetitions-per-scenario:3",
+      "eval:eval-b45dce3e-125c-4612-bd3b-da5323c28e18",
+      "eval:eval-a9a8f46c-4272-424b-bdb8-19d926461e67",
+      "eval:eval-37719d1c-c236-4b2c-af90-f9b9f13ec628",
+      "eval:eval-2cc0d242-1fea-47b7-a159-ffc952e495fc",
+      "eval:eval-9462d133-490b-42bd-b66e-e099503b12f3",
+      "eval:eval-74b9e058-40ae-4355-bb2f-c9503104640d"
     ],
     "agentPlatformRequiredCheck": ["ruleset:19806104:contracts-policy-evals"],
     "closureHardeningPublication": ["pr:32", "merge:7dc157d2f84670145c4f1b5fcba274cf06f6f4dc"],
@@ -77,5 +93,5 @@
     "failedStagingVerification": ["workflow:31340297255"],
     "supersededUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
   },
-  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Three successful real Codex subscription runs close the representative-run gate only; no accepted repeated multi-scenario live aggregate or Claude subscription run exists. Independent production review, production verification, and rollback remain open."
+  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production still has zero required reviewers, so independent production approval, production verification, and rollback remain open."
 }
