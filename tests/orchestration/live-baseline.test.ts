@@ -52,10 +52,10 @@ const acceptedRuns = [1, 2, 3].flatMap((repetition) => [
   run("scenario-b", repetition),
 ]);
 
-function compile(runs: unknown[]) {
+function compile(runs: unknown[], candidateSha = "f".repeat(64)) {
   return compileLiveBaselineAggregate({
     runs,
-    candidateSha: "f".repeat(64),
+    candidateSha,
     generatedAt: "2026-08-09T20:00:00-04:00",
     minimumScenarios: 2,
     minimumRepeatedRuns: 3,
@@ -86,8 +86,10 @@ describe("repeated live baseline acceptance", () => {
   });
 
   it("accepts two distinct scenarios with three complete real repetitions each", () => {
-    const result = compile(acceptedRuns);
+    const candidateSha = "f".repeat(40);
+    const result = compile(acceptedRuns, candidateSha);
     expect(result.accepted).toBe(true);
+    expect(result.candidateSha).toBe(candidateSha);
     expect(result.benchmarkAggregate).toMatchObject({
       liveMeasurements: true,
       scenarioCount: 2,
