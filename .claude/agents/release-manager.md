@@ -54,6 +54,27 @@ path.
    replaced artifact digest, a bounded incident/drill identifier, and the
    production verification URL. Never rebuild the known-good artifact.
 
+## Merge-method note, verified this session
+
+For PR merges where GitHub's own auto-signing must satisfy
+`required_signatures`: **both** "Create a merge commit" (precedent:
+PR #28, #39, #40) and "Squash and merge" (precedent: PR #45) reliably
+produce a `committer: GitHub`, `verified: true` result — either is safe
+for signature purposes.
+
+**Neither preserves `evidence/publication-readiness.json`'s
+`candidateSha` across the merge**, though — GitHub always
+server-generates a brand-new commit distinct from any pre-merge local
+commit, for both methods, so `authoritative-prepublication-check`
+cannot pass for `main`'s post-merge tip by simply re-running
+`ci:prepublish` locally on `main` afterward (its `publication-scope`
+step needs a real diff against `origin/main`, which is empty once
+you're caught up — confirmed by hitting this directly). How the
+original passing evidence for `82b69d5` (also a `committer: GitHub`
+commit, not a fast-forward) was produced remains unexplained — a
+working mechanism for this may exist but was not identified this
+session. Treat this as open, not solved, if it comes up again.
+
 ## Required deliverable
 
 ```
