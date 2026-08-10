@@ -103,3 +103,4 @@ See `src/content/docs/architecture/overview.mdoc` for the implemented boundary a
 - [ ] Resend is currently sending from `onboarding@resend.dev` (their shared test address) — verify a custom domain in Resend once one's registered, so it sends from `@beaconandco.com` instead
 - [ ] Activate and verify the secure CI/CD GitHub and Cloudflare settings listed in the deployment runbook
 - [ ] Triage the current dependency-audit findings and record any temporary exception
+<!-- git-integration-disconnect-verify: 2026-08-10T12:51:25Z -->
