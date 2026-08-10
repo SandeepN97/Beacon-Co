@@ -412,7 +412,7 @@ roles:
 
   - id: release-manager
     agentFile: .claude/agents/release-manager.md
-    sourceSha256: 0a8da73384bc9a73cb63ec023a8f1cb66d12f1d03ab194a690601431f9de6f89
+    sourceSha256: ab9ed366271aedb8278ea5116d5640fd7dcbc7b0baf6ffdb5d071b7f0ff5a7ce
     responsibility: Verify release evidence and walk an authorized reviewed commit through the repository's workflow-dispatch staging, verification, production, and rollback path.
     allowedTools: [Read, Glob, Grep, Bash]
     forbiddenToolClasses:
