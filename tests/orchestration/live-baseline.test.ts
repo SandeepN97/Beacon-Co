@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { compileLiveBaselineAggregate } from "../../src/modules/orchestration/evals/live-baseline.ts";
+import {
+  LiveBaselineScenarioCatalogSchema,
+  compileLiveBaselineAggregate,
+} from "../../src/modules/orchestration/evals/live-baseline.ts";
 
 function run(scenarioId: string, repetition: number) {
   const scenarioIndex = scenarioId === "scenario-a" ? "a" : "b";
@@ -60,6 +63,24 @@ function compile(runs: unknown[]) {
 }
 
 describe("repeated live baseline acceptance", () => {
+  it("requires explicit bounded paths for every live scenario", () => {
+    expect(() =>
+      LiveBaselineScenarioCatalogSchema.parse({
+        schemaVersion: 1,
+        scenarios: ["a", "b"].map((id) => ({
+          id,
+          agentRole: "codebase-researcher",
+          riskClass: "risk-0",
+          allowedPaths: [],
+          objective: `Objective ${id}`,
+          expectedOutput: `OUTPUT_${id}`,
+          acceptanceCriteria: ["Exact output"],
+          searchTerms: [],
+        })),
+      }),
+    ).toThrow();
+  });
+
   it("requires observed live runs", () => {
     expect(() => compile([])).toThrow("A live baseline requires at least one observed run.");
   });

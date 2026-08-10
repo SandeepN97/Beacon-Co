@@ -5,6 +5,7 @@
       "id": "documentation-only-change",
       "agentRole": "code-writer",
       "riskClass": "risk-0",
+      "allowedPaths": ["src/content/docs"],
       "objective": "Evaluate a bounded documentation-only request with no source mutation. Return exactly BOUNDED_DOC_CHANGE_READY. Do not call tools or include other text.",
       "expectedOutput": "BOUNDED_DOC_CHANGE_READY",
       "acceptanceCriteria": [
@@ -17,6 +18,7 @@
       "id": "bounded-typescript-bug",
       "agentRole": "codebase-researcher",
       "riskClass": "risk-0",
+      "allowedPaths": ["src"],
       "objective": "Evaluate a bounded TypeScript bug investigation without editing files. Return exactly BOUNDED_TYPESCRIPT_INVESTIGATION_READY. Do not call tools or include other text.",
       "expectedOutput": "BOUNDED_TYPESCRIPT_INVESTIGATION_READY",
       "acceptanceCriteria": [

@@ -14,6 +14,7 @@ export const LiveBaselineScenarioCatalogSchema = z
             id: z.string().min(1).max(160),
             agentRole: z.string().min(1).max(160),
             riskClass: z.enum(["risk-0", "risk-1", "risk-2", "risk-3"]),
+            allowedPaths: z.array(z.string().min(1).max(512)).min(1).max(20),
             objective: z.string().min(1).max(2000),
             expectedOutput: z.string().min(1).max(200),
             acceptanceCriteria: z.array(z.string().min(1).max(500)).min(1).max(20),
