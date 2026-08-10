@@ -99,8 +99,8 @@ if (
       review: async (providerResult) => ({
         passed: providerResult.outputText.trim() === "BEACON_LIVE_OK",
         evidenceId: `review-${randomUUID()}`,
-        summary: "Independent deterministic bounded-output review completed.",
-        provider: provider === "claude" ? "codex" : "claude",
+        summary: "Deterministic bounded-output policy verification completed.",
+        provider: "deterministic-policy",
         sessionId: `deterministic-review-${randomUUID()}`,
         blockerCount: providerResult.outputText.trim() === "BEACON_LIVE_OK" ? 0 : 1,
         majorCount: 0,

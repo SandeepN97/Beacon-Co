@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "scenarios": [
+    {
+      "id": "documentation-only-change",
+      "agentRole": "code-writer",
+      "riskClass": "risk-0",
+      "objective": "Evaluate a bounded documentation-only request with no source mutation. Return exactly BOUNDED_DOC_CHANGE_READY. Do not call tools or include other text.",
+      "expectedOutput": "BOUNDED_DOC_CHANGE_READY",
+      "acceptanceCriteria": [
+        "Output is exactly BOUNDED_DOC_CHANGE_READY",
+        "No tool call is requested"
+      ],
+      "searchTerms": ["bounded documentation change", "no source mutation"]
+    },
+    {
+      "id": "bounded-typescript-bug",
+      "agentRole": "codebase-researcher",
+      "riskClass": "risk-0",
+      "objective": "Evaluate a bounded TypeScript bug investigation without editing files. Return exactly BOUNDED_TYPESCRIPT_INVESTIGATION_READY. Do not call tools or include other text.",
+      "expectedOutput": "BOUNDED_TYPESCRIPT_INVESTIGATION_READY",
+      "acceptanceCriteria": [
+        "Output is exactly BOUNDED_TYPESCRIPT_INVESTIGATION_READY",
+        "No tool call is requested"
+      ],
+      "searchTerms": ["bounded TypeScript bug", "read-only investigation"]
+    }
+  ]
+}

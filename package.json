@@ -28,6 +28,7 @@
     "context:validate": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/validate-context-package.mjs",
     "agents:eval:fixtures": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/run-agent-evals.mjs",
     "agents:eval:live": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/run-live-work-unit.mjs",
+    "agents:eval:baseline": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/run-live-baseline.mjs",
     "policy:gateway": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/policy-gateway.mjs",
     "council:validate": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/validate-council-evidence.mjs",
     "models:validate": "node scripts/agents/validate-model-policy.mjs",
