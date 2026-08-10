@@ -79,6 +79,9 @@ const repeatedBaselineValid = await (async () => {
 const localReady =
   fileResults.every(Boolean) && manifest.roleSet?.count === 8 && manifest.roles?.length === 8;
 const candidateSha = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
+const candidateTree = execFileSync("git", ["rev-parse", "HEAD^{tree}"], {
+  encoding: "utf8",
+}).trim();
 const publicationEvidencePath = valueAfter(
   "--publication-evidence",
   "evidence/publication-readiness.json",
@@ -90,7 +93,7 @@ try {
   publicationEvidence = null;
 }
 const publicationDecision = publicationEvidence
-  ? validatePublicationCandidate(publicationEvidence, candidateSha)
+  ? validatePublicationCandidate(publicationEvidence, candidateSha, candidateTree)
   : { ready: false };
 const publicationGateStatus = (name) =>
   publicationEvidence?.gates?.some((gate) => gate.name === name && gate.status === "passed") ===

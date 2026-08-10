@@ -13,13 +13,17 @@ const candidateSha = valueAfter(
   "--candidate",
   execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(),
 );
+const candidateTree = execFileSync("git", ["rev-parse", `${candidateSha}^{tree}`], {
+  encoding: "utf8",
+}).trim();
 const evidence = JSON.parse(await readFile(evidencePath, "utf8"));
-const decision = validatePublicationCandidate(evidence, candidateSha);
+const decision = validatePublicationCandidate(evidence, candidateSha, candidateTree);
 if (!decision.ready) {
   console.error(
     `PUBLICATION DENIED\n${JSON.stringify(
       {
         candidateSha,
+        candidateTree,
         failedGates: decision.failedGates,
         missingGates: decision.missingGates,
         reasons: decision.reasons,
