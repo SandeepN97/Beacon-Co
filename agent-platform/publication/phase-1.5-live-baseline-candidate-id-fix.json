@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "title": "Accept repository Git object IDs in live evidence",
+  "summary": [
+    "Accept the repository's 40-character Git SHA-1 object ID as a live-baseline candidate identifier while retaining 64-character Git SHA-256 support.",
+    "Keep task fingerprints, context hashes, and output hashes strictly SHA-256."
+  ],
+  "risk": [
+    "Low: this narrows the repair to candidate identity validation after the first real provider run exposed the mismatch.",
+    "No provider, tuning, product, release, or security policy is weakened."
+  ],
+  "testEvidence": [
+    "The accepted multi-scenario aggregate regression now binds to the repository's 40-character candidate SHA.",
+    "The authoritative prepublication gate must pass on the exact committed fix before publication."
+  ],
+  "documentationImpact": [
+    "No readiness or completion status changes from this repair alone.",
+    "No Phase 1.6 documentation or implementation is changed."
+  ],
+  "rollback": [
+    "Revert this bounded repair through the protected pull-request workflow if candidate identity validation is incorrect.",
+    "The partial ignored telemetry remains non-authorizing and is not promoted into canonical evidence."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/phase-1.5-live-baseline-candidate-id-fix.json",
+    "src/modules/orchestration/evals/live-baseline.ts",
+    "tests/orchestration/live-baseline.test.ts"
+  ]
+}

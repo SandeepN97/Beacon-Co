@@ -2,6 +2,7 @@ import { z } from "astro/zod";
 import { BenchmarkAggregateSchema } from "../policy/model-tuning.ts";
 
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/);
+const GitObjectIdSchema = z.string().regex(/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/);
 const CorrelationIdSchema = z.string().min(1).max(160);
 
 export const LiveBaselineScenarioCatalogSchema = z
@@ -94,7 +95,7 @@ export const LiveBaselineAggregateSchema = z
     schemaVersion: z.literal(1),
     evidenceType: z.literal("bounded-redacted-repeated-live-baseline"),
     generatedAt: z.iso.datetime({ offset: true }),
-    candidateSha: Sha256Schema,
+    candidateSha: GitObjectIdSchema,
     provider: z.literal("codex"),
     authenticationPath: z.literal("subscription-cli"),
     scenarioIds: z.array(z.string().min(1).max(160)).min(1),
