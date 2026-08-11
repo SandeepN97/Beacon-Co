@@ -7,7 +7,7 @@ status: "approved"
 lastReviewed: "2026-08-09"
 owners: ["Knowledge Manager"]
 sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content"]
 relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit"]
 tags: ["roadmap","phase","agents","phase-1-5"]
 truthState: "current"
@@ -42,7 +42,7 @@ The fixed eight-role set, strict run schemas, deterministic context compiler, co
 
 ## Publication readiness boundary
 
-`localReady` reports normal repository validation. `publicationReady` is produced only by `npm run ci:prepublish` for the exact candidate SHA. `externalReady` requires real external evidence. A SHA change invalidates candidate-bound prepublication evidence; provider handoff preserves compact gate/evidence state without transferring transcripts.
+`localReady` reports normal repository validation. `publicationReady` is produced only by `npm run ci:prepublish` for the exact candidate. Per ADR-0018, prepublication evidence is bound to the candidate's git tree content hash rather than its commit SHA, because a real GitHub merge always server-generates a new commit SHA even when file content is unchanged; a tree-content change still invalidates prepublication evidence, but a merge-generated commit-identity change alone does not. `externalReady` requires real external evidence. Provider handoff preserves compact gate/evidence state without transferring transcripts.
 
 The publication manifest supplies the required PR title/body structure. One policy validates local files, GitHub pull-request events, and the title/body read back after GitHub creation or update. GitHub remains an independent verifier and cannot be replaced by model confidence.
 

@@ -1,6 +1,11 @@
 import { z } from "astro/zod";
 
 const GitShaSchema = z.string().regex(/^[a-f0-9]{40}$/);
+// Git tree object IDs share the same 40-hex-char shape as commit IDs; this
+// alias exists purely to make schema fields self-documenting about which
+// kind of git object identity is being represented (content-addressed tree
+// vs. commit).
+const GitTreeShaSchema = GitShaSchema;
 
 export const PublicationGateStatusSchema = z.enum(["passed", "failed", "missing"]);
 
@@ -20,6 +25,7 @@ export const PublicationReadinessEvidenceSchema = z
     repository: z.string().min(1).max(300),
     branch: z.string().min(1).max(300),
     candidateSha: GitShaSchema,
+    candidateTree: GitTreeShaSchema,
     generatedAt: z.iso.datetime({ offset: true }),
     localReady: z.boolean(),
     publicationReady: z.boolean(),
@@ -63,13 +69,21 @@ export function evaluatePublicationReadiness(
 export function validatePublicationCandidate(
   input: unknown,
   candidateSha: string,
+  candidateTree: string,
 ): PublicationReadinessDecision {
   const evidence = PublicationReadinessEvidenceSchema.parse(input);
   const decision = evaluatePublicationReadiness(evidence.gates);
   const reasons = [...decision.reasons];
-  if (evidence.candidateSha !== candidateSha) {
+  // Content-addressed comparison: GitHub always server-generates a new
+  // commit SHA on merge, so exact commit-SHA equality between
+  // prepublication evidence and the merged main HEAD can never hold. The
+  // git tree hash instead identifies the exact file content, which is
+  // preserved by a normal merge and only changes when the actual content
+  // changes — so this remains a strict content-identity guarantee, not a
+  // relaxation to commit lineage ("ancestor of") laxity.
+  if (evidence.candidateTree !== candidateTree) {
     reasons.push(
-      `Publication evidence is stale: ${evidence.candidateSha} does not match ${candidateSha}.`,
+      `Publication evidence tree is stale: ${evidence.candidateTree} (from commit ${evidence.candidateSha}) does not match ${candidateTree} (from commit ${candidateSha}).`,
     );
   }
   if (!evidence.localReady) reasons.push("localReady is not true.");

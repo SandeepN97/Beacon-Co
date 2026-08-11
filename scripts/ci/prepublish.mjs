@@ -28,6 +28,7 @@ const readGit = (...args) => {
 };
 
 const candidateSha = readGit("rev-parse", "HEAD");
+const candidateTree = readGit("rev-parse", "HEAD^{tree}");
 const branch =
   readGit("branch", "--show-current") ||
   process.env.GITHUB_HEAD_REF ||
@@ -197,6 +198,7 @@ const record = PublicationReadinessEvidenceSchema.parse({
   repository,
   branch,
   candidateSha,
+  candidateTree,
   generatedAt: new Date().toISOString(),
   localReady,
   publicationReady: decision.ready,

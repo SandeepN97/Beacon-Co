@@ -6,8 +6,8 @@ order: 412
 status: "approved"
 lastReviewed: "2026-08-09"
 owners: ["Security Architect","DevOps Engineer"]
-sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/agent-platform-checks.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml",".github/workflows/rollback-production.yml","security/approved-actions.yml","scripts/ci/prepublish.mjs","scripts/ci/validate-pr-policy.mjs","scripts/ci/verify-github-pr-metadata.mjs","src/modules/orchestration/publication/publication-policy.ts","src/modules/orchestration/publication/release-evidence-policy.ts","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
-relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model"]
+sourceFiles: [".github/workflows/pr-quality.yml",".github/workflows/agent-platform-checks.yml",".github/workflows/pr-prepublish.yml",".github/workflows/deploy-staging.yml",".github/workflows/deploy-production.yml",".github/workflows/post-deploy-verify.yml",".github/workflows/rollback-production.yml","security/approved-actions.yml","scripts/ci/prepublish.mjs","scripts/ci/validate-pr-policy.mjs","scripts/ci/verify-github-pr-metadata.mjs","src/modules/orchestration/publication/publication-policy.ts","src/modules/orchestration/publication/release-evidence-policy.ts","src/modules/orchestration/domain/publication-readiness.ts","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
+relatedAdrs: ["0010-use-deterministic-quality-gates","0012-require-human-approval","0015-adopt-secure-cicd-control-model","0018-bind-prepublication-evidence-to-tree-content"]
 relatedPages: ["security/secure-development-standard","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["architecture","security","cicd"]
 truthState: "current"
@@ -31,7 +31,7 @@ The source scene contains 346 elements and 208 text elements. The Decision Syste
 
 | Boundary | Trusted input | Prohibited shortcut |
 |---|---|---|
-| Authoring | scoped branch, canonical context, and candidate-bound prepublication evidence | publication when `publicationReady` is not true |
+| Authoring | scoped branch, canonical context, and tree-content-bound prepublication evidence (ADR-0018) | publication when `publicationReady` is not true |
 | Pull request | repository code and unprivileged CI token | PR secrets or `pull_request_target` execution |
 | Main | passing required checks and explicit owner approval | force push or check bypass |
 | Promotion | tested archive, expected SHA-256, approved environment | rebuilding differently for production |

@@ -6,8 +6,8 @@ order: 304
 status: "under-review"
 lastReviewed: "2026-08-10"
 owners: ["Repository Owner","Knowledge Manager"]
-sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml"]
-relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion"]
+sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml",".github/workflows/pr-prepublish.yml"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content"]
 relatedPages: ["plans/current-phase","architecture/observability-and-audit","architecture/secure-cicd-architecture","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["phase-1-5","audit","evidence","closure"]
 truthState: "current"
@@ -15,11 +15,11 @@ truthState: "current"
 
 ## Audit conclusion
 
-Phase 1.5 remains **in progress**. Repository implementation and closure hardening are present, but the master completion gate requires candidate-bound publication evidence and real external evidence that code and fixtures cannot manufacture.
+Phase 1.5 remains **in progress**. Repository implementation and closure hardening are present, but the master completion gate requires tree-content-bound publication evidence and real external evidence that code and fixtures cannot manufacture.
 
-`npm run phase15:audit:local` reports only `localReady`. `npm run ci:prepublish` produces `publicationReady` for the exact candidate SHA. `npm run phase15:audit` intentionally exits nonzero until `localReady`, `publicationReady`, and `externalReady` are all true. The closure sentence is emitted only by the latter command.
+`npm run phase15:audit:local` reports only `localReady`. `npm run ci:prepublish` produces `publicationReady` for the exact candidate. `npm run phase15:audit` intentionally exits nonzero until `localReady`, `publicationReady`, and `externalReady` are all true. The closure sentence is emitted only by the latter command.
 
-`localReady` never authorizes publication. `publicationReady` never claims GitHub/provider/deployment evidence. A changed SHA invalidates candidate-bound evidence.
+`localReady` never authorizes publication. `publicationReady` never claims GitHub/provider/deployment evidence. Per ADR-0018, evidence is bound to the candidate's git tree content hash, not its commit SHA — a real GitHub merge always produces a new commit SHA, so commit-SHA equality could never survive a real merge; a changed tree still invalidates evidence, but a merge-generated SHA change alone does not. The `.github/workflows/pr-prepublish.yml` workflow now runs `ci:prepublish` on the pull request itself as a real pre-merge CI job (job id `prepublish`); adding that check context to the branch-protection ruleset and enabling "require branches up to date before merging" remains explicit follow-up work, not yet done.
 
 ## Increment status
 
@@ -33,7 +33,7 @@ Phase 1.5 remains **in progress**. Repository implementation and closure hardeni
 | PR-E — provider vertical slice | Implemented and exercised | Claude, OpenAI, and Codex CLI adapter contracts pass; real subscription-authenticated Codex evidence closes the representative and repeated-baseline gates |
 | PR-F — risk/council engine | Implemented | Risk 0–3, independence, cross-provider, stale-diff, blocker, and adjudication tests pass |
 | PR-G — tuning gate | Implemented and baselined | Two distinct risk-0 scenarios have three real Codex repetitions each; the accepted bounded aggregate applies no tuning and claims neither Claude review nor unmeasured cost |
-| PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, candidate-bound prepublication evidence, readback verification, and deterministic denial are covered |
+| PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, tree-content-bound prepublication evidence (ADR-0018), a real pre-merge `prepublish` CI check, readback verification, and deterministic denial are covered |
 | PR-I — release/provenance | Implemented and exercised through staging | Exact-candidate attestation and staging promotion/verification pass; production and rollback remain blocked |
 | PR-J — completion audit/freeze | Audit implemented | Freeze remains blocked by the three external gates below |
 
