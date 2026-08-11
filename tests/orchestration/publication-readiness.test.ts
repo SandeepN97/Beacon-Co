@@ -53,9 +53,7 @@ describe("publication readiness", () => {
       missingGates: [],
       reasons: [],
     });
-    expect(
-      validatePublicationCandidate(evidence([passedGate], true), SHA, TREE).ready,
-    ).toBe(true);
+    expect(validatePublicationCandidate(evidence([passedGate], true), SHA, TREE).ready).toBe(true);
   });
 
   it("keeps externalReady false without real external evidence", () => {
@@ -65,11 +63,7 @@ describe("publication readiness", () => {
   it("invalidates publication evidence when the candidate tree changes", () => {
     const otherTree = "d".repeat(40);
     const otherSha = "b".repeat(40);
-    const result = validatePublicationCandidate(
-      evidence([passedGate], true),
-      otherSha,
-      otherTree,
-    );
+    const result = validatePublicationCandidate(evidence([passedGate], true), otherSha, otherTree);
     expect(result.ready).toBe(false);
     expect(result.reasons).toContain(
       `Publication evidence tree is stale: ${TREE} (from commit ${SHA}) does not match ${otherTree} (from commit ${otherSha}).`,

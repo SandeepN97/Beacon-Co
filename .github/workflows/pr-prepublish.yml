@@ -30,6 +30,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Install the locked Chromium runtime
+        run: npx playwright install --with-deps chromium
       - name: Run prepublication evidence gate
         run: npm run ci:prepublish -- --base origin/main
       - name: Upload prepublication evidence
