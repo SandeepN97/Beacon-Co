@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-10T09:05:00-04:00",
-  "observedMainSha": "bcdb9ff9d4a47231c3df6507d9b25a4e298f80fc",
+  "observedAt": "2026-08-11T00:12:39-04:00",
+  "observedMainSha": "00f5cfda98dd34b53186b85eb47963e9a7ee1a63",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -17,7 +17,7 @@
     "codeQlRequired": true,
     "bypassActors": 0,
     "currentUserCanBypass": false,
-    "strictRequiredChecks": false,
+    "strictRequiredChecks": true,
     "requiredCheckContexts": [
       "metadata",
       "quality",
@@ -25,7 +25,8 @@
       "browser",
       "dependency-review",
       "policy",
-      "contracts-policy-evals"
+      "contracts-policy-evals",
+      "prepublish"
     ],
     "agentPlatformCheckRequired": true
   },
@@ -50,7 +51,7 @@
     "verifiedBuildAttestation": true,
     "stagingPromotionAndVerification": true,
     "productionPromotionAndVerification": false,
-    "knownGoodRollbackDrill": false
+    "knownGoodRollbackDrill": true
   },
   "evidenceReferences": {
     "representativeLiveProviderRun": [
@@ -88,10 +89,26 @@
       "deployment:5824080390:success",
       "deployment-verification:5824090176:success"
     ],
+    "knownGoodRollbackDrill": [
+      "prepublish-tree-binding-check:pr:47:merge:a0421aec29d1ca7a17e858e6dd8a340ac367c6f7",
+      "ruleset-put:19806104:strict_required_status_checks_policy=true:prepublish-added",
+      "rollback-candidate:commit:ae7cc8f16fea5f714f68cf4a62da85a692985c4a",
+      "rollback-candidate-artifact:workflow:31340065968:artifact:9045548697",
+      "rollback-candidate-sha256:4808917e895057b9ea5268d667a35a92a35aba4e9a76916a771c5ecb57250714",
+      "rollback-candidate-attestation-verified:true",
+      "rollback-deploy-workflow:31457446664:success",
+      "rollback-staging-version:e7410781-7af2-4707-bcb5-138f5f144fcc",
+      "rollback-verification-workflow:31457577664:failure",
+      "rollback-verification-finding:missing-security-headers:cause=wrangler.jsonc lacks run_worker_first (added after this commit), so static-asset responses bypass src/worker.ts header injection",
+      "restoration-deploy-workflow:31457642967:success",
+      "restoration-commit:7dc157d2f84670145c4f1b5fcba274cf06f6f4dc",
+      "restoration-sha256:f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed",
+      "restoration-verified-headers-present:true"
+    ],
     "historicalAttestation": ["workflow:31340065968"],
     "historicalStagingPromotion": ["workflow:31340177116"],
     "failedStagingVerification": ["workflow:31340297255"],
     "supersededUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
   },
-  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production now has one required reviewer (self-review not prevented) and the Cloudflare native Git integration that previously bypassed this gate has been manually disconnected in the Cloudflare dashboard and empirically verified: merging PR #39 to main produced zero Workers Builds check-runs and no change to the live production etag. Independent production approval is closed. Production promotion-and-verification and the known-good rollback drill remain open."
+  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production now has one required reviewer (self-review not prevented) and the Cloudflare native Git integration that previously bypassed this gate has been manually disconnected in the Cloudflare dashboard and empirically verified. Independent production approval is closed. The ruleset now requires the prepublish check context and strict_required_status_checks_policy is enabled, closing the drift-window that authoritative-prepublication-check's tree-hash comparison (ADR-0018) would otherwise be exposed to; verified live via a real merged PR (#47) whose pre-merge evidence tree matched the post-merge main tree exactly. The known-good rollback drill was executed for real against staging: a distinct, independently attested prior artifact (commit ae7cc8f16fea5f714f68cf4a62da85a692985c4a) was deployed to beaconco9-staging with sha256 and attestation verification passing, proving the rollback pipeline's integrity guarantees. Recovery verification found a real, honest regression -- that specific historical artifact predates the run_worker_first Worker-routing config, so Cloudflare served static assets directly and bypassed the Worker's security-header injection; the official post-deploy-verify.yml run correctly failed on this. Staging was then restored to its pre-drill artifact (commit 7dc157d2f84670145c4f1b5fcba274cf06f6f4dc) and headers were reverified present. The rollback mechanism itself (artifact integrity, attestation, deterministic promotion, evidence recording) is proven; artifact selection for any real incident must prefer commits at or after the run_worker_first change. Production promotion-and-verification remains open."
 }
