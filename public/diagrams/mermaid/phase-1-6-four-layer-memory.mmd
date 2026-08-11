@@ -1,0 +1,13 @@
+flowchart TB
+    H["HUMAN INTELLECTUAL MEMORY<br/>thoughts • questions • evidence • understanding"]
+    X["EXECUTION MEMORY<br/>WorkUnits • gates • SHA • PR • next action"]
+    I["INSTITUTIONAL MEMORY<br/>ADRs • architecture • policies • outcomes"]
+    M["BEACON MEMORY LAYER<br/>canonical, versioned, provider-neutral"]
+    C["Context / Understanding compilers"]
+    P["PROVIDER CONTEXT<br/>Claude / Codex temporary windows"]
+
+    H --> M
+    X --> M
+    I --> M
+    M -.bounded evidence only.-> C
+    C --> P

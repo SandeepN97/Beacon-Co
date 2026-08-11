@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant U as Human
+    participant B as beacon CLI
+    participant W as Capacity Watcher
+    participant C as Claude
+    participant X as Codex
+
+    U->>B: beacon (work in progress)
+    B->>W: monitor usage
+    W->>C: check capacity
+    C-->>W: 12% remaining (warning threshold crossed)
+    W->>B: generate fresh ContinuationPackage now
+    Note over W,B: Predictive — before the cap, not after
+    C-->>W: hard cap reached
+    W->>X: switch, load ContinuationPackage
+    X-->>U: resuming from last WorkUnit step, no action needed
+    Note over C,X: Loop repeats bidirectionally until...
+    X-->>W: Codex also capped
+    W->>U: Beacon: both providers unavailable, paused, state saved
