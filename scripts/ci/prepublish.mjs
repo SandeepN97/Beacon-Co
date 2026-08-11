@@ -181,6 +181,11 @@ for (const definition of definitions) {
     command,
     evidence: [`exit:${String(result.status ?? 1)}`],
   });
+  // DEBUG: bisect which gate breaks origin/main resolution (throwaway only).
+  const dbg = spawnSync("git", ["rev-parse", "origin/main"], { encoding: "utf8" });
+  console.log(
+    `[DEBUG after ${definition.name}] origin/main -> status=${dbg.status} stdout=${dbg.stdout?.trim()} stderr=${dbg.stderr?.trim()}`,
+  );
 }
 
 const decision = evaluatePublicationReadiness(gates);
