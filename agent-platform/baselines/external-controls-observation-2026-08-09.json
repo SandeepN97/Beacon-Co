@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "repository": "SandeepN97/Beacon-Co",
-  "observedAt": "2026-08-11T00:12:39-04:00",
-  "observedMainSha": "00f5cfda98dd34b53186b85eb47963e9a7ee1a63",
+  "observedAt": "2026-08-11T00:28:35-04:00",
+  "observedMainSha": "b70959170c30599e4eab241ac5e8dc2e208d1091",
   "visibility": "public",
   "defaultBranch": "main",
   "ruleset": {
@@ -50,7 +50,7 @@
     "agentPlatformRequiredCheck": true,
     "verifiedBuildAttestation": true,
     "stagingPromotionAndVerification": true,
-    "productionPromotionAndVerification": false,
+    "productionPromotionAndVerification": true,
     "knownGoodRollbackDrill": true
   },
   "evidenceReferences": {
@@ -105,10 +105,27 @@
       "restoration-sha256:f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed",
       "restoration-verified-headers-present:true"
     ],
+    "productionPromotionAndVerification": [
+      "promotion-dispatch-workflow:31458088053:success",
+      "promotion-dispatch-ref-note:head_sha=b70959170c30599e4eab241ac5e8dc2e208d1091 is the workflow-file ref at dispatch time only (main's tip at that instant, the just-merged PR #50 commit); the deployed artifact is governed entirely by the workflow_dispatch inputs, independently verified below",
+      "promotion-approval:environment=production:reviewer=SandeepN97:non-self-dispatched-review",
+      "promoted-commit:7dc157d2f84670145c4f1b5fcba274cf06f6f4dc",
+      "promoted-artifact-run-id:31342391343",
+      "promoted-artifact-sha256:f4ff3b08a96f2e89640710771f263e6a60ab0dfae43d62b6a56b7e415be9d7ed",
+      "promoted-attestation-verified:true",
+      "production-version:c4d68c04-327a-4174-84c4-b72fb1c5e25a",
+      "production-url:https://beaconco9.beaconco57.workers.dev",
+      "production-promotion-evidence-artifact:9088878732",
+      "production-headers-verified-live-curl:content-security-policy,strict-transport-security,x-content-type-options=nosniff:all-present",
+      "production-etag-matches-staging:888ce5acc6d70c7b2e6b1597d7e9e1cc",
+      "verification-dispatch-workflow:31458458241:success",
+      "verification-approval:environment=production:reviewer=SandeepN97",
+      "verification-evidence-artifact:9088931140"
+    ],
     "historicalAttestation": ["workflow:31340065968"],
     "historicalStagingPromotion": ["workflow:31340177116"],
     "failedStagingVerification": ["workflow:31340297255"],
     "supersededUndeployedBuild": ["workflow:31340538954", "artifact:9045686395"]
   },
-  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production now has one required reviewer (self-review not prevented) and the Cloudflare native Git integration that previously bypassed this gate has been manually disconnected in the Cloudflare dashboard and empirically verified. Independent production approval is closed. The ruleset now requires the prepublish check context and strict_required_status_checks_policy is enabled, closing the drift-window that authoritative-prepublication-check's tree-hash comparison (ADR-0018) would otherwise be exposed to; verified live via a real merged PR (#47) whose pre-merge evidence tree matched the post-merge main tree exactly. The known-good rollback drill was executed for real against staging: a distinct, independently attested prior artifact (commit ae7cc8f16fea5f714f68cf4a62da85a692985c4a) was deployed to beaconco9-staging with sha256 and attestation verification passing, proving the rollback pipeline's integrity guarantees. Recovery verification found a real, honest regression -- that specific historical artifact predates the run_worker_first Worker-routing config, so Cloudflare served static assets directly and bypassed the Worker's security-header injection; the official post-deploy-verify.yml run correctly failed on this. Staging was then restored to its pre-drill artifact (commit 7dc157d2f84670145c4f1b5fcba274cf06f6f4dc) and headers were reverified present. The rollback mechanism itself (artifact integrity, attestation, deterministic promotion, evidence recording) is proven; artifact selection for any real incident must prefer commits at or after the run_worker_first change. Production promotion-and-verification remains open."
+  "conclusion": "The Agent Platform check is required, production administrator bypass is disabled, the exact closure-hardening merge artifact has verified GitHub provenance, and the same artifact passed staging promotion and post-deploy verification. Six successful real Codex subscription runs across two distinct scenarios form an accepted repeated live baseline; no Claude evidence is claimed and no tuning was applied. Production has one required reviewer (self-review not prevented); the Cloudflare native Git integration that previously bypassed this gate was manually disconnected and empirically verified. Independent production approval is closed. The ruleset requires the prepublish check context and strict_required_status_checks_policy is enabled, closing the drift-window ADR-0018's tree-hash comparison would otherwise be exposed to; verified live via merged PR #47 (pre-merge evidence tree matched post-merge main tree exactly, authorize-publication.mjs independently returned PUBLICATION AUTHORIZED). The known-good rollback drill was executed for real against staging with a distinct, independently attested prior artifact; recovery verification surfaced a real, honest regression (missing security headers on an artifact predating run_worker_first), which post-deploy-verify.yml correctly failed, and staging was restored and reverified. Production promotion and verification are now closed: the fully-evidenced artifact (commit 7dc157d2f84670145c4f1b5fcba274cf06f6f4dc, attested, staging-verified, and staging-restored) was promoted to the live beaconco9 Worker through the real, non-bypassable production environment review (approved by the repository owner, not automation), deployed without any rebuild step, confirmed via matching sha256/attestation and an identical etag to staging, and independently reverified by the formal post-deploy-verify.yml workflow (also gated by and approved through the same non-bypassable production review) -- both required-reviewer approvals were performed by the repository owner directly in the GitHub UI, not simulated or bypassed by any agent. All Phase 1.5 completion-gate evidence gates are now true."
 }
