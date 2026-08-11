@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "title": "Add the Phase 1.6 master spec to the plans documentation set",
+  "summary": [
+    "Add src/content/docs/plans/phase-1-6-master-spec.mdoc, the Phase 1.6 Knowledge/Research/Understanding/Decision master architecture V5.0 (memory model, provenance system, provider continuity, PR-0 through PR-8 sequence).",
+    "Conform the supplied document to this repo's real Markdoc conventions: add required frontmatter, remove a duplicate manual H1/H2 the layout already renders from frontmatter, and extract its twelve inline Mermaid code fences into canonical .mmd sources rendered through the existing mermaid_diagram tag.",
+    "Extend the architecture/diagrams.mdoc catalog with those twelve new Mermaid views so the diagram-coverage rule (every .mmd source rendered on the catalog page) still holds, and add public/diagrams to the shared publication manifest's allowed path prefixes so documentation/diagram PRs can pass the real scope gate."
+  ],
+  "risk": [
+    "Low: documentation and diagram-source-only change; no orchestration, schema, runtime, or business-surface code is touched.",
+    "This lands planning content only — per the spec's own authority invariant (Section 19) and hard-stop conditions (Section 35.2), it authorizes no execution by itself; PR-0 implementation work follows separately once this is merged."
+  ],
+  "testEvidence": [
+    "npm run docs:validate passes: 111 Markdoc pages and 18 Mermaid diagram sources (6 existing plus 12 new) parse cleanly.",
+    "npm run docs:build, npm run typecheck, npm run ci:links, npm run ci:quality, npm run ci:security, and npm run test:browser:prebuilt (updated diagram-count assertions from 6 to 18) all pass locally against this candidate.",
+    "npm run phase15:audit independently re-verified complete-frozen (localReady/publicationReady/externalReady all true) at the branch point before this work began."
+  ],
+  "documentationImpact": [
+    "Adds src/content/docs/plans/phase-1-6-master-spec.mdoc as a new truthState: target planning page (order 305).",
+    "Extends src/content/docs/architecture/diagrams.mdoc with a new 'Phase 1.6' Mermaid subsection and refreshes its coverage count from 6 to 18 unique Mermaid sources.",
+    "Adds 12 new files under public/diagrams/mermaid/ and regenerates public/search-index.json and src/data/document-catalog.json via npm run docs:index.",
+    "Updates tests/browser/diagrams.spec.ts's rendered-Mermaid-diagram-count assertions from 6 to 18 to match the extended catalog."
+  ],
+  "rollback": [
+    "Revert this bounded documentation commit through the protected pull-request workflow.",
+    "No schema, runtime, deployment, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/phase-1-6-master-spec.json",
+    "agent-platform/publication/phase-1.5-closure-hardening.json",
+    "public/diagrams/mermaid",
+    "public/search-index.json",
+    "src/content/docs",
+    "src/data",
+    "tests/browser/diagrams.spec.ts"
+  ]
+}

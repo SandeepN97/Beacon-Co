@@ -1,0 +1,12 @@
+flowchart LR
+    S[Source] --> EC[Extract claims]
+    EC --> L["Independent evidence lanes<br/>Beacon • primary • papers • open-source • community"]
+    L --> CL[Claim Ledger]
+    CL --> SUP[Supported]
+    CL --> SWL[Supported with limits]
+    CL --> CON[Contested / unresolved]
+    CL --> REJ[Rejected / superseded]
+    SUP --> UV[UnderstandingVersion N]
+    SWL --> UV
+    CON --> UV
+    REJ --> UV

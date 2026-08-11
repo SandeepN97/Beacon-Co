@@ -28,6 +28,7 @@
     ".github/workflows",
     "agent-platform",
     "package.json",
+    "public/diagrams",
     "public/search-index.json",
     "scripts/agents",
     "scripts/ci",

@@ -1,0 +1,12 @@
+erDiagram
+    ResearchThread ||--o{ Question : contains
+    ResearchThread ||--o{ Source : references
+    Source ||--o{ Evidence : produces
+    Evidence ||--o{ Claim : supports
+    Claim ||--o{ UnderstandingVersion : informs
+    UnderstandingVersion ||--o{ MentalModel : renders
+    UnderstandingVersion ||--o{ DecisionReadiness : gates
+    DecisionReadiness ||--o| DecisionCandidate : enables
+    DecisionCandidate ||--o| ADRRef : becomes
+    ADRRef ||--o| DecisionPackage : compiles
+    DecisionPackage ||--o{ ContinuationPackage : tracked_by

@@ -1,0 +1,11 @@
+flowchart LR
+    S[Source] --> E[Evidence]
+    E --> C[Claim]
+    C --> U[UnderstandingVersion]
+    U --> D[Decision Candidate]
+    D --> A[ADR]
+    A --> P[Decision Package]
+    P --> W[WorkUnit]
+    W --> PR["PR / CI"]
+    PR --> AT["Artifact digest / attestation"]
+    AT --> O["Production outcome"]
