@@ -24,14 +24,40 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+      - name: DEBUG immediately after checkout
+        run: |
+          echo "=== git version ==="
+          git --version
+          echo "=== is shallow? ==="
+          git rev-parse --is-shallow-repository
+          echo "=== origin/main ==="
+          git rev-parse origin/main
+          git cat-file -t "$(git rev-parse origin/main)"
+          echo "=== merge-base ==="
+          git merge-base origin/main HEAD
+          echo "=== rev-list count for origin/main ==="
+          git rev-list --count origin/main
+          echo "=== HEAD ==="
+          git rev-parse HEAD
+          git rev-list --count HEAD
       - name: Set up Node
         uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: DEBUG after npm ci
+        run: |
+          echo "=== origin/main after npm ci ==="
+          git rev-parse origin/main
+          git merge-base origin/main HEAD
       - name: Install the locked Chromium runtime
         run: npx playwright install --with-deps chromium
+      - name: DEBUG after playwright install
+        run: |
+          echo "=== origin/main after playwright install ==="
+          git rev-parse origin/main
+          git merge-base origin/main HEAD
       - name: Run prepublication evidence gate
         run: npm run ci:prepublish -- --base origin/main
       - name: Upload prepublication evidence
