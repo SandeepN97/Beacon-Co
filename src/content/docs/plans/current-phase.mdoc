@@ -4,11 +4,11 @@ description: "Phase 1.5 agent-platform completion scope, verified repository sta
 section: "plans"
 order: 301
 status: "approved"
-lastReviewed: "2026-08-09"
+lastReviewed: "2026-08-11"
 owners: ["Knowledge Manager"]
 sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
 relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content"]
-relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit"]
+relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit","plans/phase-1-6-master-spec"]
 tags: ["roadmap","phase","agents","phase-1-5"]
 truthState: "current"
 ---
@@ -27,7 +27,7 @@ Repository-native secure delivery now includes separate local/publication/extern
 
 GitHub ruleset `Protect main` is active on the default branch. It blocks deletion and non-fast-forward updates, requires pull requests with resolved review conversations, requires signed commits and CodeQL, grants no bypass, and now requires the `contracts-policy-evals` Agent Platform context with the six existing checks.
 
-Preview, staging, and production GitHub environments exist. Production administrator bypass is disabled, but no independent required reviewer is configured, so the production gate remains open. Three bounded real Codex subscription runs close the representative-run gate; a separate accepted aggregate binds two distinct risk-0 scenarios with three real Codex repetitions each to candidate `e27ddcb7026059b48c5e97277c6e9d386511b8a5`. No Claude evidence, unmeasured cost, or tuning is claimed. The exact closure-hardening merge artifact has verified GitHub provenance and passed same-artifact staging promotion and post-deploy verification. Production verification and rollback remain pending.
+Preview, staging, and production GitHub environments exist. Production administrator bypass is disabled and the environment now has one required reviewer (self-review not prevented) — the production gate is closed. Three bounded real Codex subscription runs close the representative-run gate; a separate accepted aggregate binds two distinct risk-0 scenarios with three real Codex repetitions each to candidate `e27ddcb7026059b48c5e97277c6e9d386511b8a5`. No Claude evidence, unmeasured cost, or tuning is claimed. The exact closure-hardening merge artifact has verified GitHub provenance and passed same-artifact staging promotion and post-deploy verification. The known-good rollback drill and production promotion/verification both executed for real against that artifact and closed; see the [Phase 1.5 completion audit](/docs/plans/phase-1-5-completion-audit/) for the literal evidence and re-verification command.
 
 The fixed eight-role set, strict run schemas, deterministic context compiler, conditional token auditor, sixteen-family eval harness, role-aware tool gateway, Claude/OpenAI/Codex CLI adapter boundary, risk-tiered council engine, evidence-gated tuning policy, diff-bound publication gate, attestation-aware promotion definitions, and rollback workflow are implemented locally and tested. These controls do not by themselves prove a successful live provider run or deployment.
 
@@ -38,7 +38,7 @@ The fixed eight-role set, strict run schemas, deterministic context compiler, co
 | Milestone 1 — contracts and governance | Implemented locally | ADR-0017, fixed manifest, source hashes, validator, tests, CI command |
 | PR-A — telemetry foundation | Implemented locally | Runtime/JSON schemas, normalizers, redaction, sinks, CLI, deterministic tests |
 | PR-B through PR-I | Implemented locally | Context, eval, policy, provider, council, tuning, publication, provenance, and rollback contracts/tests |
-| PR-J — completion audit/freeze | In progress | Readiness states are distinct; the authoritative audit still blocks freeze on publication and remaining external evidence |
+| PR-J — completion audit/freeze | Implemented and closed | `npm run phase15:audit` returns `complete-frozen`; localReady, publicationReady, and externalReady are all true |
 
 ## Publication readiness boundary
 
@@ -64,6 +64,6 @@ Provider-native caching may be used and measured. Embeddings, vector storage, fu
 
 ## Completion boundary
 
-Phase 1.5 completes only when every gate in ADR-0017 and the completion audit has executable evidence. Current status is **in progress**, not frozen. See the [Phase 1.5 completion audit](/docs/plans/phase-1-5-completion-audit/) for the exact remaining external gates.
+Phase 1.5 completes only when every gate in ADR-0017 and the completion audit has executable evidence. Current status is **complete-frozen**, verified live via `npm run phase15:audit` (see the [Phase 1.5 completion audit](/docs/plans/phase-1-5-completion-audit/) for the literal command output, evidence, and re-verification instructions). Per that page's own freeze rule and this project's freshness discipline, re-run the command before trusting this status in a later session rather than treating it as durable. Phase 1.6 planning has begun under the [Phase 1.6 master spec](/docs/plans/phase-1-6-master-spec/); frozen Phase 1.5 remains the execution constitution that Phase 1.6 work executes through.
 
 The supplied Tier 1 sources still define a broader brokered company with durable business work units, isolated execution, provider invocation, persistent audit, majority convergence, and human approvals. Those capabilities remain target state unless a current page, implementation, and test prove otherwise.
