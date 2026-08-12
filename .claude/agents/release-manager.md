@@ -90,6 +90,14 @@ session. Treat this as open, not solved, if it comes up again.
   also read `in-progress` until the same untracked file was present
   again. Real technical debt worth a dedicated look — not urgent
   tonight, and not fixed as part of this note.
+- **Local validation gap, flagged 2026-08-12, fixed going forward.**
+  Local pre-PR validation tonight only ran `typecheck`/`test`/`agents:check`
+  and reported "all clean" multiple times, but never ran `format:check`
+  or the full `ci:quality`/`ci:prepublish` chains, which is exactly what
+  let a real Prettier formatting issue through those reports and only
+  surface as two red required checks on PR #55 — standing rule: before
+  opening any PR, run the exact command CI runs (`npm run ci:quality` or
+  equivalent), never a hand-picked subset of it.
 
 ## Required deliverable
 
