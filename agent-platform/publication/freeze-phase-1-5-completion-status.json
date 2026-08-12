@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "title": "Refresh Phase 1.5 completion status: complete-frozen, verified live",
+  "summary": [
+    "src/content/docs/plans/phase-1-5-completion-audit.mdoc and plans/current-phase.mdoc still said Phase 1.5 was 'in progress' with external gates open, even though PR #50 and PR #51 closed the last two gates (known-good rollback drill, production promotion and verification) in the prior session.",
+    "Update both pages to record the real, live-verified state: npm run phase15:audit returns complete-frozen (localReady, publicationReady, externalReady all true) at current main, re-run immediately before this edit rather than reused from an earlier session.",
+    "Cite the literal npm run phase15:audit JSON output, the observed commit SHA and timestamp, and the specific evidence from PR #50/#51 instead of a paraphrase."
+  ],
+  "risk": [
+    "Low: documentation-only change; no orchestration, schema, runtime, or business-surface code is touched.",
+    "This does not itself close any gate -- it records a freeze that already happened, per two already-merged evidence PRs (#50, #51) and a live re-run of the authoritative audit command."
+  ],
+  "testEvidence": [
+    "npm run phase15:audit re-run live at commit 7c5eff1736612d1e33dc4082c959e6bf61ce9f1d returned status complete-frozen with localReady/publicationReady/externalReady all true and every failedGates array empty.",
+    "npm run docs:build, npm run typecheck, npm run ci:links, npm run ci:quality, and npm run ci:security all pass locally against this candidate."
+  ],
+  "documentationImpact": [
+    "Rewrites the Audit conclusion, increment status, external observation, and freeze rule sections of plans/phase-1-5-completion-audit.mdoc to state complete-frozen with the literal audit output and PR #50/#51 evidence.",
+    "Corrects plans/current-phase.mdoc's Verified implementation baseline, Milestone sequence status, and Completion boundary sections, which still described production/rollback gates as open."
+  ],
+  "rollback": [
+    "Revert this bounded documentation commit through the protected pull-request workflow.",
+    "No schema, runtime, deployment, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/freeze-phase-1-5-completion-status.json",
+    "public/search-index.json",
+    "src/content/docs/plans/current-phase.mdoc",
+    "src/content/docs/plans/phase-1-5-completion-audit.mdoc",
+    "src/data/document-catalog.json"
+  ]
+}
