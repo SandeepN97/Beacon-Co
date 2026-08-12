@@ -60,7 +60,8 @@ export const DecisionCandidateSchema = z
     if (candidate.disposition === "accept" && !candidate.readiness.readyForAdr) {
       ctx.addIssue({
         code: "custom",
-        message: "a Decision Candidate cannot be disposed \"accept\" unless readiness.readyForAdr is true",
+        message:
+          'a Decision Candidate cannot be disposed "accept" unless readiness.readyForAdr is true',
         path: ["disposition"],
       });
     }
@@ -85,7 +86,10 @@ export const AdrRefSchema = z
     schemaVersion: z.literal(1),
     adrId: z
       .string()
-      .regex(/^\d{4}-[a-z0-9-]+$/, "must match the decisions/ ADR slug convention, e.g. 0019-begin-phase-1-6..."),
+      .regex(
+        /^\d{4}-[a-z0-9-]+$/,
+        "must match the decisions/ ADR slug convention, e.g. 0019-begin-phase-1-6...",
+      ),
     status: z.enum(["requested", "accepted", "superseded"]),
     decisionCandidateRef: DecisionCandidateIdSchema,
   })

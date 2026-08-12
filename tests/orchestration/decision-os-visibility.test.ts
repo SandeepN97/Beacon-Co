@@ -16,7 +16,13 @@ describe("decision-os visibility and freshness enums", () => {
   });
 
   it("accepts each of the five freshness classes", () => {
-    for (const value of ["foundational", "slow-changing", "current", "fast-changing", "ephemeral"]) {
+    for (const value of [
+      "foundational",
+      "slow-changing",
+      "current",
+      "fast-changing",
+      "ephemeral",
+    ]) {
       expect(FreshnessClassSchema.parse(value)).toBe(value);
     }
   });
