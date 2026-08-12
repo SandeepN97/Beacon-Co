@@ -1,5 +1,5 @@
 import { z } from "astro/zod";
-import { DataClassificationSchema } from "../../orchestration/domain/work-request.ts";
+import { DataClassificationSchema } from "../domain/work-request.ts";
 import { ClaimIdSchema, EvidenceIdSchema, SourceIdSchema } from "./ids.ts";
 import { FreshnessClassSchema } from "./visibility.ts";
 
