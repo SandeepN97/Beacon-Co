@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "title": "ADR-0019: authorize the bounded Phase 1.6 PR-0 increment",
+  "summary": [
+    "Add ADR-0019, authorizing only the PR-0 increment (schemas, events, typed IDs, privacy/authority invariants) of the Phase 1.6 master spec's PR-0 through PR-8 sequence.",
+    "Per the spec's own Section 19 authority invariant, a landed planning document is not authorization; this closes that gap with a real, reviewable ADR rather than treating chat instruction as sufficient.",
+    "Deliberately does not pre-authorize PR-0.5 through PR-8: the landed spec snapshot is known-incomplete (missing a real Section 29B, Capacity Watcher polling specifics, and a Section 36 decision log) and this ADR requires revisitation before PR-0.5 begins."
+  ],
+  "risk": [
+    "Low: documentation-only change; no orchestration, schema, runtime, or business-surface code is touched.",
+    "Authorizes future PR-0 implementation work but performs none itself; PR-0's own code will go through the normal PR/CI review path separately."
+  ],
+  "testEvidence": [
+    "npm run docs:build passes: 117 Markdoc pages validate, including ADR-0019's required Context/Decision drivers/Options considered/Decision/Positive consequences/Negative consequences/Risks/Follow-up work/Supersedes or superseded by/Source references headings.",
+    "npm run typecheck, npm run ci:links, npm run ci:quality, and npm run ci:security all pass locally against this candidate."
+  ],
+  "documentationImpact": [
+    "Adds src/content/docs/decisions/0019-begin-phase-1-6-knowledge-research-understanding-decision-os.mdoc (order 828, status approved, truthState decision).",
+    "Adds its decision_card entry to decisions/index.mdoc and its relatedAdrs cross-reference to plans/phase-1-6-master-spec.mdoc."
+  ],
+  "rollback": [
+    "Revert this bounded documentation commit through the protected pull-request workflow.",
+    "No schema, runtime, deployment, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/adr-0019-begin-phase-1-6.json",
+    "public/search-index.json",
+    "src/content/docs/decisions",
+    "src/content/docs/plans/phase-1-6-master-spec.mdoc",
+    "src/data"
+  ]
+}
