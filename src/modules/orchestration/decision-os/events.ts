@@ -1,5 +1,5 @@
 import { z } from "astro/zod";
-import { EventVisibilitySchema } from "./visibility.ts";
+import { EventVisibilitySchema, type EventVisibility } from "./visibility.ts";
 
 /**
  * Section 26's event vocabulary, grouped by lifecycle area exactly as the spec table
@@ -103,7 +103,7 @@ export type KnowledgeEvent<Payload> = {
   occurredAt: string;
   actorRef: string;
   projectRef: string;
-  visibility: EventVisibilitySchema["_output"];
+  visibility: EventVisibility;
   aggregateRef: string;
   projectContextRef: string | null;
   causationRef: string | null;
