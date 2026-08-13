@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "title": "Process, instructions, and documentation-currency changes",
+  "summary": [
+    "Repository-instruction files (README.md, AGENTS.md), the legacy top-level docs handbook, agent-platform contracts/policies, .claude agent definitions, and the CI plumbing (.github/workflows, scripts/ci) that supports process and documentation hygiene.",
+    "Scoped for PRs that update project instructions, agent definitions, or documentation currency, optionally alongside a small advisory CI mechanism -- not product UI, the contact route, or the orchestration domain."
+  ],
+  "risk": [
+    "Low: no product UI, contact-form, or orchestration-domain runtime path is in this manifest's scope.",
+    "Any workflow or script change under .github/workflows or scripts/ci included here is still independently gated by this repo's action-pin and workflow-validation policy (npm run ci:workflows)."
+  ],
+  "testEvidence": [
+    "npm run ci:quality and npm run ci:security pass for the candidate, same as any other PR.",
+    "npm run publication:scope -- --manifest agent-platform/publication/process-and-docs.json is run against the real candidate diff before publication."
+  ],
+  "documentationImpact": [
+    "This manifest documents its own scope; it does not authorize bypassing any canonical .mdoc page.",
+    "A PR mixing in-scope and out-of-scope paths still fails publication-scope under this manifest."
+  ],
+  "rollback": [
+    "Revert the PR through the protected pull-request workflow, same as any other candidate.",
+    "This manifest is independent of agent-platform/publication/phase-1.5-closure-hardening.json -- the two are unrelated, standalone records; reverting or editing one never affects the other."
+  ],
+  "allowedPathPrefixes": [
+    "README.md",
+    "AGENTS.md",
+    "docs",
+    "mkdocs.yml",
+    "agent-platform",
+    ".claude/agents",
+    ".github/workflows",
+    "scripts/ci"
+  ]
+}

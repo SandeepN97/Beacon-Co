@@ -75,6 +75,30 @@ commit, not a fast-forward) was produced remains unexplained — a
 working mechanism for this may exist but was not identified this
 session. Treat this as open, not solved, if it comes up again.
 
+## Known corrections
+
+- **Frozen-state reproducibility gap, flagged 2026-08-12, not fixed.**
+  `evidence/publication-readiness.json` is gitignored — it exists only
+  as a local, untracked file, never part of `main`'s git history. This
+  means Phase 1.5's `complete-frozen` status (per `npm run
+  phase15:audit`) is **not** reproducible from a fresh `git clone` or a
+  bare `git worktree add` — those never materialize the file, so the
+  audit reads `in-progress` there regardless of `main`'s real state,
+  purely because the gitignored evidence is absent, not because
+  anything regressed. Verified directly this session: a fresh worktree
+  of `main` at a commit whose original checkout read `complete-frozen`
+  also read `in-progress` until the same untracked file was present
+  again. Real technical debt worth a dedicated look — not urgent
+  tonight, and not fixed as part of this note.
+- **Local validation gap, flagged 2026-08-12, fixed going forward.**
+  Local pre-PR validation tonight only ran `typecheck`/`test`/`agents:check`
+  and reported "all clean" multiple times, but never ran `format:check`
+  or the full `ci:quality`/`ci:prepublish` chains, which is exactly what
+  let a real Prettier formatting issue through those reports and only
+  surface as two red required checks on PR #55 — standing rule: before
+  opening any PR, run the exact command CI runs (`npm run ci:quality` or
+  equivalent), never a hand-picked subset of it.
+
 ## Required deliverable
 
 ```

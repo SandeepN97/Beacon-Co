@@ -29,6 +29,11 @@ Start with [`src/content/docs/index.mdoc`](src/content/docs/index.mdoc) or the r
 | `src/components/*.astro` | One component per marketing-site section (Hero, Process, Demo, Services, PricingCards, Honest, ContactForm). |
 | `src/styles/global.css` | The shared design-system stylesheet. |
 
+## Project status
+
+- **Phase 1.5** (agent platform completion, ADR-0017): implemented and previously verified `complete-frozen`. `npm run phase15:audit` currently reads `in-progress` — not a regression, but a known, logged evidence-binding gap after the most recent merge to `main` (see `.claude/agents/release-manager.md`'s Known corrections section); evidence needs regenerating against the current tip before the audit reads `complete-frozen` again. Full detail: [`plans/phase-1-5-completion-audit`](src/content/docs/plans/phase-1-5-completion-audit.mdoc).
+- **Phase 1.6** (Knowledge/Research/Understanding/Decision OS, ADR-0019): authorized, bounded to PR-0. PR-0 part 1 — schemas, events, and typed IDs under `src/modules/orchestration/decision-os/` — is merged. `authority.ts` (the privacy/authority invariants ADR-0019 also scopes into PR-0) is not yet implemented, so PR-0 is not fully closed. Full detail: [`decisions/0019-begin-phase-1-6...`](src/content/docs/decisions/0019-begin-phase-1-6-knowledge-research-understanding-decision-os.mdoc), [`plans/current-phase`](src/content/docs/plans/current-phase.mdoc).
+
 ## Development
 
 ```sh
@@ -59,9 +64,9 @@ The canonical handbook uses Astro, Markdoc, Beacon brand tokens, a generated cli
 
 ## Deploying
 
-The current Cloudflare Worker target is `beaconco9`; `wrangler.jsonc` configures static assets and `/api/contact`. Repository workflows now define manual preview, staging, production, and post-deploy stages that promote one tested archive by SHA-256.
+The current Cloudflare Worker target is `beaconco9`; `wrangler.jsonc` configures static assets and `/api/contact`. Repository workflows define manual preview, staging, production, and post-deploy stages that promote one tested archive by SHA-256 — this is the only deploy path.
 
-Those workflows are not active until GitHub rulesets, required checks, environments, environment reviewers, isolated secrets, and Cloudflare tokens are configured. Do not retain a competing Cloudflare dashboard auto-deploy after activating the gated production workflow. Follow `src/content/docs/operations/deployment-runbook.mdoc`.
+GitHub rulesets, required checks, environments, and a required production reviewer (administrator bypass disabled) are active. Cloudflare's native Git auto-deploy integration for `beaconco9` was disconnected and the disconnect was empirically verified — a merge to `main` produces no Workers Builds check-run and no change to the live production `etag`. Do not reconnect it. Follow `src/content/docs/operations/deployment-runbook.mdoc`.
 
 ### Contact form setup
 
@@ -99,7 +104,7 @@ See `src/content/docs/architecture/overview.mdoc` for the implemented boundary a
 - [ ] Full rename pass across all copy once the name is locked
 - [x] Wire up the contact form to a real backend (Cloudflare Worker + Turnstile + Resend)
 - [x] Set `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `RESEND_API_KEY` in the Cloudflare dashboard — verified end-to-end (real submission → Turnstile pass → email delivered)
-- [x] Connect Cloudflare for auto-deploy on push
+- [x] Disconnect Cloudflare's native Git auto-deploy in favor of the gated, evidence-bound `workflow_dispatch` pipeline — verified (see Deploying)
 - [ ] Resend is currently sending from `onboarding@resend.dev` (their shared test address) — verify a custom domain in Resend once one's registered, so it sends from `@beaconandco.com` instead
 - [ ] Activate and verify the secure CI/CD GitHub and Cloudflare settings listed in the deployment runbook
 - [ ] Triage the current dependency-audit findings and record any temporary exception

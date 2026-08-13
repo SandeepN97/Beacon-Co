@@ -18,6 +18,7 @@ The published Astro + Markdoc decision system begins at `src/content/docs/index.
 - Read `src/content/docs/security/secure-development-standard.mdoc` and the relevant security/runbook page before changing workflows, dependencies, the contact route, deployment configuration, or security-critical paths.
 - Treat ADR-0001 (business), ADR-0002 (design), and ADR-0003 (architecture evolution) as foundation decisions.
 - Every material change must update the relevant `.mdoc` page. Significant choices also require one reviewable ADR.
+- Any PR that adds/removes a module, changes runnable commands, or lands a new ADR must update `README.md`'s current-state section in the same PR. The `PR README currency` CI check flags this; it does not block merge, but treat a flagged PR as needing a README update before merging, not after.
 - Keep planned and implemented state distinct. Documentation of a future component never authorizes its implementation.
 - The older `docs/` MkDocs handbook is retained as migration evidence and a legacy build; it is not the canonical current source.
 

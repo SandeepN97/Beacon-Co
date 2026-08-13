@@ -1,0 +1,75 @@
+name: PR README currency
+
+# Advisory only -- never a required status check. Flags when a PR changes
+# package.json's scripts, adds/removes a module directory under
+# src/modules/, or lands a new ADR, without also touching README.md in the
+# same PR. Posts (or clears) a single PR comment; never fails the job, so
+# it cannot block a merge on its own.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions: {}
+
+concurrency:
+  group: pr-readme-currency-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  readme-currency:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: 22
+      - name: Check README currency signals
+        id: check
+        run: |
+          node --disable-warning=ExperimentalWarning --experimental-strip-types \
+            scripts/ci/check-readme-currency.mjs --base origin/main --head HEAD > result.json
+          cat result.json
+          {
+            echo "result<<EOF"
+            cat result.json
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Post or clear advisory comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT: ${{ steps.check.outputs.result }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          MARKER="<!-- readme-currency-check -->"
+          TRIGGERED=$(echo "$RESULT" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).triggered))')
+          EXISTING_ID=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" --paginate \
+            --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -n1)
+
+          if [ "$TRIGGERED" = "true" ]; then
+            REASONS=$(echo "$RESULT" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).reasons;console.log(r.map(x=>"- "+x).join("\n"))})')
+            BODY="$MARKER
+          **README currency check (advisory, non-blocking):** this PR changed something that usually needs a README update, but README.md wasn't touched in this diff:
+
+          $REASONS
+
+          If README.md's current-state section still accurately describes this after the change, you can ignore this. Otherwise, treat it as needing a README update before merging, not after (see CLAUDE.md/AGENTS.md's standing rule)."
+            if [ -n "$EXISTING_ID" ]; then
+              gh api "repos/$REPO/issues/comments/$EXISTING_ID" -X PATCH -f body="$BODY"
+            else
+              gh api "repos/$REPO/issues/$PR_NUMBER/comments" -X POST -f body="$BODY"
+            fi
+          elif [ -n "$EXISTING_ID" ]; then
+            gh api "repos/$REPO/issues/comments/$EXISTING_ID" -X DELETE
+          fi
