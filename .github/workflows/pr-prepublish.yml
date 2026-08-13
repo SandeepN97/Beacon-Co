@@ -32,8 +32,18 @@ jobs:
       - run: npm ci
       - name: Install the locked Chromium runtime
         run: npx playwright install --with-deps chromium
+      - name: Select publication manifest
+        id: manifest
+        run: |
+          SELECTED=$(node --disable-warning=ExperimentalWarning --experimental-strip-types \
+            scripts/ci/select-publication-manifest.mjs --base origin/main --head HEAD \
+            --candidate agent-platform/publication/process-and-docs.json \
+            --candidate agent-platform/publication/phase-1.5-closure-hardening.json)
+          echo "path=$SELECTED" >> "$GITHUB_OUTPUT"
       - name: Run prepublication evidence gate
-        run: npm run ci:prepublish -- --base origin/main
+        env:
+          MANIFEST: ${{ steps.manifest.outputs.path }}
+        run: npm run ci:prepublish -- --base origin/main --manifest "$MANIFEST"
       - name: Upload prepublication evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
