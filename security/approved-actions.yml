@@ -5,9 +5,9 @@ policy:
   denyMutableTags: true
 actions:
   actions/checkout:
-    major: 4
-    sha: 11bd71901bbe5b1630ceea73d27597364c9af683
-    release: v4.2.2
+    major: 7
+    sha: 3d3c42e5aac5ba805825da76410c181273ba90b1
+    release: v7.0.1
   actions/setup-node:
     major: 4
     sha: 1e60f620b9541d16bece96c5465dc8ee9832be0b
@@ -41,6 +41,6 @@ actions:
     sha: ebbaa1584979971c8614a24965b4405ff95890e0
     release: v4.0.0
 review:
-  lastReviewed: 2026-08-09
+  lastReviewed: 2026-08-14
   owner: Security Architect
   nextReview: 2026-10-27
