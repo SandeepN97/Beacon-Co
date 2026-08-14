@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "title": "Process, instructions, and documentation-currency changes",
   "summary": [
-    "Repository-instruction files (README.md, AGENTS.md), the legacy top-level docs handbook, agent-platform contracts/policies, .claude agent definitions, and the CI plumbing (.github/workflows, scripts/ci) that supports process and documentation hygiene.",
-    "Scoped for PRs that update project instructions, agent definitions, or documentation currency, optionally alongside a small advisory CI mechanism -- not product UI, the contact route, or the orchestration domain."
+    "Repository-instruction files (README.md, AGENTS.md), the legacy top-level docs handbook, agent-platform contracts/policies, .claude agent definitions, the CI plumbing (.github/workflows, scripts/ci) that supports process and documentation hygiene, and machine-readable security policy (security/) such as the Action-pin allowlist.",
+    "Scoped for PRs that update project instructions, agent definitions, documentation currency, or security/dependency policy, optionally alongside a small advisory CI mechanism -- not product UI, the contact route, or the orchestration domain."
   ],
   "risk": [
     "Low: no product UI, contact-form, or orchestration-domain runtime path is in this manifest's scope.",
@@ -29,6 +29,7 @@
     "agent-platform",
     ".claude/agents",
     ".github/workflows",
-    "scripts/ci"
+    "scripts/ci",
+    "security"
   ]
 }
