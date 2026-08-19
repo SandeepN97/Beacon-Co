@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "title": "Dependency version updates",
+  "summary": [
+    "package.json and package-lock.json changes from a dependency version bump -- typically Dependabot-proposed, reviewed for breaking changes against this repo's actual usage before merge.",
+    "Scoped narrowly to dependency manifests only; a PR that also changes application code, tests, or CI configuration belongs to a different manifest, not this one. The one exception is pr-prepublish.yml itself, included only because introducing this manifest necessarily requires wiring it into that workflow's selector in the same commit -- not a general allowance to change workflows here."
+  ],
+  "risk": [
+    "Varies by dependency: a patch bump within an already-accepted semver range is low risk; a major version bump gets its own explicit breaking-change review before this manifest is used to publish it.",
+    "No product UI, contact-form, or orchestration-domain source file is in this manifest's scope -- only the two dependency manifest files themselves."
+  ],
+  "testEvidence": [
+    "npm ci installs cleanly from the updated lockfile.",
+    "npm run ci:quality and npm run ci:security pass for the candidate, same as any other PR.",
+    "npm run publication:scope -- --manifest agent-platform/publication/dependency-updates.json is run against the real candidate diff before publication."
+  ],
+  "documentationImpact": [
+    "None expected for a routine version bump; a dependency swap or removal would need its own review outside this manifest's routine scope."
+  ],
+  "rollback": [
+    "Revert the PR through the protected pull-request workflow, restoring the prior package.json/package-lock.json state.",
+    "This manifest is independent of phase-1.5-closure-hardening.json and process-and-docs.json -- editing or reverting it never affects either."
+  ],
+  "allowedPathPrefixes": [
+    "package.json",
+    "package-lock.json",
+    "agent-platform/publication/dependency-updates.json",
+    ".github/workflows/pr-prepublish.yml"
+  ]
+}

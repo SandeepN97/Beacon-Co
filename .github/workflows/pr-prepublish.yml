@@ -37,6 +37,7 @@ jobs:
         run: |
           SELECTED=$(node --disable-warning=ExperimentalWarning --experimental-strip-types \
             scripts/ci/select-publication-manifest.mjs --base origin/main --head HEAD \
+            --candidate agent-platform/publication/dependency-updates.json \
             --candidate agent-platform/publication/process-and-docs.json \
             --candidate agent-platform/publication/phase-1.5-closure-hardening.json)
           echo "path=$SELECTED" >> "$GITHUB_OUTPUT"
