@@ -30,12 +30,12 @@ actions:
     release: v5.0.0
   github/codeql-action/init:
     major: 4
-    sha: 5595ccaf912efad79be6eef63a5619ff05969be3
-    release: v4.37.6
+    sha: ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
+    release: v4.37.7
   github/codeql-action/analyze:
     major: 4
-    sha: 5595ccaf912efad79be6eef63a5619ff05969be3
-    release: v4.37.6
+    sha: ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
+    release: v4.37.7
   cloudflare/wrangler-action:
     major: 4
     sha: ebbaa1584979971c8614a24965b4405ff95890e0
