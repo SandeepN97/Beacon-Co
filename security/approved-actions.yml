@@ -25,9 +25,9 @@ actions:
     sha: a1948c3f048ba23858d222213b7c278aabede763
     release: v4.1.1
   actions/dependency-review-action:
-    major: 4
-    sha: 595b5aeba73380359d98a5e087f648dbb0edce1b
-    release: v4.7.3
+    major: 5
+    sha: a1d282b36b6f3519aa1f3fc636f609c47dddb294
+    release: v5.0.0
   github/codeql-action/init:
     major: 4
     sha: 5595ccaf912efad79be6eef63a5619ff05969be3
@@ -41,6 +41,6 @@ actions:
     sha: ebbaa1584979971c8614a24965b4405ff95890e0
     release: v4.0.0
 review:
-  lastReviewed: 2026-08-14
+  lastReviewed: 2026-08-18
   owner: Security Architect
   nextReview: 2026-10-27
