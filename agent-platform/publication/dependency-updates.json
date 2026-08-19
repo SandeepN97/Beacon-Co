@@ -3,7 +3,7 @@
   "title": "npm dependency version updates",
   "summary": [
     "package.json and package-lock.json changes from a dependency version bump -- typically Dependabot-proposed, reviewed for breaking changes against this repo's actual usage before merge.",
-    "Scoped narrowly to dependency manifests only; a PR that also changes application code, tests, or CI configuration belongs to a different manifest, not this one."
+    "Scoped narrowly to dependency manifests only; a PR that also changes application code, tests, or CI configuration belongs to a different manifest, not this one. The one exception is pr-prepublish.yml itself, included only because introducing this manifest necessarily requires wiring it into that workflow's selector in the same commit -- not a general allowance to change workflows here."
   ],
   "risk": [
     "Varies by dependency: a patch bump within an already-accepted semver range is low risk; a major version bump gets its own explicit breaking-change review before this manifest is used to publish it.",
@@ -24,6 +24,7 @@
   "allowedPathPrefixes": [
     "package.json",
     "package-lock.json",
-    "agent-platform/publication/dependency-updates.json"
+    "agent-platform/publication/dependency-updates.json",
+    ".github/workflows/pr-prepublish.yml"
   ]
 }
