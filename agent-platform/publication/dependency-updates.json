@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "title": "npm dependency version updates",
+  "title": "Dependency version updates",
   "summary": [
     "package.json and package-lock.json changes from a dependency version bump -- typically Dependabot-proposed, reviewed for breaking changes against this repo's actual usage before merge.",
     "Scoped narrowly to dependency manifests only; a PR that also changes application code, tests, or CI configuration belongs to a different manifest, not this one. The one exception is pr-prepublish.yml itself, included only because introducing this manifest necessarily requires wiring it into that workflow's selector in the same commit -- not a general allowance to change workflows here."
