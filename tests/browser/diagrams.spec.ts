@@ -5,8 +5,8 @@ test("diagram catalog renders every Excalidraw and Mermaid source", async ({ pag
 
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Diagram catalog");
   await expect(page.locator("[data-architecture-diagram]")).toHaveCount(7);
-  await expect(page.locator("[data-mermaid-diagram]")).toHaveCount(18);
-  await expect(page.locator("[data-mermaid-render] svg")).toHaveCount(18, {
+  await expect(page.locator("[data-mermaid-diagram]")).toHaveCount(27);
+  await expect(page.locator("[data-mermaid-render] svg")).toHaveCount(27, {
     timeout: 15_000,
   });
   await expect(page.getByRole("button", { name: "Play animation" })).toHaveCount(6);

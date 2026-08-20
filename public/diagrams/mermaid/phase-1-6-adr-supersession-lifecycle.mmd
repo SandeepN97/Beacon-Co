@@ -1,0 +1,6 @@
+flowchart LR
+    P[Proposed] --> A[Accepted<br/>immutable]
+    A --> D[Deprecated]
+    A --> S["Superseded by ADR-NNNN"]
+    S -.->|forward link| N[New ADR:<br/>Accepted]
+    N -.->|backward link| S

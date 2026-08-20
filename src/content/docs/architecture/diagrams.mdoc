@@ -4,7 +4,7 @@ description: "Purpose, source, level, status, preview, and textual alternative f
 section: "architecture"
 order: 412
 status: "approved"
-lastReviewed: "2026-08-11"
+lastReviewed: "2026-08-20"
 owners: ["Knowledge Manager"]
 sourceFiles: ["BEACON_COMPLETE_EXECUTION_PROMPT.md","public/diagrams/source/beacon-system.excalidraw","reference/source-materials/originals/Claude_Multi_Agent_Business_Guide.pdf","reference/source-materials/originals/Claude_Codex_Broker_Addendum.docx","reference/source-materials/originals/ai_company_all_agents_and_combined_canvas.excalidraw","reference/source-materials/originals/easy_read_ai_company_architecture.excalidraw","reference/source-materials/originals/individual_agent_architecture_animated.excalidraw","reference/source-materials/originals/unified_agent_operating_architecture_all_in_one.excalidraw","reference/source-materials/extracted/broker-package/multi_agent_business_broker_end_to_end.excalidraw","reference/source-materials/originals/BEACON_SECURE_CICD_ARCHITECTURE_10_OF_10.excalidraw"]
 relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0015-adopt-secure-cicd-control-model"]
@@ -65,7 +65,7 @@ Mermaid provides focused, text-versioned views of the same system. Each diagram 
 
 ### Phase 1.6 knowledge, research, understanding & decision architecture
 
-These twelve views accompany the [Phase 1.6 master spec](/docs/plans/phase-1-6-master-spec/). They are target-state planning diagrams, not implemented architecture, until the ADRs each increment requires are accepted.
+These twenty-one views accompany the [Phase 1.6 master spec](/docs/plans/phase-1-6-master-spec/) (V6.5.1). They are target-state planning diagrams, not implemented architecture, until the ADRs each increment requires are accepted.
 
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-transition-gate.mmd" title="Phase 1.5 → 1.6 transition gate" /%}
 
@@ -81,11 +81,29 @@ These twelve views accompany the [Phase 1.6 master spec](/docs/plans/phase-1-6-m
 
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-visual-understanding-router.mmd" title="Visual Understanding Router" /%}
 
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-prompt-to-learning-journey.mmd" title="Prompt-to-Learning-Journey pipeline" /%}
+
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-adr-authority-boundary.mmd" title="ADR authority boundary" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-adr-supersession-lifecycle.mmd" title="ADR supersession and version lineage" /%}
 
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-provenance-flow.mmd" title="End-to-end provenance flow" /%}
 
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-three-site-deployment.mmd" title="Three-site deployment model" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-deployment-mechanics.mmd" title="Deployment mechanics for the three sites" /%}
+
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-canonical-data-model.mmd" title="Canonical data model (ERD)" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-research-thread-lifecycle.mmd" title="ResearchThread lifecycle" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-understanding-version-lifecycle.mmd" title="UnderstandingVersion lifecycle" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-decision-candidate-lifecycle.mmd" title="DecisionCandidate lifecycle" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-adr-lifecycle.mmd" title="ADR lifecycle" /%}
+
+{% mermaid_diagram src="/diagrams/mermaid/phase-1-6-learning-package-lifecycle.mmd" title="LearningPackage lifecycle" /%}
 
 {% mermaid_diagram src="/diagrams/mermaid/phase-1-6-capacity-watcher-sequence.mmd" title="Capacity Watcher sequence" /%}
 
@@ -94,7 +112,7 @@ These twelve views accompany the [Phase 1.6 master spec](/docs/plans/phase-1-6-m
 ## Coverage and source rule
 
 - **Excalidraw:** 7 unique sources, all 7 visible, with canonical local `.excalidraw` files.
-- **Mermaid:** 18 unique sources, all 18 visible, with canonical local `.mmd` files.
+- **Mermaid:** 27 unique sources, all 27 visible, with canonical local `.mmd` files.
 
 The Excalidraw source remains authoritative for visual layout; the generated SVG is a review surface. Mermaid source remains authoritative for Mermaid views. Duplicate package copies are provenance evidence, not separate diagrams.
 

@@ -10,3 +10,5 @@ erDiagram
     DecisionCandidate ||--o| ADRRef : becomes
     ADRRef ||--o| DecisionPackage : compiles
     DecisionPackage ||--o{ ContinuationPackage : tracked_by
+    ADRRef ||--o| ADRRef : supersedes
+    ADRRef ||--o| LearningPackage : generates
