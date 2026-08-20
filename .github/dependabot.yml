@@ -13,6 +13,18 @@ updates:
       development-tooling:
         dependency-type: development
         update-types: ["minor", "patch"]
+    ignore:
+      # TypeScript 7.0's new native compiler doesn't expose the programmatic
+      # API @astrojs/language-server's `astro check` relies on (breaks
+      # typecheck entirely), and typescript-eslint explicitly doesn't
+      # support TS 7.0 yet (breaks lint entirely) -- confirmed empirically
+      # by actually installing and running this repo's required gates
+      # against typescript@7.0.2, 2026-08-19. Real upstream gaps, not
+      # fixable from this repo. Remove once both ship TS 7.x support:
+      # https://github.com/withastro/roadmap/discussions/1321
+      # https://github.com/typescript-eslint/typescript-eslint/issues/10940
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     labels: ["dependencies", "security-review"]
 
   - package-ecosystem: github-actions
