@@ -1,0 +1,87 @@
+---
+title: "ADR-0020 — Authorize PR-0.5 (Capacity Watcher) and PR-0.6 (Task Classifier) as bounded increments"
+description: "Authorizes the bounded, evidence-gated PR-0.5 and PR-0.6 increments defined in the Phase 1.6 master spec V6.5.1's Section 31, per the honest-scoping requirements in Sections 29A.7 and 29B.7 -- simulated-only Capacity Watcher, log-only Task Classifier gated on PR-0A/PR-0B."
+section: "decisions"
+order: 829
+status: "approved"
+lastReviewed: "2026-08-20"
+owners: ["Repository Owner"]
+sourceFiles: ["src/content/docs/plans/phase-1-6-master-spec.mdoc"]
+relatedAdrs: ["0017-complete-agent-platform-before-business-expansion","0019-begin-phase-1-6-knowledge-research-understanding-decision-os"]
+relatedPages: ["plans/phase-1-6-master-spec","architecture/diagrams"]
+tags: ["adr","approved","phase-1-6","capacity-watcher","task-classifier"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0020" status="approved" %}
+Phase 1.6 PR-0.5 (Capacity Watcher) authorized 2026-08-20, bounded to design plus simulated/unit-tested threshold logic only -- no live provider-capacity polling. PR-0.6 (Task Classifier) authorized in scope but gated: implementation may not begin until PR-0A and PR-0B are separately authorized and merged.
+{% /decision_card %}
+
+## Context
+
+ADR-0019 authorized Phase 1.6 PR-0 only, and explicitly declined to pre-authorize PR-0.5 against the V5.0 master spec then landed, because that snapshot was known-incomplete: it lacked a real Section 29B, full Capacity Watcher polling specifics, and a Section 36 decision log. ADR-0019's Follow-up work item 3 required: *"Revisit this decision (amend or supersede) before starting PR-0.5, reconciling it against the corrected spec text."*
+
+The corrected version has now landed: `BEACON_PHASE_1_6_V6_MASTER_SPEC.md` (V6.5.1), merged to `main` as `src/content/docs/plans/phase-1-6-master-spec.mdoc` at commit `41bddb5` (PR #66). It supplies the real Section 29B (Multi-Provider Task Routing), full Capacity Watcher polling specifics (Section 29A.7), and substantially more. Every quotation in this ADR has been independently re-verified directly against that merged commit on `main`, not assumed from an earlier draft.
+
+## Decision drivers
+
+- **Section 31's PR-0.5 exit evidence** states exactly: *"Gated on real evidence of repeated capacity interruption (29A.7), not scheduled by default. Until then: simulated capacity-warning and hard-cap scenarios (not live — see 29A.4) trigger correct automatic switch and pause behavior in isolation; unit tests for threshold logic; no UI change outside `beacon` CLI output."*
+- **Section 29A.7's resolution** states: *"the Capacity Watcher's design stays as specified — nothing about it was wrong. Its position in the PR sequence moves: Section 31's PR-0.5 is now an evidence-gated side track off PR-0B, not a step on the main critical path... only the automatic predictive switch half is deferred pending evidence that the problem recurs often enough to justify building it now rather than later."*
+- **Section 31's PR-0.6 exit evidence** states exactly: *"Classifier output logged and comparable against actual provider used, for every WorkUnit, with zero change to execution behavior; adapter contract-conformance tests plus a harness-subprocess normalization test (parses OpenCode stdout into the shared AgentRun schema) — no eval-gated routing yet (29B.7)."*
+- **Section 29B.7's honest scoping** states: *"as of V6.1, no free-tier adapter has been run against a real Beacon WorkUnit, and no eval evidence exists comparing OpenCode, Aider, or OpenHands output quality against the existing Claude/Codex baseline on any of the eight roles. The table in 29B.3 is a routing hypothesis, not a default... no task class may be routed to a free-tier adapter in default operation until it passes the same eval fixture bar Phase 1.5 already requires... Until then, Section 29B.2's classifier may run in log-only mode — recording what it would route to, without controlling execution — so real comparison data can accumulate before anything changes behavior."*
+- **Section 31's PR-sequence diagram** (`public/diagrams/mermaid/phase-1-6-pr-sequence.mmd`) draws PR-0.6 on a **solid** edge inside the main critical-path chain (`PR0 → PR0A → PR0B → PR0.6 → PR1 → ...`), and separately draws PR-0.5 on a **dotted** edge explicitly labeled `evidence-gated side track, non-blocking — 29A.6, V6.5.1`, branching off the same PR0B node. The document draws these two relationships differently on purpose.
+- **Section 29A.6 item 3** (Open decisions, explicitly marked "do not treat as settled") states: *"PR numbering: insert as PR-0.5, or renumber the full PR-0–PR-8 sequence (Section 31)."* The document itself has not settled where PR-0.5 belongs in the sequence -- its current diagram position is provisional, by its own admission. No equivalent caveat exists anywhere for PR-0.6's position.
+- Section 1B's Frozen/Experimental registry independently classifies both as **EXPERIMENTAL / NOT STARTED / UNTESTED** ("Task classification" and "Capacity prediction" rows), consistent with bounding both to design-and-simulation-or-log-only scope, not live behavior change.
+- Section 19's authority invariant governs this ADR the same as every other: research, evidence, a landed spec, and Section 31's own table are not themselves authorization -- only this ADR authorizes PR-0.5 and PR-0.6 to begin.
+
+## Options considered
+
+- Authorize PR-0.5 and PR-0.6 with full scope as eventually described anywhere in V6.5.1 (including live capacity polling and eval-gated live routing). Rejected: directly contradicts Section 29A.7 and Section 29B.7's own explicit gating conditions.
+- Authorize neither increment until PR-0A and PR-0B are separately authorized and merged first, treating both as equally dependent on them. Rejected on the evidence: Section 29A.6 item 3 and the diagram's dotted/non-blocking treatment of PR-0.5 specifically distinguish it from PR-0.6's solid-line, main-critical-path position -- treating them identically would ignore a distinction the spec itself draws.
+- Authorize PR-0.5 now, bounded to simulated/unit-tested threshold logic only, with no PR-0A/PR-0B precondition (justified above); authorize PR-0.6 now in principle, but make its start binding-conditional on PR-0A and PR-0B being separately authorized and merged first, matching its solid-line position in Section 31's main sequence. Adopted.
+
+## Decision
+
+Adopt the third option.
+
+**PR-0.5 (Capacity Watcher)** is authorized to begin now, bounded exactly to Section 31's exit-evidence text quoted above: design and implementation of predictive usage monitoring, automatic switch trigger, both-capped terminal state, and `beacon` CLI UX for in-progress/switched/paused states -- validated only through **simulated capacity-warning and hard-cap scenarios** and **unit tests for threshold logic**, per Section 29A.4's honest-scoping rule that no real Claude-session-cap or Codex-rate-limit event has been observed. **Live provider-capacity polling against a real production incident is explicitly out of scope for this authorization** and stays gated pending the real repeated-capacity incident Section 29A.7 requires.
+
+**PR-0.6 (Task Classifier) is authorized in scope but not yet in start date.** Its implementation may not begin until **both PR-0A (Architectural Invariants registry, Section 1A/25A) and PR-0B (Event/Replay Semantics, Section 26A) have been separately authorized by their own ADR(s) and merged to `main`.** This is a binding precondition on this ADR's authorization, not an advisory note: Section 31's diagram places PR-0.6 on the main critical path directly after PR-0B, with no equivalent "not yet settled" caveat the way PR-0.5 carries (Section 29A.6 item 3). Once that precondition is satisfied, PR-0.6 is bounded exactly to Section 31's exit-evidence text quoted above: the rule-based classifier (Section 29B.2) running in **log-only mode**, emitting a `TaskClassified` event per WorkUnit for comparison against the actual provider used, plus the HarnessAdapter scaffolded behind the existing `ProviderAdapter` interface -- **the classifier must not control routing**. **Live, eval-gated routing control is explicitly out of scope for this authorization**, per Section 29B.7's requirement.
+
+Neither increment's exit evidence, once produced, converts to Architecture: FROZEN on Section 1B's registry by itself -- per that section's own rule, an Architecture axis only moves from EXPERIMENTAL to FROZEN by passing its specified eval path, never by a future revision simply asserting confidence.
+
+## Positive consequences
+
+- PR-0.5 can begin immediately without waiting for a real capacity incident, free-tier eval evidence, or PR-0A/PR-0B, since its authorized scope (design, simulation) is genuinely self-contained per the evidence in Decision drivers.
+- PR-0.6's implementation is protected from the rework risk that would come from building it before the invariants and event-semantics foundations Section 31 places immediately before it in the main sequence -- this ADR does not create a new obligation, it enforces the ordering the spec's own diagram already implies for this specific increment.
+- The authority boundary Section 19 and Section 29B.1 both insist on ("routing is an optimization layer, never a source-of-truth layer") is honored literally: nothing about how a WorkUnit is actually routed changes as a result of this ADR.
+- A durable, reviewable record exists of exactly what was authorized, when each increment may start, and why the two increments are treated differently, rather than leaving that distinction implicit in the spec alone.
+
+## Negative consequences
+
+- PR-0.6 cannot start until two more ADRs (for PR-0A and PR-0B) are drafted, accepted, and their PRs merged -- this is a real, multi-step delay before PR-0.6 implementation work can begin, not merely a documented risk.
+- This ADR's citations are drawn from `main` at commit `41bddb5`; if that content is later amended (e.g., a future V6.5.2), this ADR must be re-verified against the new version before continuing to be relied on.
+- Two additional re-verification points remain required before either increment's live-behavior gates can ever open: a real repeated-capacity incident (PR-0.5) and passing eval evidence meeting the Milestone-8-equivalent bar (PR-0.6) -- neither is close to existing today.
+
+## Risks
+
+- Treating "log-only" or "simulated-only" as a soft boundary rather than a hard one would repeat exactly the failure mode Section 29A.1 and operating law 3 already document -- this ADR states both boundaries as binding, not aspirational, consistent with how Section 31's own table phrases them ("no execution control," "not live").
+- If a future ADR authorizing PR-0A or PR-0B changes their scope from what Section 31 currently describes, PR-0.6's actual prerequisites could shift; this ADR's binding precondition should be re-checked against whatever PR-0A/PR-0B ADRs are eventually accepted, not assumed to still match Section 31's current table.
+- If PR-0.5's sequence position is later resolved differently under Section 29A.6 item 3 (e.g., renumbering the full PR-0-PR-8 sequence), this ADR's exemption of PR-0.5 from the PR-0A/PR-0B precondition should be re-examined against whatever that resolution turns out to be.
+
+## Follow-up work
+
+1. Implement PR-0.5 now: simulated scenarios and unit tests only, no live polling.
+2. Draft and seek acceptance of separate ADR(s) authorizing PR-0A and PR-0B before PR-0.6 implementation may begin.
+3. Once PR-0A and PR-0B are both merged, implement PR-0.6 exactly as bounded above: log-only `TaskClassified` emission and HarnessAdapter scaffolding only, no routing control.
+4. Before either increment's live-behavior gate is ever proposed to open (real capacity polling for PR-0.5; eval-gated routing for PR-0.6), a separate ADR is required -- this one does not pre-authorize that.
+
+## Supersedes or superseded by
+
+New decision; supersedes none. It fulfills ADR-0019's Follow-up work item 3 (revisit the PR-0.5 decision once the corrected spec lands) and extends ADR-0019 by authorizing the next two bounded increments now that the corrected spec exists, without reopening or modifying ADR-0019's own PR-0 scope.
+
+## Source references
+
+- `src/content/docs/plans/phase-1-6-master-spec.mdoc` (V6.5.1), Sections 1A, 1B, 19, 25A, 26A, 29A.4, 29A.6, 29A.7, 29B.1, 29B.2, 29B.7, 31 -- verified live on `main` at commit `41bddb5`.
+- `public/diagrams/mermaid/phase-1-6-pr-sequence.mmd` -- verified live on `main` at commit `41bddb5`.
+- `src/content/docs/decisions/0019-begin-phase-1-6-knowledge-research-understanding-decision-os.mdoc`

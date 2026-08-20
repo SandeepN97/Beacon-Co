@@ -4,7 +4,7 @@ description: "Business, experience, architecture, documentation, orchestration, 
 section: "decisions"
 order: 800
 status: "approved"
-lastReviewed: "2026-08-09"
+lastReviewed: "2026-08-20"
 owners: ["Knowledge Manager"]
 sourceFiles: ["docs/decisions/index.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
 relatedAdrs: []
@@ -129,6 +129,12 @@ Compare prepublication evidence by git tree content hash instead of commit SHA, 
 ### Begin Phase 1.6: Knowledge, Research, Understanding & Decision OS
 
 Authorize starting the bounded PR-0 increment (schemas, events, typed IDs, privacy/authority invariants) now that Phase 1.5 is verified complete-frozen. Does not pre-authorize PR-0.5 through PR-8 against the known-incomplete spec snapshot.
+{% /decision_card %}
+
+{% decision_card number="ADR-0020" status="accepted" href="/docs/decisions/0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments/" %}
+### Authorize PR-0.5 (Capacity Watcher) and PR-0.6 (Task Classifier) as bounded increments
+
+Authorize PR-0.5 now, bounded to design plus simulated/unit-tested threshold logic only -- no live provider-capacity polling. Authorize PR-0.6 in scope but gate its implementation start on PR-0A and PR-0B being separately authorized and merged first.
 {% /decision_card %}
 
 ## Status rule
