@@ -1,0 +1,9 @@
+flowchart TB
+    R["Monorepo<br/>existing Markdoc/content generator"] --> G["Canonical lineage<br/>ResearchThread → Claim → UnderstandingVersion → ADRRef"]
+    G --> F["Build-time projection filter<br/>applies Section 27 visibility rules per site"]
+    F --> B1["Business build target<br/>/building"]
+    F --> B2["Decisions build target<br/>/decisions + /docs"]
+    F --> B3["Learning build target<br/>explorable explanations"]
+    B1 --> D1[Deploy: business site]
+    B2 --> D2[Deploy: decisions site]
+    B3 --> D3[Deploy: learning site]

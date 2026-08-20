@@ -1,0 +1,7 @@
+flowchart TB
+    L[ResearchThread / Claim / UnderstandingVersion / ADRRef<br/>one canonical lineage] --> S1[Business site<br/>Building Beacon]
+    L --> S2[Decisions site<br/>ADRs + docs]
+    L --> S3[Learning site<br/>Beacon Lab learning half]
+    S1 -.-> V["Public curated<br/>narrative only"]
+    S2 -.-> D["Internal canonical<br/>ADR authority, docs"]
+    S3 -.-> E["Explorable explanations<br/>Section 17A pipeline"]
