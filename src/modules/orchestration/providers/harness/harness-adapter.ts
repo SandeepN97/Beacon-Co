@@ -13,6 +13,7 @@ import {
 import { normalizeOpenCodeResult } from "./opencode-normalizer.ts";
 
 export const GROQ_CREDENTIAL_ENV_VAR = "GROQ_API_KEY";
+const REQUIRED_EXECUTABLE_PATH_ENV_VAR = "PATH";
 
 export interface HarnessProcessResult {
   stdout: string;
@@ -55,12 +56,12 @@ export interface OpenCodeProcessTransportOptions {
 
 /** Section 29B.10.2 steps 2-4: spawn OpenCode and capture its process output. */
 export class OpenCodeProcessTransport implements HarnessTransport {
-  private readonly environment: NodeJS.ProcessEnv;
+  private readonly sourceEnvironment: NodeJS.ProcessEnv;
   private readonly processRunner: HarnessProcessRunner;
   private readonly timeoutMs: number;
 
   constructor(private readonly options: OpenCodeProcessTransportOptions) {
-    this.environment = options.environment ?? process.env;
+    this.sourceEnvironment = options.environment ?? process.env;
     this.processRunner = options.processRunner ?? defaultProcessRunner;
     this.timeoutMs = options.timeoutMs ?? 120_000;
   }
@@ -77,7 +78,7 @@ export class OpenCodeProcessTransport implements HarnessTransport {
         false,
       );
     }
-    const credential = this.environment[GROQ_CREDENTIAL_ENV_VAR];
+    const credential = this.sourceEnvironment[GROQ_CREDENTIAL_ENV_VAR];
     if (!credential) {
       throw new ProviderExecutionError(
         "groq",
@@ -86,9 +87,21 @@ export class OpenCodeProcessTransport implements HarnessTransport {
         false,
       );
     }
+    const executablePath = this.sourceEnvironment[REQUIRED_EXECUTABLE_PATH_ENV_VAR];
+    if (!executablePath) {
+      throw new ProviderExecutionError(
+        "groq",
+        "policy",
+        `${REQUIRED_EXECUTABLE_PATH_ENV_VAR} is not configured for the OpenCode harness.`,
+        false,
+      );
+    }
 
     let result: HarnessProcessResult;
     try {
+      // `opencode run [message..]` currently requires the prompt as a positional
+      // argument. The caller must therefore provide only bounded, secret-free
+      // context: process arguments may be observable outside this process.
       result = await this.processRunner(
         "opencode",
         ["run", "--format", "json", "--model", payload.resolvedModelId, payload.prompt],
@@ -97,7 +110,12 @@ export class OpenCodeProcessTransport implements HarnessTransport {
           encoding: "utf8",
           maxBuffer: 20 * 1024 * 1024,
           timeout: this.timeoutMs,
-          env: { ...this.environment, [GROQ_CREDENTIAL_ENV_VAR]: credential },
+          // Do not inherit the parent environment. PATH is required to resolve
+          // the CLI; GROQ_API_KEY is the only authorized child credential.
+          env: {
+            [REQUIRED_EXECUTABLE_PATH_ENV_VAR]: executablePath,
+            [GROQ_CREDENTIAL_ENV_VAR]: credential,
+          },
         },
       );
     } catch {

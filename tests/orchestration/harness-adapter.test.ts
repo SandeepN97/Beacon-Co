@@ -139,7 +139,7 @@ describe("HarnessAdapter contract conformance", () => {
     });
   });
 
-  it("spawns OpenCode in JSON mode with only an explicit Groq model and injected credential", async () => {
+  it("propagates the executable path and required Groq credential", async () => {
     let invocation: { file: string; args: string[]; environment: NodeJS.ProcessEnv } | undefined;
     const transport = new OpenCodeProcessTransport({
       repositoryRoot: "/fixture/repository",
@@ -153,11 +153,53 @@ describe("HarnessAdapter contract conformance", () => {
       resolvedModelId: "groq/openai/gpt-oss-120b",
       prompt: "bounded prompt",
     });
-    expect(invocation).toMatchObject({
+    expect(invocation).toEqual({
       file: "opencode",
       args: ["run", "--format", "json", "--model", "groq/openai/gpt-oss-120b", "bounded prompt"],
-      environment: { [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value" },
+      environment: {
+        PATH: "/fixture/bin",
+        [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value",
+      },
     });
+  });
+
+  it("does not propagate unrelated parent credentials, configuration, or process controls", async () => {
+    let childEnvironment: NodeJS.ProcessEnv | undefined;
+    const transport = new OpenCodeProcessTransport({
+      repositoryRoot: "/fixture/repository",
+      environment: {
+        PATH: "/fixture/bin",
+        [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value",
+        OPENAI_API_KEY: "unrelated-openai-value",
+        ANTHROPIC_API_KEY: "unrelated-anthropic-value",
+        AWS_SECRET_ACCESS_KEY: "unrelated-aws-value",
+        HOME: "/unrestricted/home",
+        NODE_OPTIONS: "--require=/untrusted/bootstrap.cjs",
+        HTTPS_PROXY: "https://unrelated-proxy.invalid",
+        UNRELATED_SECRET: "unrelated-value",
+      },
+      processRunner: async (_file, _args, options) => {
+        childEnvironment = options.env;
+        return { stdout: processOutput, stderr: "", exitCode: 0 };
+      },
+    });
+
+    await transport.invoke({
+      resolvedModelId: "groq/openai/gpt-oss-120b",
+      prompt: "bounded prompt",
+    });
+
+    expect(childEnvironment).toEqual({
+      PATH: "/fixture/bin",
+      [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value",
+    });
+    expect(childEnvironment).not.toHaveProperty("OPENAI_API_KEY");
+    expect(childEnvironment).not.toHaveProperty("ANTHROPIC_API_KEY");
+    expect(childEnvironment).not.toHaveProperty("AWS_SECRET_ACCESS_KEY");
+    expect(childEnvironment).not.toHaveProperty("HOME");
+    expect(childEnvironment).not.toHaveProperty("NODE_OPTIONS");
+    expect(childEnvironment).not.toHaveProperty("HTTPS_PROXY");
+    expect(childEnvironment).not.toHaveProperty("UNRELATED_SECRET");
   });
 });
 

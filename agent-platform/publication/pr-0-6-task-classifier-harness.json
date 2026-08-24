@@ -3,25 +3,26 @@
   "title": "PR-0.6: Log-only Task Classifier and OpenCode/Groq HarnessAdapter",
   "summary": [
     "Implement Section 29B.2's pure rule-based Task Classifier over WorkUnit role, risk tier, permission, review, context-size, and write signals, emitting one private TaskClassified event per WorkUnit for observational comparison only.",
-    "Implement HarnessAdapter behind the existing ProviderAdapter interface and wire its unregistered transport to `opencode run --format json` with an explicit `groq/<model>` and GROQ_API_KEY injected only through the child-process environment.",
+    "Implement HarnessAdapter behind the existing ProviderAdapter interface and wire its unregistered transport to `opencode run --format json` with an explicit `groq/<model>` and a child environment allowlisted to PATH plus the authorized GROQ_API_KEY.",
     "Parse OpenCode's NDJSON text/tool/step-finish events into the shared ProviderRun path, which the existing live-work-unit boundary normalizes into AgentRun; precise token fields are recorded only when every step reports them, otherwise nullable usage is marked estimated in bounded provider metadata."
   ],
   "risk": [
     "Medium and bounded: WorkUnit and telemetry contracts gain task-class signals and a truthful Groq adapter-execution identity, but the Phase 1.5 routable-provider catalog, CapacityManager states, broker construction, role eligibility, and routing policy remain Claude/Codex-only.",
     "The classifier output and comparison result are never accepted by Broker, ProviderRouter, CapacityManager, or an adapter. HarnessAdapter is exported but not registered in any execution or routing table, and no live OpenCode/Groq run is claimed.",
+    "OpenCode's current positional `run [message..]` interface places the compiled prompt in process arguments, so the scaffold may receive only bounded, secret-free context; an ACP/stdin transport redesign is outside this PR.",
     "Current main did not contain the taskClass runtime enum or Section 29B.2 WorkUnit fields despite the master spec describing them as already present; this PR adds one canonical enum/signals contract in domain/work-unit.ts instead of duplicating them in classifier code."
   ],
   "testEvidence": [
     "npm run phase15:audit returns status complete-frozen with localReady, publicationReady, and externalReady all true before implementation begins.",
     "npm run typecheck passes with 0 errors; only 5 pre-existing Astro hints remain.",
-    "Focused classifier, harness, adapter, routing, and telemetry tests pass 38/38, including ProviderAdapter structural conformance and OpenCode stdout to AgentRun normalization.",
-    "npm run test passes 304/304 across 43 files.",
+    "Focused classifier, harness, adapter, routing, and telemetry tests pass 39/39, covering ProviderAdapter structural conformance, an exact PATH/GROQ_API_KEY child environment, unrelated credential exclusion, OpenCode stdout to AgentRun normalization, and unchanged routing behavior.",
+    "npm run test passes 305/305 across 43 files.",
     "npm run telemetry:validate passes with the routable Claude/Codex provider catalog kept distinct from the Claude/Codex/Groq adapter telemetry catalog.",
     "npm run ci:prepublish result for this candidate is bound to the candidate SHA and appended to the published PR body."
   ],
   "documentationImpact": [
     "README.md's current-state section now reflects the merged PR-0/0.5/0A/0B baseline and the bounded PR-0.6 behavior.",
-    "The canonical routing-and-scheduling page records the log-only comparison boundary, OpenCode/Groq subprocess contract, truthful adapter identity, and unchanged Claude/Codex routing table. No new ADR is required because ADR-0020 already authorizes this exact bounded increment."
+    "The canonical routing-and-scheduling page records the log-only comparison boundary, minimal subprocess environment, positional-prompt exposure constraint, truthful adapter identity, and unchanged Claude/Codex routing table. No new ADR is required because ADR-0020 already authorizes this exact bounded increment."
   ],
   "rollback": [
     "Revert this bounded commit through the protected pull-request workflow.",
