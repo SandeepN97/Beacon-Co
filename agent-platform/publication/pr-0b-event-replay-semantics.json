@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "title": "PR-0B: Event and Replay Semantics (Section 26A)",
+  "summary": [
+    "Implement Section 26A's eventId-based idempotency, causationRef/correlationRef enforcement, and replay capability for derived state, per ADR-0021's PR-0B authorization, now unblocked with PR-0A merged.",
+    "EventLog is a minimal, generic append-only log keyed solely on eventId -- a duplicate delivery is a documented no-op, not an error and not a second transition.",
+    "buildAggregateActivityProjection is a pure reducer proving replay: derived state built purely from the canonical event log, validated by a fixture that deletes a projection and confirms replay reconstructs it byte-for-byte equivalent."
+  ],
+  "risk": [
+    "Low: new, additive orchestration module and its unit tests only; no existing schema, event vocabulary entry, routing behavior, or public page changes.",
+    "AggregateActivityProjection is deliberately a minimal, generic derived-state shape used only to exercise the replay mechanism -- not a new Phase 1.6 canonical entity."
+  ],
+  "testEvidence": [
+    "npm run typecheck passes (0 errors).",
+    "npm run test passes 289/289, including 14 new unit tests in decision-os-event-replay.test.ts covering idempotency, causation/correlation enforcement (including Section 26A's own worked ADRAccepted/DecisionPackageCreated example), and the literal byte-for-byte replay fixture Section 31's PR-0B exit evidence names.",
+    "npm run format:check and npm run lint pass with no findings.",
+    "npm run ci:prepublish result for this candidate is bound to the candidate SHA and appended to the published PR body."
+  ],
+  "documentationImpact": [
+    "None: this PR implements only the design/test scope ADR-0021 already authorized and documented; no plan, decision, or architecture page changes."
+  ],
+  "rollback": [
+    "Revert this bounded commit through the protected pull-request workflow.",
+    "No schema migration, runtime wiring, routing behavior change, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/pr-0b-event-replay-semantics.json",
+    "src/modules/orchestration/decision-os/event-replay.ts",
+    "tests/orchestration/decision-os-event-replay.test.ts",
+    ".github/workflows/pr-prepublish.yml"
+  ]
+}
