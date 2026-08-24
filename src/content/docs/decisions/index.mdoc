@@ -143,6 +143,12 @@ Authorize PR-0.5 now, bounded to design plus simulated/unit-tested threshold log
 Authorize PR-0A now, bounded to the seven contract-checkable invariants (INV-001, 002, 003, 006, 007, 008, 010) plus Section 25A's lifecycle state-machine guards and a contract-consistency test. Authorize PR-0B in scope but gate its implementation start on PR-0A being merged first.
 {% /decision_card %}
 
+{% decision_card number="ADR-0022" status="under-review" href="/docs/decisions/0022-authorize-deterministic-opencode-harness-isolation-profile/" %}
+### Authorize a deterministic isolated OpenCode harness profile for the PR-0.6 scaffold
+
+Proposed authority only: place a Beacon-controlled ephemeral, zero-tool execution profile between the unregistered HarnessAdapter and OpenCode. The proposal keeps Groq non-routable and TaskClassifier log-only while making environment, configuration, permissions, plugins, MCPs, agents, turns, and output tokens fail-closed.
+{% /decision_card %}
+
 ## Status rule
 
 Implemented and established repository choices may be approved. Target architecture not implemented is draft or under review unless the decision governs a simulation or policy boundary that now exists. Evidence alone does not accept an ADR.
