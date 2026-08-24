@@ -41,6 +41,7 @@ jobs:
             --candidate agent-platform/publication/process-and-docs.json \
             --candidate agent-platform/publication/pr-0-5-capacity-watcher.json \
             --candidate agent-platform/publication/pr-0a-architectural-invariants.json \
+            --candidate agent-platform/publication/pr-0b-event-replay-semantics.json \
             --candidate agent-platform/publication/phase-1.5-closure-hardening.json)
           echo "path=$SELECTED" >> "$GITHUB_OUTPUT"
       - name: Run prepublication evidence gate
