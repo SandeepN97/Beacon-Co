@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "title": "PR-0A: Architectural Invariants registry, seven contract-checkable",
+  "summary": [
+    "Implement the Section 1A invariants registry with automated tests for only the seven invariants checkable from contracts alone at this stage (INV-001, 002, 003, 006, 007, 008, 010), per ADR-0021.",
+    "Encode Section 25A's five lifecycle state machines (ADR, LearningPackage, ResearchThread, UnderstandingVersion, DecisionCandidate) as pure transition-guard functions, taken directly from the live .mmd diagram sources.",
+    "Add a contract-consistency test that parses the live master-spec Appendix A block and the ADR/LearningPackage diagram sources off disk and asserts they stay mutually consistent -- the exact two entities V6.5.1 already found drifting and fixed."
+  ],
+  "risk": [
+    "Low: new, additive orchestration module and its unit tests only; no existing schema, event vocabulary entry, routing behavior, or public page changes.",
+    "Deliberately does not test INV-004, INV-005, INV-009, INV-011, or INV-012 -- each activates only in the PR that introduces the entity it governs, per Section 31's own rule, so this PR does not test against a stub built solely to satisfy the test."
+  ],
+  "testEvidence": [
+    "npm run typecheck passes (0 errors).",
+    "npm run test passes 275/275, including 46 new unit tests across decision-os-lifecycle.test.ts, decision-os-invariants.test.ts, and decision-os-contract-consistency.test.ts.",
+    "npm run format:check and npm run lint pass with no findings.",
+    "npm run ci:prepublish result for this candidate is bound to the candidate SHA and appended to the published PR body."
+  ],
+  "documentationImpact": [
+    "None: this PR implements only the design/test scope ADR-0021 already authorized and documented; no plan, decision, or architecture page changes.",
+    "Four real, pre-existing spec-vs-code drifts were found while building this (ADR status enum, ResearchThread status enum, missing UnderstandingVersion status, DataClassification enum) -- documented in code comments as explicit open findings, not fixed here and not silently dropped."
+  ],
+  "rollback": [
+    "Revert this bounded commit through the protected pull-request workflow.",
+    "No schema migration, runtime wiring, routing behavior change, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/pr-0a-architectural-invariants.json",
+    "src/modules/orchestration/decision-os/invariants.ts",
+    "src/modules/orchestration/decision-os/lifecycle.ts",
+    "tests/orchestration/decision-os-invariants.test.ts",
+    "tests/orchestration/decision-os-lifecycle.test.ts",
+    "tests/orchestration/decision-os-contract-consistency.test.ts",
+    ".github/workflows/pr-prepublish.yml"
+  ]
+}
