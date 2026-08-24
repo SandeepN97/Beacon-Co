@@ -114,39 +114,71 @@ describe("Section 29B.2 Task Classifier", () => {
 });
 
 describe("TaskClassified observation", () => {
-  it("records exactly one private TaskClassified event for each WorkUnit", () => {
+  it("deduplicates on eventId (PR-0B rule 1-2), not on workUnit.id", () => {
     const log = new TaskClassificationEventLog();
     const first = workUnit("code-writer");
     const second = workUnit("qa-engineer", { id: "work-unit-2" });
-    log.record(first, {
+
+    const firstResult = log.record(first, {
       eventId: "task-classified-1",
       projectRef: "beacon-co",
       occurredAt: "2026-08-24T12:00:00.000Z",
     });
-    log.record(first, {
-      eventId: "ignored-duplicate-classification",
+    // A genuine duplicate delivery of the SAME eventId is a no-op: it
+    // returns the original event, not a second transition.
+    const duplicateDeliveryResult = log.record(first, {
+      eventId: "task-classified-1",
       projectRef: "beacon-co",
       occurredAt: "2026-08-24T12:00:02.000Z",
     });
+    expect(duplicateDeliveryResult).toBe(firstResult);
+
     log.record(second, {
       eventId: "task-classified-2",
       projectRef: "beacon-co",
       occurredAt: "2026-08-24T12:00:01.000Z",
     });
+
     expect(log.all()).toMatchObject([
       {
+        eventId: "task-classified-1",
         eventType: "TaskClassified",
         visibility: "private",
         correlationRef: "work-unit-1",
         payload: { workUnitId: "work-unit-1", taskClass: "implementation" },
       },
       {
+        eventId: "task-classified-2",
         eventType: "TaskClassified",
         visibility: "private",
         correlationRef: "work-unit-2",
         payload: { workUnitId: "work-unit-2", taskClass: "qa" },
       },
     ]);
+  });
+
+  it("does NOT silently discard a second, distinctly-eventId'd classification for the same WorkUnit", () => {
+    // This is the corrected half of the behavior: identity comes from
+    // eventId alone (Section 26A rule 1), never re-derived from the
+    // aggregate (workUnit.id). A caller that deliberately re-classifies
+    // the same WorkUnit under a new eventId gets a genuine second event.
+    const log = new TaskClassificationEventLog();
+    const unit = workUnit("code-writer");
+    log.record(unit, { eventId: "task-classified-1", projectRef: "beacon-co" });
+    log.record(unit, { eventId: "task-classified-1-reclassified", projectRef: "beacon-co" });
+    expect(log.all()).toHaveLength(2);
+    expect(log.all().map((event) => event.eventId)).toEqual([
+      "task-classified-1",
+      "task-classified-1-reclassified",
+    ]);
+  });
+
+  it("in practice, a caller using a WorkUnit-derived eventId still gets one classification per WorkUnit (simulation.ts's own pattern)", () => {
+    const log = new TaskClassificationEventLog();
+    const unit = workUnit("code-writer");
+    log.record(unit, { eventId: `${unit.id}-task-classified`, projectRef: "beacon-co" });
+    log.record(unit, { eventId: `${unit.id}-task-classified`, projectRef: "beacon-co" });
+    expect(log.all()).toHaveLength(1);
   });
 
   it("is comparable to the actual provider while leaving routing unchanged", () => {

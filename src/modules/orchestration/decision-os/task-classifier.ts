@@ -145,19 +145,30 @@ export function createTaskClassifiedEvent(
 
 /**
  * Minimal append-only log for the one event PR-0.6 is authorized to emit.
- * EventLog supplies PR-0B's eventId idempotency without changing it.
+ * Deduplicates strictly on `eventId`, per PR-0B's Section 26A rules 1-2
+ * ("eventId MUST be globally unique... nothing downstream may re-derive
+ * identity from payload content") -- not on `workUnit.id`. A caller that
+ * wants "one classification per WorkUnit, ever" gets that for free by
+ * supplying a WorkUnit-derived eventId (as ../simulation.ts does:
+ * `${workUnit.id}-task-classified`), but this log itself does not silently
+ * discard a second, distinctly-eventId'd classification for the same
+ * WorkUnit -- doing so would re-derive identity from the aggregate rather
+ * than the event, which is exactly what rule 1 forbids.
  */
 export class TaskClassificationEventLog {
   private readonly log = new EventLog<TaskClassifiedPayload>();
-  private readonly byWorkUnitId = new Map<string, TaskClassifiedEvent>();
+  private readonly byEventId = new Map<string, TaskClassifiedEvent>();
 
   record(workUnit: WorkUnit, context: TaskClassificationEventContext): TaskClassifiedEvent {
-    const existing = this.byWorkUnitId.get(workUnit.id);
-    if (existing) return existing;
     const event = createTaskClassifiedEvent(workUnit, context);
-    this.log.append(event as KnowledgeEvent<TaskClassifiedPayload>);
-    this.byWorkUnitId.set(workUnit.id, event);
-    return event;
+    const isNewTransition = this.log.append(event as KnowledgeEvent<TaskClassifiedPayload>);
+    if (isNewTransition) {
+      this.byEventId.set(event.eventId, event);
+      return event;
+    }
+    // Rule 2: "A duplicate delivery is a no-op, not an error and not a
+    // second transition." Return the original event, not this candidate.
+    return this.byEventId.get(event.eventId) ?? event;
   }
 
   all(): readonly KnowledgeEvent<TaskClassifiedPayload>[] {
