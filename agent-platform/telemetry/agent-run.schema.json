@@ -48,7 +48,7 @@
     "contractSha256": { "$ref": "#/$defs/sha256" },
     "riskClass": { "enum": ["risk-0", "risk-1", "risk-2", "risk-3"] },
     "provider": {
-      "anyOf": [{ "enum": ["claude", "codex"] }, { "type": "null" }]
+      "anyOf": [{ "enum": ["claude", "codex", "groq"] }, { "type": "null" }]
     },
     "resolvedModelId": {
       "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 160 }, { "type": "null" }]

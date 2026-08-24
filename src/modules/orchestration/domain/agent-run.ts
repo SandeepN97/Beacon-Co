@@ -1,8 +1,8 @@
 import { z } from "astro/zod";
 import { DataClassificationSchema } from "./work-request.ts";
 import {
+  AdapterProviderIdSchema,
   NormalizedTokenUsageSchema,
-  ProviderIdSchema,
   RunStatusSchema,
   StopReasonSchema,
 } from "./provider-run.ts";
@@ -48,7 +48,7 @@ export const AgentRunSchema = z
     contractVersion: z.string().min(1).max(64),
     contractSha256: Sha256Schema,
     riskClass: AgentRiskClassSchema,
-    provider: ProviderIdSchema.nullable(),
+    provider: AdapterProviderIdSchema.nullable(),
     resolvedModelId: z.string().min(1).max(160).nullable(),
     requestedEffort: z.string().min(1).max(64).nullable(),
     startedAt: TimestampSchema,

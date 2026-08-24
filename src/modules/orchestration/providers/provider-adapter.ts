@@ -1,17 +1,17 @@
 import type { ProviderId } from "../domain/provider.ts";
-import type { ProviderRun } from "../domain/provider-run.ts";
+import type { AdapterProviderId, ProviderRun } from "../domain/provider-run.ts";
 import type { WorkRequest } from "../domain/work-request.ts";
 import type { RetrievedContextPackage } from "../knowledge/context-packager.ts";
 
 export interface ProviderPrompt {
-  provider: ProviderId;
+  provider: AdapterProviderId;
   requestId: string;
   content: string;
   simulated: true;
 }
 
 export interface SimulatedProviderResult {
-  provider: ProviderId;
+  provider: AdapterProviderId;
   status: "simulated-complete";
   prompt: ProviderPrompt;
   message: string;
@@ -19,7 +19,7 @@ export interface SimulatedProviderResult {
 }
 
 export interface SimulatedProviderAdapter {
-  readonly provider: ProviderId;
+  readonly provider: AdapterProviderId;
   compile(request: WorkRequest, context: RetrievedContextPackage): ProviderPrompt;
   simulate(request: WorkRequest, context: RetrievedContextPackage): SimulatedProviderResult;
 }
@@ -56,14 +56,14 @@ export interface ProviderTransport {
 }
 
 export class ProviderExecutionError extends Error {
-  readonly provider: ProviderId;
+  readonly provider: AdapterProviderId;
   readonly category:
     "capacity" | "transient" | "authentication" | "policy" | "invalid-response" | "unknown";
   readonly retryable: boolean;
   readonly statusCode: number | null;
 
   constructor(
-    provider: ProviderId,
+    provider: AdapterProviderId,
     category:
       "capacity" | "transient" | "authentication" | "policy" | "invalid-response" | "unknown",
     message: string,

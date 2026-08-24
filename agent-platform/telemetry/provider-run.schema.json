@@ -32,7 +32,7 @@
     "agentRunId": { "type": "string", "minLength": 1, "maxLength": 160 },
     "workUnitId": { "type": "string", "minLength": 1, "maxLength": 160 },
     "taskFingerprint": { "$ref": "#/$defs/sha256" },
-    "provider": { "enum": ["claude", "codex"] },
+    "provider": { "enum": ["claude", "codex", "groq"] },
     "resolvedModelId": { "type": "string", "minLength": 1, "maxLength": 160 },
     "requestedEffort": {
       "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 64 }, { "type": "null" }]

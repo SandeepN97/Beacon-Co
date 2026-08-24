@@ -3,6 +3,7 @@ import { ContinuationManager } from "../../src/modules/orchestration/broker/cont
 import { ContextRetriever } from "../../src/modules/orchestration/knowledge/context-retriever";
 import { IntentTranslator } from "../../src/modules/orchestration/translator/intent-translator";
 import type { WorkUnit } from "../../src/modules/orchestration/domain/work-unit";
+import { deriveWorkUnitTaskSignals } from "../../src/modules/orchestration/decision-os/task-classifier.ts";
 import { documents } from "./fixtures";
 
 describe("provider-neutral continuation", () => {
@@ -22,6 +23,7 @@ describe("provider-neutral continuation", () => {
       assignedProvider: "codex",
       authorSessionId: "codex-1",
       retryCount: 1,
+      ...deriveWorkUnitTaskSignals("code-writer", request.risk, 0),
     };
     const manager = new ContinuationManager();
     const value = manager.create(workUnit, {
@@ -79,6 +81,7 @@ describe("provider-neutral continuation", () => {
       assignedProvider: "claude",
       authorSessionId: "claude-1",
       retryCount: 0,
+      ...deriveWorkUnitTaskSignals("chief-of-staff", request.risk, 0),
     };
     const manager = new ContinuationManager();
     const value = manager.create(workUnit, {

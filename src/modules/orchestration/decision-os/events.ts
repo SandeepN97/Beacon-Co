@@ -61,6 +61,11 @@ export const KnowledgeEventTypeSchema = z.enum([
   "ProviderSwitchTriggered",
   "ProviderSwitchCompleted",
   "BothProvidersUnavailable",
+  // Task classification (new in PR-0.6, Section 29B.8). Only TaskClassified
+  // is added here. The remaining Section 29B.8 events belong to later
+  // eligibility, routing, and trust-tier work that ADR-0020 does not
+  // authorize in this log-only increment.
+  "TaskClassified",
   // Narrative
   "StoryCandidateCreated",
   "StoryPublished",

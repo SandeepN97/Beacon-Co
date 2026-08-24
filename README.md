@@ -15,7 +15,7 @@ Start with [`src/content/docs/index.mdoc`](src/content/docs/index.mdoc) or the r
 | `CLAUDE.md` / `AGENTS.md` | Project instructions for AI coding agents (`CLAUDE.md` is a symlink to `AGENTS.md` so both read the same source of truth). |
 | `src/content/docs/` | Canonical `.mdoc` business, product, architecture, agent, workflow, governance, ADR, roadmap, operations, and reference pages. |
 | `.github/workflows/` / `security/` | Secure delivery definitions and machine-readable dependency, Action, header, data, vulnerability, and exception policy. |
-| `src/modules/orchestration/` | Typed translator, Markdoc retrieval, broker, provider adapters, workflows, approvals, audit, and documentation-impact simulation. |
+| `src/modules/orchestration/` | Typed translator, Markdoc retrieval, broker, provider adapters, log-only task classification, workflows, approvals, audit, and documentation-impact simulation. |
 | `src/pages/docs/` / `src/layouts/DocsLayout.astro` | Static Astro documentation route and reading experience. |
 | `src/pages/workspace/` | Truthfully labeled in-memory orchestration vertical slice and non-operational queue placeholders. |
 | `public/diagrams/` | Preserved Excalidraw sources, package contents, previews, Mermaid sources, and truthful exports. |
@@ -31,8 +31,8 @@ Start with [`src/content/docs/index.mdoc`](src/content/docs/index.mdoc) or the r
 
 ## Project status
 
-- **Phase 1.5** (agent platform completion, ADR-0017): implemented and previously verified `complete-frozen`. `npm run phase15:audit` currently reads `in-progress` — not a regression, but a known, logged evidence-binding gap after the most recent merge to `main` (see `.claude/agents/release-manager.md`'s Known corrections section); evidence needs regenerating against the current tip before the audit reads `complete-frozen` again. Full detail: [`plans/phase-1-5-completion-audit`](src/content/docs/plans/phase-1-5-completion-audit.mdoc).
-- **Phase 1.6** (Knowledge/Research/Understanding/Decision OS, ADR-0019): authorized, bounded to PR-0. PR-0 part 1 — schemas, events, and typed IDs under `src/modules/orchestration/decision-os/` — is merged. `authority.ts` (the privacy/authority invariants ADR-0019 also scopes into PR-0) is not yet implemented, so PR-0 is not fully closed. Full detail: [`decisions/0019-begin-phase-1-6...`](src/content/docs/decisions/0019-begin-phase-1-6-knowledge-research-understanding-decision-os.mdoc), [`plans/current-phase`](src/content/docs/plans/current-phase.mdoc).
+- **Phase 1.5** (agent platform completion, ADR-0017): implemented and verified `complete-frozen`; re-run `npm run phase15:audit` before relying on that status in a later session. Full detail: [`plans/phase-1-5-completion-audit`](src/content/docs/plans/phase-1-5-completion-audit.mdoc).
+- **Phase 1.6** (Knowledge/Research/Understanding/Decision OS): PR-0, PR-0.5, PR-0A, and PR-0B are merged. ADR-0020's PR-0.6 adds log-only WorkUnit task classification and an unregistered OpenCode/Groq HarnessAdapter scaffold; it does not change which provider executes work. Full detail: [`decisions/0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments`](src/content/docs/decisions/0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments.mdoc), [`plans/phase-1-6-master-spec`](src/content/docs/plans/phase-1-6-master-spec.mdoc).
 
 ## Development
 
@@ -89,7 +89,7 @@ A solo-operator agency built around one idea: automate everything except the two
 - **Frontend (implemented):** Astro 7 static site → Cloudflare Worker static assets
 - **Contact form:** Cloudflare Worker route (`src/worker.ts`) + Turnstile + Resend
 - **Documentation (implemented):** Astro + Markdoc source of truth with validated content, ADRs, provenance, search, and diagrams
-- **Orchestration (implemented simulation):** typed translator, Markdoc retrieval, broker/router, Claude/Codex prompt adapters, approvals, audit, continuation, workflow gates, and documentation impact
+- **Orchestration (implemented simulation):** typed translator, Markdoc retrieval, Claude/Codex broker/router, log-only Task Classifier, Claude/Codex prompt adapters, an unregistered OpenCode/Groq HarnessAdapter scaffold, approvals, audit, continuation, workflow gates, and documentation impact
 - **Data (planned):** Supabase (Postgres, Storage, Realtime, RLS)
 - **Queue (planned):** pg-boss on Postgres
 - **AI (planned):** Claude API, versioned prompt registry, output guards

@@ -5,7 +5,12 @@ import { Broker } from "./broker/broker";
 import { CapacityManager } from "./broker/capacity-manager";
 import { ProviderRouter } from "./broker/router";
 import type { ProviderId, ProviderState } from "./domain/provider";
-import type { WorkUnit } from "./domain/work-unit";
+import type { WorkflowType } from "./domain/work-request.ts";
+import type { WorkUnit, WorkUnitRole } from "./domain/work-unit";
+import {
+  deriveWorkUnitTaskSignals,
+  TaskClassificationEventLog,
+} from "./decision-os/task-classifier.ts";
 import { analyzeDocumentationImpact } from "./documentation/impact-analyzer";
 import { createUpdateProposal } from "./documentation/update-proposal";
 import type { DocumentIndexEntry } from "./knowledge/document-index";
@@ -17,6 +22,16 @@ import { IntentTranslator } from "./translator/intent-translator";
 export interface SimulationOptions {
   providerState?: Partial<Record<ProviderId, Partial<ProviderState>>>;
 }
+
+const taskRoleByWorkflow: Readonly<Record<WorkflowType, WorkUnitRole>> = {
+  documentation: "code-writer",
+  planning: "chief-of-staff",
+  architecture: "chief-of-staff",
+  implementation: "codebase-researcher",
+  review: "pr-reviewer",
+  operations: "release-manager",
+  mixed: "chief-of-staff",
+};
 
 export function runOrchestrationSimulation(
   rawRequest: string,
@@ -62,7 +77,20 @@ export function runOrchestrationSimulation(
     assignedProvider: null,
     authorSessionId: null,
     retryCount: 0,
+    ...deriveWorkUnitTaskSignals(
+      taskRoleByWorkflow[translation.request.workflowType],
+      translation.request.risk,
+      Math.ceil(Buffer.byteLength(JSON.stringify(context), "utf8") / 4),
+    ),
   };
+
+  // PR-0.6 observation only: the event is recorded before execution and
+  // is never passed to Broker, ProviderRouter, or any adapter.
+  const taskClassifications = new TaskClassificationEventLog();
+  taskClassifications.record(workUnit, {
+    eventId: `${workUnit.id}-task-classified`,
+    projectRef: "beacon-co",
+  });
 
   const capacity = new CapacityManager(options.providerState);
   const router = new ProviderRouter(capacity);
@@ -92,6 +120,7 @@ export function runOrchestrationSimulation(
     context,
     capacity: capacity.list(),
     execution,
+    taskClassifications: taskClassifications.all(),
     documentationImpact,
     updateProposal,
     approvals: requiredApprovalKinds(translation.request),

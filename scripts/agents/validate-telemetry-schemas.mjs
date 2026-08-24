@@ -3,7 +3,10 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
 import { AgentRoleSchema } from "../../src/modules/orchestration/domain/agent-run.ts";
-import { ProviderIdSchema } from "../../src/modules/orchestration/domain/provider-run.ts";
+import {
+  AdapterProviderIdSchema,
+  ProviderIdSchema,
+} from "../../src/modules/orchestration/domain/provider-run.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const manifest = parse(await readFile(resolve(root, "agent-platform/agent-contracts.yml"), "utf8"));
@@ -67,12 +70,19 @@ if (JSON.stringify(jsonRoles) !== JSON.stringify(expectedRoles)) {
 
 const expectedProviders = [...manifest.providers].sort();
 const runtimeProviders = [...ProviderIdSchema.options].sort();
+const runtimeAdapterProviders = [...AdapterProviderIdSchema.options].sort();
 const jsonProviders = [...(loaded.get("ProviderRun")?.properties?.provider?.enum ?? [])].sort();
+const jsonAgentRunProviders = [
+  ...(loaded.get("AgentRun")?.properties?.provider?.anyOf?.find((entry) => entry.enum)?.enum ?? []),
+].sort();
 if (JSON.stringify(runtimeProviders) !== JSON.stringify(expectedProviders)) {
   errors.push("Runtime ProviderId schema drifts from the manifest provider catalog.");
 }
-if (JSON.stringify(jsonProviders) !== JSON.stringify(expectedProviders)) {
-  errors.push("ProviderRun JSON schema provider enum drifts from the manifest provider catalog.");
+if (JSON.stringify(jsonProviders) !== JSON.stringify(runtimeAdapterProviders)) {
+  errors.push("ProviderRun JSON schema provider enum drifts from the runtime adapter catalog.");
+}
+if (JSON.stringify(jsonAgentRunProviders) !== JSON.stringify(runtimeAdapterProviders)) {
+  errors.push("AgentRun JSON schema provider enum drifts from the runtime adapter catalog.");
 }
 
 if (errors.length) {

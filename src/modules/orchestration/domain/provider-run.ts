@@ -1,6 +1,12 @@
 import { z } from "astro/zod";
 
 export const ProviderIdSchema = z.enum(["claude", "codex"]);
+/**
+ * Provider identities an adapter may truthfully record. `ProviderIdSchema`
+ * remains the closed Phase 1.5 routing catalog; adding an adapter provider
+ * here does not make it eligible in the broker or any role contract.
+ */
+export const AdapterProviderIdSchema = z.enum(["claude", "codex", "groq"]);
 export const RunStatusSchema = z.enum([
   "queued",
   "running",
@@ -117,7 +123,7 @@ export const ProviderRunSchema = z
     agentRunId: z.string().min(1).max(160),
     workUnitId: z.string().min(1).max(160),
     taskFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
-    provider: ProviderIdSchema,
+    provider: AdapterProviderIdSchema,
     resolvedModelId: z.string().min(1).max(160),
     requestedEffort: z.string().min(1).max(64).nullable(),
     startedAt: TimestampSchema,
@@ -167,6 +173,7 @@ export const ProviderRunSchema = z
   });
 
 export type NormalizedTokenUsage = z.infer<typeof NormalizedTokenUsageSchema>;
+export type AdapterProviderId = z.infer<typeof AdapterProviderIdSchema>;
 export type ProviderRun = z.infer<typeof ProviderRunSchema>;
 
 export function validateProviderRun(input: unknown): ProviderRun {
