@@ -4,7 +4,7 @@ description: "Business, experience, architecture, documentation, orchestration, 
 section: "decisions"
 order: 800
 status: "approved"
-lastReviewed: "2026-08-20"
+lastReviewed: "2026-08-23"
 owners: ["Knowledge Manager"]
 sourceFiles: ["docs/decisions/index.md","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
 relatedAdrs: []
@@ -135,6 +135,12 @@ Authorize starting the bounded PR-0 increment (schemas, events, typed IDs, priva
 ### Authorize PR-0.5 (Capacity Watcher) and PR-0.6 (Task Classifier) as bounded increments
 
 Authorize PR-0.5 now, bounded to design plus simulated/unit-tested threshold logic only -- no live provider-capacity polling. Authorize PR-0.6 in scope but gate its implementation start on PR-0A and PR-0B being separately authorized and merged first.
+{% /decision_card %}
+
+{% decision_card number="ADR-0021" status="accepted" href="/docs/decisions/0021-authorize-pr-0a-and-pr-0b-as-bounded-increments/" %}
+### Authorize PR-0A (Architectural Invariants) and PR-0B (Event/Replay Semantics) as bounded increments
+
+Authorize PR-0A now, bounded to the seven contract-checkable invariants (INV-001, 002, 003, 006, 007, 008, 010) plus Section 25A's lifecycle state-machine guards and a contract-consistency test. Authorize PR-0B in scope but gate its implementation start on PR-0A being merged first.
 {% /decision_card %}
 
 ## Status rule

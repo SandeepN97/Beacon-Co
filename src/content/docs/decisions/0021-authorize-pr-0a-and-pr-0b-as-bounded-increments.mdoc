@@ -1,0 +1,88 @@
+---
+title: "ADR-0021 — Authorize PR-0A (Architectural Invariants) and PR-0B (Event/Replay Semantics) as bounded increments"
+description: "Authorizes the bounded PR-0A and PR-0B increments defined in the Phase 1.6 master spec V6.5.1's Section 31 -- PR-0A now, PR-0B gated on PR-0A merging first, matching Section 31's diagram sequencing."
+section: "decisions"
+order: 830
+status: "approved"
+lastReviewed: "2026-08-23"
+owners: ["Repository Owner"]
+sourceFiles: ["src/content/docs/plans/phase-1-6-master-spec.mdoc"]
+relatedAdrs: ["0019-begin-phase-1-6-knowledge-research-understanding-decision-os","0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments"]
+relatedPages: ["plans/phase-1-6-master-spec","architecture/diagrams"]
+tags: ["adr","approved","phase-1-6","architectural-invariants","event-replay-semantics"]
+truthState: "decision"
+---
+
+{% decision_card number="ADR-0021" status="approved" %}
+Phase 1.6 PR-0A (Architectural Invariants registry) authorized 2026-08-23, bounded to the seven contract-checkable invariants (INV-001, 002, 003, 006, 007, 008, 010) plus Section 25A's lifecycle state-machine guards and a contract-consistency test. PR-0B (Event/Replay Semantics) authorized in scope but gated: implementation may not begin until PR-0A is merged to `main`.
+{% /decision_card %}
+
+## Context
+
+ADR-0020 authorized PR-0.5 and PR-0.6 as bounded increments and left a specific, explicit gap open in its Follow-up work: *"Draft and seek acceptance of separate ADR(s) authorizing PR-0A and PR-0B before PR-0.6 implementation may begin."* This ADR fills that gap for PR-0A and PR-0B themselves -- it does not touch PR-0.6, which remains governed by ADR-0020's own precondition until both PR-0A and PR-0B are merged.
+
+PR-0 (schemas, events, typed IDs, and the privacy/authority invariants in `authority.ts`) is fully merged to `main` (PR #55, PR #62). Per Section 19's authority invariant, that merged code is implementation, not authorization for the next increment -- PR-0A and PR-0B require their own ADR before work on either begins, the same discipline ADR-0019 and ADR-0020 already established for the increments before them.
+
+## Decision drivers
+
+- **Section 31's PR-0A exit evidence** states exactly: *"Architectural Invariants (1A) registry, with tests for the seven invariants checkable from contracts alone at this stage — INV-001, INV-002, INV-003, INV-006, INV-007, INV-008, INV-010. Lifecycle State Machines (25A) encoded as transition guards. A contract-consistency test verifying Appendix A's schema enums, 25A's state diagrams, and this document's prose lifecycle descriptions cannot drift apart — added after exactly this kind of drift was found and fixed in V6.5.1 (ADR's missing DEPRECATED transition; LearningPackage's missing `evaluating` status)."* Its stated exit evidence: *"Each of the seven currently-enforceable invariants has an automated test; an illegal state transition (e.g. editing an ACCEPTED ADR) is rejected; the consistency test fails the build if a schema enum and its state diagram disagree."*
+- **Section 31's PR-0B exit evidence** states exactly: *"Event/Replay Semantics (26A): eventId-based idempotency, causationRef/correlationRef enforcement, replay capability for derived state."* Its stated exit evidence: *"Duplicate event delivery produces zero additional state transitions; a fixture deletes a derived projection and confirms replay reconstructs it byte-for-byte equivalent."*
+- **Section 1A's invariant table** lists only seven of its twelve invariants as PR-0A's scope, matching Section 31's row exactly: INV-001 (*"Provider context MUST NOT become canonical Beacon memory"*), INV-002 (*"Only an accepted ADR may authorize Phase 1.5 execution"*), INV-003 (*"An accepted ADR MUST NOT be mutated. Superseding decisions create a new ADR"*), INV-006 (*"Ephemeral continuation state MUST be revalidated before authorization use"*), INV-007 (*"Provider eligibility MUST be evaluated against data classification before provider selection"*), INV-008 (*"An untrusted adapter MUST NOT receive capabilities above its trust tier"*), and INV-010 (*"Free-tier or experimental providers MUST NOT possess release authority"*). The remaining five (INV-004, INV-005, INV-009, INV-011, INV-012) are explicitly deferred: Section 31's own table states the general rule, *"The PR that introduces a capability also activates that capability's invariant test. An invariant listed in Section 1A but not yet testable (because the entity it governs doesn't exist yet) is not tested prematurely against a stub built solely to satisfy the test — it waits for its owning PR."*
+- **Section 0.9 item 3** documents this scoping as a corrected defect, not an original design choice: *"V6.5 scheduled automated tests for all twelve invariants in PR-0A, before five of their owning entities (Claims, UnderstandingVersion, DecisionPackage, public projections, outcome feedback) exist. PR-0A now tests only the seven invariants checkable from contracts alone; the remaining five activate in the PR that introduces their owning capability."* Authorizing anything beyond the seven in PR-0A would reintroduce the exact defect V6.5.1 fixed.
+- **Section 26A's five numbered rules** (Identity, Idempotency, Causation, Correlation, Replay) are the literal content PR-0B implements: *"`eventId` MUST be globally unique... If an event with a given `eventId` is received more than once, only the first occurrence may produce a state transition... `causationRef` answers 'what event caused this event'... `correlationRef` answers 'what larger operation does this event belong to'... Beacon MUST be able to rebuild all derived/projected state... purely from the canonical event log."*
+- **Section 31's PR-sequence diagram** (`public/diagrams/mermaid/phase-1-6-pr-sequence.mmd`, verified live on `main`) draws `PR0 --> PR0A --> PR0B` as two consecutive **solid** edges inside the main critical-path chain, with no dotted/side-track treatment and no "not yet settled" caveat of the kind Section 29A.6 attached to PR-0.5's position. Unlike PR-0.5 (exempted from a sequencing precondition under ADR-0020 for cited reasons), nothing in the document treats PR-0A and PR-0B as independently orderable -- the diagram places PR-0B immediately and only after PR-0A.
+- **Section 33.1's deterministic-contracts list** independently reinforces PR-0B's scope, listing *"Event/schema validation and stable typed references"* among the acceptance tests Phase 1.6 requires -- PR-0B is the increment that first makes that requirement real for `eventId`/`causationRef`/`correlationRef`.
+- Section 19's authority invariant governs this ADR the same as every prior one: *"Research != authorization. Evidence != authorization. Concept != authorization. Diagram != authorization. Recommendation != authorization. Decision Candidate != authorization. Only an accepted ADR authorizes execution."* A landed spec section and a merged PR-0 are not themselves authorization for PR-0A or PR-0B.
+
+## Options considered
+
+- Authorize PR-0A and PR-0B together with no ordering constraint between them, on the theory that both are hardening increments with no evidence-gate like PR-0.5's or PR-0.6's. Rejected: Section 31's diagram draws them as sequential solid edges (`PR0A --> PR0B`), not parallel or independent branches -- treating them as independently startable would ignore a distinction the diagram deliberately encodes, the same reasoning ADR-0020 already applied when it treated PR-0.5 and PR-0.6 differently rather than identically.
+- Authorize neither increment now, deferring both until a future revisit. Rejected on the evidence: Section 0's second external review already concluded V6.5.1 is *"ready to implement"* specifically after fixing PR-0A's premature invariant-test scope (Section 0.9 item 3) -- there is no open defect or pending evidence gate blocking either increment the way 29A.7 and 29B.7 block PR-0.5's live half and PR-0.6's routing-control half.
+- Authorize PR-0A now, bounded exactly to the seven contract-checkable invariants and lifecycle guards Section 31 specifies; authorize PR-0B now in scope but make its implementation start binding-conditional on PR-0A being merged to `main` first, matching the diagram's sequential edge. Adopted.
+
+## Decision
+
+Adopt the third option.
+
+**PR-0A (Architectural Invariants registry)** is authorized to begin now, bounded exactly to Section 31's exit-evidence text quoted above: the Section 1A invariants registry with automated tests for **only** INV-001, INV-002, INV-003, INV-006, INV-007, INV-008, and INV-010; Section 25A's lifecycle state machines encoded as transition guards; and a contract-consistency test checking Appendix A's schema enums, Section 25A's state diagrams, and this document's prose lifecycle descriptions against each other. **Testing INV-004, INV-005, INV-009, INV-011, or INV-012 in this increment is explicitly out of scope** -- per Section 31's own rule and Section 0.9 item 3's corrected-defect history, each of those five activates only in the PR that introduces the entity it governs (Claims, UnderstandingVersion, DecisionPackage, public projections, and outcome feedback respectively), not before.
+
+**PR-0B (Event/Replay Semantics) is authorized in scope but not yet in start date.** Its implementation may not begin until **PR-0A has been merged to `main`.** This is a binding precondition on this ADR's authorization, not an advisory note: Section 31's diagram places PR-0B on a solid edge immediately after PR-0A with no equivalent side-track or "not yet settled" caveat the way PR-0.5 carried under ADR-0020 -- nothing in the document supports treating PR-0B as independently startable. Once that precondition is satisfied, PR-0B is bounded exactly to Section 31's exit-evidence text quoted above: Section 26A's `eventId`-based idempotency, `causationRef`/`correlationRef` enforcement, and replay capability for derived state, validated by a fixture that deletes a derived projection and confirms replay reconstructs it byte-for-byte equivalent. **Introducing any new canonical entity, execution-control behavior, or live routing/provider behavior in this increment is explicitly out of scope** -- Section 26A is definitionally limited to the semantics governing the `eventId`/`causationRef`/`correlationRef` fields the existing event envelope (Section 26, already merged in PR-0) already carries, not new capability surface.
+
+Neither increment's exit evidence, once produced, converts any Section 1B registry row from EXPERIMENTAL to FROZEN by itself -- no row in that registry corresponds directly to either increment's deliverable, and per that section's own rule, Architecture only moves to FROZEN by passing its specified eval path, never by a PR landing.
+
+## Positive consequences
+
+- PR-0A can begin immediately: it carries no evidence gate comparable to 29A.7 or 29B.7, and Section 0's own "ready to implement" verdict is conditioned specifically on PR-0A's scope already having been corrected to the seven-invariant subset this ADR authorizes.
+- PR-0B's implementation is protected from the rework risk of building event/replay semantics before the invariant and lifecycle-guard contracts PR-0A establishes -- this ADR enforces the ordering the spec's own diagram already implies, the same pattern ADR-0020 used for PR-0.6's PR-0A/PR-0B precondition.
+- A durable, reviewable record exists of exactly what each increment covers and why PR-0B waits on PR-0A specifically, rather than leaving that dependency implicit in the diagram alone.
+- Landing PR-0A first also unblocks part of ADR-0020's own outstanding precondition on PR-0.6 -- though PR-0.6 additionally requires PR-0B, so this ADR alone does not clear PR-0.6 to start.
+
+## Negative consequences
+
+- PR-0B cannot start until PR-0A is drafted, implemented, reviewed, and merged -- a real, sequential delay, not merely a documented risk.
+- This ADR's citations are drawn from `main` as verified on 2026-08-23; if `phase-1-6-master-spec.mdoc` is later amended, this ADR must be re-verified against the new version before being relied on, matching the practice ADR-0020 already established for itself.
+- PR-0A's seven-invariant scope means five invariants (INV-004, INV-005, INV-009, INV-011, INV-012) remain untested through this increment and several increments after it -- this is a deliberate, cited deferral, not an oversight, but it does mean those invariants stay unenforced in code until their owning PRs land.
+
+## Risks
+
+- Treating PR-0A's seven-invariant boundary as a soft suggestion rather than a hard one would reintroduce exactly the defect Section 0.9 item 3 already found and fixed in V6.5 -- this ADR states that boundary as binding, not aspirational.
+- If a future ADR authorizing PR-0.6 or any later increment changes assumptions about what PR-0A or PR-0B actually deliver, this ADR's characterization of their scope should be re-checked against whatever that later ADR states, not assumed to still match.
+- If Section 31's diagram is ever revised to decouple PR-0A and PR-0B (the way PR-0.5's position was revised in V6.5.1), this ADR's binding precondition on PR-0B should be re-examined against that revision rather than assumed to still apply.
+
+## Follow-up work
+
+1. Implement PR-0A now: the seven-invariant subset, lifecycle state-machine guards, and the contract-consistency test, per the bound above.
+2. Once PR-0A is merged, implement PR-0B exactly as bounded above: `eventId` idempotency, `causationRef`/`correlationRef` enforcement, and a replay fixture -- no new entity or execution-behavior change.
+3. Once both PR-0A and PR-0B are merged, ADR-0020's existing precondition on PR-0.6 is satisfied; PR-0.6 implementation may then begin exactly as ADR-0020 already bounds it -- this ADR does not re-authorize PR-0.6 or alter its bound.
+4. Before any of the five deferred invariants (INV-004, INV-005, INV-009, INV-011, INV-012) is tested, confirm the PR introducing it is the PR Section 31's table actually names for that invariant -- this ADR does not pre-authorize testing them earlier.
+
+## Supersedes or superseded by
+
+New decision; supersedes none. It fulfills ADR-0020's Follow-up work item 2 (draft and seek acceptance of separate ADR(s) authorizing PR-0A and PR-0B) and extends ADR-0019/ADR-0020 by authorizing the next two bounded increments, without reopening or modifying either prior ADR's own scope.
+
+## Source references
+
+- `src/content/docs/plans/phase-1-6-master-spec.mdoc` (V6.5.1), Sections 0, 0.9, 1A, 1B, 19, 25A, 26, 26A, 31, 33.1 -- verified live on `main`.
+- `public/diagrams/mermaid/phase-1-6-pr-sequence.mmd` -- verified live on `main`.
+- `src/content/docs/decisions/0019-begin-phase-1-6-knowledge-research-understanding-decision-os.mdoc`
+- `src/content/docs/decisions/0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments.mdoc`
