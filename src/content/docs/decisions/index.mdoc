@@ -144,9 +144,9 @@ Authorize PR-0A now, bounded to the seven contract-checkable invariants (INV-001
 {% /decision_card %}
 
 {% decision_card number="ADR-0022" status="under-review" href="/docs/decisions/0022-authorize-deterministic-opencode-harness-isolation-profile/" %}
-### Authorize a deterministic isolated OpenCode harness profile for the PR-0.6 scaffold
+### Gate deterministic OpenCode harness isolation for the PR-0.6 scaffold
 
-Proposed authority only: place a Beacon-controlled ephemeral, zero-tool execution profile between the unregistered HarnessAdapter and OpenCode. The proposal keeps Groq non-routable and TaskClassifier log-only while making environment, configuration, permissions, plugins, MCPs, agents, turns, and output tokens fail-closed.
+Proposal only: retain an unregistered fake-subprocess contract scaffold and fail before real OpenCode model execution. Current Beacon budget semantics and OpenCode `v1.18.21` do not prove a hard `maxTurns` boundary; Groq remains non-routable and TaskClassifier remains log-only.
 {% /decision_card %}
 
 ## Status rule
