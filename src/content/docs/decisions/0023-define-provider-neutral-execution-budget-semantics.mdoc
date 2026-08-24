@@ -1,20 +1,20 @@
 ---
 title: "ADR-0023 — Define provider-neutral execution budget semantics"
-description: "Proposes canonical hard execution-budget lineage semantics for provider model calls and cumulative output tokens across direct providers, harnesses, and future adapters."
+description: "Defines canonical hard execution-budget lineage semantics for provider model calls and cumulative output tokens across direct providers, harnesses, and future adapters."
 section: "decisions"
 order: 832
-status: "under-review"
+status: "approved"
 lastReviewed: "2026-08-24"
 owners: ["Repository Owner"]
 sourceFiles: ["agent-platform/agent-contracts.yml","agent-platform/model-policy.yml","agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/providers/live-adapter-support.ts","src/modules/orchestration/providers/http-provider-transport.ts","src/modules/orchestration/providers/claude/claude-adapter.ts","src/modules/orchestration/providers/codex/codex-adapter.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","src/modules/orchestration/workflows/live-work-unit.ts","src/modules/orchestration/decision-os/events.ts","src/modules/orchestration/decision-os/event-replay.ts","tests/orchestration/provider-adapters.test.ts","src/content/docs/plans/phase-1-6-master-spec.mdoc"]
 relatedAdrs: ["0007-use-central-broker","0008-stable-roles-dynamic-models","0010-use-deterministic-quality-gates","0012-require-human-approval","0014-use-provider-adapter-boundary","0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion","0019-begin-phase-1-6-knowledge-research-understanding-decision-os","0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments","0021-authorize-pr-0a-and-pr-0b-as-bounded-increments"]
 relatedPages: ["agents/universal-agent-contract","architecture/overview","architecture/routing-and-scheduling","architecture/security-boundaries","architecture/work-unit-contract","plans/current-phase","plans/phase-1-6-master-spec","security/ai-agent-security-standard"]
-tags: ["adr","under-review","phase-1-5","provider-adapter","execution-budget","least-privilege"]
-truthState: "proposal"
+tags: ["adr","approved","phase-1-5","provider-adapter","execution-budget","least-privilege"]
+truthState: "decision"
 ---
 
-{% decision_card number="ADR-0023" status="under-review" %}
-Proposal only: define provider-neutral hard execution budgets shared by one authorized execution lineage. This proposal changes no runtime, approves no adapter, and grants no routing, provider, deployment, release, or merge authority.
+{% decision_card number="ADR-0023" status="approved" %}
+Approved by the Repository Owner on 2026-08-24: define provider-neutral hard execution budgets shared by one authorized execution lineage. This decision changes no runtime, approves no adapter, and grants no routing, provider, deployment, release, or merge authority.
 {% /decision_card %}
 
 ## Context
@@ -25,9 +25,9 @@ Those fields are measurable-looking but do not currently share a binding provide
 
 This ambiguity became blocking while draft ADR-0022 and PR #76 evaluated a deterministic OpenCode isolation profile for PR-0.6. OpenCode-specific architecture must not invent stronger or weaker meanings than Claude, Codex, and future adapters receive from the shared execution contract.
 
-The first under-review revision of this ADR proposed cumulative budgets owned by one `ProviderExecutionRequest`. Independent technical review found that request ownership would allow a retry, subagent, fallback, handoff, provider switch, or separately constructed request to begin with fresh counters. That would defeat a cumulative execution contract. This corrected proposal makes an authorized execution lineage, not a JavaScript or TypeScript request object, the lifetime and owner of the budget.
+The first under-review revision of this ADR proposed cumulative budgets owned by one `ProviderExecutionRequest`. Independent technical review found that request ownership would allow a retry, subagent, fallback, handoff, provider switch, or separately constructed request to begin with fresh counters. That would defeat a cumulative execution contract. This corrected decision makes an authorized execution lineage, not a JavaScript or TypeScript request object, the lifetime and owner of the budget.
 
-Current `main` was inspected at `b5cde2c9c472e89db02f9fb4009395a5901a2838`. Its tree matches the successful candidate-bound prepublication evidence from PR #75, and a fresh `npm run phase15:audit` with that exact-tree evidence returned `complete-frozen`. This proposal therefore treats existing Phase 1.5 behavior as frozen reality to be documented honestly, not silently rewritten.
+Current `main` was inspected at `b5cde2c9c472e89db02f9fb4009395a5901a2838`. Its tree matches the successful candidate-bound prepublication evidence from PR #75, and a fresh `npm run phase15:audit` with that exact-tree evidence returned `complete-frozen`. This decision therefore treats existing Phase 1.5 behavior as frozen reality to be documented honestly, not silently rewritten.
 
 ## Problem
 
@@ -112,7 +112,7 @@ Phase 1.5 being complete-frozen means the ambiguity must be resolved through an 
 
 ## Decision
 
-If approved, Beacon adopts one provider-neutral execution-budget contract across Claude, Codex, OpenCode, and every future provider adapter:
+Beacon adopts one provider-neutral execution-budget contract across Claude, Codex, OpenCode, and every future provider adapter:
 
 - An authorized orchestration boundary creates an `ExecutionBudgetLineage` with an immutable `budgetLineageId`, `maxModelCalls`, and `maxOutputTokens`.
 - The lineage's `ExecutionBudgetLedger` is the authoritative enforcement state. Its remaining budgets are shared across every request and generation branch in that lineage.
@@ -125,7 +125,7 @@ If approved, Beacon adopts one provider-neutral execution-budget contract across
 - An execution path must fail with a non-retryable policy error before unbounded model execution when it cannot prove both ceilings, generation multiplicity, or required settlement behavior.
 - Only an authorized Beacon orchestration boundary may create a new lineage. Retry, fallback, handoff, provider switch, subagent creation, or arbitrary request construction does not authorize a reset.
 
-This proposal does not modify runtime or serialized schemas. If the Repository Owner accepts it, that acceptance supplies the missing semantic authority for a separate bounded Phase 1.5 execution-budget conformance-hardening PR. It does not authorize routing, gateway, harness, provider, role-budget, deployment, release, PR-1, or other feature expansion.
+This decision does not modify runtime or serialized schemas. The Repository Owner's approval on 2026-08-24 supplies the missing semantic authority for a separate bounded Phase 1.5 execution-budget conformance-hardening PR. It does not authorize routing, gateway, harness, provider, role-budget, deployment, release, PR-1, or other feature expansion.
 
 ## Formal definitions
 
@@ -437,7 +437,7 @@ No claim is made that estimated context tokens are exact provider billing tokens
 
 ## Claude impact
 
-Verdict: **PARTIALLY COMPLIANT** with the proposed contract for the exact direct HTTP adapter-plus-transport path.
+Verdict: **PARTIALLY COMPLIANT** with the approved contract for the exact direct HTTP adapter-plus-transport path.
 
 `ClaudeAdapter` makes one visible transport invocation and forwards `request.maxOutputTokens` as Anthropic `max_tokens`. `HttpProviderTransport` performs one Messages API request, and Anthropic documents `max_tokens` as an absolute per-request generation maximum. That provider cap can enforce one admitted branch's token reservation.
 
@@ -486,7 +486,7 @@ The gateway could resolve lineage identity, atomically admit reservations, injec
 
 ## Negative consequences
 
-- Current adapters are not fully conformant and require a separate frozen-Phase-1.5 correction PR after human acceptance.
+- Current adapters are not fully conformant and require a separate frozen-Phase-1.5 correction PR following human acceptance.
 - The provider request boundary needs a later migration from legacy `maxTurns` naming toward canonical `maxModelCalls` plus a lineage reference.
 - The Codex CLI and OpenCode paths must fail closed until they gain a proven enforcement point.
 - Conservative settlement may charge unused capacity when exact usage is unavailable.
@@ -500,13 +500,13 @@ The gateway could resolve lineage identity, atomically admit reservations, injec
 - A stream may end without authoritative usage. Mitigation: retain and conservatively charge the full reservation.
 - A provider may violate or change a documented hard cap. Mitigation: record `VIOLATION`, preserve observed overage separately, stop further lineage calls, and require renewed path evidence.
 - A too-broad hardening PR could reopen frozen routing or role semantics. Mitigation: use the exact bounded correction scope below and refresh candidate-bound frozen-phase evidence.
-- Treating this `under-review` proposal as accepted would violate ADR-0012 and Phase 1.6 Section 19. No runtime work begins until the Repository Owner explicitly accepts the decision.
+- Treating Repository Owner approval as proof of runtime compliance would violate ADR-0012 and Phase 1.6 Section 19. Implementation still begins only through the separate bounded correction PR with its own review and evidence.
 
 ## Phase 1.5 frozen correction process
 
-Acceptance of this ADR would define the missing contract; it would not make the existing Phase 1.5 runtime compliant retroactively. Existing evidence remains historical evidence of the then-implemented behavior, not proof of the newly accepted budget semantics.
+Repository Owner approval on 2026-08-24 defines the missing contract; it does not make the existing Phase 1.5 runtime compliant retroactively. Existing evidence remains historical evidence of the then-implemented behavior, not proof of the newly accepted budget semantics.
 
-After human acceptance, correction requires a separate **Phase 1.5 execution-budget conformance-hardening PR** explicitly identified as a bounded correction of a latent frozen-contract defect, not feature expansion. It must:
+Following human acceptance, correction requires a separate **Phase 1.5 execution-budget conformance-hardening PR** explicitly identified as a bounded correction of a latent frozen-contract defect, not feature expansion. It must:
 
 - reference the accepted ADR-0023;
 - stay inside the exact conformance scope below;
@@ -520,7 +520,7 @@ No routing, provider, role, harness registration, deployment, release, or PR-1 e
 
 No migration or runtime implementation occurs in this decision PR.
 
-After explicit human acceptance, the bounded Phase 1.5 execution-budget conformance-hardening PR must:
+The separately reviewed, bounded Phase 1.5 execution-budget conformance-hardening PR must:
 
 1. introduce stable `budgetLineageId` semantics and authorized ledger ownership;
 2. make `ProviderExecutionRequest` carry or resolve a lineage reference rather than own fresh counters;
@@ -549,14 +549,14 @@ Approval of this ADR is the missing architecture authority for only that bounded
 
 `architectureImpact: YES`
 
-This proposal defines a provider-neutral execution-control contract across every current and future `ProviderAdapter`:
+This decision defines a provider-neutral execution-control contract across every current and future `ProviderAdapter`:
 
 ```text
 BEFORE
 ProviderExecutionRequest
   -> carries budgets with ambiguous units and resettable lifetime
 
-AFTER HUMAN ACCEPTANCE
+AFTER REPOSITORY OWNER APPROVAL
 authorized orchestration boundary
   -> immutable ExecutionBudgetLineage
     -> authoritative ExecutionBudgetLedger
@@ -568,15 +568,15 @@ It is a contract clarification plus bounded hardening authority, not a change to
 
 ## Relationship to ADR-0014
 
-ADR-0014 establishes the shared provider adapter boundary and prohibits adapters from changing approved request meaning. This proposal defines the execution-budget portion of that shared meaning while clarifying that a request references, rather than owns, authoritative budget state. Provider-specific operational controls may enforce it differently, but may not weaken, reset, or reinterpret it.
+ADR-0014 establishes the shared provider adapter boundary and prohibits adapters from changing approved request meaning. This decision defines the execution-budget portion of that shared meaning while clarifying that a request references, rather than owns, authoritative budget state. Provider-specific operational controls may enforce it differently, but may not weaken, reset, or reinterpret it.
 
 ## Relationship to ADR-0017
 
-ADR-0017 froze a measurable, provider-neutral, bounded engineering platform. Repository evidence shows a latent semantic/conformance defect in that boundary. This proposal does not reopen unrelated Phase 1.5 semantics. If accepted, it permits only the bounded frozen-contract correction above under existing deterministic quality and evidence gates.
+ADR-0017 froze a measurable, provider-neutral, bounded engineering platform. Repository evidence shows a latent semantic/conformance defect in that boundary. This decision does not reopen unrelated Phase 1.5 semantics. Its approval permits only the bounded frozen-contract correction above under existing deterministic quality and evidence gates.
 
 ## Relationship to ADR-0020
 
-ADR-0020 remains the authority for PR-0.6's log-only Task Classifier and unregistered HarnessAdapter scaffold. This proposal neither expands nor removes that scope. It defines the budget contract any executable harness would have to satisfy while preserving no classifier-driven routing and no live free-tier WorkUnit.
+ADR-0020 remains the authority for PR-0.6's log-only Task Classifier and unregistered HarnessAdapter scaffold. This decision neither expands nor removes that scope. It defines the budget contract any executable harness would have to satisfy while preserving no classifier-driven routing and no live free-tier WorkUnit.
 
 ## Relationship to ADR-0021 and PR-0B
 
@@ -584,7 +584,7 @@ ADR-0021 authorized PR-0B's canonical event identity, idempotency, causation, co
 
 ## Relationship to draft ADR-0022
 
-Draft ADR-0022 in PR #76 correctly records `PHASE15_BUDGET_SEMANTICS_GAP` and currently fails closed before real OpenCode execution. If this ADR is accepted, ADR-0022 may cite these canonical definitions during its own separate rereview. It must still prove harness configuration isolation and an exact compatible execution mechanism; this decision does not resolve those OpenCode-specific requirements.
+Draft ADR-0022 in PR #76 correctly records `PHASE15_BUDGET_SEMANTICS_GAP` and currently fails closed before real OpenCode execution. With this ADR approved, ADR-0022 may cite these canonical definitions during its own separate rereview. It must still prove harness configuration isolation and an exact compatible execution mechanism; this decision does not resolve those OpenCode-specific requirements.
 
 Neither draft may silently rewrite the other. PR #76 remains independent, draft, and unapproved.
 
@@ -608,15 +608,15 @@ This decision does not authorize:
 
 ## Follow-up work
 
-1. Present revised ADR-0023 to the Repository Owner for independent rereview and explicit human decision; do not self-approve it.
-2. If accepted, prepare only the bounded Phase 1.5 execution-budget conformance-hardening PR described above. Do not combine it with PR #74 or PR #76 and do not start PR-1.
+1. Preserve the Repository Owner's 2026-08-24 approval and the independently rereviewed ADR content as an immutable accepted decision.
+2. Prepare only the separate bounded Phase 1.5 execution-budget conformance-hardening PR described above. Do not combine it with PR #74 or PR #76 and do not start PR-1.
 3. Rebase or revise draft ADR-0022 only in its own PR after this decision is accepted; keep real OpenCode execution fail-closed until all isolation and budget evidence exists.
 4. Keep `ProviderIdSchema`, CapacityManager, Broker routing, and role eligibility Claude/Codex-only; keep HarnessAdapter unregistered, Groq non-routable, and TaskClassifier observation-only.
 5. Require a new ADR before implementing a Beacon LLM Gateway, a general child-budget hierarchy, or another materially different enforcement architecture.
 
 ## Supersedes or superseded by
 
-New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, ADR-0021, and draft ADR-0022. While `under-review`, it grants no authority. If approved, its accepted content becomes immutable; later correction requires a superseding ADR rather than silent rewriting.
+New decision approved by the Repository Owner on 2026-08-24; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, ADR-0021, and draft ADR-0022. Its accepted content is immutable; later correction requires a superseding ADR rather than silent rewriting.
 
 ## Source references
 
