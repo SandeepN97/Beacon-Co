@@ -1,12 +1,12 @@
 ---
 title: "ADR-0023 — Define provider-neutral execution budget semantics"
-description: "Proposes canonical hard meanings for ProviderExecutionRequest maxTurns and maxOutputTokens across direct providers, harnesses, and future adapters."
+description: "Proposes canonical hard execution-budget lineage semantics for provider model calls and cumulative output tokens across direct providers, harnesses, and future adapters."
 section: "decisions"
 order: 832
 status: "under-review"
 lastReviewed: "2026-08-24"
 owners: ["Repository Owner"]
-sourceFiles: ["agent-platform/agent-contracts.yml","agent-platform/model-policy.yml","agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/providers/live-adapter-support.ts","src/modules/orchestration/providers/http-provider-transport.ts","src/modules/orchestration/providers/claude/claude-adapter.ts","src/modules/orchestration/providers/codex/codex-adapter.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","src/modules/orchestration/workflows/live-work-unit.ts","tests/orchestration/provider-adapters.test.ts","src/content/docs/plans/phase-1-6-master-spec.mdoc"]
+sourceFiles: ["agent-platform/agent-contracts.yml","agent-platform/model-policy.yml","agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/providers/live-adapter-support.ts","src/modules/orchestration/providers/http-provider-transport.ts","src/modules/orchestration/providers/claude/claude-adapter.ts","src/modules/orchestration/providers/codex/codex-adapter.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","src/modules/orchestration/workflows/live-work-unit.ts","src/modules/orchestration/decision-os/events.ts","src/modules/orchestration/decision-os/event-replay.ts","tests/orchestration/provider-adapters.test.ts","src/content/docs/plans/phase-1-6-master-spec.mdoc"]
 relatedAdrs: ["0007-use-central-broker","0008-stable-roles-dynamic-models","0010-use-deterministic-quality-gates","0012-require-human-approval","0014-use-provider-adapter-boundary","0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion","0019-begin-phase-1-6-knowledge-research-understanding-decision-os","0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments","0021-authorize-pr-0a-and-pr-0b-as-bounded-increments"]
 relatedPages: ["agents/universal-agent-contract","architecture/overview","architecture/routing-and-scheduling","architecture/security-boundaries","architecture/work-unit-contract","plans/current-phase","plans/phase-1-6-master-spec","security/ai-agent-security-standard"]
 tags: ["adr","under-review","phase-1-5","provider-adapter","execution-budget","least-privilege"]
@@ -14,52 +14,54 @@ truthState: "proposal"
 ---
 
 {% decision_card number="ADR-0023" status="under-review" %}
-Proposal only: define provider-neutral hard execution budgets for one `ProviderExecutionRequest`. This proposal changes no runtime, approves no adapter, and grants no routing, provider, deployment, release, or merge authority.
+Proposal only: define provider-neutral hard execution budgets shared by one authorized execution lineage. This proposal changes no runtime, approves no adapter, and grants no routing, provider, deployment, release, or merge authority.
 {% /decision_card %}
 
 ## Context
 
 Beacon's Phase 1.5 role contracts and model policy declare `maxTurns`, `maxContextTokens`, and `maxOutputTokens`. The live execution boundary copies `maxTurns` and `maxOutputTokens` into `ProviderExecutionRequest`, passes the request to a `ProviderAdapter`, and records `ProviderRun.turns`, `ProviderRun.retryCount`, and normalized output-token usage afterward.
 
-Those fields are measurable-looking but do not currently share a binding provider-neutral meaning. `maxTurns` originated in Claude subagent frontmatter as a cap on agentic turns. The Phase 1.5 provider work then copied the same name into the shared adapter request without defining what one turn means for a direct HTTP request, a CLI harness, a tool loop, or a retry. `maxOutputTokens` is forwarded to direct provider request fields, but no accepted architecture says whether it is a per-call allowance or a cumulative allowance for the whole adapter execution.
+Those fields are measurable-looking but do not currently share a binding provider-neutral meaning. `maxTurns` originated in Claude subagent frontmatter as a cap on agentic turns. The Phase 1.5 provider work then copied the same name into the shared adapter request without defining what one turn means for a direct HTTP request, a CLI harness, a tool loop, or a retry. `maxOutputTokens` is forwarded to direct provider request fields, but no accepted architecture says whether it is a per-call allowance or a cumulative allowance for the authorized execution.
 
-This ambiguity became blocking while draft ADR-0022 and PR #76 evaluated a deterministic OpenCode isolation profile for PR-0.6. OpenCode-specific architecture must not invent stronger or weaker meanings than Claude, Codex, and future adapters receive from the same `ProviderExecutionRequest`.
+This ambiguity became blocking while draft ADR-0022 and PR #76 evaluated a deterministic OpenCode isolation profile for PR-0.6. OpenCode-specific architecture must not invent stronger or weaker meanings than Claude, Codex, and future adapters receive from the shared execution contract.
+
+The first under-review revision of this ADR proposed cumulative budgets owned by one `ProviderExecutionRequest`. Independent technical review found that request ownership would allow a retry, subagent, fallback, handoff, provider switch, or separately constructed request to begin with fresh counters. That would defeat a cumulative execution contract. This corrected proposal makes an authorized execution lineage, not a JavaScript or TypeScript request object, the lifetime and owner of the budget.
 
 Current `main` was inspected at `b5cde2c9c472e89db02f9fb4009395a5901a2838`. Its tree matches the successful candidate-bound prepublication evidence from PR #75, and a fresh `npm run phase15:audit` with that exact-tree evidence returned `complete-frozen`. This proposal therefore treats existing Phase 1.5 behavior as frozen reality to be documented honestly, not silently rewritten.
 
 ## Problem
 
-A policy limit and a telemetry value are different contracts:
+A policy limit, authoritative enforcement state, and telemetry value are different contracts:
 
 ```text
-maxTurns                         ProviderRun.turns
-allowed maximum                 observed actual usage
+maxModelCalls                   ExecutionBudgetLedger                  ProviderRun.turns
+allowed maximum                authoritative enforcement state       observed projection
 
-maxOutputTokens                 ProviderRun.usage.outputTokens
-allowed maximum                 observed actual usage
+maxOutputTokens                ExecutionBudgetLedger                  ProviderRun.usage.outputTokens
+allowed maximum                reserved and policy-charged usage      observed provider usage
 ```
 
 Post-execution telemetry cannot prevent an unauthorized model call or undo generated tokens. Prompt instructions, provider-native settings with advisory semantics, wall-clock timeouts, and an observed count after completion are not hard execution-budget enforcement.
 
-Without one canonical meaning, adapters can all accept the same request while interpreting it differently. That makes provider replacement unsafe, prevents conformance tests from proving bounded execution, and invites a third-party harness to multiply cost or authority behind a field that appears bounded.
+Without one canonical meaning and one stable budget lifetime, adapters can accept equivalent work while interpreting or resetting limits differently. That makes provider replacement unsafe, prevents conformance tests from proving bounded execution, and invites a third-party harness, retry loop, or fallback path to multiply cost or authority behind fields that appear bounded.
 
 ## Evidence
 
-The review covered accepted ADR-0007, ADR-0008, ADR-0010, ADR-0012, ADR-0014, ADR-0015, ADR-0017, ADR-0019, ADR-0020, ADR-0021, draft ADR-0022 in PR #76, Phase 1.5 architecture and security pages, the Phase 1.6 V6.5.1 execution constitution, agent and model policies, runtime/domain schemas, direct and CLI transports, live execution scripts, provider tests, live-eval contracts, telemetry schemas, and repository history for both fields.
+The review covered accepted ADR-0007, ADR-0008, ADR-0010, ADR-0012, ADR-0014, ADR-0015, ADR-0017, ADR-0019, ADR-0020, ADR-0021, draft ADR-0022 in PR #76, Phase 1.5 architecture and security pages, the Phase 1.6 V6.5.1 execution constitution, PR-0B event identity and replay semantics, agent and model policies, runtime/domain schemas, direct and CLI transports, live execution scripts, provider tests, live-eval contracts, telemetry schemas, and repository history for both fields.
 
 The introducing history supplies no provider-neutral definition. Contract validation proves only that role values are positive integers, that `maxOutputTokens` is lower than `maxContextTokens`, and that the role manifest, model policy, and Claude agent frontmatter do not drift. The `budget-bounds` catalog label does not execute a provider or prove a runtime stop.
 
-Current official provider documentation confirms that Anthropic `max_tokens` is an absolute maximum for one Messages API generation and OpenAI `max_output_tokens` is an upper bound for one Responses API response. Those are useful per-call enforcement mechanisms. They do not, by themselves, define an aggregate budget across multiple calls made inside one adapter execution.
+Current official provider documentation confirms that Anthropic `max_tokens` is an absolute maximum for one Messages API generation and OpenAI `max_output_tokens` is an upper bound for one Responses API response that includes visible and reasoning tokens. Those are useful per-call enforcement mechanisms. They do not, by themselves, define an aggregate budget across multiple calls, retries, fallbacks, or provider transitions in one authorized execution.
 
 ## Existing implementation reality
 
 | Contract / field | Declared meaning | Actual enforcement | Claude | Codex | Harness / OpenCode | Tests | Gap |
 |---|---|---|---|---|---|---|---|
-| Role `limits.maxTurns`; `ProviderExecutionRequest.maxTurns` | Positive bounded-agent value; no provider-neutral unit is defined. | Passed through `executeLiveWorkUnit`; not read by current adapters or workflow guards. | One transport invocation by current adapter structure; request value is ignored. | One adapter transport invocation, but the CLI can perform opaque internal work; request value is ignored. | Released OpenCode `agent.steps` is guidance/tool suppression, not a proven hard stop. | Positivity and manifest/frontmatter drift only. | No canonical unit, pre-call counter, retry rule, or hard denial of call N+1. |
-| Role `limits.maxOutputTokens`; `ProviderExecutionRequest.maxOutputTokens` | Positive output budget lower than the context budget; per-call versus aggregate is undefined. | Forwarded to provider payloads; no aggregate accounting or request-to-usage comparison. | Forwarded as `max_tokens` for one Messages API request. | Forwarded as `max_output_tokens`; the HTTP path sends it, while `CodexCliTransport` drops it. | Current OpenCode controls cap individual model responses, not aggregate subprocess output. | Valid values and response normalization; no adversarial cumulative-budget proof. | A multi-call execution can multiply the apparent request budget unless a trusted layer reserves remaining output before each call. |
-| `ProviderRun.turns`; `AgentRun.execution.turns` | Non-negative observed telemetry. | `buildProviderResult` currently writes `1`; `AgentRun` copies it. | Always reported as `1` by the shared builder. | Always reported as `1`, including the opaque CLI path. | Draft normalizers can observe events but cannot infer calls that begin without a pre-call barrier. | Schema shape and fixture values only. | Observed telemetry is not tied to the requested ceiling and may undercount opaque calls. |
-| `ProviderRun.usage.outputTokens` | Normalized observed provider output; nullable in the general schema. | Parsed after execution; no enforcement comparison. | Provider usage is normalized. | HTTP/CLI usage is normalized when present; CLI requires metrics but not the request cap. | Telemetry may be unavailable or per-call only. | Normalization and consistency checks. | Observation after generation cannot serve as a hard pre/during-execution ceiling. |
-| `ProviderRun.retryCount` | Non-negative observed retry telemetry. | Shared result builder writes `0`; current workflow has no retry loop. | `0`. | `0`; opaque CLI behavior is not represented. | Not canonically related to turns. | Schema shape and fixtures only. | A retry may create another model call, but the current contract does not say whether it consumes a turn. |
+| Role `limits.maxTurns`; `ProviderExecutionRequest.maxTurns` | Positive bounded-agent value; no provider-neutral unit is defined. | Passed through `executeLiveWorkUnit`; not read by current adapters or workflow guards. | One transport invocation by current adapter structure; request value is ignored. | One adapter transport invocation, but the CLI can perform opaque internal work; request value is ignored. | Released OpenCode `agent.steps` is guidance/tool suppression, not a proven hard stop. | Positivity and manifest/frontmatter drift only. | No canonical model-call field, stable budget lineage, pre-call ledger, retry rule, or hard denial of call N+1. |
+| Role `limits.maxOutputTokens`; `ProviderExecutionRequest.maxOutputTokens` | Positive output budget lower than the context budget; per-call versus aggregate is undefined. | Forwarded to provider payloads; no aggregate accounting or request-to-usage comparison. | Forwarded as `max_tokens` for one Messages API request. | Forwarded as `max_output_tokens`; the HTTP path sends it, while `CodexCliTransport` drops it. | Current OpenCode controls cap individual model responses, not aggregate subprocess output. | Valid values and response normalization; no adversarial cumulative-budget proof. | A multi-call or multi-request execution can multiply the apparent budget unless a trusted ledger reserves the shared remaining output before every generation branch. |
+| `ProviderRun.turns`; `AgentRun.execution.turns` | Non-negative observed telemetry. | `buildProviderResult` currently writes `1`; `AgentRun` copies it. | Always reported as `1` by the shared builder. | Always reported as `1`, including the opaque CLI path. | Draft normalizers can observe events but cannot infer calls that begin without a pre-call barrier. | Schema shape and fixture values only. | Observed telemetry is not tied to the requested ceiling and may undercount opaque or failed calls. |
+| `ProviderRun.usage.outputTokens` | Normalized observed provider output; nullable in the general schema. | Parsed after execution; no enforcement comparison. | Provider usage is normalized. | HTTP/CLI usage is normalized when present; CLI requires metrics but not the request cap. | Telemetry may be unavailable or per-call only. | Normalization and consistency checks. | Observation after generation cannot serve as a hard pre/during-execution ceiling or preserve conservative charges. |
+| `ProviderRun.retryCount` | Non-negative observed retry telemetry. | Shared result builder writes `0`; current workflow has no retry loop. | `0`. | `0`; opaque CLI behavior is not represented. | Not canonically related to model calls. | Schema shape and fixtures only. | A retry may create another model call, while caller-level retry can also construct a fresh request with no shared counter. |
 
 The current state is therefore a pre-existing architecture and contract defect:
 
@@ -69,145 +71,322 @@ Phase 1.5 being complete-frozen means the ambiguity must be resolved through an 
 
 ## Decision drivers
 
-- Give every adapter the same measurable unit regardless of provider vocabulary.
-- Deny the first model call that would exceed a request budget before it begins.
-- Prevent a multi-step harness from multiplying a per-call output cap.
+- Give every adapter the same measurable security unit regardless of provider vocabulary.
+- Bind cumulative limits to one authorized execution even when it crosses requests, retries, providers, or agent projections.
+- Deny the first model generation that would exceed either budget before it begins.
+- Prevent concurrent, batched, hedged, fan-out, or opaque execution from multiplying capacity.
 - Count retries and implicit model calls conservatively and auditably.
 - Keep provider-native hard controls usable without making their names authoritative.
-- Preserve the distinction between policy, enforcement, and telemetry.
-- Fail closed when an adapter or harness cannot prove control of every model call it may initiate.
-- Avoid a new field migration when the existing names can receive precise definitions.
+- Preserve the distinction between policy, enforcement ledger, and telemetry projection.
+- Fail closed when an adapter, transport, provider, or harness cannot prove control of every generation branch it may initiate.
+- Resolve the provider-boundary `maxTurns` naming collision without silently changing higher-level agent policy.
 - Preserve Phase 1.5 provider eligibility, routing, role, approval, and frozen runtime boundaries.
 
 ## Options considered
 
-### `maxTurns` options
+### Budget lifetime options
+
+**Option A — One `ProviderExecutionRequest` owns fresh budget state.** Rejected. Retrying the call, constructing a fallback request, switching providers, creating a subagent request, or continuing through a handoff could restore the configured maxima and multiply one authorized execution's capacity.
+
+**Option B — One authorized execution budget lineage owns shared budget state.** Adopted. An immutable lineage identity connects every provider request and generation branch that consumes the same authorization. Requests carry a reference to that lineage; they do not create or reset its ledger.
+
+**Option C — `ProviderRun` or `AgentRun` telemetry owns the budget.** Rejected. Those records are projections and may be absent on failure. Post-call telemetry cannot be the source of pre-call enforcement truth, and one lineage may cross multiple ProviderRuns or AgentRun projections.
+
+### Model-call limit naming options
 
 **Option A — A turn is whatever the provider calls a turn.** Rejected. Provider steps, messages, responses, tool loops, and harness iterations are not equivalent, so the number would not be portable or reliably auditable.
 
-**Option B — A turn is one model-generation call initiated on behalf of one `ProviderExecutionRequest`.** Adopted. A trusted boundary can reserve the call before invocation, every model re-entry has an observable place in the sequence, and direct and harness adapters can implement the same rule.
+**Option B — `maxModelCalls` is the canonical provider-budget name; existing provider-boundary `maxTurns` is a legacy alias during migration.** Adopted. One model call means one model-generation branch admitted on behalf of an execution budget lineage. The clear canonical name removes provider and agent-loop ambiguity while permitting a bounded schema migration after acceptance.
 
-**Option C — A turn is one complete agent loop regardless of its underlying calls.** Rejected. One loop can hide an unbounded number of provider requests and therefore cannot guarantee that turn N+1 was denied before model execution.
+**Option C — Keep `maxTurns` as the canonical provider-budget name.** Rejected. The role/agent layer already uses turn terminology for agentic workflow iterations. Reusing it as the canonical name for provider generation calls invites a silent semantic collision.
 
-**Option D — Deprecate `maxTurns` and add `maxModelCalls`.** Not adopted now. The new name would be clearer, but it would require coordinated schema, manifest, telemetry, script, and provider migration while producing no stronger boundary than a formal definition of the existing field. A future schema version may rename it without changing this decision's unit.
+**Option D — A turn is one complete agent loop regardless of its underlying calls.** Rejected. One loop can hide an unbounded number of provider requests and therefore cannot guarantee that model call N+1 was denied before execution.
 
-### `maxOutputTokens` options
+### Output-token limit options
 
-**Option A — Maximum output tokens per model call.** Rejected as the canonical request meaning. It permits a multi-call adapter to generate up to `maxOutputTokens × turns`, multiplying the budget carried by one execution request.
+**Option A — Maximum output tokens per model call.** Rejected as the canonical execution meaning. It permits a multi-call adapter to generate up to `maxOutputTokens × calls`, multiplying the budget carried by one authorized execution.
 
-**Option B — Maximum cumulative provider-generated output tokens across one `ProviderExecutionRequest`.** Adopted. It is request-scoped, cost-bounded, and compatible with a single direct call or a multi-call harness.
+**Option B — Maximum cumulative provider-generated output tokens across one execution budget lineage.** Adopted. It remains bounded across retries, model re-entry, internal calls, fallbacks, handoffs, provider switches, and multiple request objects.
 
-**Option C — Add both `maxOutputTokensPerCall` and `maxTotalOutputTokens`.** Deferred. A separate per-call policy may become useful, but it is not required to enforce the aggregate ceiling: an adapter can derive a per-call cap from the remaining total. Adding two fields now would broaden migration without evidence that callers need independent values.
+**Option C — Add both `maxOutputTokensPerCall` and `maxTotalOutputTokens`.** Deferred. A separate per-call policy may become useful, but it is not required to enforce the cumulative ceiling: model-call admission can derive a hard per-call cap from the lineage's remaining total. Adding two configured values now would broaden migration without evidence that callers need independent values.
 
 ## Decision
 
-If approved, Beacon gives `ProviderExecutionRequest.maxTurns` and `ProviderExecutionRequest.maxOutputTokens` one canonical meaning across Claude, Codex, OpenCode, and every future provider adapter:
+If approved, Beacon adopts one provider-neutral execution-budget contract across Claude, Codex, OpenCode, and every future provider adapter:
 
-- `maxTurns` is the maximum number of model-generation calls that may be initiated on behalf of that one request.
-- `maxOutputTokens` is the hard cumulative ceiling on provider-generated output tokens across all such calls for that one request.
-- Both are policy limits that must be enforced before or during execution by a trusted boundary. They are not hints and are not satisfied by telemetry recorded after completion.
-- An adapter must fail with a non-retryable policy error before model execution when it cannot prove that both requested ceilings will hold.
+- An authorized orchestration boundary creates an `ExecutionBudgetLineage` with an immutable `budgetLineageId`, `maxModelCalls`, and `maxOutputTokens`.
+- The lineage's `ExecutionBudgetLedger` is the authoritative enforcement state. Its remaining budgets are shared across every request and generation branch in that lineage.
+- `ProviderExecutionRequest` carries execution information, configured constraints, and a reference to the lineage. Constructing another request does not create or restore budget.
+- `maxModelCalls` is the canonical maximum number of model-generation branches that may be initiated for the lineage. Existing `ProviderExecutionRequest.maxTurns` is legacy naming that must map exactly to `maxModelCalls` during migration.
+- `maxOutputTokens` is the hard cumulative ceiling on all provider-generated output for the lineage.
+- One atomic model-call admission transaction reserves both one model call and one hard per-call output allowance before any generation branch begins.
+- Every admitted branch receives a unique `budgetReservationId` and follows the reservation lifecycle defined below.
+- Both limits are policy controls enforced before or during execution by a trusted boundary. They are not prompts, hints, timeouts, or post-call telemetry.
+- An execution path must fail with a non-retryable policy error before unbounded model execution when it cannot prove both ceilings, generation multiplicity, or required settlement behavior.
+- Only an authorized Beacon orchestration boundary may create a new lineage. Retry, fallback, handoff, provider switch, subagent creation, or arbitrary request construction does not authorize a reset.
 
-This proposal does not modify runtime. If the Repository Owner accepts it, that acceptance supplies the missing semantic authority for a separate bounded Phase 1.5 conformance-hardening PR. It does not authorize any larger routing, gateway, harness, or provider expansion.
+This proposal does not modify runtime or serialized schemas. If the Repository Owner accepts it, that acceptance supplies the missing semantic authority for a separate bounded Phase 1.5 execution-budget conformance-hardening PR. It does not authorize routing, gateway, harness, provider, role-budget, deployment, release, PR-1, or other feature expansion.
 
 ## Formal definitions
 
-### Provider execution
+### Authorized execution and execution budget lineage
 
-One provider execution is one call to `ProviderAdapter.execute(request)` for one immutable `ProviderExecutionRequest`. Its budgets begin at zero usage and do not silently reset inside the adapter, transport, subprocess, retry loop, compaction path, title-generation path, subagent path, or tool loop.
+An **authorized execution** is a Beacon orchestration boundary at which policy explicitly grants bounded model-execution capacity. A genuinely new top-level WorkUnit execution is an example. An explicitly authorized delegated child execution may also qualify when its bounded allocation and provenance are recorded.
 
-A provider handoff or fallback may create a new request only through an explicitly authorized orchestration transition. An adapter may not manufacture a fresh request merely to reset budgets.
+An **ExecutionBudgetLineage** is the stable lifetime of that granted capacity. It is identified by an immutable `budgetLineageId` created by the authorized orchestration boundary and recorded in enforcement and audit state. The lineage, not any JavaScript or TypeScript object, owns the remaining model-call and cumulative output-token budgets.
 
-### Model-generation call
+The same lineage continues across:
 
-A model-generation call is an outbound request, initiated by Beacon or by a harness acting for Beacon, that can cause a model to generate output. The call is counted at the last trusted enforcement point before invoking the provider or an authority-bearing opaque layer.
+- provider transport retries;
+- caller-level retries of the same authorized execution;
+- model re-entry after local tool output;
+- compaction, summarization, and title-generation model calls;
+- internal or model-driven subagents;
+- fallback-agent model calls;
+- ordinary provider fallback or provider switch;
+- ordinary handoff that continues the same authorized execution; and
+- separately constructed `ProviderExecutionRequest` values that continue that work.
 
-Local parsing, deterministic normalization, policy evaluation, and a purely local tool execution do not consume a turn. Title generation, summarization, compaction, fallback-agent calls, subagent calls, retries, and model re-entry after tool output do consume turns when they invoke a model.
+None of those operations may silently restore `maxModelCalls` or `maxOutputTokens`.
 
-If a third-party harness can issue model calls that the trusted enforcement point cannot observe and prevent, its execution is not budget-compliant.
+### Stable budget identity and new-budget authority
 
-## `maxTurns` semantics
+`budgetLineageId` must be stable and immutable for the lineage, included in authoritative ledger and audit evidence, and propagated to every trusted enforcement point that admits a call for that lineage.
 
-The adapter or another authorized trusted boundary must atomically reserve a turn before every model-generation call:
+A new lineage may be created only by an authorized Beacon orchestration boundary through all of these actions:
+
+1. identify a distinct authorized execution boundary;
+2. make an explicit bounded policy allocation decision;
+3. create a new stable budget identity;
+4. record the allocation and authority in durable audit evidence; and
+5. preserve parent execution or budget provenance when applicable.
+
+A `ProviderAdapter`, `ProviderTransport`, retry loop, CLI harness, OpenCode process, provider SDK, fallback path, or arbitrary constructor of `ProviderExecutionRequest` may not mint a lineage or reset a ledger.
+
+If Beacon later permits a delegated child lineage, its allocation must either be carved from and reserved against the parent budget or be an explicit bounded grant from a higher-level authorized policy boundary. A child does not manufacture capacity merely by becoming another request, ProviderRun, or AgentRun. This ADR does not otherwise design a general future budget hierarchy.
+
+### `ProviderExecutionRequest` relationship
+
+`ProviderExecutionRequest` is a carrier of provider execution information, the applicable constraints or legacy aliases, and a reference to authoritative lineage state. It is not the owner of fresh counters.
+
+Creating request B after request A, whether for retry, fallback, handoff, provider switch, or internal work, does not restore `modelCallsRemaining` or `outputTokensRemaining`. The trusted enforcement point resolves the request to the existing `budgetLineageId` and admits work against the shared ledger.
+
+### Execution budget ledger
+
+The conceptual **ExecutionBudgetLedger** is the authoritative enforcement state for one lineage. `ProviderRun` and `AgentRun` are not ledger substitutes.
+
+At minimum, the ledger must preserve enough configured, running, reservation, and terminal state to reconstruct:
 
 ```text
-if turnsStarted >= request.maxTurns:
-  deny before provider invocation
+budgetLineageId
 
-turnsStarted += 1
-invoke the bounded model call
+configured:
+  maxModelCalls
+  maxOutputTokens
+
+running and settled:
+  modelCallsReserved
+  modelCallsInitiated
+  outputTokensReserved
+  observedOutputTokens
+  policyChargedOutputTokens
+  per-reservation identity and state
 ```
 
-For `maxTurns = 3`, calls 1, 2, and 3 may begin. Call 4 is denied before any provider or harness model execution begins.
+The ledger must also preserve authorized ceilings, retries, active and released reservations, provider/model identity, enforcement owner, provider transition or handoff provenance, terminal budget reason, and any enforcement violation. It is enforcement evidence, not raw prompt or response storage.
 
-The reservation happens before transport invocation, not after a successful response. This prevents a network error, timeout, or retry from creating uncounted model work. An implementation may apply a stricter limit, but it must never widen the request.
+### Model-generation call and branch multiplicity
 
-Current direct single-call HTTP adapters have an implementation shape of one provider call, so their observed turns are normally `1`. That structural fact is useful evidence but does not remove the requirement to validate the request and prove that the selected transport cannot initiate hidden additional model calls.
+A **model-generation call** is one generation branch, initiated by Beacon or by a harness acting for Beacon, that can cause a model to generate output. It is counted at the last trusted enforcement point before the branch crosses into provider or authority-bearing opaque model execution.
 
-## Retry semantics
+The count is per initiated generation branch, not per HTTP envelope, `ProviderTransport.invoke()` call, batch request, CLI command, harness step, or agent loop. One transport operation that initiates four model generations requires four model-call reservations and corresponding output-token reservations. Every initiated hedged, speculative, batched, or fan-out branch counts even when another branch wins and its result is discarded.
 
-Every provider transport invocation that is intended to generate model output consumes a turn, including the initial attempt and every retry attempt. Beacon reserves the turn immediately before invoking the transport. A local validation failure that occurs before invocation consumes no turn.
+If a transport, provider endpoint, CLI, SDK, or harness cannot expose and hard-bound generation multiplicity, the path must fail closed.
 
-This deliberately adopts the conservative rule rather than trying to prove whether a failed network attempt reached the provider. Once the trusted boundary invokes the transport, Beacon must assume the provider could have received it.
+Local parsing, deterministic normalization, policy evaluation, and purely local tool execution do not consume a model call. Model re-entry after tool output consumes another call. Provider-native step or turn names do not change the unit.
 
-`ProviderRun.retryCount` records how many consumed model-call attempts were retries rather than initial calls or normal tool-loop re-entries. A retry does not receive a separate allowance: it increments both `turns` and `retryCount`. A model re-entry after a tool result increments `turns` but not `retryCount` unless it is itself retrying a failed generation.
+### `maxModelCalls` and legacy `maxTurns`
 
-Automatic retries hidden inside an SDK, CLI, harness, proxy, or provider gateway are compliant only when that layer is an authorized trusted enforcement point and counts them against the same request. Otherwise the adapter must fail closed before execution.
+`maxModelCalls` is the canonical provider-budget term: the maximum number of model-generation branches that may be initiated for one execution budget lineage. For `maxModelCalls = 3`, branches 1, 2, and 3 may begin; branch 4 must be denied before provider or harness model execution begins.
 
-## Tool-loop semantics
+Existing serialized/configuration field `maxTurns` may temporarily remain during the bounded migration. At the `ProviderExecutionRequest` boundary it is a legacy alias whose value must map exactly to lineage `maxModelCalls`. Documentation, types, and conformance tests must state and prove that mapping. This decision does not silently rename or reinterpret unrelated higher-level role or agentic workflow-turn policy.
 
-The portable counting rule is:
+### Atomic model-call admission
+
+Before every generation branch, an authorized trusted boundary performs one atomic model-call admission transaction conceptually equivalent to:
 
 ```text
-model generation #1        -> turn 1
-local tool execution       -> no model turn
-model generation after tool output -> turn 2
+admitModelCall(budgetLineageId, requestedPerCallTokenCap)
+  -> budgetReservationId
 ```
 
-If a tool, subagent, compactor, summarizer, or fallback path invokes another model, that invocation is a turn even when the harness labels it part of the same step. Provider-native step or agent-loop names do not change the count.
+Within one indivisible ledger transaction, admission must:
 
-An opaque provider-managed agent endpoint that may perform unbounded hidden model re-entry cannot satisfy this contract merely because Beacon made one HTTP request. It needs a documented hard model-call bound at that trusted service boundary or it fails closed.
+1. resolve the immutable lineage and its authorized ceilings;
+2. verify model-call capacity remains after initiated calls and active pending call reservations;
+3. verify output-token capacity remains after policy charges and all active token reservations;
+4. verify the requested per-call allowance is a positive integer no greater than the remaining output budget;
+5. atomically reserve both one model call and that output-token allowance; and
+6. create one unique `budgetReservationId` in `PENDING` state.
 
-## `maxOutputTokens` semantics
+Either both reservations and the reservation identity are committed, or none are. If either budget check fails, no model call is consumed, no token reservation remains, and no provider invocation begins.
 
-`maxOutputTokens` is cumulative across every model-generation call in the provider execution. Before each call, the trusted boundary derives a hard per-call cap no greater than the request's remaining budget and reserves that amount atomically:
+The hard provider per-call cap must be no greater than the admitted token reservation. A stricter provider/model maximum may lower the requested allowance; it may never widen lineage capacity.
+
+### Reservation identity and lifecycle
+
+Every admitted generation branch has a unique immutable `budgetReservationId`. It supports concurrent calls, retry distinction, durable recovery, duplicate-completion detection, and idempotent settlement. Reapplying the same valid terminal settlement must not debit or release capacity twice; a contradictory duplicate is invalid evidence and may be an enforcement violation.
+
+The normative lifecycle is:
 
 ```text
-remaining = request.maxOutputTokens - chargedOutputTokens - activeReservations
+PENDING
+  |-- CANCELLED_BEFORE_INVOCATION
+  `-- INVOKED
+        |-- SETTLED_AUTHORITATIVE
+        |-- SETTLED_CONSERVATIVE
+        `-- VIOLATION
+```
+
+**`PENDING`** means one model call and its hard output allowance were admitted atomically, but the trusted boundary has not yet recorded provider invocation.
+
+**`CANCELLED_BEFORE_INVOCATION`** is allowed only when Beacon proves the generation branch never began. Both reservations are released and no model call is charged. If Beacon cannot prove non-invocation, it must not use this state.
+
+**`INVOKED`** begins when the trusted boundary crosses into provider/model execution or can no longer prove that it did not. The model-call count is then permanently consumed and the output-token reservation remains active until terminal settlement.
+
+**`SETTLED_AUTHORITATIVE`** requires authoritative, valid terminal usage. Beacon records observed output, debits the same amount as policy-charged output, and releases only the unused portion of the token reservation.
+
+**`SETTLED_CONSERVATIVE`** applies when invocation occurred or may have occurred but authoritative usage is unavailable, invalid without proving a cap violation, incomplete, cancelled, timed out, disconnected, crashed, or otherwise uncertain. The full token reservation remains policy-charged. Partial observations may be retained as observations but do not release capacity.
+
+**`VIOLATION`** applies when provider evidence shows usage beyond the hard reservation or provider cap, generation multiplicity exceeds admitted reservations, duplicate evidence is contradictory, or another enforcement invariant is breached. The full reservation remains charged, actual observed usage remains separately recorded, the violation is durable, and no further model calls may begin for the affected lineage until authorized policy handling resolves it. Beacon never silently restores capacity after uncertainty or violation.
+
+### Pre-invocation failures and retries
+
+Atomic admission makes a partial turn-only or token-only reservation impossible. After successful admission, a local validation failure may transition to `CANCELLED_BEFORE_INVOCATION` only when the trusted boundary proves model execution never began. Once it invokes a transport or loses that proof, the attempt is `INVOKED` and counted conservatively.
+
+Every provider transport attempt intended to generate output requires its own reservation and consumes a model call once invocation begins, including the initial attempt and every retry attempt. Caller-level retries inherit the same `budgetLineageId`; constructing another request does not grant a separate retry allowance.
+
+`ProviderRun.retryCount` is a projection of initiated reservations classified as retries rather than initial calls or normal model re-entry. A retry increments both initiated model calls and retry count. Model re-entry after a tool result increments model calls but not retry count unless that call is itself retrying a failed generation.
+
+Automatic retries hidden inside an SDK, CLI, harness, proxy, or provider gateway are compliant only when that layer is an authorized trusted enforcement point that reserves every initiated branch against the same ledger. Otherwise the path must fail closed before execution.
+
+### Concurrency
+
+All admission and settlement operations for one lineage must be concurrency-safe and atomic. Active reservations are included in remaining-capacity calculations even when calls complete out of order.
+
+For 1,000 remaining output tokens, two simultaneous requests for 800 cannot both be admitted. For one remaining model call, two simultaneous attempts must produce one admitted reservation and one pre-call denial. The contract applies even while current Phase 1.5 execution is sequential.
+
+### Tool loops, internal calls, subagents, handoffs, and provider switches
+
+The portable tool-loop rule is:
+
+```text
+model generation #1                    -> model call 1
+local tool execution                   -> no model call
+model generation after tool output     -> model call 2
+```
+
+Compaction, summarization, title generation, internal model calls, model-driven subagents, and fallback-agent calls inherit the same lineage and require normal admission whenever they invoke a model. A subagent does not receive free capacity merely because it becomes another AgentRun.
+
+Ordinary fallback, provider switch, or handoff that continues the authorized execution also inherits the lineage. For example:
+
+```text
+lineage ceilings:
+  maxModelCalls = 5
+  maxOutputTokens = 4,000
+
+Claude consumes:
+  modelCallsInitiated = 2
+  policyChargedOutputTokens = 1,200
+
+Codex after ordinary provider switch receives:
+  modelCallsRemaining = 3
+  outputTokensRemaining = 2,800
+```
+
+It does not receive fresh limits of 5 and 4,000. A fresh allocation requires the explicit new-lineage authority defined above.
+
+### Cumulative output-token semantics
+
+`maxOutputTokens` is cumulative across every model-generation branch in the lineage. Before a branch begins, atomic admission derives and reserves a hard per-call allowance no greater than the shared remaining budget:
+
+```text
+remaining = maxOutputTokens
+  - policyChargedOutputTokens
+  - activeOutputTokenReservations
+
 if remaining <= 0:
   deny before provider invocation
 
-perCallCap = a positive value <= remaining
-reserve perCallCap
-invoke with a documented hard provider cap <= perCallCap
+perCallCap = positive integer <= remaining
+atomically reserve one model call and perCallCap
+invoke with documented hard provider cap <= perCallCap
 ```
 
-When authoritative provider usage is returned, the adapter charges actual output usage and may release the unused part of the reservation. If exact usage is unavailable or structurally invalid, the full reservation remains charged; uncertainty never restores budget. An adapter may conservatively reserve all remaining tokens for one call.
+For a 4,000-token lineage, a first authoritatively settled call of 900 leaves 3,100. A second settled call of 1,200 leaves 1,900. No later branch may receive a hard cap above 1,900, regardless of which request, provider, subagent, retry, or handoff initiates it.
 
-The observed debit is the provider's normalized output-token count for the resolved model, including reasoning or hidden generated tokens when that provider counts them inside its hard output cap. A stricter model/provider maximum may lower a per-call cap; it may never raise the request ceiling.
+For a direct HTTP path proven to initiate exactly one generation branch, a documented hard per-response cap equal to the lineage's remaining output budget can enforce the cumulative cap for that branch. That equivalence does not extend to a multi-call CLI, harness, batch, or opaque endpoint.
 
-For a budget of 4,000 tokens, a first call that authoritatively reports 900 leaves 3,100. A second call that reports 1,200 leaves 1,900. No later call may receive a hard cap above 1,900, and no model call may begin once the remaining total is zero.
+### Streaming settlement
 
-For the current single-call direct HTTP paths, a documented hard per-response cap equal to `request.maxOutputTokens` also enforces the aggregate request cap because there is exactly one model-generation call. That equivalence does not extend to a multi-call CLI or harness.
+Before opening a model stream, the trusted boundary must reserve the full hard per-call output allowance. The reservation remains active until authoritative terminal usage is validated.
+
+Providers may emit cumulative usage snapshots during a stream. Beacon must not sum repeated cumulative snapshots. Only authoritative terminal usage may release unused capacity.
+
+Cancellation, disconnect, timeout, malformed terminal event, missing terminal usage, process crash, or uncertain provider completion transitions the reservation to conservative settlement and charges the full allowance. Streaming never weakens the cumulative lineage budget.
+
+### Hidden and reasoning output
+
+All provider-generated output covered by the generation operation must fit inside the hard budget, including hidden reasoning, reasoning tokens, internal generated text, non-visible completion content, and provider-specific generated-token categories.
+
+A provider path is compliant only when documented hard-cap and authoritative-usage semantics cover every generated category relevant to the limit. OpenAI documents `max_output_tokens` as including visible and reasoning tokens, so that evidence may support the direct Responses API path. If any generated category can escape the hard cap or cannot be bounded by another authorized trusted enforcement mechanism, the path must fail closed.
+
+### Authoritative, unavailable, and invalid usage
+
+Authoritative output usage must use documented provider/model token units and be structurally consistent with the hard cap and response. Invalid usage includes at least:
+
+- negative values;
+- fractional or non-integral values where integer tokens are required;
+- impossible totals or unsupported units;
+- contradictory provider fields;
+- duplicated terminal usage that would produce a second or contradictory settlement;
+- usage greater than the reserved hard allowance; and
+- usage inconsistent with the provider's own hard cap.
+
+If usage is absent, incomplete, malformed, or otherwise untrustworthy without proving that the provider exceeded its cap, the full reservation remains charged through conservative settlement. If usage proves that the enforcement boundary was exceeded, Beacon records `VIOLATION`, stops further calls for the lineage, and preserves the actual observation separately from the policy charge.
+
+### Observed versus policy-charged output
+
+The ledger distinguishes:
+
+```text
+observedOutputTokens
+  authoritative provider telemetry; may be unknown
+
+policyChargedOutputTokens
+  amount Beacon debits from the lineage budget
+```
+
+They may differ. If a 2,000-token reservation has uncertain invocation and no authoritative usage, `observedOutputTokens` remains unknown while `policyChargedOutputTokens` increases by 2,000. Beacon must not fabricate observed usage to make ledger totals balance.
 
 ## Enforcement ownership
 
-The hard budgets may be enforced by one or more of these explicitly trusted layers:
+The hard budgets may be enforced by one or more explicitly trusted layers acting over the complete adapter-plus-transport path:
 
-1. a provider API's documented hard per-call parameter, combined with Beacon-owned call counting and aggregate reservation;
-2. the `ProviderAdapter` when it directly controls every model call and retry;
+1. a provider API's documented hard per-call parameter, combined with Beacon-owned lineage admission and settlement;
+2. the `ProviderAdapter` when it directly controls every model branch and retry;
 3. a Beacon-owned provider gateway; or
-4. another explicitly authorized trusted execution supervisor that gates before every model call begins.
+4. another explicitly authorized trusted execution supervisor that resolves lineage state and gates every branch before generation begins.
 
-Prompt instructions are not enforcement. Telemetry-only comparison is not enforcement. A subprocess timeout bounds elapsed time, not turns or output tokens. A third-party harness advisory setting is insufficient unless exact-version evidence proves it prevents the prohibited call before execution.
+Prompt instructions are not enforcement. Telemetry-only comparison is not enforcement. A subprocess timeout bounds elapsed time, not model calls or generated output. A third-party harness advisory setting is insufficient unless exact-version evidence proves it prevents prohibited branches before execution.
 
-The trusted boundary must also account for implicit model calls such as title generation, compaction, summarization, fallback agents, and subagents. Disabling those calls is a valid way to remain within budget.
+The trusted path must account for implicit calls, multiplicity, retries, streaming, and provider transitions. Disabling implicit calls is a valid way to remain within budget. No adapter, transport, third-party harness, CLI, or provider SDK may mint a new lineage merely to obtain fresh capacity.
 
 ## Fail-closed rule
 
-Before the first model-generation call, a `ProviderAdapter` must validate that both request budgets are positive integers and must establish a hard enforcement path for every model call the execution can initiate. It must repeat the turn and remaining-output checks before each later call.
+Before the first generation branch, the trusted path must validate positive integer budget constraints, resolve an authorized immutable lineage, and establish a hard enforcement and settlement path for every branch the execution can initiate. It repeats atomic admission before each later branch.
 
-If it cannot prove either bound, it must reject before an unbounded provider or harness run begins:
+If it cannot prove either bound, generation multiplicity, lineage continuity, or required settlement behavior, it must reject before unbounded provider or harness execution begins:
 
 ```ts
 new ProviderExecutionError(
@@ -218,15 +397,37 @@ new ProviderExecutionError(
 )
 ```
 
-This rule applies equally to Claude, Codex, OpenCode, future direct providers, and future harness providers. A missing mechanism does not become retryable merely because a different invocation might voluntarily stop.
+This non-retryable policy failure applies equally to Claude, Codex, OpenCode, future direct providers, and future harness providers. It does not become retryable merely because another request, transport, provider, or invocation might voluntarily stop. A recorded enforcement violation blocks further calls on the affected lineage until authorized policy handling occurs.
 
-## Telemetry relationship
+## Durable enforcement evidence and telemetry relationship
 
-`ProviderRun.turns` is the observed number of reserved model-generation calls initiated for the request. `ProviderRun.usage.outputTokens` is the observed normalized output usage. `AgentRun.execution.turns` copies or aggregates provider-run observation according to the existing AgentRun contract; it does not redefine the policy limit.
+The budget ledger is the source of enforcement truth and must survive provider errors, retries, timeouts, cancellation, failed normalization, provider switch, handoff, and the absence of a successfully created `ProviderRun`. Successful adapter return is not a prerequisite for preserving initiated calls or conservative token charges.
 
-Telemetry should additionally preserve effective per-call caps, consumed reservations, and whether output usage was measured or conservatively charged in the bounded provider metadata or a later schema extension. That implementation detail belongs in the conformance PR. Raw prompts and provider responses remain prohibited from telemetry.
+The architecture must be capable of reconstructing at least:
 
-A run is not compliant merely because observed values happen to be below the limits. Compliance also requires evidence that call N+1 and output above the remaining reservation could not begin.
+- budget lineage identity and authorized ceilings;
+- reservation identity and state;
+- model calls reserved and initiated;
+- retries;
+- active and released reservations;
+- observed and policy-charged output;
+- provider and model involved;
+- enforcement owner;
+- provider transition or handoff provenance;
+- terminal budget reason; and
+- enforcement violation.
+
+This is bounded enforcement evidence, not authorization to store raw prompts, responses, hidden reasoning, or secrets.
+
+If the conformance PR represents ledger transitions as canonical events, those events must use PR-0B's accepted identity and replay contract: `eventId` is the sole idempotency identity, duplicate delivery cannot create a second transition, and applicable causation and correlation references must be preserved. This ADR does not invent event names or require an event implementation.
+
+`ProviderRun` is a provider-execution observation and projection of ledger activity, not a fresh budget. `AgentRun` is the higher-level run projection and outcome. One lineage may cross multiple ProviderRuns, providers, or AgentRun projections while retaining the same ledger and remaining budget.
+
+`ProviderRun.turns`, `retryCount`, effective caps, observed usage, and terminal reasons must be derived truthfully from the shared ledger. `AgentRun` aggregation must consistently project that lineage rather than sum independently reset provider budgets. The bounded conformance PR may extend schemas or provider metadata as needed, but it must not conflate observed and policy-charged output.
+
+Current `live-adapter-support` maps provider output-token exhaustion to the `max-turns` stop reason. That is a concrete conformance defect. The hardening PR must preserve separate canonical terminal reasons for model-call exhaustion and output-token exhaustion; it must not relabel one as the other.
+
+A run is not compliant merely because projected values happen to be below the ceilings. Compliance also requires durable proof that prohibited calls and output above active reservations could not begin.
 
 ## `maxContextTokens` scope
 
@@ -236,25 +437,25 @@ No claim is made that estimated context tokens are exact provider billing tokens
 
 ## Claude impact
 
-Verdict: **PARTIALLY COMPLIANT** with the proposed contract.
+Verdict: **PARTIALLY COMPLIANT** with the proposed contract for the exact direct HTTP adapter-plus-transport path.
 
-`ClaudeAdapter` makes one visible transport invocation and forwards `request.maxOutputTokens` as Anthropic `max_tokens`. `HttpProviderTransport` performs one Messages API request, and Anthropic documents `max_tokens` as an absolute per-request generation maximum. With a positive `maxTurns` and this exact direct transport, one call also stays within any limit of at least one, and the per-call output cap equals the aggregate cap.
+`ClaudeAdapter` makes one visible transport invocation and forwards `request.maxOutputTokens` as Anthropic `max_tokens`. `HttpProviderTransport` performs one Messages API request, and Anthropic documents `max_tokens` as an absolute per-request generation maximum. That provider cap can enforce one admitted branch's token reservation.
 
-The current adapter nevertheless ignores and does not validate `maxTurns`, the request interface has no runtime positive-integer guard, the transport contract does not promise that a custom transport cannot hide retries or additional calls, and tests do not prove denial before call N+1. The shared result builder reports `turns: 1` after the fact rather than deriving it from a pre-call counter. Those gaps require bounded conformance work before the general adapter contract can be called compliant.
+The current adapter nevertheless ignores and does not validate `maxTurns`, has no `maxModelCalls` or lineage reference, has no atomic ledger admission or settlement, and does not durably account for failed attempts. The transport contract also does not promise that a custom transport cannot hide retries or additional branches. The shared result builder reports `turns: 1` after the fact rather than deriving it from enforcement state. Those gaps require bounded conformance work before the path can be called compliant.
 
 ## Codex impact
 
-Verdict: **PARTIALLY COMPLIANT** with the proposed contract; its CLI transport is **NONCOMPLIANT**.
+Verdict: **PARTIALLY COMPLIANT** for the exact direct HTTP adapter-plus-transport path; its CLI transport is **NONCOMPLIANT**.
 
-`CodexAdapter` makes one visible transport invocation and forwards `request.maxOutputTokens` as `max_output_tokens`. `HttpProviderTransport` performs one Responses API request, and OpenAI documents that field as an upper bound for one response, including visible and reasoning tokens. The direct HTTP shape can therefore conform after the same request validation, pre-call counting, transport guarantees, and tests required for Claude.
+`CodexAdapter` makes one visible transport invocation and forwards `request.maxOutputTokens` as `max_output_tokens`. `HttpProviderTransport` performs one Responses API request, and OpenAI documents that field as an upper bound for one response, including visible and reasoning tokens. That cap can enforce one admitted branch after lineage validation, atomic admission, transport multiplicity guarantees, settlement, and failure evidence are added.
 
-`CodexCliTransport` does not translate `max_output_tokens` into a CLI enforcement control. It relies on a timeout and reports the opaque CLI run as one turn even though it cannot prove the number of model calls or retries underneath. That path must fail closed or receive a separately authorized enforcement boundary; observed usage after completion is not sufficient.
+`CodexCliTransport` does not translate the cumulative output budget or model-call count into documented CLI enforcement controls. It relies on a timeout and reports the opaque CLI run as one turn even though it cannot prove internal generations, retries, compaction, or settlement. That path must fail closed or receive a separately authorized enforcement boundary; observed usage after completion is not sufficient.
 
 ## Harness / OpenCode impact
 
 Verdict: **NONCOMPLIANT for executable use** under currently inspected released behavior.
 
-The OpenCode release evaluated by draft ADR-0022 does not provide a proven hard call-count stop for noninteractive runs, and its output controls are per model response rather than cumulative across the subprocess. NDJSON observation does not create a pre-call acknowledgment barrier, so terminating after a `step_finish` event cannot prove that the next model call did not already begin.
+The OpenCode release evaluated by draft ADR-0022 does not provide a proven hard branch-count stop for noninteractive runs, and its output controls are per model response rather than cumulative across the subprocess. NDJSON observation does not create a pre-call acknowledgment barrier, so terminating after an observed event cannot prove that another generation did not already begin. OpenCode also cannot mint a Beacon lineage or independently reset the budget.
 
 Therefore `HarnessAdapter.execute()` must remain disabled or fail closed before a real OpenCode/Groq model invocation. Fake-subprocess NDJSON normalization tests may continue because they initiate no model call and consume no provider credential. This decision supplies the missing provider-neutral budget meaning; it does not make current OpenCode compliant or approve draft ADR-0022.
 
@@ -263,52 +464,86 @@ Therefore `HarnessAdapter.execute()` must remain disabled or fail closed before 
 A future Beacon LLM Gateway is compatible with this decision as one possible trusted enforcement point:
 
 ```text
-Harness
-  -> Beacon LLM Gateway
-    -> provider API
+authorized execution
+  -> ExecutionBudgetLineage / ExecutionBudgetLedger
+    -> ProviderExecutionRequest A -> Claude
+    -> retry or model re-entry
+    -> ProviderExecutionRequest B -> Codex fallback
 ```
 
-The gateway could atomically reserve model calls and remaining cumulative output, inject a per-call cap, enforce provider/model eligibility, hold provider credentials, and emit normalized telemetry. This ADR does not authorize building that gateway, redirecting a harness through it, or expanding provider eligibility. Those are separate architecture and implementation decisions.
+The gateway could resolve lineage identity, atomically admit reservations, inject per-call caps, enforce provider/model eligibility, hold provider credentials, and emit durable normalized evidence. This ADR does not authorize building that gateway, redirecting a harness through it, or expanding provider eligibility. Those are separate architecture and implementation decisions.
 
 ## Positive consequences
 
-- The same request has the same hard meaning across direct and harness providers.
-- A multi-call adapter cannot multiply one execution's output budget.
-- Retries, tool-loop re-entry, implicit calls, and opaque subprocess behavior have explicit treatment.
-- Conformance tests can prove pre-call denial instead of accepting telemetry as a substitute.
+- The same authorized execution retains the same hard remaining budget across requests, retries, providers, handoffs, and subagents.
+- A multi-call adapter, batch, hedge, fan-out, or fallback cannot multiply cumulative capacity.
+- Atomic admission prevents partial turn-only or token-only reservations.
+- Reservation identity and terminal states make concurrency, uncertainty, failure, and duplicate settlement auditable.
+- Streaming and hidden generated output have fail-closed accounting rules.
+- Enforcement truth survives failed ProviderRun creation and projects consistently into multiple ProviderRuns or AgentRuns.
 - Draft ADR-0022 can apply a provider-neutral contract instead of inventing OpenCode-specific meanings.
-- The current single-call direct HTTP shape remains usable after bounded hardening.
+- The current single-call direct HTTP shapes remain candidates for compliance after bounded hardening.
 
 ## Negative consequences
 
-- Current adapters are not fully conformant and require a separate frozen-Phase-1.5 hardening PR after human acceptance.
+- Current adapters are not fully conformant and require a separate frozen-Phase-1.5 correction PR after human acceptance.
+- The provider request boundary needs a later migration from legacy `maxTurns` naming toward canonical `maxModelCalls` plus a lineage reference.
 - The Codex CLI and OpenCode paths must fail closed until they gain a proven enforcement point.
-- Conservative output reservations may charge unused capacity when exact usage is unavailable.
-- Retaining the name `maxTurns` requires documentation and tests to prevent future readers from substituting provider-native step semantics.
+- Conservative settlement may charge unused capacity when exact usage is unavailable.
+- Durable ledger evidence and concurrency-safe admission add implementation complexity even when current execution is sequential.
 
 ## Risks
 
-- A provider SDK or transport may add hidden retries later. Mitigation: exact transport conformance tests, no automatic-retry assumption, and fail closed when calls are not observable.
-- Provider tokenizers differ. Mitigation: pin the resolved provider/model for one request and charge the provider's normalized output count under its own documented hard cap; do not claim cross-model token equivalence.
-- A provider may violate or change a documented hard cap. Mitigation: version-aware provider tests, stop further calls on structurally invalid usage, and never widen the remaining reservation.
-- A too-broad hardening PR could reopen frozen routing or role semantics. Mitigation: restrict follow-up to request validation, pre-call counting, output reservation/accounting, fail-closed transport behavior, telemetry consistency, and focused tests.
+- A caller may treat new request construction as new authority. Mitigation: lineage identity and new-budget allocation exist only at an authorized orchestration boundary; ordinary requests inherit existing state.
+- A provider SDK or transport may add hidden retries, batches, or hedges later. Mitigation: certify the complete adapter-plus-transport path, require per-branch reservations, and fail closed when multiplicity is opaque.
+- Provider tokenizers differ. Mitigation: pin the resolved provider/model for each reservation, charge documented provider units under the hard cap, and do not claim cross-model token equivalence.
+- A stream may end without authoritative usage. Mitigation: retain and conservatively charge the full reservation.
+- A provider may violate or change a documented hard cap. Mitigation: record `VIOLATION`, preserve observed overage separately, stop further lineage calls, and require renewed path evidence.
+- A too-broad hardening PR could reopen frozen routing or role semantics. Mitigation: use the exact bounded correction scope below and refresh candidate-bound frozen-phase evidence.
 - Treating this `under-review` proposal as accepted would violate ADR-0012 and Phase 1.6 Section 19. No runtime work begins until the Repository Owner explicitly accepts the decision.
+
+## Phase 1.5 frozen correction process
+
+Acceptance of this ADR would define the missing contract; it would not make the existing Phase 1.5 runtime compliant retroactively. Existing evidence remains historical evidence of the then-implemented behavior, not proof of the newly accepted budget semantics.
+
+After human acceptance, correction requires a separate **Phase 1.5 execution-budget conformance-hardening PR** explicitly identified as a bounded correction of a latent frozen-contract defect, not feature expansion. It must:
+
+- reference the accepted ADR-0023;
+- stay inside the exact conformance scope below;
+- receive independent technical review;
+- produce candidate-bound prepublication and exact-head evidence; and
+- refresh any frozen-phase attestation or evidence that would otherwise falsely claim current adapter compliance.
+
+No routing, provider, role, harness registration, deployment, release, or PR-1 expansion is authorized.
 
 ## Migration and conformance plan
 
-No migration occurs in this decision PR.
+No migration or runtime implementation occurs in this decision PR.
 
-After explicit human acceptance, a bounded Phase 1.5 conformance-hardening PR may:
+After explicit human acceptance, the bounded Phase 1.5 execution-budget conformance-hardening PR must:
 
-1. add runtime validation for positive `maxTurns` and `maxOutputTokens`;
-2. introduce a provider-neutral pre-call turn counter and output reservation/accounting primitive;
-3. prove the Claude HTTP and Codex HTTP transports each issue exactly one bounded provider request with no hidden automatic retry;
-4. fail the Codex CLI path closed until an authorized hard enforcement mechanism exists;
-5. derive `ProviderRun.turns`, `retryCount`, and output usage from enforcement state rather than constants;
-6. add adversarial tests for call N+1, retries, tool-loop re-entry, implicit calls, missing usage, conservative reservations, and cumulative output; and
-7. update only the canonical contracts and documentation required to make the approved semantics executable.
+1. introduce stable `budgetLineageId` semantics and authorized ledger ownership;
+2. make `ProviderExecutionRequest` carry or resolve a lineage reference rather than own fresh counters;
+3. preserve the lineage across retry, fallback, handoff, provider switch, internal call, and subagent execution;
+4. establish `maxModelCalls` as canonical provider-budget terminology while mapping legacy provider-boundary `maxTurns` exactly and leaving unrelated higher-level agent policy unchanged;
+5. implement one atomic model-call admission for call plus output allowance;
+6. implement unique reservation identity and the required reservation lifecycle with idempotent settlement;
+7. make admission and settlement concurrency-safe, including out-of-order completion;
+8. count every batched, hedged, speculative, fan-out, retry, and implicit model-generation branch or fail closed when multiplicity is opaque;
+9. enforce streaming reservation and terminal-settlement rules;
+10. include all relevant hidden/reasoning generated categories under a documented hard cap or fail closed;
+11. preserve durable failure-path ledger evidence independent of successful ProviderRun creation;
+12. distinguish observed output from policy-charged output and validate authoritative usage;
+13. derive truthful ProviderRun and AgentRun projections from the shared lineage across providers;
+14. correct the stop-reason drift between model-call and output-token exhaustion;
+15. certify exact adapter-plus-transport paths, including absence or accounting of hidden retries;
+16. keep Codex CLI and executable harness/OpenCode paths fail closed until they can prove the full contract;
+17. add adversarial tests for call N+1, pre-invocation cancellation, uncertain invocation, retries, tool-loop re-entry, subagents, fallback/handoff inheritance, concurrent admission, batch/hedge/fan-out multiplicity, streaming, invalid or missing usage, duplicate settlement, violation, and cumulative output; and
+18. refresh candidate-bound prepublication and frozen-phase conformance evidence.
 
-Approval of this ADR is the missing architecture authority for that bounded conformance scope. The implementation still requires its own PR, independent review, candidate-bound prepublication evidence, and exact-head GitHub checks. A gateway, third-party supervisor, provider expansion, or routing change requires separate authority.
+If the hardening PR uses canonical events for ledger evidence, it must use PR-0B `eventId` identity/idempotency, causation, correlation, and replay semantics rather than create a parallel event contract.
+
+Approval of this ADR is the missing architecture authority for only that bounded correction. The implementation still requires its own PR, independent review, candidate-bound evidence, and exact-head GitHub checks. A general child-budget hierarchy, gateway, third-party supervisor, provider expansion, or routing change requires separate authority.
 
 ## Architecture impact
 
@@ -319,27 +554,33 @@ This proposal defines a provider-neutral execution-control contract across every
 ```text
 BEFORE
 ProviderExecutionRequest
-  -> contains budgets with ambiguous enforcement semantics
+  -> carries budgets with ambiguous units and resettable lifetime
 
 AFTER HUMAN ACCEPTANCE
-ProviderExecutionRequest
-  -> contains canonical measurable hard ceilings
-  -> trusted enforcement denies the prohibited next call before execution
+authorized orchestration boundary
+  -> immutable ExecutionBudgetLineage
+    -> authoritative ExecutionBudgetLedger
+      -> atomic reservations shared by all provider requests and branches
+      -> trusted enforcement denies prohibited work before execution
 ```
 
-It is a contract clarification plus hardening authority, not a change to provider routing, provider eligibility, role policy, business runtime, or Phase 1.6 task-class behavior.
+It is a contract clarification plus bounded hardening authority, not a change to provider routing, provider eligibility, role values, business runtime, or Phase 1.6 task-class behavior.
 
 ## Relationship to ADR-0014
 
-ADR-0014 establishes the shared provider adapter boundary and prohibits adapters from changing approved request meaning. This proposal defines the execution-budget portion of that shared meaning. Provider-specific operational controls may enforce it differently, but may not weaken or reinterpret it.
+ADR-0014 establishes the shared provider adapter boundary and prohibits adapters from changing approved request meaning. This proposal defines the execution-budget portion of that shared meaning while clarifying that a request references, rather than owns, authoritative budget state. Provider-specific operational controls may enforce it differently, but may not weaken, reset, or reinterpret it.
 
 ## Relationship to ADR-0017
 
-ADR-0017 froze a measurable, provider-neutral, bounded engineering platform. The repository evidence shows a latent semantic/conformance defect in that boundary. This proposal does not reopen unrelated Phase 1.5 semantics. If accepted, it permits only the bounded conformance plan above under the existing deterministic quality and evidence gates.
+ADR-0017 froze a measurable, provider-neutral, bounded engineering platform. Repository evidence shows a latent semantic/conformance defect in that boundary. This proposal does not reopen unrelated Phase 1.5 semantics. If accepted, it permits only the bounded frozen-contract correction above under existing deterministic quality and evidence gates.
 
 ## Relationship to ADR-0020
 
 ADR-0020 remains the authority for PR-0.6's log-only Task Classifier and unregistered HarnessAdapter scaffold. This proposal neither expands nor removes that scope. It defines the budget contract any executable harness would have to satisfy while preserving no classifier-driven routing and no live free-tier WorkUnit.
+
+## Relationship to ADR-0021 and PR-0B
+
+ADR-0021 authorized PR-0B's canonical event identity, idempotency, causation, correlation, and replay semantics. ADR-0023 does not require the future ledger to use events. If the conformance correction does use canonical events, it must reuse PR-0B semantics rather than create a second identity or replay system.
 
 ## Relationship to draft ADR-0022
 
@@ -352,28 +593,30 @@ Neither draft may silently rewrite the other. PR #76 remains independent, draft,
 This decision does not authorize:
 
 - modifying PR #74 or PR #76;
-- changing runtime in this decision PR;
+- changing runtime or serialized schemas in this decision PR;
+- starting PR-1 or any Phase 1.6 feature increment;
 - adding Groq or any other provider to `ProviderIdSchema`;
 - registering HarnessAdapter or making Groq routable;
-- live OpenCode/Groq execution or any live free-tier WorkUnit;
+- implementing or enabling live OpenCode/Groq execution or any live free-tier WorkUnit;
 - TaskClassifier-driven provider ranking, selection, routing, or CapacityManager input;
 - learned routing or a Beacon LLM Gateway implementation;
 - changing Claude/Codex provider eligibility, Broker routing, CapacityManager, or role eligibility;
 - changing role budget values, `maxContextTokens`, context compilation, tool policy, approval policy, or release authority;
-- production credentials, deployment authority, merge authority, or unrestricted tools; or
+- production credentials, deployment authority, merge authority, or unrestricted tools;
+- a general child-budget hierarchy beyond preventing silent capacity creation; or
 - treating policy prompts, timeouts, telemetry, provider step names, or voluntary model behavior as hard enforcement.
 
 ## Follow-up work
 
-1. Present ADR-0023 to the Repository Owner for explicit human decision; do not self-approve it.
-2. If accepted, prepare the bounded Phase 1.5 conformance-hardening PR described above. Do not combine it with PR #74 or PR #76.
-3. Rebase or revise draft ADR-0022 only in its own PR after this decision is accepted; it must keep real OpenCode execution fail-closed until all isolation and budget evidence exists.
+1. Present revised ADR-0023 to the Repository Owner for independent rereview and explicit human decision; do not self-approve it.
+2. If accepted, prepare only the bounded Phase 1.5 execution-budget conformance-hardening PR described above. Do not combine it with PR #74 or PR #76 and do not start PR-1.
+3. Rebase or revise draft ADR-0022 only in its own PR after this decision is accepted; keep real OpenCode execution fail-closed until all isolation and budget evidence exists.
 4. Keep `ProviderIdSchema`, CapacityManager, Broker routing, and role eligibility Claude/Codex-only; keep HarnessAdapter unregistered, Groq non-routable, and TaskClassifier observation-only.
-5. Require a new ADR before implementing a Beacon LLM Gateway or another materially different enforcement architecture.
+5. Require a new ADR before implementing a Beacon LLM Gateway, a general child-budget hierarchy, or another materially different enforcement architecture.
 
 ## Supersedes or superseded by
 
-New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, and draft ADR-0022. While `under-review`, it grants no authority. If approved, its accepted content becomes immutable; later correction requires a superseding ADR rather than silent rewriting.
+New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, ADR-0021, and draft ADR-0022. While `under-review`, it grants no authority. If approved, its accepted content becomes immutable; later correction requires a superseding ADR rather than silent rewriting.
 
 ## Source references
 
@@ -390,6 +633,8 @@ New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, and 
 - `src/modules/orchestration/providers/codex/codex-adapter.ts`
 - `src/modules/orchestration/providers/codex/codex-cli-transport.ts`
 - `src/modules/orchestration/workflows/live-work-unit.ts`
+- `src/modules/orchestration/decision-os/events.ts`
+- `src/modules/orchestration/decision-os/event-replay.ts`
 - `scripts/agents/run-live-work-unit.mjs`
 - `scripts/agents/run-live-baseline.mjs`
 - `tests/agents/agent-contracts.test.mjs`
@@ -397,6 +642,7 @@ New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, and 
 - `tests/orchestration/provider-adapters.test.ts`
 - `tests/orchestration/live-baseline.test.ts`
 - `tests/orchestration/telemetry.test.ts`
+- `tests/orchestration/decision-os-event-replay.test.ts`
 - `src/content/docs/decisions/0007-use-central-broker.mdoc`
 - `src/content/docs/decisions/0008-stable-roles-dynamic-models.mdoc`
 - `src/content/docs/decisions/0010-use-deterministic-quality-gates.mdoc`
@@ -408,11 +654,11 @@ New proposal; supersedes none. It complements ADR-0014, ADR-0017, ADR-0020, and 
 - `src/content/docs/decisions/0020-authorize-pr-0-5-and-pr-0-6-as-bounded-increments.mdoc`
 - `src/content/docs/decisions/0021-authorize-pr-0a-and-pr-0b-as-bounded-increments.mdoc`
 - [Draft ADR-0022 in PR #76](https://github.com/SandeepN97/Beacon-Co/pull/76)
-- `src/content/docs/plans/phase-1-6-master-spec.mdoc` (V6.5.1), Sections 0.1, 1A, 1B, 2, 19, 28, 29, 29B.10, 31, 33, and 35
+- `src/content/docs/plans/phase-1-6-master-spec.mdoc` (V6.5.1), Sections 0.1, 1A, 1B, 2, 19, 26A, 28, 29, 29B.10, 31, 33, and 35
 - `src/content/docs/architecture/overview.mdoc`
 - `src/content/docs/architecture/routing-and-scheduling.mdoc`
 - `src/content/docs/architecture/security-boundaries.mdoc`
 - `src/content/docs/architecture/work-unit-contract.mdoc`
 - `src/content/docs/security/ai-agent-security-standard.mdoc`
 - [Anthropic Messages API `max_tokens`](https://platform.claude.com/docs/en/api/messages/create) — one-request absolute generation maximum, accessed 2026-08-24
-- [OpenAI Responses API `max_output_tokens`](https://platform.openai.com/docs/api-reference/responses/create) — one-response output upper bound, accessed 2026-08-24
+- [OpenAI Responses API `max_output_tokens`](https://developers.openai.com/api/reference/cli/resources/responses/methods/create) — one-response output upper bound including visible and reasoning tokens, accessed 2026-08-24

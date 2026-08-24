@@ -146,7 +146,7 @@ Authorize PR-0A now, bounded to the seven contract-checkable invariants (INV-001
 {% decision_card number="ADR-0023" status="under-review" href="/docs/decisions/0023-define-provider-neutral-execution-budget-semantics/" %}
 ### Define provider-neutral execution budget semantics
 
-Propose one hard request-scoped meaning for model-call and cumulative output-token budgets across direct, harness, and future ProviderAdapters. Decision preparation only; no runtime, routing, provider, or execution authority is granted while under review. ADR-0022 remains reserved by draft PR #76.
+Propose one hard execution-lineage meaning for model-call and cumulative output-token budgets across direct, harness, and future ProviderAdapters. Requests inherit a shared authoritative ledger rather than resetting capacity. Decision preparation only; no runtime, routing, provider, or execution authority is granted while under review. ADR-0022 remains reserved by draft PR #76.
 {% /decision_card %}
 
 ## Status rule
