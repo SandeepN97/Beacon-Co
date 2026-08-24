@@ -1,4 +1,42 @@
-# Beacon & Co.
+# Beacon & Co. — Governed AI-Assisted Operations for Local Service Businesses
+
+> **A real marketing and lead-capture surface paired with an architecture-first, provider-neutral orchestration and decision-system project.** Beacon explores how AI-assisted business operations can be made explicit, auditable, approval-aware, and maintainable rather than hidden behind one giant prompt.
+
+Beacon & Co. is a small-business digital-presence project built with **Astro, TypeScript, Markdoc, Cloudflare Workers, architecture decision records, security policy as code, and a typed AI-orchestration simulation**. The project combines a working customer-facing site with a deeply documented engineering system for approvals, provider adapters, audit, decision records, provenance, and controlled delivery.
+
+**Useful for engineers exploring:** AI orchestration, agent governance, human-in-the-loop approvals, provider-neutral adapters, architecture-as-documentation, ADRs, secure CI/CD, and machine-readable engineering context.
+
+### What is implemented vs. planned
+
+| Area | Current state |
+| --- | --- |
+| **Marketing site** | Implemented in Astro and deployed through the controlled Cloudflare path |
+| **Contact flow** | Implemented with Cloudflare Worker, Turnstile, validation, and Resend |
+| **Engineering handbook** | Implemented in Astro + Markdoc with search, ADRs, provenance, diagrams, roadmap, and operations docs |
+| **Orchestration layer** | Implemented as a typed simulation with retrieval, broker/router, provider adapters, approvals, audit, continuation, and workflow gates |
+| **Decision OS / Phase 1.6** | In progress; typed schemas/events/IDs have started, authority invariants are not yet complete |
+| **Operational data / queue / native AI APIs** | Planned; not represented as production-complete |
+
+> **Truthful boundary:** this repository deliberately distinguishes implemented production-facing pieces, implemented simulations, and planned integrations. The orchestration architecture is substantial, but it should not be read as a claim that every future provider/data/queue integration is already live.
+
+---
+
+## Why this project exists
+
+Most AI-enabled application demos optimize for the shortest path from prompt to output. Beacon is exploring the harder questions that appear when software must remain understandable over time:
+
+- Which decisions should an AI provider be allowed to make?
+- Where must a human approve consequential actions?
+- How do Claude, Codex, or future providers remain replaceable adapters rather than architectural dependencies?
+- How are important decisions, evidence, provenance, and release state recorded?
+- How do documentation and architecture evolve with the code instead of becoming stale diagrams?
+- How can CI/CD enforce security and release policy rather than merely run a build?
+
+That makes Beacon both a business project and an evolving **AI systems / software architecture laboratory**.
+
+---
+
+## Business scope
 
 Digital presence services for small businesses within 30 miles of Waynesboro, Virginia — websites, Google Business Profile management, and social content, priced and delivered at a scale most local agencies can't match.
 
