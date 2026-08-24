@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "title": "PR-0.5: Capacity Watcher, simulated and unit-tested only",
+  "summary": [
+    "Implement the Capacity Watcher exactly as bounded by ADR-0020: predictive usage-threshold monitoring, automatic switch trigger, both-capped terminal state, and beacon CLI UX text for in-progress/switched/paused states.",
+    "Validated only through simulated capacity-warning and hard-cap scenarios and unit tests for threshold logic, per Section 31's PR-0.5 exit evidence and Section 29A.4's honest-scoping rule.",
+    "No live provider-capacity polling: CapacityReadingSchema's source field is the literal \"simulated\" (no \"live\" variant exists in the type), and neither new module performs network I/O."
+  ],
+  "risk": [
+    "Low: new, additive orchestration module and its unit tests only; no existing schema, event vocabulary entry, routing behavior, or public page changes.",
+    "The four provider-continuity event payload schemas added here (ProviderCapacityWarning, ProviderSwitchTriggered, ProviderSwitchCompleted, BothProvidersUnavailable) fill an already-reserved slot in events.ts's closed vocabulary; they do not add new event types."
+  ],
+  "testEvidence": [
+    "npm run typecheck passes (0 errors).",
+    "npm run test passes 229/229, including 27 new unit tests across decision-os-capacity-watcher.test.ts and decision-os-capacity-watcher-cli.test.ts covering below-warning, warning, automatic-switch, both-capped terminal pause (both observation orderings), threshold-logic edge cases, event-payload schema validation, and exact Section 22 CLI text.",
+    "npm run format:check and npm run lint pass with no findings.",
+    "npm run ci:prepublish result for this candidate is bound to the candidate SHA and appended to the published PR body."
+  ],
+  "documentationImpact": [
+    "None: this PR implements only the design/simulation/unit-test scope ADR-0020 already authorized and documented; no plan, decision, or architecture page changes."
+  ],
+  "rollback": [
+    "Revert this bounded commit through the protected pull-request workflow.",
+    "No schema migration, runtime wiring, routing behavior change, or business-data change is introduced; rollback has no production impact."
+  ],
+  "allowedPathPrefixes": [
+    "agent-platform/publication/pr-0-5-capacity-watcher.json",
+    "src/modules/orchestration/decision-os/capacity-watcher.ts",
+    "src/modules/orchestration/decision-os/capacity-watcher-cli.ts",
+    "tests/orchestration/decision-os-capacity-watcher.test.ts",
+    "tests/orchestration/decision-os-capacity-watcher-cli.test.ts",
+    ".github/workflows/pr-prepublish.yml"
+  ]
+}
