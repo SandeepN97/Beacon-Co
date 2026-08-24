@@ -143,7 +143,7 @@ describe("HarnessAdapter contract conformance", () => {
     let invocation: { file: string; args: string[]; environment: NodeJS.ProcessEnv } | undefined;
     const transport = new OpenCodeProcessTransport({
       repositoryRoot: "/fixture/repository",
-      environment: { PATH: "/fixture/bin", [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value" },
+      environment: { Path: "/fixture/bin", [GROQ_CREDENTIAL_ENV_VAR]: "fixture-value" },
       processRunner: async (file, args, options) => {
         invocation = { file, args, environment: options.env };
         return { stdout: processOutput, stderr: "", exitCode: 0 };
@@ -163,6 +163,30 @@ describe("HarnessAdapter contract conformance", () => {
     });
   });
 
+  it("fails safely without GROQ_API_KEY and never starts the child", async () => {
+    let invoked = false;
+    const transport = new OpenCodeProcessTransport({
+      repositoryRoot: "/fixture/repository",
+      environment: { PATH: "/fixture/bin", OPENAI_API_KEY: "unrelated-openai-value" },
+      processRunner: async () => {
+        invoked = true;
+        return { stdout: processOutput, stderr: "", exitCode: 0 };
+      },
+    });
+
+    await expect(
+      transport.invoke({
+        resolvedModelId: "groq/openai/gpt-oss-120b",
+        prompt: "bounded prompt",
+      }),
+    ).rejects.toMatchObject({
+      provider: "groq",
+      category: "authentication",
+      retryable: false,
+    });
+    expect(invoked).toBe(false);
+  });
+
   it("does not propagate unrelated parent credentials, configuration, or process controls", async () => {
     let childEnvironment: NodeJS.ProcessEnv | undefined;
     const transport = new OpenCodeProcessTransport({
@@ -173,6 +197,10 @@ describe("HarnessAdapter contract conformance", () => {
         OPENAI_API_KEY: "unrelated-openai-value",
         ANTHROPIC_API_KEY: "unrelated-anthropic-value",
         AWS_SECRET_ACCESS_KEY: "unrelated-aws-value",
+        GITHUB_TOKEN: "unrelated-github-value",
+        CLOUDFLARE_API_TOKEN: "unrelated-cloudflare-value",
+        RESEND_API_KEY: "unrelated-resend-value",
+        DATABASE_URL: "postgresql://unrelated.invalid/beacon",
         HOME: "/unrestricted/home",
         NODE_OPTIONS: "--require=/untrusted/bootstrap.cjs",
         HTTPS_PROXY: "https://unrelated-proxy.invalid",
@@ -196,6 +224,10 @@ describe("HarnessAdapter contract conformance", () => {
     expect(childEnvironment).not.toHaveProperty("OPENAI_API_KEY");
     expect(childEnvironment).not.toHaveProperty("ANTHROPIC_API_KEY");
     expect(childEnvironment).not.toHaveProperty("AWS_SECRET_ACCESS_KEY");
+    expect(childEnvironment).not.toHaveProperty("GITHUB_TOKEN");
+    expect(childEnvironment).not.toHaveProperty("CLOUDFLARE_API_TOKEN");
+    expect(childEnvironment).not.toHaveProperty("RESEND_API_KEY");
+    expect(childEnvironment).not.toHaveProperty("DATABASE_URL");
     expect(childEnvironment).not.toHaveProperty("HOME");
     expect(childEnvironment).not.toHaveProperty("NODE_OPTIONS");
     expect(childEnvironment).not.toHaveProperty("HTTPS_PROXY");

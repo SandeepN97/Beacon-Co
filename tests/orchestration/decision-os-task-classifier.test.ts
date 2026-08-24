@@ -1,4 +1,6 @@
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
+import { parse } from "yaml";
 import {
   TaskClassificationEventLog,
   classifyTask,
@@ -8,6 +10,7 @@ import {
 import { CapacityManager } from "../../src/modules/orchestration/broker/capacity-manager.ts";
 import { ProviderRouter } from "../../src/modules/orchestration/broker/router.ts";
 import { validateAgentRun } from "../../src/modules/orchestration/domain/agent-run.ts";
+import { ProviderIdSchema } from "../../src/modules/orchestration/domain/provider-run.ts";
 import {
   TaskClassSchema,
   type WorkUnit,
@@ -211,5 +214,60 @@ describe("TaskClassified observation", () => {
       taskClass: "codebase_discovery",
       actualProvider: "codex",
     });
+  });
+});
+
+describe("PR-0.6 routing isolation", () => {
+  it("keeps Claude and Codex as the complete routable and role-eligible provider set", async () => {
+    const contracts = parse(
+      await readFile(new URL("../../agent-platform/agent-contracts.yml", import.meta.url), "utf8"),
+    ) as {
+      providers: string[];
+      roles: Array<{ provider: { eligible: string[] } }>;
+    };
+
+    expect(ProviderIdSchema.options).toEqual(["claude", "codex"]);
+    expect(new CapacityManager().list().map(({ provider }) => provider)).toEqual([
+      "claude",
+      "codex",
+    ]);
+    expect(contracts.providers).toEqual(["claude", "codex"]);
+    expect(
+      contracts.roles.every(({ provider }) => provider.eligible.join(",") === "claude,codex"),
+    ).toBe(true);
+  });
+
+  it("keeps HarnessAdapter unregistered and classifier output outside execution control", async () => {
+    const controlSources = await Promise.all(
+      [
+        "broker/broker.ts",
+        "broker/router.ts",
+        "broker/capacity-manager.ts",
+        "broker/routing-policy.ts",
+      ].map((path) =>
+        readFile(new URL(`../../src/modules/orchestration/${path}`, import.meta.url), "utf8"),
+      ),
+    );
+    for (const source of controlSources) {
+      expect(source).not.toMatch(
+        /HarnessAdapter|OpenCodeProcessTransport|TaskClassified|taskClass|groq/,
+      );
+    }
+
+    const simulationSource = await readFile(
+      new URL("../../src/modules/orchestration/simulation.ts", import.meta.url),
+      "utf8",
+    );
+    expect(simulationSource).not.toMatch(/HarnessAdapter|OpenCodeProcessTransport/);
+
+    const result = runOrchestrationSimulation("fix a small search bug", documents);
+    expect(result.simulated).toBe(true);
+    expect(result.execution.routing?.provider).toBe("codex");
+    expect(result.execution.providerResult).toMatchObject({
+      provider: "codex",
+      liveInvocation: false,
+    });
+    expect(result.taskClassifications).toHaveLength(1);
+    expect(result.taskClassifications[0].eventType).toBe("TaskClassified");
   });
 });

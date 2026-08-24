@@ -15,6 +15,13 @@ import { normalizeOpenCodeResult } from "./opencode-normalizer.ts";
 export const GROQ_CREDENTIAL_ENV_VAR = "GROQ_API_KEY";
 const REQUIRED_EXECUTABLE_PATH_ENV_VAR = "PATH";
 
+function environmentValue(environment: NodeJS.ProcessEnv, name: string): string | undefined {
+  return (
+    environment[name] ??
+    Object.entries(environment).find(([key]) => key.toUpperCase() === name.toUpperCase())?.[1]
+  );
+}
+
 export interface HarnessProcessResult {
   stdout: string;
   stderr: string;
@@ -87,7 +94,10 @@ export class OpenCodeProcessTransport implements HarnessTransport {
         false,
       );
     }
-    const executablePath = this.sourceEnvironment[REQUIRED_EXECUTABLE_PATH_ENV_VAR];
+    const executablePath = environmentValue(
+      this.sourceEnvironment,
+      REQUIRED_EXECUTABLE_PATH_ENV_VAR,
+    );
     if (!executablePath) {
       throw new ProviderExecutionError(
         "groq",

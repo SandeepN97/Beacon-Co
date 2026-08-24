@@ -15,8 +15,8 @@
   "testEvidence": [
     "npm run phase15:audit returns status complete-frozen with localReady, publicationReady, and externalReady all true before implementation begins.",
     "npm run typecheck passes with 0 errors; only 5 pre-existing Astro hints remain.",
-    "Focused classifier, harness, adapter, routing, and telemetry tests pass 39/39, covering ProviderAdapter structural conformance, an exact PATH/GROQ_API_KEY child environment, unrelated credential exclusion, OpenCode stdout to AgentRun normalization, and unchanged routing behavior.",
-    "npm run test passes 305/305 across 43 files.",
+    "Focused classifier, harness, adapter, routing, and telemetry tests pass 42/42, covering ProviderAdapter structural conformance, an exact PATH/GROQ_API_KEY child environment, unrelated credential exclusion, missing-key failure, OpenCode stdout to AgentRun normalization, and unchanged routing behavior.",
+    "npm run test passes 308/308 across 43 files.",
     "npm run telemetry:validate passes with the routable Claude/Codex provider catalog kept distinct from the Claude/Codex/Groq adapter telemetry catalog.",
     "npm run ci:prepublish result for this candidate is bound to the candidate SHA and appended to the published PR body."
   ],
