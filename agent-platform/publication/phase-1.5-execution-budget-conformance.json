@@ -25,6 +25,7 @@
   ],
   "allowedPathPrefixes": [
     "README.md",
+    ".github/workflows/pr-prepublish.yml",
     "agent-platform/baselines/execution-budget-conformance-2026-08-25.json",
     "agent-platform/completion-gates.yml",
     "agent-platform/publication/phase-1.5-execution-budget-conformance.json",
