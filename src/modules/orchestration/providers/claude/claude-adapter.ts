@@ -9,7 +9,7 @@ import type {
   SimulatedProviderResult,
 } from "../provider-adapter.ts";
 import { ProviderExecutionError } from "../provider-adapter.ts";
-import { buildProviderResult, extractClaudeResult } from "../live-adapter-support.ts";
+import { executeBudgetedProviderCall, extractClaudeResult } from "../live-adapter-support.ts";
 import { compileClaudePrompt } from "./claude-prompt-compiler.ts";
 
 export class ClaudeAdapter implements ProviderAdapter {
@@ -50,29 +50,19 @@ export class ClaudeAdapter implements ProviderAdapter {
         false,
       );
     const startedAt = this.now();
-    const response = await this.transport.invoke(this.provider, {
-      model: request.resolvedModelId,
-      max_tokens: request.maxOutputTokens,
-      messages: [{ role: "user", content: request.prompt }],
-      metadata: { work_unit_id: request.workUnitId },
+    return executeBudgetedProviderCall({
+      provider: this.provider,
+      request,
+      transport: this.transport,
+      startedAt,
+      now: this.now,
+      payload: (outputTokenAllowance) => ({
+        model: request.resolvedModelId,
+        max_tokens: outputTokenAllowance,
+        messages: [{ role: "user", content: request.prompt }],
+        metadata: { work_unit_id: request.workUnitId },
+      }),
+      extract: extractClaudeResult,
     });
-    try {
-      return buildProviderResult({
-        provider: this.provider,
-        request,
-        response,
-        startedAt,
-        completedAt: this.now(),
-        extraction: extractClaudeResult(response),
-      });
-    } catch (error) {
-      if (error instanceof ProviderExecutionError) throw error;
-      throw new ProviderExecutionError(
-        this.provider,
-        "invalid-response",
-        "Claude response could not be normalized.",
-        false,
-      );
-    }
   }
 }

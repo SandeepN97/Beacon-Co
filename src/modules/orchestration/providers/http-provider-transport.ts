@@ -52,12 +52,40 @@ export class HttpProviderTransport implements ProviderTransport {
     this.fetchImplementation = fetchImplementation;
   }
 
+  executionBudgetContract(provider: ProviderId) {
+    return {
+      kind: "single-generation" as const,
+      generationBranchesPerInvoke: 1 as const,
+      automaticRetries: false as const,
+      hardOutputTokenCap:
+        provider === "claude"
+          ? ("anthropic-max-tokens" as const)
+          : ("openai-max-output-tokens" as const),
+      authoritativeTerminalUsage: true as const,
+      streaming: false as const,
+    };
+  }
+
+  validateBeforeInvocation(provider: ProviderId): void {
+    const apiKey =
+      provider === "claude" ? this.credentials.anthropicApiKey : this.credentials.openaiApiKey;
+    if (!apiKey) {
+      throw new ProviderExecutionError(
+        provider,
+        "authentication",
+        "Provider credential is unavailable.",
+        false,
+      );
+    }
+  }
+
   async invoke(
     provider: ProviderId,
     payload: Record<string, unknown>,
   ): Promise<Record<string, unknown>> {
     const isClaude = provider === "claude";
     const apiKey = isClaude ? this.credentials.anthropicApiKey : this.credentials.openaiApiKey;
+    this.validateBeforeInvocation(provider);
     if (!apiKey) {
       throw new ProviderExecutionError(
         provider,

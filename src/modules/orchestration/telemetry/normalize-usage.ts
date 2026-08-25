@@ -45,6 +45,9 @@ export function normalizeAnthropicUsage(input: unknown): NormalizedTokenUsage {
   }
   const totalInputTokens = sumKnown([uncachedInputTokens, cachedInputTokens, cacheWriteTokens]);
   const totalTokens = sumRequired(totalInputTokens, outputTokens);
+  if (reasoningTokens !== null && outputTokens !== null && reasoningTokens > outputTokens) {
+    throw new TypeError("reasoning_tokens cannot exceed output_tokens.");
+  }
 
   return NormalizedTokenUsageSchema.parse({
     totalInputTokens,
@@ -88,6 +91,9 @@ export function normalizeOpenAIUsage(input: unknown): NormalizedTokenUsage {
     cachedInputTokens > totalInputTokens
   ) {
     throw new TypeError("cached_tokens cannot exceed input_tokens.");
+  }
+  if (reasoningTokens !== null && outputTokens !== null && reasoningTokens > outputTokens) {
+    throw new TypeError("reasoning_tokens cannot exceed output_tokens.");
   }
 
   const uncachedInputTokens =

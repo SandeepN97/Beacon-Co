@@ -13,6 +13,8 @@ export const RunStatusSchema = z.enum([
 export const StopReasonSchema = z.enum([
   "completed",
   "max-turns",
+  "model-call-budget-exhausted",
+  "output-token-budget-exhausted",
   "tool-denied",
   "budget-exceeded",
   "provider-error",

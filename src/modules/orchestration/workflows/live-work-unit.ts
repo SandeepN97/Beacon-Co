@@ -3,6 +3,11 @@ import { validateAgentRun, type AgentRole, type AgentRun } from "../domain/agent
 import type { ContextPackage } from "../domain/context-package.ts";
 import type { EvidenceRecord } from "../domain/evidence.ts";
 import type { ProviderId } from "../domain/provider.ts";
+import {
+  resolveProviderModelCallLimit,
+  type ExecutionBudgetLedger,
+  type ModelCallKind,
+} from "../execution-budget/execution-budget.ts";
 import type { ProviderAdapter, ProviderExecutionResult } from "../providers/provider-adapter.ts";
 import type { AppendOnlyNdjsonTelemetrySink } from "../telemetry/sink.ts";
 
@@ -32,11 +37,17 @@ export interface LiveWorkUnitInput {
   resolvedModelId: string;
   requestedEffort: string | null;
   maxOutputTokens: number;
-  maxTurns: number;
+  maxModelCalls?: number;
+  /** Legacy higher-level input mapped exactly at the provider boundary. */
+  maxTurns?: number;
+  modelCallKind?: ModelCallKind;
+  providerTransitionFrom?: ProviderId | null;
+  handoffFrom?: string | null;
 }
 
 export interface LiveWorkUnitDependencies {
   adapter: ProviderAdapter;
+  budgetLedger: ExecutionBudgetLedger;
   telemetrySink: AppendOnlyNdjsonTelemetrySink;
   validate: (result: ProviderExecutionResult) => Promise<ValidationOutcome>;
   review: (result: ProviderExecutionResult) => Promise<ReviewOutcome>;
@@ -53,6 +64,17 @@ export async function executeLiveWorkUnit(
 }> {
   const now = dependencies.now ?? (() => new Date());
   const startedAt = now();
+  const maxModelCalls = resolveProviderModelCallLimit({
+    maxModelCalls: input.maxModelCalls,
+    legacyMaxTurns: input.maxTurns,
+  });
+  if (
+    dependencies.budgetLedger.lineage.maxModelCalls !== maxModelCalls ||
+    dependencies.budgetLedger.lineage.maxOutputTokens !== input.maxOutputTokens ||
+    dependencies.budgetLedger.lineage.workUnitId !== input.workUnitId
+  ) {
+    throw new Error("Live WorkUnit limits do not match its authorized execution budget lineage.");
+  }
   const providerResult = await dependencies.adapter.execute({
     providerRunId: input.providerRunId,
     agentRunId: input.agentRunId,
@@ -62,8 +84,14 @@ export async function executeLiveWorkUnit(
     compilationHash: input.compilationHash,
     resolvedModelId: input.resolvedModelId,
     requestedEffort: input.requestedEffort,
+    budgetLineageId: dependencies.budgetLedger.budgetLineageId,
+    budgetLedger: dependencies.budgetLedger,
+    maxModelCalls,
     maxOutputTokens: input.maxOutputTokens,
-    maxTurns: input.maxTurns,
+    maxTurns: maxModelCalls,
+    modelCallKind: input.modelCallKind ?? "initial",
+    providerTransitionFrom: input.providerTransitionFrom ?? null,
+    handoffFrom: input.handoffFrom ?? null,
   });
   const qa = await dependencies.validate(providerResult);
   const review = await dependencies.review(providerResult);
@@ -102,6 +130,12 @@ export async function executeLiveWorkUnit(
     qa.passed &&
     review.passed &&
     review.blockerCount === 0;
+  const agentBudget = dependencies.budgetLedger.projectAgentRun(input.agentRunId);
+  const budgetStopReason =
+    providerResult.providerRun.stopReason === "model-call-budget-exhausted" ||
+    providerResult.providerRun.stopReason === "output-token-budget-exhausted"
+      ? providerResult.providerRun.stopReason
+      : null;
   const agentRun = validateAgentRun({
     schemaVersion: 1,
     id: input.agentRunId,
@@ -118,8 +152,8 @@ export async function executeLiveWorkUnit(
     completedAt: completedAt.toISOString(),
     durationMs: Math.max(0, completedAt.getTime() - startedAt.getTime()),
     status: passed ? "succeeded" : "blocked",
-    stopReason: passed ? "completed" : "blocked",
-    providerRunIds: [providerResult.providerRun.id],
+    stopReason: passed ? "completed" : (budgetStopReason ?? "blocked"),
+    providerRunIds: agentBudget.providerRunIds,
     context: {
       contextBytes: input.contextPackage.contextBytes,
       estimatedInputTokens: input.contextPackage.estimatedInputTokens,
@@ -134,11 +168,11 @@ export async function executeLiveWorkUnit(
       compilationHash: input.compilationHash,
     },
     execution: {
-      turns: providerResult.providerRun.turns,
+      turns: agentBudget.modelCallsInitiated,
       toolCallCount: providerResult.providerRun.toolCallCount,
-      retryCount: providerResult.providerRun.retryCount,
-      fallbackUsed: providerResult.providerRun.fallbackUsed,
-      handoffUsed: providerResult.providerRun.handoffUsed,
+      retryCount: agentBudget.retryCount,
+      fallbackUsed: providerResult.providerRun.fallbackUsed || input.providerTransitionFrom != null,
+      handoffUsed: providerResult.providerRun.handoffUsed || input.handoffFrom != null,
       policyDecisions: { allow: providerResult.toolEvidence.length, ask: 0, deny: 0 },
     },
     outcome: {

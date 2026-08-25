@@ -21,6 +21,7 @@ const requiredFiles = [
   "agent-platform/risk-policy.yml",
   "agent-platform/telemetry/agent-run.schema.json",
   "agent-platform/telemetry/provider-run.schema.json",
+  "agent-platform/telemetry/execution-budget-ledger.schema.json",
   "agent-platform/telemetry/eval-result.schema.json",
   "src/modules/orchestration/context/preflight.ts",
   "src/modules/orchestration/context/compiler.ts",
@@ -28,6 +29,8 @@ const requiredFiles = [
   "src/modules/orchestration/policy/council-policy.ts",
   "src/modules/orchestration/providers/claude/claude-adapter.ts",
   "src/modules/orchestration/providers/codex/codex-adapter.ts",
+  "src/modules/orchestration/execution-budget/execution-budget.ts",
+  "tests/orchestration/execution-budget.test.ts",
   ".github/workflows/agent-platform-checks.yml",
   ".github/workflows/live-agent-evals.yml",
   ".github/workflows/rollback-production.yml",
@@ -47,6 +50,22 @@ const observation = JSON.parse(
   await readFile("agent-platform/baselines/external-controls-observation-2026-08-09.json", "utf8"),
 );
 const modelPolicy = parse(await readFile("agent-platform/model-policy.yml", "utf8"));
+const executionBudgetConformance = JSON.parse(
+  await readFile("agent-platform/baselines/execution-budget-conformance-2026-08-25.json", "utf8"),
+);
+const executionBudgetConformanceValid =
+  executionBudgetConformance.authority === "ADR-0023" &&
+  executionBudgetConformance.correction === "PHASE15_BUDGET_SEMANTICS_GAP" &&
+  executionBudgetConformance.evidenceBinding === "candidate-tree-via-ci-prepublish" &&
+  executionBudgetConformance.implementation?.executionBudgetLineage === true &&
+  executionBudgetConformance.implementation?.executionBudgetLedger === true &&
+  executionBudgetConformance.implementation?.atomicAdmission === true &&
+  executionBudgetConformance.implementation?.durableFailureEvidence === true &&
+  executionBudgetConformance.providerVerdicts?.claudeDirectHttp === "COMPLIANT" &&
+  executionBudgetConformance.providerVerdicts?.codexDirectHttp === "COMPLIANT" &&
+  executionBudgetConformance.providerVerdicts?.codexCli === "NONCOMPLIANT_FAIL_CLOSED" &&
+  executionBudgetConformance.providerVerdicts?.openCodeHarness ===
+    "UNCHANGED_NONEXECUTABLE_FAIL_CLOSED";
 const repeatedBaselinePath = "agent-platform/baselines/live-codex-multiscenario-2026-08-09.json";
 const repeatedBaselineValid = await (async () => {
   try {
@@ -108,6 +127,7 @@ const state = {
     "deterministic-eval-harness": localReady,
     "tool-policy-gateway": localReady,
     "provider-adapter-contracts": localReady,
+    "execution-budget-conformance": localReady && executionBudgetConformanceValid,
     "risk-council-engine": localReady,
     "evidence-gated-tuning": localReady,
     "publication-evidence-gate": localReady,

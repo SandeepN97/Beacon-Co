@@ -9,7 +9,7 @@ import type {
   SimulatedProviderResult,
 } from "../provider-adapter.ts";
 import { ProviderExecutionError } from "../provider-adapter.ts";
-import { buildProviderResult, extractCodexResult } from "../live-adapter-support.ts";
+import { executeBudgetedProviderCall, extractCodexResult } from "../live-adapter-support.ts";
 import { compileCodexPrompt } from "./codex-prompt-compiler.ts";
 
 export class CodexAdapter implements ProviderAdapter {
@@ -50,30 +50,20 @@ export class CodexAdapter implements ProviderAdapter {
         false,
       );
     const startedAt = this.now();
-    const response = await this.transport.invoke(this.provider, {
-      model: request.resolvedModelId,
-      input: request.prompt,
-      max_output_tokens: request.maxOutputTokens,
-      reasoning: request.requestedEffort ? { effort: request.requestedEffort } : undefined,
-      metadata: { work_unit_id: request.workUnitId },
+    return executeBudgetedProviderCall({
+      provider: this.provider,
+      request,
+      transport: this.transport,
+      startedAt,
+      now: this.now,
+      payload: (outputTokenAllowance) => ({
+        model: request.resolvedModelId,
+        input: request.prompt,
+        max_output_tokens: outputTokenAllowance,
+        reasoning: request.requestedEffort ? { effort: request.requestedEffort } : undefined,
+        metadata: { work_unit_id: request.workUnitId },
+      }),
+      extract: extractCodexResult,
     });
-    try {
-      return buildProviderResult({
-        provider: this.provider,
-        request,
-        response,
-        startedAt,
-        completedAt: this.now(),
-        extraction: extractCodexResult(response),
-      });
-    } catch (error) {
-      if (error instanceof ProviderExecutionError) throw error;
-      throw new ProviderExecutionError(
-        this.provider,
-        "invalid-response",
-        "Codex response could not be normalized.",
-        false,
-      );
-    }
   }
 }

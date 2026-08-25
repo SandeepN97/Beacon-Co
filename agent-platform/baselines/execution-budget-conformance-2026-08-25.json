@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "authority": "ADR-0023",
+  "correction": "PHASE15_BUDGET_SEMANTICS_GAP",
+  "observedAt": "2026-08-25",
+  "evidenceBinding": "candidate-tree-via-ci-prepublish",
+  "implementation": {
+    "executionBudgetLineage": true,
+    "executionBudgetLedger": true,
+    "atomicAdmission": true,
+    "durableFailureEvidence": true,
+    "concurrencySafe": true,
+    "providerRunProjection": true,
+    "agentRunProjection": true
+  },
+  "providerVerdicts": {
+    "claudeDirectHttp": "COMPLIANT",
+    "codexDirectHttp": "COMPLIANT",
+    "codexCli": "NONCOMPLIANT_FAIL_CLOSED",
+    "openCodeHarness": "UNCHANGED_NONEXECUTABLE_FAIL_CLOSED"
+  },
+  "persistenceBoundary": "existing-metadata-only-append-only-ndjson",
+  "scope": {
+    "providerExpansion": false,
+    "routingChange": false,
+    "roleBudgetChange": false,
+    "gateway": false,
+    "deployment": false,
+    "release": false
+  },
+  "deterministicEvidence": [
+    "tests/orchestration/execution-budget.test.ts",
+    "tests/orchestration/provider-adapters.test.ts",
+    "tests/orchestration/codex-cli-transport.test.ts",
+    "agent-platform/telemetry/execution-budget-ledger.schema.json"
+  ]
+}

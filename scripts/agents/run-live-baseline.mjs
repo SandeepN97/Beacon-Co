@@ -9,6 +9,11 @@ import { compilePromptContext } from "../../src/modules/orchestration/context/co
 import { runContextPreflight } from "../../src/modules/orchestration/context/preflight.ts";
 import { EvalResultSchema } from "../../src/modules/orchestration/domain/eval-result.ts";
 import {
+  authorizeExecutionBudgetLineage,
+  createLocalExecutionBudgetEvidenceStore,
+  ExecutionBudgetLedger,
+} from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
+import {
   LiveBaselineScenarioCatalogSchema,
   compileLiveBaselineAggregate,
 } from "../../src/modules/orchestration/evals/live-baseline.ts";
@@ -147,6 +152,17 @@ if (!model || !outputPath) {
         contextPackage,
         objective: scenario.objective,
       });
+      const budgetLedger = await ExecutionBudgetLedger.create(
+        authorizeExecutionBudgetLineage({
+          workUnitId,
+          maxModelCalls: 1,
+          maxOutputTokens: 64,
+          authorizedAt: new Date().toISOString(),
+          authorizedBy: "run-live-baseline",
+          authorizationEvidenceId: `live-baseline:${evaluationId}`,
+        }),
+        createLocalExecutionBudgetEvidenceStore(process.cwd()),
+      );
       const result = await executeLiveWorkUnit(
         {
           agentRunId,
@@ -161,10 +177,12 @@ if (!model || !outputPath) {
           resolvedModelId: model,
           requestedEffort: modelPolicy.roles[role.id].effort,
           maxOutputTokens: 64,
+          maxModelCalls: 1,
           maxTurns: 1,
         },
         {
           adapter,
+          budgetLedger,
           telemetrySink,
           validate: async (providerResult) => ({
             passed:

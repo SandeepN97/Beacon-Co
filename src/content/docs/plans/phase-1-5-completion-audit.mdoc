@@ -4,10 +4,10 @@ description: "Executable local gate results, observed external-control state, an
 section: "plans"
 order: 304
 status: "approved"
-lastReviewed: "2026-08-11"
+lastReviewed: "2026-08-25"
 owners: ["Repository Owner","Knowledge Manager"]
-sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml",".github/workflows/pr-prepublish.yml"]
-relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content"]
+sourceFiles: ["agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","agent-platform/baselines/execution-budget-conformance-2026-08-25.json","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","src/modules/orchestration/completion/completion-audit.ts","src/modules/orchestration/domain/publication-readiness.ts",".github/workflows/agent-platform-checks.yml",".github/workflows/live-agent-evals.yml",".github/workflows/rollback-production.yml",".github/workflows/pr-prepublish.yml"]
+relatedAdrs: ["0015-adopt-secure-cicd-control-model","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content","0023-define-provider-neutral-execution-budget-semantics"]
 relatedPages: ["plans/current-phase","plans/phase-1-6-master-spec","architecture/observability-and-audit","architecture/secure-cicd-architecture","operations/deployment-runbook","operations/rollback-runbook"]
 tags: ["phase-1-5","audit","evidence","closure"]
 truthState: "current"
@@ -52,6 +52,13 @@ This is the literal command output, not a paraphrase; per Section 9/29A of the P
 | PR-H — publication gate | Implemented and hardened | Manifest-owned PR metadata, shared local/GitHub policy, tree-content-bound prepublication evidence (ADR-0018), a real pre-merge `prepublish` CI check, readback verification, and deterministic denial are covered |
 | PR-I — release/provenance | Implemented and exercised through staging | Exact-candidate attestation, staging promotion/verification, production promotion/verification, and the known-good rollback drill all pass |
 | PR-J — completion audit/freeze | Implemented and closed | `npm run phase15:audit` returns `complete-frozen`; all local, publication, and external gates are true |
+| ADR-0023 frozen-contract correction | Implemented as a separately reviewed candidate | ExecutionBudgetLineage/Ledger, atomic admission, failure recovery, direct Claude/Codex HTTP conformance, Codex CLI pre-execution fail-closed, and adversarial tests; exact-tree publication evidence is regenerated for this correction |
+
+## ADR-0023 execution-budget correction
+
+Approved ADR-0023 identified a latent defect in the frozen provider boundary: request-local `maxTurns` and `maxOutputTokens` did not prove cumulative execution limits. The bounded correction adds the `execution-budget-conformance` local gate and the metadata-only attestation at `agent-platform/baselines/execution-budget-conformance-2026-08-25.json`. Exact candidate identity remains owned by `ci:prepublish` through its tree binding; this attestation does not substitute for that gate.
+
+The correction makes the direct Claude Messages HTTP and OpenAI Responses HTTP paths conformant, and makes Codex CLI fail closed before subprocess execution. It does not reinterpret role-level agentic turns, alter role values, add a provider or router, enable OpenCode/Groq, register a harness, build a gateway, or authorize deployment/release. The earlier live Codex CLI baselines remain truthful historical evidence of the behavior observed before ADR-0023; they are not evidence that the CLI satisfies the newly approved hard-budget contract.
 
 ## External observation
 

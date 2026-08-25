@@ -43,6 +43,14 @@ export class CodexCliTransport implements ProviderTransport {
     this.execute = execute;
   }
 
+  executionBudgetContract() {
+    return {
+      kind: "opaque" as const,
+      reason:
+        "Codex CLI cannot prove generation multiplicity, hidden retries, hard cumulative output, or settlement before subprocess execution.",
+    };
+  }
+
   async invoke(
     provider: "claude" | "codex",
     payload: Record<string, unknown>,

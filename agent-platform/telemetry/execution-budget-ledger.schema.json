@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://beacon-co.local/schemas/execution-budget-ledger.schema.json",
+  "title": "Beacon ExecutionBudgetLedger evidence snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "revision",
+    "recordedAt",
+    "lineage",
+    "modelCallsReserved",
+    "modelCallsInitiated",
+    "outputTokensReserved",
+    "observedOutputTokens",
+    "policyChargedOutputTokens",
+    "modelCallsRemaining",
+    "outputTokensRemaining",
+    "terminalBudgetReason",
+    "violation",
+    "reservations"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "revision": { "$ref": "#/$defs/count" },
+    "recordedAt": { "$ref": "#/$defs/timestamp" },
+    "lineage": { "$ref": "#/$defs/lineage" },
+    "modelCallsReserved": { "$ref": "#/$defs/count" },
+    "modelCallsInitiated": { "$ref": "#/$defs/count" },
+    "outputTokensReserved": { "$ref": "#/$defs/count" },
+    "observedOutputTokens": { "$ref": "#/$defs/nullableCount" },
+    "policyChargedOutputTokens": { "$ref": "#/$defs/count" },
+    "modelCallsRemaining": { "$ref": "#/$defs/count" },
+    "outputTokensRemaining": { "$ref": "#/$defs/count" },
+    "terminalBudgetReason": {
+      "anyOf": [{ "$ref": "#/$defs/terminalBudgetReason" }, { "type": "null" }]
+    },
+    "violation": {
+      "anyOf": [{ "$ref": "#/$defs/violation" }, { "type": "null" }]
+    },
+    "reservations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reservation" }
+    }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "count": { "type": "integer", "minimum": 0 },
+    "positiveCount": { "type": "integer", "minimum": 1 },
+    "nullableCount": {
+      "anyOf": [{ "$ref": "#/$defs/count" }, { "type": "null" }]
+    },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "provider": { "enum": ["claude", "codex"] },
+    "nullableProvider": {
+      "anyOf": [{ "$ref": "#/$defs/provider" }, { "type": "null" }]
+    },
+    "terminalBudgetReason": {
+      "enum": [
+        "MODEL_CALL_BUDGET_EXHAUSTED",
+        "OUTPUT_TOKEN_BUDGET_EXHAUSTED",
+        "ENFORCEMENT_VIOLATION"
+      ]
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "budgetLineageId",
+        "workUnitId",
+        "maxModelCalls",
+        "maxOutputTokens",
+        "authorizedAt",
+        "authorizedBy",
+        "authorizationEvidenceId",
+        "allocationKind",
+        "parentBudgetLineageId"
+      ],
+      "properties": {
+        "budgetLineageId": { "$ref": "#/$defs/identifier" },
+        "workUnitId": { "$ref": "#/$defs/identifier" },
+        "maxModelCalls": { "$ref": "#/$defs/positiveCount" },
+        "maxOutputTokens": { "$ref": "#/$defs/positiveCount" },
+        "authorizedAt": { "$ref": "#/$defs/timestamp" },
+        "authorizedBy": { "$ref": "#/$defs/identifier" },
+        "authorizationEvidenceId": { "$ref": "#/$defs/identifier" },
+        "allocationKind": {
+          "enum": ["top-level", "parent-carve-out", "higher-policy-grant"]
+        },
+        "parentBudgetLineageId": {
+          "anyOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        }
+      }
+    },
+    "reservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "budgetReservationId",
+        "providerRunId",
+        "agentRunId",
+        "provider",
+        "resolvedModelId",
+        "kind",
+        "branchIndex",
+        "outputTokenAllowance",
+        "providerHardCap",
+        "enforcementOwner",
+        "providerTransitionFrom",
+        "handoffFrom",
+        "state",
+        "observedOutputTokens",
+        "policyChargedOutputTokens",
+        "latestCumulativeOutputTokens",
+        "admittedAt",
+        "invokedAt",
+        "settledAt",
+        "terminalReason",
+        "settlementFingerprint"
+      ],
+      "properties": {
+        "budgetReservationId": { "$ref": "#/$defs/identifier" },
+        "providerRunId": { "$ref": "#/$defs/identifier" },
+        "agentRunId": { "$ref": "#/$defs/identifier" },
+        "provider": { "$ref": "#/$defs/provider" },
+        "resolvedModelId": { "$ref": "#/$defs/identifier" },
+        "kind": {
+          "enum": [
+            "initial",
+            "retry",
+            "model-reentry",
+            "internal",
+            "fallback",
+            "handoff",
+            "batch",
+            "hedge",
+            "fan-out",
+            "stream"
+          ]
+        },
+        "branchIndex": { "$ref": "#/$defs/count" },
+        "outputTokenAllowance": { "$ref": "#/$defs/positiveCount" },
+        "providerHardCap": { "$ref": "#/$defs/positiveCount" },
+        "enforcementOwner": { "$ref": "#/$defs/identifier" },
+        "providerTransitionFrom": { "$ref": "#/$defs/nullableProvider" },
+        "handoffFrom": {
+          "anyOf": [{ "$ref": "#/$defs/identifier" }, { "type": "null" }]
+        },
+        "state": {
+          "enum": [
+            "PENDING",
+            "CANCELLED_BEFORE_INVOCATION",
+            "INVOKED",
+            "SETTLED_AUTHORITATIVE",
+            "SETTLED_CONSERVATIVE",
+            "VIOLATION"
+          ]
+        },
+        "observedOutputTokens": { "$ref": "#/$defs/nullableCount" },
+        "policyChargedOutputTokens": { "$ref": "#/$defs/count" },
+        "latestCumulativeOutputTokens": { "$ref": "#/$defs/nullableCount" },
+        "admittedAt": { "$ref": "#/$defs/timestamp" },
+        "invokedAt": {
+          "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+        },
+        "settledAt": {
+          "anyOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+        },
+        "terminalReason": {
+          "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 240 }, { "type": "null" }]
+        },
+        "settlementFingerprint": {
+          "anyOf": [{ "type": "string", "pattern": "^[a-f0-9]{64}$" }, { "type": "null" }]
+        }
+      }
+    },
+    "violation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["budgetReservationId", "reason", "observedOutputTokens", "recordedAt"],
+      "properties": {
+        "budgetReservationId": { "$ref": "#/$defs/identifier" },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "observedOutputTokens": { "$ref": "#/$defs/nullableCount" },
+        "recordedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    }
+  }
+}

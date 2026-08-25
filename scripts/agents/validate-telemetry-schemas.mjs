@@ -19,6 +19,11 @@ const schemas = [
     id: "https://beacon-co.local/schemas/provider-run.schema.json",
   },
   {
+    name: "ExecutionBudgetLedger",
+    path: "agent-platform/telemetry/execution-budget-ledger.schema.json",
+    id: "https://beacon-co.local/schemas/execution-budget-ledger.schema.json",
+  },
+  {
     name: "EvalResult",
     path: "agent-platform/telemetry/eval-result.schema.json",
     id: "https://beacon.co/schemas/agent-platform/eval-result.schema.json",
@@ -82,5 +87,5 @@ if (errors.length) {
 }
 
 console.log(
-  "Validated AgentRun/ProviderRun/EvalResult JSON schemas against runtime and manifest contracts.",
+  "Validated AgentRun/ProviderRun/ExecutionBudgetLedger/EvalResult JSON schemas against runtime and manifest contracts.",
 );
