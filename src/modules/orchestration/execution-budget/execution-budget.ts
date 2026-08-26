@@ -8,6 +8,7 @@ import {
   ExecutionBudgetWriterFenceError,
   ExecutionBudgetWriterLease,
   ExecutionBudgetWriterLeaseUnavailableError,
+  readCurrentWriterPointer,
 } from "./writer-lease.ts";
 
 export { ExecutionBudgetWriterFenceError, ExecutionBudgetWriterLeaseUnavailableError };
@@ -57,7 +58,36 @@ export const ExecutionBudgetStopReasonSchema = z.enum([
 ]);
 export type ExecutionBudgetStopReason = z.infer<typeof ExecutionBudgetStopReasonSchema>;
 
-export const ExecutionBudgetLineageSchema = z
+/**
+ * B2 rereview fix (independent rereview of PR #83, candidate
+ * 225384030a4a30d66c946bdbc0d577a057a8a0c6): the previous correction gated
+ * capacity minting at `authorizeExecutionBudgetLineage`, but exported the raw
+ * `ExecutionBudgetLineageSchema` validator with nothing stopping any other
+ * module from calling `.parse()` on a hand-built object and handing the
+ * result straight to `ExecutionBudgetLedger.create()`/`.recover()` -- which
+ * accepted any structurally valid lineage with no provenance check at all.
+ * A reviewer confirmed this with a working exploit.
+ *
+ * This module-private `WeakSet` is the non-forgeable brand this needed: only
+ * `authorizeExecutionBudgetLineage` (below) ever adds to it, and
+ * `ExecutionBudgetLedger.create`/`.recover` refuse any lineage that is not a
+ * member, before doing anything else (including acquiring a writer lease).
+ * The schema itself is intentionally NOT exported -- nothing outside this
+ * file has ever needed it (verified: no other module imports it), and not
+ * exporting it removes the easiest way to reach for `.parse()` directly.
+ */
+const authorizedLineages = new WeakSet<object>();
+
+function assertLineageIsAuthorized(lineage: ExecutionBudgetLineage): void {
+  if (!authorizedLineages.has(lineage)) {
+    throw new ExecutionBudgetStateError(
+      "This execution-budget lineage was not produced by authorizeExecutionBudgetLineage(); " +
+        "refusing to mint a ledger from an unauthorized or hand-constructed lineage object.",
+    );
+  }
+}
+
+const ExecutionBudgetLineageSchema = z
   .object({
     budgetLineageId: IdentifierSchema,
     workUnitId: IdentifierSchema,
@@ -114,7 +144,7 @@ export function authorizeExecutionBudgetLineage(
   input: AuthorizeExecutionBudgetInput,
 ): ExecutionBudgetLineage {
   const { grant } = input;
-  return Object.freeze(
+  const lineage = Object.freeze(
     ExecutionBudgetLineageSchema.parse({
       budgetLineageId: input.budgetLineageId ?? `budget-lineage-${randomUUID()}`,
       workUnitId: grant.workUnitId,
@@ -127,6 +157,8 @@ export function authorizeExecutionBudgetLineage(
       parentBudgetLineageId: input.parentBudgetLineageId ?? null,
     }),
   );
+  authorizedLineages.add(lineage);
+  return lineage;
 }
 
 const ExecutionBudgetReservationSchema = z
@@ -168,7 +200,11 @@ const ExecutionBudgetViolationSchema = z
   })
   .strict();
 
-export const ExecutionBudgetLedgerSnapshotSchema = z
+// Not exported: nothing outside this file needs the raw validator, and a
+// reviewer showed that exporting it let arbitrary code fabricate a snapshot
+// and hand it straight to AppendOnlyNdjsonExecutionBudgetEvidenceStore.append()
+// (which now also verifies the current writer fence -- see append() below).
+const ExecutionBudgetLedgerSnapshotSchema = z
   .object({
     schemaVersion: z.literal(1),
     revision: NonNegativeIntegerSchema,
@@ -307,6 +343,22 @@ export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBu
     const snapshot = ExecutionBudgetLedgerSnapshotSchema.parse(input);
     const dir = this.lineageDir(snapshot.lineage.budgetLineageId);
     const path = this.journalPath(snapshot.lineage.budgetLineageId);
+    // The store itself -- not only ExecutionBudgetLedger -- refuses to record
+    // a snapshot that does not carry the currently active writer's exact
+    // identity. This closes the path where code holding (or constructing) a
+    // store instance appends fabricated history without ever holding a real
+    // lease (independent rereview of PR #83, candidate 225384030a4a30d66c946bdbc0d577a057a8a0c6).
+    const currentPointer = await readCurrentWriterPointer(join(dir, "writer"));
+    if (
+      !currentPointer ||
+      currentPointer.writerLeaseId !== snapshot.writerLeaseId ||
+      currentPointer.fence !== snapshot.writerFence
+    ) {
+      throw new ExecutionBudgetEvidencePersistenceError(
+        `Refusing to append a snapshot for ${snapshot.lineage.budgetLineageId} whose writer identity does not match the currently active lease.`,
+        new ExecutionBudgetWriterFenceError("append() fence mismatch"),
+      );
+    }
     let handle;
     let writeError: unknown;
     try {
@@ -483,6 +535,25 @@ interface MutationOutcome<T> {
   value: T;
 }
 
+/**
+ * B1/B4 rereview fix (independent rereview of PR #83, candidate
+ * 225384030a4a30d66c946bdbc0d577a057a8a0c6): TypeScript's `private constructor`
+ * is a compile-time-only annotation -- it does not exist at runtime, and this
+ * repository's own scripts run `.ts` files via `--experimental-strip-types`,
+ * which performs no type-checking at all. A reviewer confirmed with a working
+ * exploit that `new ExecutionBudgetLedger(...)` could be called directly,
+ * bypassing `create()`/`recover()` entirely -- including the writer-lease
+ * acquisition (B1) and the "already has durable state" check.
+ *
+ * A `Symbol` created once here and never exported is unforgeable from outside
+ * this module: no external code can produce a value `===` to it. The
+ * constructor refuses to run unless it receives this exact token, so
+ * `create()`/`recover()` (the only two places that hold it) are the only real
+ * construction paths, enforced by the language runtime rather than by
+ * convention.
+ */
+const LEDGER_CONSTRUCTOR_TOKEN = Symbol("execution-budget-ledger-constructor-token");
+
 export class ExecutionBudgetLedger {
   readonly lineage: ExecutionBudgetLineage;
   private readonly evidenceStore: ExecutionBudgetEvidenceStore;
@@ -501,11 +572,18 @@ export class ExecutionBudgetLedger {
   private poisonReason: string | null = null;
 
   private constructor(
+    token: symbol,
     lineage: ExecutionBudgetLineage,
     evidenceStore: ExecutionBudgetEvidenceStore,
     writerLease: ExecutionBudgetWriterLease | null,
     options: { now?: () => Date; reservationId?: () => string } = {},
   ) {
+    if (token !== LEDGER_CONSTRUCTOR_TOKEN) {
+      throw new ExecutionBudgetStateError(
+        "ExecutionBudgetLedger cannot be constructed directly; use create() or recover().",
+      );
+    }
+    assertLineageIsAuthorized(lineage);
     this.lineage = Object.freeze(ExecutionBudgetLineageSchema.parse(lineage));
     this.evidenceStore = evidenceStore;
     this.writerLease = writerLease;
@@ -529,7 +607,13 @@ export class ExecutionBudgetLedger {
         `Budget lineage ${lineage.budgetLineageId} already has durable state and cannot be reminted.`,
       );
     }
-    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, writerLease, options);
+    const ledger = new ExecutionBudgetLedger(
+      LEDGER_CONSTRUCTOR_TOKEN,
+      lineage,
+      evidenceStore,
+      writerLease,
+      options,
+    );
     await ledger.persistInitialSnapshot();
     return ledger;
   }
@@ -590,7 +674,13 @@ export class ExecutionBudgetLedger {
         `Budget lineage ${lineage.budgetLineageId} recovery metadata does not match its authority grant.`,
       );
     }
-    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, writerLease, options);
+    const ledger = new ExecutionBudgetLedger(
+      LEDGER_CONSTRUCTOR_TOKEN,
+      lineage,
+      evidenceStore,
+      writerLease,
+      options,
+    );
     ledger.revision = latest.revision;
     ledger.lastSnapshot = structuredClone(latest);
     ledger.terminalBudgetReason = latest.terminalBudgetReason;
@@ -659,6 +749,18 @@ export class ExecutionBudgetLedger {
    * pre-flight check. No-ops when the evidence store has no cross-process
    * writer-lease concept (i.e. the in-memory store), since that store cannot
    * be observed outside this one process.
+   *
+   * B1 rereview fix (independent rereview of PR #83, candidate
+   * 225384030a4a30d66c946bdbc0d577a057a8a0c6): this used to only *check* the
+   * fence, never refresh it, while the default TTL (60s) was shorter than
+   * realistic provider latency (HttpProviderTransport's fetch has no
+   * timeout; CodexCliTransport's own subprocess timeout is 120s). A
+   * legitimate, still-running writer could be treated as stale and taken
+   * over by another process while its real HTTP call was still in flight.
+   * Calling `heartbeat()` here re-validates ownership exactly as before AND
+   * extends the lease's TTL window starting at the moment invocation
+   * actually begins, so a takeover cannot occur while this specific call is
+   * outstanding (see also the increased DEFAULT_TTL_MS in writer-lease.ts).
    */
   async assertWriterAuthority(): Promise<void> {
     if (this.poisoned) {
@@ -667,7 +769,7 @@ export class ExecutionBudgetLedger {
           "This execution-budget ledger is poisoned after an uncertain persistence failure.",
       );
     }
-    await this.writerLease?.assertOwnership();
+    await this.writerLease?.heartbeat();
   }
 
   snapshot(): ExecutionBudgetLedgerSnapshot {
@@ -1119,8 +1221,11 @@ export class ExecutionBudgetLedger {
   private async commitDraft(draft: LedgerDraft): Promise<void> {
     // Re-validate ownership immediately before the durable write, closing the
     // window where a takeover happened between this transaction starting and
-    // reaching its persistence step.
-    await this.writerLease?.assertOwnership();
+    // reaching its persistence step. Using heartbeat() (not just
+    // assertOwnership()) also refreshes the lease's TTL on every mutation, so
+    // a lineage under regular activity (admission, streaming observation,
+    // settlement) never goes stale merely from wall-clock time passing.
+    await this.writerLease?.heartbeat();
     const revision = this.revision + 1;
     const recordedAt = this.now().toISOString();
     const snapshot = this.buildSnapshotFrom(

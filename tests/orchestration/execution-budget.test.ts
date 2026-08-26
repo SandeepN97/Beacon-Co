@@ -836,3 +836,127 @@ describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durabilit
     ).rejects.toBeInstanceOf(ExecutionBudgetStateError);
   });
 });
+
+describe("rereview fix: lineage/constructor/journal cannot be forged", () => {
+  it("rejects a hand-constructed lineage that never went through authorizeExecutionBudgetLineage", async () => {
+    // Confirmed exploit from the independent rereview of candidate
+    // 225384030a4a30d66c946bdbc0d577a057a8a0c6: ExecutionBudgetLineageSchema
+    // was exported, so any caller could hand-build a matching object and
+    // feed it straight to ExecutionBudgetLedger.create(), bypassing
+    // ExecutionBudgetAuthorityGrant entirely.
+    const forgedLineage = Object.freeze({
+      budgetLineageId: "attacker-lineage",
+      workUnitId: "attacker-work-unit",
+      maxModelCalls: 999_999,
+      maxOutputTokens: 999_999_999,
+      authorizedAt: new Date().toISOString(),
+      authorizedBy: "totally-not-authorized",
+      authorizationEvidenceId: "made-up-evidence-id",
+      allocationKind: "top-level",
+      parentBudgetLineageId: null,
+    }) as ExecutionBudgetLineage;
+    await expect(
+      ExecutionBudgetLedger.create(forgedLineage, new InMemoryExecutionBudgetEvidenceStore()),
+    ).rejects.toBeInstanceOf(ExecutionBudgetStateError);
+    await expect(
+      ExecutionBudgetLedger.recover(forgedLineage, new InMemoryExecutionBudgetEvidenceStore()),
+    ).rejects.toBeInstanceOf(ExecutionBudgetStateError);
+  });
+
+  it("rejects a direct call to the ExecutionBudgetLedger constructor, bypassing create()/recover()", async () => {
+    // Confirmed exploit: TypeScript's `private constructor` is compile-time
+    // only. `new ExecutionBudgetLedger(...)` previously succeeded at runtime,
+    // skipping the writer-lease acquisition entirely.
+    const authority = await lineage();
+    const store = new InMemoryExecutionBudgetEvidenceStore();
+    const Ctor = ExecutionBudgetLedger as unknown as new (
+      ...args: unknown[]
+    ) => ExecutionBudgetLedger;
+    expect(() => new Ctor(authority, store, null, {})).toThrow(ExecutionBudgetStateError);
+    expect(() => new Ctor(Symbol("guessed-token"), authority, store, null, {})).toThrow(
+      ExecutionBudgetStateError,
+    );
+  });
+
+  it("rejects a fabricated journal snapshot appended without a matching writer lease", async () => {
+    // Confirmed exploit: AppendOnlyNdjsonExecutionBudgetEvidenceStore.append()
+    // performed no fence check of its own, so any code holding (or
+    // constructing) a store instance could write fabricated "fully settled,
+    // huge capacity" history directly, with no lease at all.
+    const root = await mkdtemp(join(tmpdir(), "beacon-forged-journal-"));
+    const store = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root);
+    const forgedLineageId = "direct-write-lineage";
+    const fabricated: Omit<ExecutionBudgetLedgerSnapshot, "contentHash"> = {
+      schemaVersion: 1,
+      revision: 0,
+      recordedAt: new Date().toISOString(),
+      lineage: {
+        budgetLineageId: forgedLineageId,
+        workUnitId: "wu",
+        maxModelCalls: 999_999,
+        maxOutputTokens: 999_999_999,
+        authorizedAt: new Date().toISOString(),
+        authorizedBy: "attacker",
+        authorizationEvidenceId: "attacker-evidence",
+        allocationKind: "top-level",
+        parentBudgetLineageId: null,
+      },
+      writerLeaseId: "fake-writer",
+      writerFence: 1,
+      previousContentHash: null,
+      modelCallsReserved: 0,
+      modelCallsInitiated: 0,
+      outputTokensReserved: 0,
+      observedOutputTokens: null,
+      policyChargedOutputTokens: 0,
+      modelCallsRemaining: 999_999,
+      outputTokensRemaining: 999_999_999,
+      terminalBudgetReason: null,
+      violation: null,
+      reservations: [],
+    };
+    const { createHash } = await import("node:crypto");
+    const contentHash = createHash("sha256").update(JSON.stringify(fabricated)).digest("hex");
+    await expect(
+      store.append({ ...fabricated, contentHash } as ExecutionBudgetLedgerSnapshot),
+    ).rejects.toBeInstanceOf(ExecutionBudgetEvidencePersistenceError);
+  });
+
+  it("keeps a lease alive across a slow in-flight call via heartbeat, so a concurrent takeover cannot race it", async () => {
+    // Confirmed gap: heartbeat() previously existed but was never called
+    // anywhere, so a legitimate writer whose real call outlasted the TTL
+    // would be treated as stale mid-flight. TTL is deliberately larger than
+    // the "in-flight call" delay but smaller than (time already spent on
+    // earlier mutations) + (that delay), so this can only pass if
+    // assertWriterAuthority() actually refreshes the lease immediately
+    // before the simulated call, not merely because the TTL is generous.
+    const root = await mkdtemp(join(tmpdir(), "beacon-heartbeat-"));
+    const authority = await lineage({ budgetLineageId: "heartbeat-lineage" });
+    const slowWriterStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, { ttlMs: 150 });
+    const slowWriter = await ExecutionBudgetLedger.create(authority, slowWriterStore);
+    const reservation = await slowWriter.admitModelCall(admission());
+    await slowWriter.markInvoked(reservation.budgetReservationId);
+    // Time already spent on setup/other work before this call begins.
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    // Simulate the moment immediately before a slow provider call: this is
+    // exactly what live-adapter-support.ts calls right before transport.invoke(),
+    // and it must refresh the lease's heartbeat, not just check it.
+    await slowWriter.assertWriterAuthority();
+    // The "call" itself takes a while -- longer than the TTL counted from
+    // creation (120ms elapsed already + 100ms here > 150ms TTL), but well
+    // within the TTL counted from the heartbeat just above.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    // A second process attempts to recover/take over during that window and
+    // must fail: the heartbeat kept this writer's lease current.
+    await expect(
+      ExecutionBudgetLedger.recover(
+        authority,
+        new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, { ttlMs: 150 }),
+      ),
+    ).rejects.toBeInstanceOf(ExecutionBudgetWriterLeaseUnavailableError);
+    // The original writer can still settle its own call.
+    await expect(slowWriter.settleAuthoritative(reservation.budgetReservationId, 10)).resolves.toBe(
+      "SETTLED_AUTHORITATIVE",
+    );
+  });
+});

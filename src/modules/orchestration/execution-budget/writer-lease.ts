@@ -45,7 +45,15 @@ import { z } from "astro/zod";
  * must only ever be invoked by an explicit, human-initiated recovery operation.
  */
 
-const DEFAULT_TTL_MS = 60_000;
+// B1 rereview fix (independent rereview of PR #83, candidate
+// 225384030a4a30d66c946bdbc0d577a057a8a0c6): 60s was shorter than realistic
+// provider latency for a system whose own CodexCliTransport allows subprocess
+// calls up to 120s and whose HttpProviderTransport places no timeout on
+// fetch() at all. Combined with heartbeat() now being called on every
+// mutation and immediately before invocation (see execution-budget.ts), this
+// bounds how long a lineage can go without activity before another process
+// may treat it as abandoned, rather than bounding a single call's latency.
+const DEFAULT_TTL_MS = 600_000;
 const MAX_ACQUIRE_ATTEMPTS = 8;
 
 const WriterLeasePointerSchema = z
@@ -83,6 +91,22 @@ function hasCode(error: unknown, code: string): boolean {
     "code" in error &&
     (error as { code?: unknown }).code === code
   );
+}
+
+/**
+ * Read-only accessor for the current writer-lease pointer of a lineage's
+ * `writer` directory. Used by `AppendOnlyNdjsonExecutionBudgetEvidenceStore`
+ * so the STORE itself -- not only `ExecutionBudgetLedger` -- refuses to
+ * durably record a snapshot whose `writerLeaseId`/`writerFence` do not match
+ * the currently active lease, closing the path where code with a store
+ * instance (but no real lease) fabricates and appends journal history
+ * directly (independent rereview of PR #83, candidate
+ * 225384030a4a30d66c946bdbc0d577a057a8a0c6).
+ */
+export async function readCurrentWriterPointer(
+  writerDir: string,
+): Promise<WriterLeasePointer | null> {
+  return readPointer(join(writerDir, "current.json"));
 }
 
 async function readPointer(pointerPath: string): Promise<WriterLeasePointer | null> {

@@ -55,6 +55,16 @@ const REQUIRED_SCENARIOS = [
   "reports AgentRun.context.usage as a truthful total across a retry's two ProviderRuns",
   "commits neither reservation when durable admission evidence cannot be written",
   "recovers PENDING as cancelled and INVOKED as a full conservative charge",
+  // Added after an independent rereview of candidate
+  // 225384030a4a30d66c946bdbc0d577a057a8a0c6 found three working exploits
+  // against the round-1 fixes above (lineage forgery via the exported
+  // schema, transport forgery via the exported certify function + prototype
+  // spoofing, and a runtime-unenforced "private" constructor bypass).
+  "rejects a hand-constructed lineage that never went through authorizeExecutionBudgetLineage",
+  "rejects a direct call to the ExecutionBudgetLedger constructor, bypassing create()/recover()",
+  "rejects a fabricated journal snapshot appended without a matching writer lease",
+  "keeps a lease alive across a slow in-flight call via heartbeat, so a concurrent takeover cannot race it",
+  "rejects a plain object with a spoofed prototype and shadowed own-property methods",
 ];
 
 function sha256(content) {
@@ -127,9 +137,10 @@ const openCodeHarnessAbsent = await (async () => {
 })();
 
 const providerVerdicts = {
-  // Both direct-HTTP providers share the same trusted-transport, writer-lease,
-  // authority-grant, and transactional-ledger enforcement path; a verdict here
-  // is only ever derived from `success` above, never predeclared.
+  // Both direct-HTTP providers share the same transport-certification,
+  // writer-lease, authority-grant, and transactional-ledger enforcement
+  // path; a verdict here is only ever derived from `success` above, never
+  // predeclared.
   claudeDirectHttp: success ? "COMPLIANT" : "CHANGES_REQUIRED",
   codexDirectHttp: success ? "COMPLIANT" : "CHANGES_REQUIRED",
   codexCli: success ? "NONCOMPLIANT_FAIL_CLOSED" : "CHANGES_REQUIRED",

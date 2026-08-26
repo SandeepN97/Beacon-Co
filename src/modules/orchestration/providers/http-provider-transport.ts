@@ -1,6 +1,31 @@
 import type { ProviderId } from "../domain/provider.ts";
-import { certifyTransportInstance } from "../execution-budget/trusted-transport.ts";
 import { ProviderExecutionError, type ProviderTransport } from "./provider-adapter.ts";
+
+/**
+ * B3 rereview fix (independent rereview of PR #83, candidate
+ * 225384030a4a30d66c946bdbc0d577a057a8a0c6): the previous correction shared a
+ * single `certifyTransportInstance` export across transport files. Exporting
+ * the WeakSet-populating function at all let any code call it directly on a
+ * hand-built object, and (combined with `Object.setPrototypeOf`) a reviewer
+ * confirmed a fully forged transport could reach live invocation.
+ *
+ * This WeakSet, and the only code that ever calls `.add()` on it (this
+ * file's own constructor), are both private to this module -- there is no
+ * export, anywhere, capable of adding to it. `isTrustedHttpProviderTransport`
+ * is safe to export: checking membership cannot be used to forge membership.
+ */
+const certifiedHttpProviderTransports = new WeakSet<object>();
+
+export function isTrustedHttpProviderTransport(
+  transport: unknown,
+): transport is HttpProviderTransport {
+  return (
+    typeof transport === "object" &&
+    transport !== null &&
+    Object.getPrototypeOf(transport) === HttpProviderTransport.prototype &&
+    certifiedHttpProviderTransports.has(transport)
+  );
+}
 
 export interface ProviderCredentials {
   anthropicApiKey?: string;
@@ -51,10 +76,9 @@ export class HttpProviderTransport implements ProviderTransport {
   constructor(credentials: ProviderCredentials, fetchImplementation: typeof fetch = fetch) {
     this.credentials = credentials;
     this.fetchImplementation = fetchImplementation;
-    // Only the real constructor can register an instance as trusted; a subclass
-    // or object literal that merely shapes itself like this class never runs
-    // this line by any other path. See trusted-transport.ts.
-    certifyTransportInstance(this);
+    // Only this real constructor ever runs this line; there is no exported
+    // way for other code to add itself to certifiedHttpProviderTransports.
+    certifiedHttpProviderTransports.add(this);
   }
 
   executionBudgetContract(provider: ProviderId) {

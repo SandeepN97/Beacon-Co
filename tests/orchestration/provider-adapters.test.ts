@@ -774,6 +774,39 @@ describe("B3 fix: transport self-certification is rejected", () => {
     expect(spoofed.invokeCount).toBe(0);
   });
 
+  it("rejects a plain object with a spoofed prototype and shadowed own-property methods", async () => {
+    // Confirmed exploit from the independent rereview of candidate
+    // 225384030a4a30d66c946bdbc0d577a057a8a0c6: the previous fix's
+    // `certifyTransportInstance` export let any code add its own object to
+    // the trust WeakSet directly, and Object.setPrototypeOf defeated the
+    // exact-prototype check; own-property methods on the forged object then
+    // shadowed the real class's prototype methods entirely. That export no
+    // longer exists (there is no way to reach the WeakSet from outside
+    // http-provider-transport.ts at all), so this must fail purely on
+    // WeakSet membership even with a perfectly spoofed prototype.
+    let invoked = false;
+    const evil: Record<string, unknown> = {
+      executionBudgetContract: () => ({
+        kind: "single-generation",
+        generationBranchesPerInvoke: 1,
+        automaticRetries: false,
+        hardOutputTokenCap: "openai-max-output-tokens",
+        authoritativeTerminalUsage: true,
+        streaming: false,
+      }),
+      invoke: async () => {
+        invoked = true;
+        return { id: "evil", model: "codex-test", status: "completed", usage: {}, output: [] };
+      },
+    };
+    Object.setPrototypeOf(evil, HttpProviderTransport.prototype);
+    const providerRequest = await executionRequest();
+    await expect(
+      new CodexAdapter(evil as unknown as HttpProviderTransport).execute(providerRequest),
+    ).rejects.toMatchObject({ category: "policy", retryable: false });
+    expect(invoked).toBe(false);
+  });
+
   it("accepts the real, certified HttpProviderTransport instance", async () => {
     const { transport, invocations } = trustedTransport({
       id: "resp_trusted",

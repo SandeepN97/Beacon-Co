@@ -10,11 +10,10 @@ import {
   resolveProviderModelCallLimit,
   type ExecutionBudgetReservation,
 } from "../execution-budget/execution-budget.ts";
-import { isCertifiedTransportInstance } from "../execution-budget/trusted-transport.ts";
 import { normalizeProviderUsage } from "../telemetry/normalize-usage.ts";
 import { prepareProviderRun } from "../telemetry/redaction.ts";
-import { CodexCliTransport } from "./codex/codex-cli-transport.ts";
-import { HttpProviderTransport } from "./http-provider-transport.ts";
+import { isTrustedCodexCliTransport } from "./codex/codex-cli-transport.ts";
+import { isTrustedHttpProviderTransport } from "./http-provider-transport.ts";
 import {
   ProviderExecutionError,
   type ProviderExecutionRequest,
@@ -23,21 +22,20 @@ import {
 } from "./provider-adapter.ts";
 
 /**
- * Fixes B3 (independent security review of PR #83, candidate
- * e895f60e72f912221b7bf9d001d8aa49bdd993eb): live provider execution may only
- * cross into `transport.invoke()` for an exact, certified concrete transport
- * class. `instanceof` alone is rejected here because a subclass could override
- * `invoke`/`executionBudgetContract` while still passing it; requiring the
- * *exact* prototype additionally rejects that. `isCertifiedTransportInstance`
- * additionally rejects an object that fakes the prototype via
- * `Object.setPrototypeOf`/`Object.create` without running the real
- * constructor. Neither check alone is sufficient; both are required.
+ * Fixes B3 (independent security review of PR #83; hardened again after an
+ * independent rereview of candidate 225384030a4a30d66c946bdbc0d577a057a8a0c6
+ * found the original fix's `certifyTransportInstance` export let any code
+ * self-certify): live provider execution may only cross into
+ * `transport.invoke()` for an exact, certified concrete transport class.
+ * `isTrustedHttpProviderTransport`/`isTrustedCodexCliTransport` are each
+ * defined in the SAME file as their transport class, next to a WeakSet that
+ * has no exported mutator anywhere -- only that file's own real constructor
+ * ever adds to it. Each check also requires the exact prototype, rejecting a
+ * subclass that overrides `invoke`/`executionBudgetContract` while still
+ * passing `instanceof`.
  */
 function isTrustedLiveProviderTransport(transport: ProviderTransport): boolean {
-  const proto: unknown = Object.getPrototypeOf(transport);
-  const isKnownConcreteTransport =
-    proto === HttpProviderTransport.prototype || proto === CodexCliTransport.prototype;
-  return isKnownConcreteTransport && isCertifiedTransportInstance(transport);
+  return isTrustedHttpProviderTransport(transport) || isTrustedCodexCliTransport(transport);
 }
 
 type StopReason = Exclude<ProviderRun["stopReason"], null>;
