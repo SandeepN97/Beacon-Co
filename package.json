@@ -40,6 +40,7 @@
     "publication:verify-github": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/ci/verify-github-pr-metadata.mjs",
     "release:evidence:record": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/record-release-evidence.mjs",
     "release:evidence:validate": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/validate-release-evidence.mjs",
+    "execution-budget:conformance": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/verify-execution-budget-conformance.mjs",
     "phase15:audit": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/audit-phase-1.5.mjs",
     "phase15:audit:local": "node --disable-warning=ExperimentalWarning --experimental-strip-types scripts/agents/audit-phase-1.5.mjs --local-only",
     "agents:check": "npm run ci:agents && npm run phase15:audit:local && npx vitest run tests/agents tests/orchestration/context-preflight.test.ts tests/orchestration/eval-runner.test.ts tests/orchestration/tool-policy.test.ts tests/orchestration/council-policy.test.ts tests/orchestration/model-tuning.test.ts tests/orchestration/publication-policy.test.ts",

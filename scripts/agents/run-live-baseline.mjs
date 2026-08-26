@@ -11,6 +11,7 @@ import { EvalResultSchema } from "../../src/modules/orchestration/domain/eval-re
 import {
   authorizeExecutionBudgetLineage,
   createLocalExecutionBudgetEvidenceStore,
+  ExecutionBudgetAuthorityGrant,
   ExecutionBudgetLedger,
 } from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
 import {
@@ -152,15 +153,21 @@ if (!model || !outputPath) {
         contextPackage,
         objective: scenario.objective,
       });
+      const grant = await ExecutionBudgetAuthorityGrant.issue({
+        adrRef: {
+          schemaVersion: 1,
+          adrId: "0023-define-provider-neutral-execution-budget-semantics",
+          status: "accepted",
+          decisionCandidateRef: `run-live-baseline:${evaluationId}`,
+        },
+        workUnitId,
+        maxModelCalls: 1,
+        maxOutputTokens: 64,
+        policySource: "scripts/agents/run-live-baseline.mjs",
+        grantedAt: new Date().toISOString(),
+      });
       const budgetLedger = await ExecutionBudgetLedger.create(
-        authorizeExecutionBudgetLineage({
-          workUnitId,
-          maxModelCalls: 1,
-          maxOutputTokens: 64,
-          authorizedAt: new Date().toISOString(),
-          authorizedBy: "run-live-baseline",
-          authorizationEvidenceId: `live-baseline:${evaluationId}`,
-        }),
+        authorizeExecutionBudgetLineage({ grant }),
         createLocalExecutionBudgetEvidenceStore(process.cwd()),
       );
       const result = await executeLiveWorkUnit(

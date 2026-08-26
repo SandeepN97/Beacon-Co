@@ -4,18 +4,41 @@ import type { NormalizedTokenUsage, ProviderRun } from "../domain/provider-run.t
 import {
   ExecutionBudgetAdmissionError,
   ExecutionBudgetEvidencePersistenceError,
+  ExecutionBudgetPoisonedError,
   ExecutionBudgetStateError,
+  ExecutionBudgetWriterFenceError,
   resolveProviderModelCallLimit,
   type ExecutionBudgetReservation,
 } from "../execution-budget/execution-budget.ts";
+import { isCertifiedTransportInstance } from "../execution-budget/trusted-transport.ts";
 import { normalizeProviderUsage } from "../telemetry/normalize-usage.ts";
 import { prepareProviderRun } from "../telemetry/redaction.ts";
+import { CodexCliTransport } from "./codex/codex-cli-transport.ts";
+import { HttpProviderTransport } from "./http-provider-transport.ts";
 import {
   ProviderExecutionError,
   type ProviderExecutionRequest,
   type ProviderExecutionResult,
   type ProviderTransport,
 } from "./provider-adapter.ts";
+
+/**
+ * Fixes B3 (independent security review of PR #83, candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb): live provider execution may only
+ * cross into `transport.invoke()` for an exact, certified concrete transport
+ * class. `instanceof` alone is rejected here because a subclass could override
+ * `invoke`/`executionBudgetContract` while still passing it; requiring the
+ * *exact* prototype additionally rejects that. `isCertifiedTransportInstance`
+ * additionally rejects an object that fakes the prototype via
+ * `Object.setPrototypeOf`/`Object.create` without running the real
+ * constructor. Neither check alone is sufficient; both are required.
+ */
+function isTrustedLiveProviderTransport(transport: ProviderTransport): boolean {
+  const proto: unknown = Object.getPrototypeOf(transport);
+  const isKnownConcreteTransport =
+    proto === HttpProviderTransport.prototype || proto === CodexCliTransport.prototype;
+  return isKnownConcreteTransport && isCertifiedTransportInstance(transport);
+}
 
 type StopReason = Exclude<ProviderRun["stopReason"], null>;
 
@@ -62,14 +85,36 @@ export function extractClaudeResult(response: Record<string, unknown>): Extracte
         .update(JSON.stringify(block.input ?? {}))
         .digest("hex"),
     }));
-  const nativeStop = stringValue(response.stop_reason);
-  const stopReason: StopReason =
-    nativeStop === "max_tokens"
-      ? "output-token-budget-exhausted"
-      : nativeStop === "tool_use"
-        ? "blocked"
-        : "completed";
+  const stopReason = mapClaudeStopReason(stringValue(response.stop_reason));
   return { outputText, tools, stopReason, succeeded: stopReason === "completed" };
+}
+
+/**
+ * Fixes N3 (independent security review of PR #83, candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb): the previous mapping treated any
+ * `stop_reason` other than "max_tokens"/"tool_use" as normal completion, which
+ * silently turned an unrecognized or future Anthropic stop reason into
+ * `"completed"`. Every currently documented Anthropic stop reason is handled
+ * explicitly; only `end_turn` and `stop_sequence` are genuine normal
+ * completions. Anything not on this list -- including a value Anthropic adds
+ * later -- fails closed to `"unknown"` rather than defaulting to success.
+ */
+function mapClaudeStopReason(nativeStop: string | null): StopReason {
+  switch (nativeStop) {
+    case "end_turn":
+    case "stop_sequence":
+      return "completed";
+    case "max_tokens":
+      return "output-token-budget-exhausted";
+    case "tool_use":
+    case "pause_turn":
+    case "refusal":
+      return "blocked";
+    case "model_context_window_exceeded":
+      return "provider-error";
+    default:
+      return "unknown";
+  }
 }
 
 export function extractCodexResult(response: Record<string, unknown>): ExtractedProviderResult {
@@ -196,7 +241,9 @@ function asProviderExecutionError(provider: ProviderId, error: unknown): Provide
   }
   if (
     error instanceof ExecutionBudgetStateError ||
-    error instanceof ExecutionBudgetEvidencePersistenceError
+    error instanceof ExecutionBudgetEvidencePersistenceError ||
+    error instanceof ExecutionBudgetPoisonedError ||
+    error instanceof ExecutionBudgetWriterFenceError
   ) {
     return new ProviderExecutionError(
       provider,
@@ -246,6 +293,15 @@ export async function executeBudgetedProviderCall(options: {
       provider,
       "policy",
       "Live provider execution requires a crash-recoverable execution-budget journal.",
+      false,
+    );
+  }
+  if (!isTrustedLiveProviderTransport(transport)) {
+    throw new ProviderExecutionError(
+      provider,
+      "policy",
+      "Live provider execution requires an exact, certified transport implementation; " +
+        "an arbitrary ProviderTransport cannot self-certify into the live execution boundary.",
       false,
     );
   }
@@ -310,6 +366,19 @@ export async function executeBudgetedProviderCall(options: {
   }
   try {
     await request.budgetLedger.markInvoked(reservation.budgetReservationId);
+  } catch (error) {
+    throw asProviderExecutionError(provider, error);
+  }
+
+  // B1/B4/B5 fix (independent security review of PR #83, candidate
+  // e895f60e72f912221b7bf9d001d8aa49bdd993eb): re-validate this process's
+  // writer-lease fence immediately before the irreversible step. Durable
+  // INVOKED evidence above proves *intent* to invoke; this proves *this
+  // process* is still the lineage's authoritative writer at the instant of
+  // invocation, closing the window where a suspended/stale process wakes up
+  // after another process has safely taken over the lineage.
+  try {
+    await request.budgetLedger.assertWriterAuthority();
   } catch (error) {
     throw asProviderExecutionError(provider, error);
   }

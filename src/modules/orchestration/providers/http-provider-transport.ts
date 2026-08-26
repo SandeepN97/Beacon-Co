@@ -1,4 +1,5 @@
 import type { ProviderId } from "../domain/provider.ts";
+import { certifyTransportInstance } from "../execution-budget/trusted-transport.ts";
 import { ProviderExecutionError, type ProviderTransport } from "./provider-adapter.ts";
 
 export interface ProviderCredentials {
@@ -50,6 +51,10 @@ export class HttpProviderTransport implements ProviderTransport {
   constructor(credentials: ProviderCredentials, fetchImplementation: typeof fetch = fetch) {
     this.credentials = credentials;
     this.fetchImplementation = fetchImplementation;
+    // Only the real constructor can register an instance as trusted; a subclass
+    // or object literal that merely shapes itself like this class never runs
+    // this line by any other path. See trusted-transport.ts.
+    certifyTransportInstance(this);
   }
 
   executionBudgetContract(provider: ProviderId) {

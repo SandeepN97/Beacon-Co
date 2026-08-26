@@ -56,11 +56,15 @@ export class ClaudeAdapter implements ProviderAdapter {
       transport: this.transport,
       startedAt,
       now: this.now,
+      // Anthropic's Messages API documents only `metadata.user_id`; it does not
+      // document a work_unit_id field (M1, PR #83 independent review). Beacon's
+      // WorkUnit identity is already durably recorded in the local execution-budget
+      // ledger and telemetry -- it does not need to be sent to Anthropic, and
+      // sending an undocumented field risks silent rejection or reinterpretation.
       payload: (outputTokenAllowance) => ({
         model: request.resolvedModelId,
         max_tokens: outputTokenAllowance,
         messages: [{ role: "user", content: request.prompt }],
-        metadata: { work_unit_id: request.workUnitId },
       }),
       extract: extractClaudeResult,
     });

@@ -1,13 +1,28 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, open, readFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { lstat, mkdir, open, readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { z } from "astro/zod";
 import type { ProviderId } from "../domain/provider.ts";
+import type { ExecutionBudgetAuthorityGrant } from "./authority-grant.ts";
+import {
+  ExecutionBudgetWriterFenceError,
+  ExecutionBudgetWriterLease,
+  ExecutionBudgetWriterLeaseUnavailableError,
+} from "./writer-lease.ts";
+
+export { ExecutionBudgetWriterFenceError, ExecutionBudgetWriterLeaseUnavailableError };
+export { ExecutionBudgetWriterLease } from "./writer-lease.ts";
+export {
+  ExecutionBudgetAuthorityGrant,
+  ExecutionBudgetAuthorityGrantError,
+  type ExecutionBudgetAuthorityGrantInput,
+} from "./authority-grant.ts";
 
 const TimestampSchema = z.iso.datetime({ offset: true });
 const IdentifierSchema = z.string().min(1).max(160);
 const PositiveIntegerSchema = z.number().int().positive();
 const NonNegativeIntegerSchema = z.number().int().nonnegative();
+const Sha256HexSchema = z.string().regex(/^[a-f0-9]{64}$/);
 
 export type ExecutionBudgetEvidenceDurability = "process-only" | "fsync-journal";
 
@@ -75,12 +90,15 @@ export type ExecutionBudgetLineage = Readonly<z.infer<typeof ExecutionBudgetLine
 
 export interface AuthorizeExecutionBudgetInput {
   budgetLineageId?: string;
-  workUnitId: string;
-  maxModelCalls: number;
-  maxOutputTokens: number;
-  authorizedAt: string;
-  authorizedBy: string;
-  authorizationEvidenceId: string;
+  /**
+   * B2 fix (independent security review of PR #83, candidate
+   * e895f60e72f912221b7bf9d001d8aa49bdd993eb): the only way to obtain a grant
+   * is `ExecutionBudgetAuthorityGrant.issue(...)`, which itself requires the
+   * canonical Decision OS authority boundary (`assertExecutionAuthorized`) to
+   * accept an accepted AdrRef bound to a real, committed ADR document. Bare
+   * `authorizedBy`/`authorizationEvidenceId` strings are no longer accepted.
+   */
+  grant: ExecutionBudgetAuthorityGrant;
   allocationKind?: "top-level" | "parent-carve-out" | "higher-policy-grant";
   parentBudgetLineageId?: string | null;
 }
@@ -88,14 +106,23 @@ export interface AuthorizeExecutionBudgetInput {
 /**
  * This factory is called only by an authorized Beacon orchestration boundary.
  * Provider adapters and transports receive an existing ledger and never call it.
+ * Unlike the pre-correction version, it cannot mint capacity from caller-supplied
+ * strings: every field describing *what* was authorized (WorkUnit, ceilings) is
+ * read from the trusted `grant`, not from `input` directly.
  */
 export function authorizeExecutionBudgetLineage(
   input: AuthorizeExecutionBudgetInput,
 ): ExecutionBudgetLineage {
+  const { grant } = input;
   return Object.freeze(
     ExecutionBudgetLineageSchema.parse({
-      ...input,
       budgetLineageId: input.budgetLineageId ?? `budget-lineage-${randomUUID()}`,
+      workUnitId: grant.workUnitId,
+      maxModelCalls: grant.maxModelCalls,
+      maxOutputTokens: grant.maxOutputTokens,
+      authorizedAt: grant.grantedAt,
+      authorizedBy: grant.adrRef.adrId,
+      authorizationEvidenceId: grant.authorizationEvidenceId,
       allocationKind: input.allocationKind ?? "top-level",
       parentBudgetLineageId: input.parentBudgetLineageId ?? null,
     }),
@@ -147,6 +174,14 @@ export const ExecutionBudgetLedgerSnapshotSchema = z
     revision: NonNegativeIntegerSchema,
     recordedAt: TimestampSchema,
     lineage: ExecutionBudgetLineageSchema,
+    /** Identity of the writer that produced this revision (see writer-lease.ts). */
+    writerLeaseId: z.string().min(1).max(200),
+    /** Monotonic fence for that writer identity; a takeover always increases it. */
+    writerFence: PositiveIntegerSchema,
+    /** sha256 of the previous revision's contentHash; null only for revision 0. */
+    previousContentHash: Sha256HexSchema.nullable(),
+    /** sha256 over this record's own content (every field except this one). */
+    contentHash: Sha256HexSchema,
     modelCallsReserved: NonNegativeIntegerSchema,
     modelCallsInitiated: NonNegativeIntegerSchema,
     outputTokensReserved: NonNegativeIntegerSchema,
@@ -161,10 +196,24 @@ export const ExecutionBudgetLedgerSnapshotSchema = z
   .strict();
 export type ExecutionBudgetLedgerSnapshot = z.infer<typeof ExecutionBudgetLedgerSnapshotSchema>;
 
+function canonicalContentHash(
+  snapshot: Omit<ExecutionBudgetLedgerSnapshot, "contentHash">,
+): string {
+  return createHash("sha256").update(JSON.stringify(snapshot)).digest("hex");
+}
+
 export interface ExecutionBudgetEvidenceStore {
   readonly durability: ExecutionBudgetEvidenceDurability;
   append(snapshot: ExecutionBudgetLedgerSnapshot): Promise<void>;
   load(budgetLineageId: string): Promise<ExecutionBudgetLedgerSnapshot[]>;
+  /**
+   * Cross-process exclusive-writer acquisition (B1 fix). Stores whose
+   * durability is inherently single-process (e.g. in-memory) may omit this;
+   * the ledger then relies on its existing in-process mutation queue only,
+   * which is already sufficient because nothing outside that one process can
+   * see the store.
+   */
+  acquireWriterLease?(budgetLineageId: string): Promise<ExecutionBudgetWriterLease>;
 }
 
 export class InMemoryExecutionBudgetEvidenceStore implements ExecutionBudgetEvidenceStore {
@@ -193,43 +242,114 @@ export class ExecutionBudgetEvidencePersistenceError extends Error {
   }
 }
 
+/** Deterministic, path-safe per-lineage directory name (Section 7). */
+export function hashLineagePath(budgetLineageId: string): string {
+  return createHash("sha256").update(budgetLineageId).digest("hex");
+}
+
+async function assertNotSymlink(path: string): Promise<void> {
+  let stats;
+  try {
+    stats = await lstat(path);
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") return;
+    throw error;
+  }
+  if (stats.isSymbolicLink()) {
+    throw new ExecutionBudgetEvidencePersistenceError(
+      `Refusing to use ${path}: execution-budget evidence paths must not be symlinks.`,
+      new Error("symlink-rejected"),
+    );
+  }
+}
+
 /**
- * Reuses Beacon's approved metadata-only append-only NDJSON evidence pattern.
- * Every snapshot is fsync'd before the corresponding provider boundary is crossed.
+ * Reuses Beacon's approved metadata-only append-only NDJSON evidence pattern,
+ * hardened per the independent security review of PR #83 (candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb):
+ *
+ *  - one authoritative journal PER LINEAGE, addressed by a hash of the lineage
+ *    id rather than a raw untrusted path segment (Section 7);
+ *  - an exclusive writer lease + monotonic fence lives alongside that journal
+ *    and gates every mutation and every provider invocation (Section 3-5);
+ *  - the journal directory and file are owner-only (0700/0600) and symlinked
+ *    replacement is rejected where the platform can prove it (Section 10);
+ *  - every snapshot is fsync'd before the corresponding provider boundary is
+ *    crossed, and a write/fsync/close failure is never silently downgraded.
  */
 export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBudgetEvidenceStore {
   readonly durability = "fsync-journal" as const;
+  readonly rootDir: string;
+  private readonly writerLeaseOptions: { ttlMs?: number; now?: () => Date };
 
-  constructor(readonly path: string) {}
+  constructor(rootDir: string, writerLeaseOptions: { ttlMs?: number; now?: () => Date } = {}) {
+    this.rootDir = rootDir;
+    this.writerLeaseOptions = writerLeaseOptions;
+  }
+
+  private lineageDir(budgetLineageId: string): string {
+    return join(this.rootDir, hashLineagePath(budgetLineageId));
+  }
+
+  private journalPath(budgetLineageId: string): string {
+    return join(this.lineageDir(budgetLineageId), "journal.ndjson");
+  }
+
+  async acquireWriterLease(budgetLineageId: string): Promise<ExecutionBudgetWriterLease> {
+    return ExecutionBudgetWriterLease.acquire({
+      dir: join(this.lineageDir(budgetLineageId), "writer"),
+      ttlMs: this.writerLeaseOptions.ttlMs,
+      now: this.writerLeaseOptions.now,
+    });
+  }
 
   async append(input: ExecutionBudgetLedgerSnapshot): Promise<void> {
     const snapshot = ExecutionBudgetLedgerSnapshotSchema.parse(input);
+    const dir = this.lineageDir(snapshot.lineage.budgetLineageId);
+    const path = this.journalPath(snapshot.lineage.budgetLineageId);
     let handle;
+    let writeError: unknown;
     try {
-      await mkdir(dirname(this.path), { recursive: true });
-      handle = await open(this.path, "a", 0o600);
+      await mkdir(dir, { recursive: true, mode: 0o700 });
+      await assertNotSymlink(path);
+      handle = await open(path, "a", 0o600);
       await handle.writeFile(`${JSON.stringify(snapshot)}\n`, { encoding: "utf8" });
       await handle.sync();
     } catch (error) {
-      throw new ExecutionBudgetEvidencePersistenceError(
-        `Unable to persist execution-budget evidence to ${this.path}.`,
-        error,
-      );
-    } finally {
+      writeError = error;
+    }
+    let closeError: unknown;
+    try {
       await handle?.close();
+    } catch (error) {
+      closeError = error;
+    }
+    if (writeError) {
+      if (writeError instanceof ExecutionBudgetEvidencePersistenceError) throw writeError;
+      throw new ExecutionBudgetEvidencePersistenceError(
+        `Unable to persist execution-budget evidence to ${path}.`,
+        writeError,
+      );
+    }
+    if (closeError) {
+      throw new ExecutionBudgetEvidencePersistenceError(
+        `Unable to durably close the execution-budget journal at ${path}; treating as an uncertain write.`,
+        closeError,
+      );
     }
   }
 
   async load(budgetLineageId: string): Promise<ExecutionBudgetLedgerSnapshot[]> {
+    const path = this.journalPath(budgetLineageId);
     let source: string;
     try {
-      source = await readFile(this.path, "utf8");
+      source = await readFile(path, "utf8");
     } catch (error) {
       if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
         return [];
       }
       throw new ExecutionBudgetEvidencePersistenceError(
-        `Unable to read execution-budget evidence from ${this.path}.`,
+        `Unable to read execution-budget evidence from ${path}.`,
         error,
       );
     }
@@ -241,7 +361,7 @@ export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBu
         .filter((snapshot) => snapshot.lineage.budgetLineageId === budgetLineageId);
     } catch (error) {
       throw new ExecutionBudgetEvidencePersistenceError(
-        `Execution-budget evidence at ${this.path} is malformed.`,
+        `Execution-budget evidence at ${path} is malformed or truncated; refusing to repair it silently.`,
         error,
       );
     }
@@ -252,7 +372,7 @@ export function createLocalExecutionBudgetEvidenceStore(
   repositoryRoot: string,
 ): AppendOnlyNdjsonExecutionBudgetEvidenceStore {
   return new AppendOnlyNdjsonExecutionBudgetEvidenceStore(
-    join(repositoryRoot, ".beacon", "telemetry", "execution-budget-ledgers.ndjson"),
+    join(repositoryRoot, ".beacon", "telemetry", "execution-budgets"),
   );
 }
 
@@ -260,7 +380,7 @@ export function createCiExecutionBudgetEvidenceStore(
   repositoryRoot: string,
 ): AppendOnlyNdjsonExecutionBudgetEvidenceStore {
   return new AppendOnlyNdjsonExecutionBudgetEvidenceStore(
-    join(repositoryRoot, "evidence", "telemetry", "execution-budget-ledgers.ndjson"),
+    join(repositoryRoot, "evidence", "telemetry", "execution-budgets"),
   );
 }
 
@@ -281,10 +401,31 @@ export class ExecutionBudgetStateError extends Error {
   }
 }
 
+/**
+ * B4/B5 fix: once a durable-persistence outcome becomes uncertain (an append,
+ * fsync, or close failed and Beacon cannot know whether bytes reached durable
+ * storage), the ledger poisons itself permanently. No further admission,
+ * settlement, or invocation may proceed from ambiguous memory; a fresh,
+ * governed `ExecutionBudgetLedger.recover()` against durable evidence is the
+ * only way forward.
+ */
+export class ExecutionBudgetPoisonedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ExecutionBudgetPoisonedError";
+  }
+}
+
 function assertSupportedLineageAllocation(lineage: ExecutionBudgetLineage): void {
   if (lineage.allocationKind === "parent-carve-out") {
     throw new ExecutionBudgetStateError(
       "Parent carve-out allocation requires a future parent-ledger reservation mechanism; use the inherited lineage or an explicit higher-policy grant.",
+    );
+  }
+  if (lineage.allocationKind === "higher-policy-grant") {
+    throw new ExecutionBudgetStateError(
+      "Higher-policy-grant allocation has no proven capacity-minting mechanism in the current " +
+        "Phase 1.5 runtime; failing closed rather than trusting caller-provided grant metadata.",
     );
   }
 }
@@ -329,28 +470,47 @@ function assertPositiveInteger(value: number, label: string): void {
   }
 }
 
+/** Mutable working copy of ledger state a single transaction mutates before commit. */
+interface LedgerDraft {
+  reservations: Map<string, ExecutionBudgetReservation>;
+  terminalBudgetReason: ExecutionBudgetStopReason | null;
+  violation: z.infer<typeof ExecutionBudgetViolationSchema> | null;
+}
+
+interface MutationOutcome<T> {
+  /** false skips persistence entirely -- true idempotent no-ops (Section 42/N2). */
+  changed: boolean;
+  value: T;
+}
+
 export class ExecutionBudgetLedger {
   readonly lineage: ExecutionBudgetLineage;
   private readonly evidenceStore: ExecutionBudgetEvidenceStore;
   private readonly now: () => Date;
   private readonly reservationId: () => string;
+  private readonly writerLease: ExecutionBudgetWriterLease | null;
   private reservations = new Map<string, ExecutionBudgetReservation>();
-  private revision = 0;
-  private lastRecordedAt: string;
+  // -1 so the first durable commit (create()'s initial snapshot) lands on
+  // revision 0, matching recover()'s expectation that history starts there.
+  private revision = -1;
+  private lastSnapshot: ExecutionBudgetLedgerSnapshot | null = null;
   private terminalBudgetReason: ExecutionBudgetStopReason | null = null;
   private violation: z.infer<typeof ExecutionBudgetViolationSchema> | null = null;
   private mutationQueue: Promise<void> = Promise.resolve();
+  private poisoned = false;
+  private poisonReason: string | null = null;
 
   private constructor(
     lineage: ExecutionBudgetLineage,
     evidenceStore: ExecutionBudgetEvidenceStore,
+    writerLease: ExecutionBudgetWriterLease | null,
     options: { now?: () => Date; reservationId?: () => string } = {},
   ) {
     this.lineage = Object.freeze(ExecutionBudgetLineageSchema.parse(lineage));
     this.evidenceStore = evidenceStore;
+    this.writerLease = writerLease;
     this.now = options.now ?? (() => new Date());
     this.reservationId = options.reservationId ?? (() => `budget-reservation-${randomUUID()}`);
-    this.lastRecordedAt = this.now().toISOString();
   }
 
   static async create(
@@ -359,14 +519,18 @@ export class ExecutionBudgetLedger {
     options: { now?: () => Date; reservationId?: () => string } = {},
   ): Promise<ExecutionBudgetLedger> {
     assertSupportedLineageAllocation(lineage);
+    // B1 fix: acquire exclusive writer ownership BEFORE any durable read, so a
+    // concurrent create() and a concurrent recover() for the same lineage race
+    // on the SAME atomic primitive rather than on separate, unprotected steps.
+    const writerLease = (await evidenceStore.acquireWriterLease?.(lineage.budgetLineageId)) ?? null;
     const existing = await evidenceStore.load(lineage.budgetLineageId);
     if (existing.length > 0) {
       throw new ExecutionBudgetStateError(
         `Budget lineage ${lineage.budgetLineageId} already has durable state and cannot be reminted.`,
       );
     }
-    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, options);
-    await evidenceStore.append(ledger.buildSnapshot());
+    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, writerLease, options);
+    await ledger.persistInitialSnapshot();
     return ledger;
   }
 
@@ -376,6 +540,7 @@ export class ExecutionBudgetLedger {
     options: { now?: () => Date; reservationId?: () => string } = {},
   ): Promise<ExecutionBudgetLedger> {
     assertSupportedLineageAllocation(lineage);
+    const writerLease = (await evidenceStore.acquireWriterLease?.(lineage.budgetLineageId)) ?? null;
     const history = await evidenceStore.load(lineage.budgetLineageId);
     if (history.length === 0) {
       throw new ExecutionBudgetStateError(
@@ -398,15 +563,36 @@ export class ExecutionBudgetLedger {
         `Budget lineage ${lineage.budgetLineageId} has a non-contiguous durable history.`,
       );
     }
+    let previousHash: string | null = null;
+    for (const revision of revisions) {
+      const record = byRevision.get(revision);
+      if (!record) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} is missing revision ${revision}.`,
+        );
+      }
+      if (record.previousContentHash !== previousHash) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} revision ${revision} does not chain from the prior revision's hash.`,
+        );
+      }
+      const { contentHash, ...rest } = record;
+      if (canonicalContentHash(rest) !== contentHash) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} revision ${revision} content hash does not match its recorded content; refusing to trust tampered evidence.`,
+        );
+      }
+      previousHash = contentHash;
+    }
     const latest = byRevision.get(revisions.at(-1) ?? -1);
     if (!latest || JSON.stringify(latest.lineage) !== JSON.stringify(lineage)) {
       throw new ExecutionBudgetStateError(
         `Budget lineage ${lineage.budgetLineageId} recovery metadata does not match its authority grant.`,
       );
     }
-    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, options);
+    const ledger = new ExecutionBudgetLedger(lineage, evidenceStore, writerLease, options);
     ledger.revision = latest.revision;
-    ledger.lastRecordedAt = latest.recordedAt;
+    ledger.lastSnapshot = structuredClone(latest);
     ledger.terminalBudgetReason = latest.terminalBudgetReason;
     ledger.violation = latest.violation;
     ledger.reservations = new Map(
@@ -416,9 +602,19 @@ export class ExecutionBudgetLedger {
       ]),
     );
 
+    const draft: LedgerDraft = {
+      reservations: new Map(ledger.reservations),
+      terminalBudgetReason: ledger.terminalBudgetReason,
+      violation: ledger.violation,
+    };
     let recovered = false;
-    for (const reservation of ledger.reservations.values()) {
+    for (const reservation of draft.reservations.values()) {
       if (reservation.state === "PENDING") {
+        // Fix Section 11 (PENDING recovery proof): recovery may only convert
+        // PENDING -> CANCELLED_BEFORE_INVOCATION while THIS process holds
+        // authoritative ownership (the lease acquired above), and only
+        // because durable history proves invocation never began for this
+        // reservation -- PENDING never advanced to a durable INVOKED record.
         reservation.state = "CANCELLED_BEFORE_INVOCATION";
         reservation.settledAt = ledger.now().toISOString();
         reservation.terminalReason = "recovery-proved-invocation-not-started";
@@ -436,7 +632,16 @@ export class ExecutionBudgetLedger {
         recovered = true;
       }
     }
-    if (recovered) await ledger.persistMutation();
+    if (recovered) {
+      try {
+        await ledger.persistDraftDirectly(draft);
+      } catch (error) {
+        throw new ExecutionBudgetEvidencePersistenceError(
+          `Recovery safety corrections for ${lineage.budgetLineageId} could not be durably recorded; refusing to hand back an unsafe ledger.`,
+          error,
+        );
+      }
+    }
     return ledger;
   }
 
@@ -448,8 +653,28 @@ export class ExecutionBudgetLedger {
     return this.evidenceStore.durability;
   }
 
+  /**
+   * MUST be called immediately before invoking a provider (see
+   * live-adapter-support.ts) and is safe to call at any other time as a
+   * pre-flight check. No-ops when the evidence store has no cross-process
+   * writer-lease concept (i.e. the in-memory store), since that store cannot
+   * be observed outside this one process.
+   */
+  async assertWriterAuthority(): Promise<void> {
+    if (this.poisoned) {
+      throw new ExecutionBudgetPoisonedError(
+        this.poisonReason ??
+          "This execution-budget ledger is poisoned after an uncertain persistence failure.",
+      );
+    }
+    await this.writerLease?.assertOwnership();
+  }
+
   snapshot(): ExecutionBudgetLedgerSnapshot {
-    return structuredClone(this.buildSnapshot());
+    if (!this.lastSnapshot) {
+      throw new ExecutionBudgetStateError("Execution budget ledger has no durable snapshot yet.");
+    }
+    return structuredClone(this.lastSnapshot);
   }
 
   projectProviderRun(providerRunId: string): {
@@ -534,32 +759,40 @@ export class ExecutionBudgetLedger {
         );
       }
     }
-    return this.runExclusive(async () => {
-      if (this.violation) {
-        throw new ExecutionBudgetAdmissionError(
-          "ENFORCEMENT_VIOLATION",
-          "Execution budget lineage is blocked by an enforcement violation.",
-        );
+
+    type AdmissionOutcome =
+      | { kind: "violation-blocked" }
+      | { kind: "denied"; reason: ExecutionBudgetStopReason }
+      | { kind: "admitted"; reservations: ExecutionBudgetReservation[] };
+
+    const outcome = await this.runMutation<AdmissionOutcome>((draft) => {
+      if (draft.violation) {
+        return { changed: false, value: { kind: "violation-blocked" } };
       }
-      const before = this.buildSnapshot();
+      const before = this.projectFromDraft(draft);
       const requestedCalls = inputs.length;
       const requestedTokens = sum(inputs.map((input) => input.requestedOutputTokenAllowance));
       if (requestedCalls > before.modelCallsRemaining) {
-        await this.recordDeniedAdmission("MODEL_CALL_BUDGET_EXHAUSTED");
-        throw new ExecutionBudgetAdmissionError(
-          "MODEL_CALL_BUDGET_EXHAUSTED",
-          "Model-call budget is exhausted.",
-        );
+        const changed = draft.terminalBudgetReason !== "MODEL_CALL_BUDGET_EXHAUSTED";
+        draft.terminalBudgetReason = "MODEL_CALL_BUDGET_EXHAUSTED";
+        return { changed, value: { kind: "denied", reason: "MODEL_CALL_BUDGET_EXHAUSTED" } };
       }
       if (requestedTokens > before.outputTokensRemaining) {
-        await this.recordDeniedAdmission("OUTPUT_TOKEN_BUDGET_EXHAUSTED");
-        throw new ExecutionBudgetAdmissionError(
-          "OUTPUT_TOKEN_BUDGET_EXHAUSTED",
-          "Output-token budget is exhausted.",
-        );
+        const changed = draft.terminalBudgetReason !== "OUTPUT_TOKEN_BUDGET_EXHAUSTED";
+        draft.terminalBudgetReason = "OUTPUT_TOKEN_BUDGET_EXHAUSTED";
+        return { changed, value: { kind: "denied", reason: "OUTPUT_TOKEN_BUDGET_EXHAUSTED" } };
+      }
+      for (const input of inputs) {
+        if ([...draft.reservations.values()].some((r) => r.providerRunId === input.providerRunId)) {
+          // M2 fix: one providerRunId identifies exactly one concrete provider
+          // execution/reservation for this lineage's whole lifetime, never a
+          // second admission -- this is what lets ProviderRun.turns mean "1".
+          throw new ExecutionBudgetStateError(
+            `Provider run ${input.providerRunId} has already been admitted; a providerRunId cannot be reused for a second reservation.`,
+          );
+        }
       }
       const admittedAt = this.now().toISOString();
-      this.terminalBudgetReason = null;
       const reservations = inputs.map((input, index) =>
         ExecutionBudgetReservationSchema.parse({
           budgetReservationId: this.reservationId(),
@@ -592,28 +825,34 @@ export class ExecutionBudgetLedger {
         throw new ExecutionBudgetStateError("Budget reservation identities must be unique.");
       }
       for (const reservation of reservations) {
-        if (this.reservations.has(reservation.budgetReservationId)) {
-          throw new ExecutionBudgetStateError(
-            `Budget reservation ${reservation.budgetReservationId} already exists.`,
-          );
-        }
-        this.reservations.set(reservation.budgetReservationId, reservation);
+        draft.reservations.set(reservation.budgetReservationId, reservation);
       }
-      try {
-        await this.persistMutation();
-      } catch (error) {
-        for (const reservation of reservations) {
-          this.reservations.delete(reservation.budgetReservationId);
-        }
-        throw error;
-      }
-      return reservations.map((reservation) => structuredClone(reservation));
+      draft.terminalBudgetReason = null;
+      return { changed: true, value: { kind: "admitted", reservations } };
     });
+
+    if (outcome.kind === "violation-blocked") {
+      throw new ExecutionBudgetAdmissionError(
+        "ENFORCEMENT_VIOLATION",
+        "Execution budget lineage is blocked by an enforcement violation.",
+      );
+    }
+    if (outcome.kind === "denied") {
+      throw new ExecutionBudgetAdmissionError(
+        outcome.reason,
+        outcome.reason === "MODEL_CALL_BUDGET_EXHAUSTED"
+          ? "Model-call budget is exhausted."
+          : "Output-token budget is exhausted.",
+      );
+    }
+    return outcome.reservations.map((reservation) => structuredClone(reservation));
   }
 
   async cancelBeforeInvocation(budgetReservationId: string, reason: string): Promise<void> {
-    await this.transition(budgetReservationId, (reservation) => {
-      if (reservation.state === "CANCELLED_BEFORE_INVOCATION") return false;
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
+      if (reservation.state === "CANCELLED_BEFORE_INVOCATION")
+        return { changed: false, value: undefined };
       if (reservation.state !== "PENDING") {
         throw new ExecutionBudgetStateError(
           `Reservation ${budgetReservationId} cannot prove pre-invocation cancellation from ${reservation.state}.`,
@@ -622,13 +861,14 @@ export class ExecutionBudgetLedger {
       reservation.state = "CANCELLED_BEFORE_INVOCATION";
       reservation.settledAt = this.now().toISOString();
       reservation.terminalReason = reason;
-      return true;
+      return { changed: true, value: undefined };
     });
   }
 
   async markInvoked(budgetReservationId: string): Promise<void> {
-    await this.transition(budgetReservationId, (reservation) => {
-      if (reservation.state === "INVOKED") return false;
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
+      if (reservation.state === "INVOKED") return { changed: false, value: undefined };
       if (reservation.state !== "PENDING") {
         throw new ExecutionBudgetStateError(
           `Reservation ${budgetReservationId} cannot be invoked from ${reservation.state}.`,
@@ -636,7 +876,7 @@ export class ExecutionBudgetLedger {
       }
       reservation.state = "INVOKED";
       reservation.invokedAt = this.now().toISOString();
-      return true;
+      return { changed: true, value: undefined };
     });
   }
 
@@ -650,22 +890,30 @@ export class ExecutionBudgetLedger {
       );
     }
     const observed = Number(cumulativeOutputTokens);
-    await this.runExclusive(async () => {
-      const reservation = this.requireReservation(budgetReservationId);
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
       if (reservation.state !== "INVOKED") {
         throw new ExecutionBudgetStateError(
           `Reservation ${budgetReservationId} cannot record streaming usage from ${reservation.state}.`,
         );
       }
       if (observed > reservation.outputTokenAllowance || observed > reservation.providerHardCap) {
-        this.applyViolation(reservation, observed, "streaming-output-exceeded-hard-cap");
-        await this.persistMutation();
-        return;
+        applyViolation(
+          draft,
+          reservation,
+          observed,
+          "streaming-output-exceeded-hard-cap",
+          this.now,
+        );
+        return { changed: true, value: undefined };
       }
       if (
         reservation.latestCumulativeOutputTokens !== null &&
         observed < reservation.latestCumulativeOutputTokens
       ) {
+        // B5 fix: a smaller cumulative reading can never overwrite a larger
+        // one that has already been durably observed inside this same
+        // atomic transaction -- settle conservatively (full charge) instead.
         reservation.state = "SETTLED_CONSERVATIVE";
         reservation.observedOutputTokens = null;
         reservation.policyChargedOutputTokens = reservation.outputTokenAllowance;
@@ -675,12 +923,13 @@ export class ExecutionBudgetLedger {
           state: reservation.state,
           reason: reservation.terminalReason,
         });
-        await this.persistMutation();
-        return;
+        return { changed: true, value: undefined };
       }
-      if (reservation.latestCumulativeOutputTokens === observed) return;
+      if (reservation.latestCumulativeOutputTokens === observed) {
+        return { changed: false, value: undefined };
+      }
       reservation.latestCumulativeOutputTokens = observed;
-      await this.persistMutation();
+      return { changed: true, value: undefined };
     });
   }
 
@@ -688,45 +937,58 @@ export class ExecutionBudgetLedger {
     budgetReservationId: string,
     observedOutputTokens: unknown,
   ): Promise<ExecutionBudgetReservationState> {
-    const reservation = this.requireReservation(budgetReservationId);
-    if (!Number.isInteger(observedOutputTokens) || Number(observedOutputTokens) < 0) {
-      await this.settleConservative(
-        budgetReservationId,
-        null,
-        "invalid-or-unsupported-authoritative-usage",
+    return this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
+      if (!Number.isInteger(observedOutputTokens) || Number(observedOutputTokens) < 0) {
+        return settleConservativeOnDraft(
+          draft,
+          reservation,
+          null,
+          "invalid-or-unsupported-authoritative-usage",
+          this.now,
+        );
+      }
+      const observed = Number(observedOutputTokens);
+      if (observed > reservation.outputTokenAllowance || observed > reservation.providerHardCap) {
+        return settleViolationOnDraft(
+          draft,
+          reservation,
+          observed,
+          "observed-output-exceeded-hard-cap",
+          this.now,
+        );
+      }
+      // B5 fix: this comparison and the mutation it drives both happen inside
+      // the SAME atomic transaction that reads reservation state, so a
+      // concurrent streaming observation can never be missed or overwritten.
+      if (
+        reservation.latestCumulativeOutputTokens !== null &&
+        observed < reservation.latestCumulativeOutputTokens
+      ) {
+        return settleConservativeOnDraft(
+          draft,
+          reservation,
+          null,
+          "terminal-usage-contradicts-streaming-cumulative-usage",
+          this.now,
+        );
+      }
+      const settlementFingerprint = fingerprint({ state: "SETTLED_AUTHORITATIVE", observed });
+      return transitionTerminalOnDraft(
+        draft,
+        reservation,
+        settlementFingerprint,
+        this.now,
+        (current) => {
+          current.state = "SETTLED_AUTHORITATIVE";
+          current.observedOutputTokens = observed;
+          current.policyChargedOutputTokens = observed;
+          current.settledAt = this.now().toISOString();
+          current.terminalReason = "authoritative-terminal-usage";
+          current.settlementFingerprint = settlementFingerprint;
+        },
       );
-      return "SETTLED_CONSERVATIVE";
-    }
-    const observed = Number(observedOutputTokens);
-    if (observed > reservation.outputTokenAllowance || observed > reservation.providerHardCap) {
-      await this.settleViolation(
-        budgetReservationId,
-        observed,
-        "observed-output-exceeded-hard-cap",
-      );
-      return "VIOLATION";
-    }
-    if (
-      reservation.latestCumulativeOutputTokens !== null &&
-      observed < reservation.latestCumulativeOutputTokens
-    ) {
-      await this.settleConservative(
-        budgetReservationId,
-        null,
-        "terminal-usage-contradicts-streaming-cumulative-usage",
-      );
-      return "SETTLED_CONSERVATIVE";
-    }
-    const settlementFingerprint = fingerprint({ state: "SETTLED_AUTHORITATIVE", observed });
-    await this.transitionTerminal(budgetReservationId, settlementFingerprint, (current) => {
-      current.state = "SETTLED_AUTHORITATIVE";
-      current.observedOutputTokens = observed;
-      current.policyChargedOutputTokens = observed;
-      current.settledAt = this.now().toISOString();
-      current.terminalReason = "authoritative-terminal-usage";
-      current.settlementFingerprint = settlementFingerprint;
     });
-    return "SETTLED_AUTHORITATIVE";
   }
 
   async settleConservative(
@@ -734,32 +996,16 @@ export class ExecutionBudgetLedger {
     observedOutputTokens: number | null,
     reason: string,
   ): Promise<void> {
-    const reservation = this.requireReservation(budgetReservationId);
-    const observed =
-      observedOutputTokens !== null &&
-      Number.isInteger(observedOutputTokens) &&
-      observedOutputTokens >= 0
-        ? observedOutputTokens
-        : null;
-    if (
-      observed !== null &&
-      (observed > reservation.outputTokenAllowance || observed > reservation.providerHardCap)
-    ) {
-      await this.settleViolation(budgetReservationId, observed, reason);
-      return;
-    }
-    const settlementFingerprint = fingerprint({
-      state: "SETTLED_CONSERVATIVE",
-      observed,
-      reason,
-    });
-    await this.transitionTerminal(budgetReservationId, settlementFingerprint, (current) => {
-      current.state = "SETTLED_CONSERVATIVE";
-      current.observedOutputTokens = observed;
-      current.policyChargedOutputTokens = current.outputTokenAllowance;
-      current.settledAt = this.now().toISOString();
-      current.terminalReason = reason;
-      current.settlementFingerprint = settlementFingerprint;
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
+      const result = settleConservativeOnDraft(
+        draft,
+        reservation,
+        observedOutputTokens,
+        reason,
+        this.now,
+      );
+      return { changed: result.changed, value: undefined };
     });
   }
 
@@ -775,123 +1021,129 @@ export class ExecutionBudgetLedger {
         ? observedOutputTokens
         : null;
     const settlementFingerprint = fingerprint({ state: "VIOLATION", observed, reason });
-    await this.runExclusive(async () => {
-      const reservation = this.requireReservation(budgetReservationId);
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
       if (
         reservation.settlementFingerprint === settlementFingerprint &&
         reservation.state === "VIOLATION"
       ) {
-        return;
+        return { changed: false, value: undefined };
       }
       if (reservation.state === "PENDING") {
         throw new ExecutionBudgetStateError(
           `Reservation ${budgetReservationId} cannot record a provider violation before invocation.`,
         );
       }
-      this.applyViolation(reservation, observed, reason, settlementFingerprint);
-      await this.persistMutation();
+      applyViolation(draft, reservation, observed, reason, this.now, settlementFingerprint);
+      return { changed: true, value: undefined };
     });
   }
 
-  private applyViolation(
-    reservation: ExecutionBudgetReservation,
-    observedOutputTokens: number | null,
-    reason: string,
-    settlementFingerprint = fingerprint({
-      state: "VIOLATION",
-      observed: observedOutputTokens,
-      reason,
-    }),
-  ): void {
-    reservation.state = "VIOLATION";
-    reservation.observedOutputTokens = observedOutputTokens;
-    reservation.policyChargedOutputTokens = reservation.outputTokenAllowance;
-    reservation.settledAt = this.now().toISOString();
-    reservation.terminalReason = reason;
-    reservation.settlementFingerprint = settlementFingerprint;
-    this.terminalBudgetReason = "ENFORCEMENT_VIOLATION";
-    this.violation = {
-      budgetReservationId: reservation.budgetReservationId,
-      reason,
-      observedOutputTokens,
-      recordedAt: this.now().toISOString(),
+  /** Used only by ExecutionBudgetLedger.recover() to commit safety corrections. */
+  private async persistDraftDirectly(draft: LedgerDraft): Promise<void> {
+    await this.commitDraft(draft);
+  }
+
+  private async persistInitialSnapshot(): Promise<void> {
+    const draft = this.draftOfLiveState();
+    await this.commitDraft(draft);
+  }
+
+  private draftOfLiveState(): LedgerDraft {
+    return {
+      reservations: new Map(
+        [...this.reservations].map(([id, reservation]) => [id, structuredClone(reservation)]),
+      ),
+      terminalBudgetReason: this.terminalBudgetReason,
+      violation: this.violation,
     };
   }
 
-  private async transitionTerminal(
-    budgetReservationId: string,
-    settlementFingerprint: string,
-    mutate: (reservation: ExecutionBudgetReservation) => void,
-  ): Promise<void> {
-    await this.runExclusive(async () => {
-      const reservation = this.requireReservation(budgetReservationId);
-      if (isTerminal(reservation.state)) {
-        if (reservation.settlementFingerprint === settlementFingerprint) return;
-        reservation.state = "VIOLATION";
-        reservation.policyChargedOutputTokens = Math.max(
-          reservation.policyChargedOutputTokens,
-          reservation.outputTokenAllowance,
+  private projectFromDraft(draft: LedgerDraft): {
+    modelCallsRemaining: number;
+    outputTokensRemaining: number;
+  } {
+    const reservations = [...draft.reservations.values()];
+    const pending = reservations.filter((reservation) => reservation.state === "PENDING");
+    const invoked = reservations.filter((reservation) => reservation.state === "INVOKED");
+    const initiated = reservations.filter(
+      (reservation) =>
+        reservation.state !== "PENDING" && reservation.state !== "CANCELLED_BEFORE_INVOCATION",
+    );
+    const policyChargedOutputTokens = sum(
+      initiated.map((reservation) => reservation.policyChargedOutputTokens),
+    );
+    const outputTokensReserved = sum(
+      [...pending, ...invoked].map((reservation) => reservation.outputTokenAllowance),
+    );
+    return {
+      modelCallsRemaining: Math.max(
+        0,
+        this.lineage.maxModelCalls - initiated.length - pending.length,
+      ),
+      outputTokensRemaining: Math.max(
+        0,
+        this.lineage.maxOutputTokens - policyChargedOutputTokens - outputTokensReserved,
+      ),
+    };
+  }
+
+  /**
+   * B4 fix: the single transactional entry point every mutating operation
+   * goes through. `mutate` reads and modifies a throwaway copy of live state
+   * (`draft`); nothing is written back to the live ledger fields until the
+   * candidate snapshot has been durably persisted. If persistence fails for
+   * ANY reason -- the append, the fsync, or the close -- Beacon cannot know
+   * whether bytes reached durable storage, so it does not attempt to "undo"
+   * and keep going. It poisons the ledger instead: live state is left exactly
+   * as it was before this attempt (still safe), and every future mutating
+   * call on this instance fails closed until a fresh, governed `recover()`
+   * re-establishes durable truth.
+   */
+  private async runMutation<T>(mutate: (draft: LedgerDraft) => MutationOutcome<T>): Promise<T> {
+    return this.runExclusive(async () => {
+      if (this.poisoned) {
+        throw new ExecutionBudgetPoisonedError(
+          this.poisonReason ??
+            "This execution-budget ledger is poisoned after an uncertain persistence failure.",
         );
-        reservation.settledAt = this.now().toISOString();
-        reservation.terminalReason = "contradictory-duplicate-settlement";
-        reservation.settlementFingerprint = fingerprint({
-          previous: reservation.settlementFingerprint,
-          contradictory: settlementFingerprint,
-        });
-        this.terminalBudgetReason = "ENFORCEMENT_VIOLATION";
-        this.violation = {
-          budgetReservationId,
-          reason: "contradictory-duplicate-settlement",
-          observedOutputTokens: reservation.observedOutputTokens,
-          recordedAt: this.now().toISOString(),
-        };
-        await this.persistMutation();
-        return;
       }
-      if (reservation.state !== "INVOKED") {
-        throw new ExecutionBudgetStateError(
-          `Reservation ${budgetReservationId} cannot settle from ${reservation.state}.`,
-        );
-      }
-      mutate(reservation);
-      await this.persistMutation();
+      const draft = this.draftOfLiveState();
+      const { changed, value } = mutate(draft);
+      if (!changed) return value;
+      await this.commitDraft(draft);
+      return value;
     });
   }
 
-  private async transition(
-    budgetReservationId: string,
-    mutate: (reservation: ExecutionBudgetReservation) => boolean,
-  ): Promise<void> {
-    await this.runExclusive(async () => {
-      const reservation = this.requireReservation(budgetReservationId);
-      if (mutate(reservation)) await this.persistMutation();
-    });
-  }
-
-  private requireReservation(budgetReservationId: string): ExecutionBudgetReservation {
-    const reservation = this.reservations.get(budgetReservationId);
-    if (!reservation) {
-      throw new ExecutionBudgetStateError(`Unknown budget reservation ${budgetReservationId}.`);
-    }
-    return reservation;
-  }
-
-  private async recordDeniedAdmission(reason: ExecutionBudgetStopReason): Promise<void> {
-    this.terminalBudgetReason = reason;
-    await this.persistMutation();
-  }
-
-  private async persistMutation(): Promise<void> {
-    const previousRecordedAt = this.lastRecordedAt;
-    this.revision += 1;
-    this.lastRecordedAt = this.now().toISOString();
+  private async commitDraft(draft: LedgerDraft): Promise<void> {
+    // Re-validate ownership immediately before the durable write, closing the
+    // window where a takeover happened between this transaction starting and
+    // reaching its persistence step.
+    await this.writerLease?.assertOwnership();
+    const revision = this.revision + 1;
+    const recordedAt = this.now().toISOString();
+    const snapshot = this.buildSnapshotFrom(
+      draft,
+      revision,
+      recordedAt,
+      this.lastSnapshot?.contentHash ?? null,
+    );
     try {
-      await this.evidenceStore.append(this.buildSnapshot());
+      await this.evidenceStore.append(snapshot);
     } catch (error) {
-      this.revision -= 1;
-      this.lastRecordedAt = previousRecordedAt;
+      this.poisoned = true;
+      this.poisonReason =
+        error instanceof Error
+          ? `Durable persistence failed and could not be verified: ${error.message}`
+          : "Durable persistence failed and could not be verified.";
       throw error;
     }
+    this.reservations = draft.reservations;
+    this.terminalBudgetReason = draft.terminalBudgetReason;
+    this.violation = draft.violation;
+    this.revision = revision;
+    this.lastSnapshot = snapshot;
   }
 
   private runExclusive<T>(operation: () => Promise<T>): Promise<T> {
@@ -903,8 +1155,13 @@ export class ExecutionBudgetLedger {
     return result;
   }
 
-  private buildSnapshot(): ExecutionBudgetLedgerSnapshot {
-    const reservations = [...this.reservations.values()].map((reservation) =>
+  private buildSnapshotFrom(
+    draft: LedgerDraft,
+    revision: number,
+    recordedAt: string,
+    previousContentHash: string | null,
+  ): ExecutionBudgetLedgerSnapshot {
+    const reservations = [...draft.reservations.values()].map((reservation) =>
       structuredClone(reservation),
     );
     const pending = reservations.filter((reservation) => reservation.state === "PENDING");
@@ -928,11 +1185,14 @@ export class ExecutionBudgetLedger {
       0,
       this.lineage.maxOutputTokens - policyChargedOutputTokens - outputTokensReserved,
     );
-    return ExecutionBudgetLedgerSnapshotSchema.parse({
-      schemaVersion: 1,
-      revision: this.revision,
-      recordedAt: this.lastRecordedAt,
+    const withoutHash = {
+      schemaVersion: 1 as const,
+      revision,
+      recordedAt,
       lineage: this.lineage,
+      writerLeaseId: this.writerLease?.writerLeaseId ?? "process-local-in-memory-writer",
+      writerFence: this.writerLease?.fence ?? 1,
+      previousContentHash,
       modelCallsReserved: pending.length,
       modelCallsInitiated: initiated.length,
       outputTokensReserved,
@@ -942,11 +1202,132 @@ export class ExecutionBudgetLedger {
       policyChargedOutputTokens,
       modelCallsRemaining,
       outputTokensRemaining,
-      terminalBudgetReason: this.terminalBudgetReason,
-      violation: this.violation,
+      terminalBudgetReason: draft.terminalBudgetReason,
+      violation: draft.violation,
       reservations,
-    });
+    };
+    const contentHash = canonicalContentHash(withoutHash);
+    return ExecutionBudgetLedgerSnapshotSchema.parse({ ...withoutHash, contentHash });
   }
+}
+
+function requireReservation(
+  draft: LedgerDraft,
+  budgetReservationId: string,
+): ExecutionBudgetReservation {
+  const reservation = draft.reservations.get(budgetReservationId);
+  if (!reservation) {
+    throw new ExecutionBudgetStateError(`Unknown budget reservation ${budgetReservationId}.`);
+  }
+  return reservation;
+}
+
+function applyViolation(
+  draft: LedgerDraft,
+  reservation: ExecutionBudgetReservation,
+  observedOutputTokens: number | null,
+  reason: string,
+  now: () => Date,
+  settlementFingerprint = fingerprint({
+    state: "VIOLATION",
+    observed: observedOutputTokens,
+    reason,
+  }),
+): void {
+  reservation.state = "VIOLATION";
+  reservation.observedOutputTokens = observedOutputTokens;
+  reservation.policyChargedOutputTokens = reservation.outputTokenAllowance;
+  reservation.settledAt = now().toISOString();
+  reservation.terminalReason = reason;
+  reservation.settlementFingerprint = settlementFingerprint;
+  draft.terminalBudgetReason = "ENFORCEMENT_VIOLATION";
+  draft.violation = {
+    budgetReservationId: reservation.budgetReservationId,
+    reason,
+    observedOutputTokens,
+    recordedAt: now().toISOString(),
+  };
+}
+
+function settleConservativeOnDraft(
+  draft: LedgerDraft,
+  reservation: ExecutionBudgetReservation,
+  observedOutputTokens: number | null,
+  reason: string,
+  now: () => Date,
+): MutationOutcome<ExecutionBudgetReservationState> {
+  const observed =
+    observedOutputTokens !== null &&
+    Number.isInteger(observedOutputTokens) &&
+    observedOutputTokens >= 0
+      ? observedOutputTokens
+      : null;
+  if (
+    observed !== null &&
+    (observed > reservation.outputTokenAllowance || observed > reservation.providerHardCap)
+  ) {
+    return settleViolationOnDraft(draft, reservation, observed, reason, now);
+  }
+  const settlementFingerprint = fingerprint({ state: "SETTLED_CONSERVATIVE", observed, reason });
+  return transitionTerminalOnDraft(draft, reservation, settlementFingerprint, now, (current) => {
+    current.state = "SETTLED_CONSERVATIVE";
+    current.observedOutputTokens = observed;
+    current.policyChargedOutputTokens = current.outputTokenAllowance;
+    current.settledAt = now().toISOString();
+    current.terminalReason = reason;
+    current.settlementFingerprint = settlementFingerprint;
+  });
+}
+
+function settleViolationOnDraft(
+  draft: LedgerDraft,
+  reservation: ExecutionBudgetReservation,
+  observedOutputTokens: number | null,
+  reason: string,
+  now: () => Date,
+): MutationOutcome<ExecutionBudgetReservationState> {
+  applyViolation(draft, reservation, observedOutputTokens, reason, now);
+  return { changed: true, value: "VIOLATION" };
+}
+
+function transitionTerminalOnDraft(
+  draft: LedgerDraft,
+  reservation: ExecutionBudgetReservation,
+  settlementFingerprint: string,
+  now: () => Date,
+  mutate: (reservation: ExecutionBudgetReservation) => void,
+): MutationOutcome<ExecutionBudgetReservationState> {
+  if (isTerminal(reservation.state)) {
+    if (reservation.settlementFingerprint === settlementFingerprint) {
+      return { changed: false, value: reservation.state };
+    }
+    reservation.state = "VIOLATION";
+    reservation.policyChargedOutputTokens = Math.max(
+      reservation.policyChargedOutputTokens,
+      reservation.outputTokenAllowance,
+    );
+    reservation.settledAt = now().toISOString();
+    reservation.terminalReason = "contradictory-duplicate-settlement";
+    reservation.settlementFingerprint = fingerprint({
+      previous: reservation.settlementFingerprint,
+      contradictory: settlementFingerprint,
+    });
+    draft.terminalBudgetReason = "ENFORCEMENT_VIOLATION";
+    draft.violation = {
+      budgetReservationId: reservation.budgetReservationId,
+      reason: "contradictory-duplicate-settlement",
+      observedOutputTokens: reservation.observedOutputTokens,
+      recordedAt: now().toISOString(),
+    };
+    return { changed: true, value: "VIOLATION" };
+  }
+  if (reservation.state !== "INVOKED") {
+    throw new ExecutionBudgetStateError(
+      `Reservation ${reservation.budgetReservationId} cannot settle from ${reservation.state}.`,
+    );
+  }
+  mutate(reservation);
+  return { changed: true, value: reservation.state };
 }
 
 export function resolveProviderModelCallLimit(input: {

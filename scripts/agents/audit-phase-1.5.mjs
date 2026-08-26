@@ -50,22 +50,49 @@ const observation = JSON.parse(
   await readFile("agent-platform/baselines/external-controls-observation-2026-08-09.json", "utf8"),
 );
 const modelPolicy = parse(await readFile("agent-platform/model-policy.yml", "utf8"));
-const executionBudgetConformance = JSON.parse(
-  await readFile("agent-platform/baselines/execution-budget-conformance-2026-08-25.json", "utf8"),
-);
+
+/**
+ * M3/M4 fix (independent security review of PR #83, candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb): this gate no longer trusts a
+ * static JSON file's self-asserted booleans. It actually RUNS
+ * scripts/agents/verify-execution-budget-conformance.mjs against the current
+ * working tree -- which itself runs the adversarial execution-budget test
+ * suites and checks a fixed list of named security-critical scenarios -- and
+ * only accepts the result if it is bound to THIS exact candidate SHA/tree and
+ * reports success. A hand-authored "concurrencySafe": true (or a predeclared
+ * provider "COMPLIANT" verdict) in a checked-in JSON file can no longer make
+ * this gate pass by itself.
+ */
+const executionBudgetConformanceEvidence = await (async () => {
+  try {
+    const stdout = execFileSync(
+      "node",
+      [
+        "--disable-warning=ExperimentalWarning",
+        "--experimental-strip-types",
+        "scripts/agents/verify-execution-budget-conformance.mjs",
+      ],
+      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+    );
+    return JSON.parse(stdout);
+  } catch (error) {
+    try {
+      return JSON.parse(error.stdout ?? "");
+    } catch {
+      return null;
+    }
+  }
+})();
+const candidateShaForConformance = execFileSync("git", ["rev-parse", "HEAD"], {
+  encoding: "utf8",
+}).trim();
+const candidateTreeForConformance = execFileSync("git", ["rev-parse", "HEAD^{tree}"], {
+  encoding: "utf8",
+}).trim();
 const executionBudgetConformanceValid =
-  executionBudgetConformance.authority === "ADR-0023" &&
-  executionBudgetConformance.correction === "PHASE15_BUDGET_SEMANTICS_GAP" &&
-  executionBudgetConformance.evidenceBinding === "candidate-tree-via-ci-prepublish" &&
-  executionBudgetConformance.implementation?.executionBudgetLineage === true &&
-  executionBudgetConformance.implementation?.executionBudgetLedger === true &&
-  executionBudgetConformance.implementation?.atomicAdmission === true &&
-  executionBudgetConformance.implementation?.durableFailureEvidence === true &&
-  executionBudgetConformance.providerVerdicts?.claudeDirectHttp === "COMPLIANT" &&
-  executionBudgetConformance.providerVerdicts?.codexDirectHttp === "COMPLIANT" &&
-  executionBudgetConformance.providerVerdicts?.codexCli === "NONCOMPLIANT_FAIL_CLOSED" &&
-  executionBudgetConformance.providerVerdicts?.openCodeHarness ===
-    "UNCHANGED_NONEXECUTABLE_FAIL_CLOSED";
+  executionBudgetConformanceEvidence?.success === true &&
+  executionBudgetConformanceEvidence?.candidateSha === candidateShaForConformance &&
+  executionBudgetConformanceEvidence?.candidateTree === candidateTreeForConformance;
 const repeatedBaselinePath = "agent-platform/baselines/live-codex-multiscenario-2026-08-09.json";
 const repeatedBaselineValid = await (async () => {
   try {

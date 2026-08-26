@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process";
+import { certifyTransportInstance } from "../../execution-budget/trusted-transport.ts";
 import { ProviderExecutionError, type ProviderTransport } from "../provider-adapter.ts";
 
 type ExecFile = (
@@ -41,6 +42,7 @@ export class CodexCliTransport implements ProviderTransport {
   constructor(repositoryRoot: string, execute: ExecFile = defaultExecFile) {
     this.repositoryRoot = repositoryRoot;
     this.execute = execute;
+    certifyTransportInstance(this);
   }
 
   executionBudgetContract() {

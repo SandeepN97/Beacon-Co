@@ -10,6 +10,7 @@ import {
   authorizeExecutionBudgetLineage,
   createCiExecutionBudgetEvidenceStore,
   createLocalExecutionBudgetEvidenceStore,
+  ExecutionBudgetAuthorityGrant,
   ExecutionBudgetLedger,
 } from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
 import { ClaudeAdapter } from "../../src/modules/orchestration/providers/claude/claude-adapter.ts";
@@ -80,15 +81,21 @@ if (
     sinkMode === "ci"
       ? createCiExecutionBudgetEvidenceStore(root)
       : createLocalExecutionBudgetEvidenceStore(root);
+  const grant = await ExecutionBudgetAuthorityGrant.issue({
+    adrRef: {
+      schemaVersion: 1,
+      adrId: "0023-define-provider-neutral-execution-budget-semantics",
+      status: "accepted",
+      decisionCandidateRef: `run-live-work-unit:${workUnitId}`,
+    },
+    workUnitId,
+    maxModelCalls: 1,
+    maxOutputTokens: 32,
+    policySource: "scripts/agents/run-live-work-unit.mjs",
+    grantedAt: new Date().toISOString(),
+  });
   const budgetLedger = await ExecutionBudgetLedger.create(
-    authorizeExecutionBudgetLineage({
-      workUnitId,
-      maxModelCalls: 1,
-      maxOutputTokens: 32,
-      authorizedAt: new Date().toISOString(),
-      authorizedBy: "run-live-work-unit",
-      authorizationEvidenceId: `work-unit:${workUnitId}`,
-    }),
+    authorizeExecutionBudgetLineage({ grant }),
     executionBudgetStore,
   );
   const result = await executeLiveWorkUnit(

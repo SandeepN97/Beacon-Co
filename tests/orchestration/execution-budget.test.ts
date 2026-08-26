@@ -6,9 +6,14 @@ import {
   AppendOnlyNdjsonExecutionBudgetEvidenceStore,
   authorizeExecutionBudgetLineage,
   ExecutionBudgetAdmissionError,
+  ExecutionBudgetAuthorityGrant,
   ExecutionBudgetEvidencePersistenceError,
   ExecutionBudgetLedger,
+  ExecutionBudgetPoisonedError,
   ExecutionBudgetStateError,
+  ExecutionBudgetWriterFenceError,
+  ExecutionBudgetWriterLeaseUnavailableError,
+  hashLineagePath,
   InMemoryExecutionBudgetEvidenceStore,
   resolveProviderModelCallLimit,
   type ExecutionBudgetEvidenceStore,
@@ -27,24 +32,52 @@ function idFactory(prefix = "reservation") {
   return () => `${prefix}-${++sequence}`;
 }
 
-function lineage(overrides: Partial<ExecutionBudgetLineage> = {}): ExecutionBudgetLineage {
+/**
+ * Every test authorizes against ADR-0023 itself -- a real, committed,
+ * `status: "approved"` decision record in this repository -- through the same
+ * canonical Decision OS authority boundary and repository-local ADR resolver
+ * production code uses (B2 fix). Tests cannot mint authority from bare
+ * strings any more than production code can.
+ */
+interface LineageTestOverrides {
+  budgetLineageId?: string;
+  workUnitId?: string;
+  maxModelCalls?: number;
+  maxOutputTokens?: number;
+  allocationKind?: "top-level" | "parent-carve-out" | "higher-policy-grant";
+  parentBudgetLineageId?: string | null;
+}
+
+async function grant(overrides: LineageTestOverrides = {}): Promise<ExecutionBudgetAuthorityGrant> {
+  return ExecutionBudgetAuthorityGrant.issue({
+    adrRef: {
+      schemaVersion: 1,
+      adrId: "0023-define-provider-neutral-execution-budget-semantics",
+      status: "accepted",
+      decisionCandidateRef: "decision-candidate-execution-budget-test",
+    },
+    workUnitId: overrides.workUnitId ?? "work-unit-test",
+    maxModelCalls: overrides.maxModelCalls ?? 5,
+    maxOutputTokens: overrides.maxOutputTokens ?? 4_000,
+    policySource: "test-fixture",
+    grantedAt: "2026-08-24T12:00:00.000Z",
+  });
+}
+
+async function lineage(overrides: LineageTestOverrides = {}): Promise<ExecutionBudgetLineage> {
   return authorizeExecutionBudgetLineage({
-    budgetLineageId: "budget-lineage-test",
-    workUnitId: "work-unit-test",
-    maxModelCalls: 5,
-    maxOutputTokens: 4_000,
-    authorizedAt: "2026-08-24T12:00:00.000Z",
-    authorizedBy: "execution-budget-test",
-    authorizationEvidenceId: "authority:test",
-    ...overrides,
+    budgetLineageId: overrides.budgetLineageId ?? "budget-lineage-test",
+    grant: await grant(overrides),
+    allocationKind: overrides.allocationKind,
+    parentBudgetLineageId: overrides.parentBudgetLineageId,
   });
 }
 
 async function ledger(
-  overrides: Partial<ExecutionBudgetLineage> = {},
+  overrides: Partial<{ workUnitId: string; maxModelCalls: number; maxOutputTokens: number }> = {},
   store = new InMemoryExecutionBudgetEvidenceStore(),
 ) {
-  const authority = lineage(overrides);
+  const authority = await lineage(overrides);
   return {
     authority,
     store,
@@ -82,8 +115,8 @@ async function invokeAndSettle(
 
 describe("execution budget authority and terminology", () => {
   it("validates positive ceilings and immutable lineage identity", async () => {
-    expect(() => lineage({ maxModelCalls: 0 })).toThrow();
-    expect(() => lineage({ maxOutputTokens: 1.5 })).toThrow();
+    await expect(lineage({ maxModelCalls: 0 })).rejects.toThrow();
+    await expect(lineage({ maxOutputTokens: 1.5 })).rejects.toThrow();
     const { authority } = await ledger();
     expect(Object.isFrozen(authority)).toBe(true);
     expect(authority).toMatchObject({
@@ -104,7 +137,7 @@ describe("execution budget authority and terminology", () => {
 
   it("cannot remint durable capacity for an existing lineage", async () => {
     const store = new InMemoryExecutionBudgetEvidenceStore();
-    const authority = lineage();
+    const authority = await lineage();
     await ExecutionBudgetLedger.create(authority, store);
     await expect(ExecutionBudgetLedger.create(authority, store)).rejects.toBeInstanceOf(
       ExecutionBudgetStateError,
@@ -112,24 +145,72 @@ describe("execution budget authority and terminology", () => {
   });
 
   it("requires parent provenance and refuses an unimplemented parent carve-out", async () => {
-    expect(() =>
+    await expect(
       lineage({ allocationKind: "parent-carve-out", parentBudgetLineageId: null }),
-    ).toThrow("requires parent budget provenance");
+    ).rejects.toThrow("requires parent budget provenance");
     await expect(
       ExecutionBudgetLedger.create(
-        lineage({
+        await lineage({
           allocationKind: "parent-carve-out",
           parentBudgetLineageId: "parent-lineage",
         }),
         new InMemoryExecutionBudgetEvidenceStore(),
       ),
     ).rejects.toThrow("requires a future parent-ledger reservation mechanism");
-    expect(
-      lineage({
-        allocationKind: "higher-policy-grant",
-        parentBudgetLineageId: "parent-lineage",
-      }).parentBudgetLineageId,
-    ).toBe("parent-lineage");
+    const higherPolicyGrantLineage = await lineage({
+      allocationKind: "higher-policy-grant",
+      parentBudgetLineageId: "parent-lineage",
+    });
+    expect(higherPolicyGrantLineage.parentBudgetLineageId).toBe("parent-lineage");
+    await expect(
+      ExecutionBudgetLedger.create(
+        higherPolicyGrantLineage,
+        new InMemoryExecutionBudgetEvidenceStore(),
+      ),
+    ).rejects.toThrow("no proven capacity-minting mechanism");
+  });
+
+  it("rejects authorization built from an unaccepted or fabricated ADR reference", async () => {
+    await expect(
+      ExecutionBudgetAuthorityGrant.issue({
+        adrRef: {
+          schemaVersion: 1,
+          adrId: "0023-define-provider-neutral-execution-budget-semantics",
+          status: "requested",
+          decisionCandidateRef: "decision-candidate-execution-budget-test",
+        },
+        workUnitId: "work-unit-test",
+        maxModelCalls: 1,
+        maxOutputTokens: 100,
+        policySource: "test-fixture",
+        grantedAt: "2026-08-24T12:00:00.000Z",
+      }),
+    ).rejects.toThrow();
+    await expect(
+      ExecutionBudgetAuthorityGrant.issue({
+        adrRef: {
+          schemaVersion: 1,
+          adrId: "0099-an-adr-that-does-not-exist",
+          status: "accepted",
+          decisionCandidateRef: "decision-candidate-execution-budget-test",
+        },
+        workUnitId: "work-unit-test",
+        maxModelCalls: 1,
+        maxOutputTokens: 100,
+        policySource: "test-fixture",
+        grantedAt: "2026-08-24T12:00:00.000Z",
+      }),
+    ).rejects.toThrow("does not correspond to a real, committed decision record");
+    await expect(
+      ExecutionBudgetAuthorityGrant.issue({
+        adrRef: { note: "looks confident, isn't real" },
+        workUnitId: "work-unit-test",
+        maxModelCalls: 1,
+        maxOutputTokens: 100,
+        policySource: "test-fixture",
+        grantedAt: "2026-08-24T12:00:00.000Z",
+      }),
+    ).rejects.toThrow();
   });
 });
 
@@ -153,7 +234,7 @@ describe("atomic admission and concurrency", () => {
         return snapshots.filter((snapshot) => snapshot.lineage.budgetLineageId === budgetLineageId);
       },
     };
-    const budget = await ExecutionBudgetLedger.create(lineage(), store, {
+    const budget = await ExecutionBudgetLedger.create(await lineage(), store, {
       now: clock(),
       reservationId: idFactory(),
     });
@@ -530,7 +611,7 @@ describe("streaming-equivalent and crash recovery semantics", () => {
 
   it("recovers PENDING as cancelled and INVOKED as a full conservative charge", async () => {
     const store = new InMemoryExecutionBudgetEvidenceStore();
-    const authority = lineage({ maxModelCalls: 2, maxOutputTokens: 300 });
+    const authority = await lineage({ maxModelCalls: 2, maxOutputTokens: 300 });
     const original = await ExecutionBudgetLedger.create(authority, store, {
       now: clock(),
       reservationId: idFactory("recovery"),
@@ -565,21 +646,193 @@ describe("streaming-equivalent and crash recovery semantics", () => {
     ]);
   });
 
-  it("persists only bounded metadata in the fsync-backed NDJSON journal", async () => {
+  it("persists only bounded metadata in a per-lineage fsync-backed NDJSON journal", async () => {
     const root = await mkdtemp(join(tmpdir(), "beacon-budget-ledger-"));
-    const path = join(root, "execution-budget-ledgers.ndjson");
-    const store = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(path);
-    const authority = lineage();
+    const store = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root);
+    const authority = await lineage();
     const budget = await ExecutionBudgetLedger.create(authority, store, {
       now: clock(),
       reservationId: idFactory("durable"),
     });
     await invokeAndSettle(budget, {}, 25);
+    const path = join(root, hashLineagePath(authority.budgetLineageId), "journal.ndjson");
     const source = await readFile(path, "utf8");
     expect(source).toContain("budget-lineage-test");
     expect(source).toContain("SETTLED_AUTHORITATIVE");
     expect(source).not.toContain("prompt");
     expect(source).not.toContain("response");
     expect(source).not.toContain("credential");
+  });
+});
+
+describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durability", () => {
+  it("allows only one of two simultaneous create() calls for the same lineage", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-budget-fencing-"));
+    const authority = await lineage({ budgetLineageId: "concurrent-create-lineage" });
+    const results = await Promise.allSettled([
+      ExecutionBudgetLedger.create(
+        authority,
+        new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root),
+      ),
+      ExecutionBudgetLedger.create(
+        authority,
+        new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root),
+      ),
+    ]);
+    expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+    const [rejected] = results.filter(
+      (result): result is PromiseRejectedResult => result.status === "rejected",
+    );
+    expect(rejected.reason).toBeInstanceOf(ExecutionBudgetWriterLeaseUnavailableError);
+  });
+
+  it("allows only one of two simultaneous recover() calls for the same lineage", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-budget-fencing-"));
+    const authority = await lineage({ budgetLineageId: "concurrent-recover-lineage" });
+    const seedStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, { ttlMs: 5 });
+    const seed = await ExecutionBudgetLedger.create(authority, seedStore);
+    await seed.admitModelCall(admission());
+    await new Promise((resolve) => setTimeout(resolve, 30)); // let the seed writer's lease expire
+    // The two racing recoveries use a generous TTL so that whichever wins the
+    // takeover is never itself mistaken for stale by the other mid-race --
+    // only the original seed writer's lease is meant to be expired here.
+    const results = await Promise.allSettled([
+      ExecutionBudgetLedger.recover(
+        authority,
+        new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root),
+      ),
+      ExecutionBudgetLedger.recover(
+        authority,
+        new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root),
+      ),
+    ]);
+    expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+    const [rejected] = results.filter(
+      (result): result is PromiseRejectedResult => result.status === "rejected",
+    );
+    expect(rejected.reason).toBeInstanceOf(ExecutionBudgetWriterLeaseUnavailableError);
+  });
+
+  it("fails a stale writer's ledger mutation closed immediately after a governed takeover", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-budget-fencing-"));
+    const authority = await lineage({ budgetLineageId: "stale-writer-lineage" });
+    // A short TTL stands in for "Process A becomes stale/suspended" without a
+    // real multi-second sleep -- the fence recheck, not the TTL, is what
+    // actually protects correctness (Section 4/5).
+    const staleWriter = await ExecutionBudgetLedger.create(
+      authority,
+      new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, { ttlMs: 5 }),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    // Process B legitimately recovers and takes over with a brand-new fence.
+    await ExecutionBudgetLedger.recover(
+      authority,
+      new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, { ttlMs: 5 }),
+    );
+    // Process A wakes up and tries to keep mutating -- it must fail closed
+    // rather than silently continue as if it still owned the lineage.
+    await expect(staleWriter.admitModelCall(admission())).rejects.toBeInstanceOf(
+      ExecutionBudgetWriterFenceError,
+    );
+    await expect(staleWriter.assertWriterAuthority()).rejects.toBeInstanceOf(
+      ExecutionBudgetWriterFenceError,
+    );
+  });
+
+  it("poisons the ledger and blocks all further mutation when durable persistence becomes uncertain", async () => {
+    const snapshots: ExecutionBudgetLedgerSnapshot[] = [];
+    let appendCount = 0;
+    const store: ExecutionBudgetEvidenceStore = {
+      durability: "fsync-journal",
+      async append(snapshot) {
+        appendCount += 1;
+        // Allow revision 0 (create) and revision 1 (admission) to succeed;
+        // fail durably starting with markInvoked's persist attempt.
+        if (appendCount > 2) {
+          throw new ExecutionBudgetEvidencePersistenceError(
+            "Synthetic fsync failure.",
+            new Error("disk unavailable"),
+          );
+        }
+        snapshots.push(structuredClone(snapshot));
+      },
+      async load(budgetLineageId) {
+        return snapshots.filter((snapshot) => snapshot.lineage.budgetLineageId === budgetLineageId);
+      },
+    };
+    const budget = await ExecutionBudgetLedger.create(await lineage(), store, {
+      now: clock(),
+      reservationId: idFactory(),
+    });
+    const reservation = await budget.admitModelCall(admission());
+    await expect(budget.markInvoked(reservation.budgetReservationId)).rejects.toBeInstanceOf(
+      ExecutionBudgetEvidencePersistenceError,
+    );
+    // The ledger is now poisoned: no further admission, settlement, or
+    // provider invocation may proceed from ambiguous in-memory state.
+    await expect(
+      budget.admitModelCall(admission({ providerRunId: "after-poison" })),
+    ).rejects.toBeInstanceOf(ExecutionBudgetPoisonedError);
+    await expect(budget.assertWriterAuthority()).rejects.toBeInstanceOf(
+      ExecutionBudgetPoisonedError,
+    );
+  });
+
+  it("keeps a lineage permanently blocked when VIOLATION persistence itself fails", async () => {
+    const snapshots: ExecutionBudgetLedgerSnapshot[] = [];
+    let appendCount = 0;
+    const store: ExecutionBudgetEvidenceStore = {
+      durability: "fsync-journal",
+      async append(snapshot) {
+        appendCount += 1;
+        if (appendCount > 3) {
+          throw new ExecutionBudgetEvidencePersistenceError(
+            "Synthetic journal failure.",
+            new Error("io"),
+          );
+        }
+        snapshots.push(structuredClone(snapshot));
+      },
+      async load(budgetLineageId) {
+        return snapshots.filter((snapshot) => snapshot.lineage.budgetLineageId === budgetLineageId);
+      },
+    };
+    const budget = await ExecutionBudgetLedger.create(
+      await lineage({ maxModelCalls: 2, maxOutputTokens: 200 }),
+      store,
+      { now: clock(), reservationId: idFactory() },
+    );
+    const reservation = await budget.admitModelCall(admission());
+    await budget.markInvoked(reservation.budgetReservationId);
+    await expect(
+      budget.settleAuthoritative(reservation.budgetReservationId, 999),
+    ).rejects.toBeInstanceOf(ExecutionBudgetEvidencePersistenceError);
+    await expect(
+      budget.admitModelCall(admission({ providerRunId: "post-violation" })),
+    ).rejects.toBeInstanceOf(ExecutionBudgetPoisonedError);
+  });
+
+  it("never lets a smaller terminal settlement overwrite a larger streaming-observed cumulative usage", async () => {
+    const { ledger: budget } = await ledger({ maxModelCalls: 1, maxOutputTokens: 500 });
+    const reservation = await budget.admitModelCall(
+      admission({ kind: "stream", requestedOutputTokenAllowance: 500, providerHardCap: 500 }),
+    );
+    await budget.markInvoked(reservation.budgetReservationId);
+    await budget.observeStreamingCumulativeUsage(reservation.budgetReservationId, 120);
+    // A terminal settlement racing behind the streaming observation must never
+    // charge less than what was already durably observed (B5).
+    await budget.settleAuthoritative(reservation.budgetReservationId, 40);
+    expect(budget.snapshot()).toMatchObject({
+      policyChargedOutputTokens: 500,
+      reservations: [{ state: "SETTLED_CONSERVATIVE" }],
+    });
+  });
+
+  it("refuses to reuse a providerRunId for a second reservation", async () => {
+    const { ledger: budget } = await ledger({ maxModelCalls: 2, maxOutputTokens: 200 });
+    await invokeAndSettle(budget, { providerRunId: "reused-run" }, 10);
+    await expect(
+      budget.admitModelCall(admission({ providerRunId: "reused-run" })),
+    ).rejects.toBeInstanceOf(ExecutionBudgetStateError);
   });
 });

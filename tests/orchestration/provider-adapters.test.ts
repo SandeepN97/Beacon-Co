@@ -6,6 +6,7 @@ import { runContextPreflight } from "../../src/modules/orchestration/context/pre
 import {
   AppendOnlyNdjsonExecutionBudgetEvidenceStore,
   authorizeExecutionBudgetLineage,
+  ExecutionBudgetAuthorityGrant,
   ExecutionBudgetLedger,
   InMemoryExecutionBudgetEvidenceStore,
 } from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
@@ -26,11 +27,41 @@ import {
 import { createLocalTelemetrySink } from "../../src/modules/orchestration/telemetry/sink.ts";
 import { executeLiveWorkUnit } from "../../src/modules/orchestration/workflows/live-work-unit.ts";
 
-class FixtureTransport implements ProviderTransport {
+/**
+ * B3 fix (independent security review of PR #83, candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb): live provider execution now only
+ * crosses into `transport.invoke()` for the exact, certified concrete
+ * transport classes (HttpProviderTransport, CodexCliTransport). Business-logic
+ * tests below therefore exercise a REAL HttpProviderTransport with an injected
+ * fake `fetch`, never an arbitrary hand-built ProviderTransport object -- that
+ * pattern is reserved for the "untrusted transport" adversarial tests further
+ * down, which specifically assert such an object is rejected.
+ */
+function trustedTransport(
+  response: Record<string, unknown>,
+  options: { status?: number } = {},
+): { transport: HttpProviderTransport; invocations: Array<Record<string, unknown>> } {
+  const invocations: Array<Record<string, unknown>> = [];
+  const fetchImplementation = (async (_input: unknown, init?: RequestInit) => {
+    invocations.push(JSON.parse(String(init?.body ?? "{}")) as Record<string, unknown>);
+    return new Response(JSON.stringify(response), {
+      status: options.status ?? 200,
+      headers: { "content-type": "application/json" },
+    });
+  }) as typeof fetch;
+  const transport = new HttpProviderTransport(
+    { anthropicApiKey: "synthetic-anthropic-key", openaiApiKey: "synthetic-openai-key" },
+    fetchImplementation,
+  );
+  return { transport, invocations };
+}
+
+/** An arbitrary, untrusted ProviderTransport implementation -- structurally valid, never certified. */
+class UntrustedFixtureTransport implements ProviderTransport {
   readonly invocations: Array<{ provider: "claude" | "codex"; payload: Record<string, unknown> }> =
     [];
   constructor(
-    private readonly response: Record<string, unknown>,
+    private readonly response: Record<string, unknown> = {},
     private readonly contract: ProviderTransportBudgetContract | null = null,
   ) {}
   executionBudgetContract(provider: "claude" | "codex") {
@@ -50,16 +81,6 @@ class FixtureTransport implements ProviderTransport {
   async invoke(provider: "claude" | "codex", payload: Record<string, unknown>) {
     this.invocations.push({ provider, payload });
     return this.response;
-  }
-}
-
-class ThrowingTransport extends FixtureTransport {
-  override async invoke(
-    provider: "claude" | "codex",
-    payload: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
-    this.invocations.push({ provider, payload });
-    throw new ProviderExecutionError(provider, "transient", "synthetic failure", true);
   }
 }
 
@@ -84,19 +105,25 @@ async function executionRequest(
   const maxModelCalls = overrides.maxModelCalls ?? baseRequest.maxModelCalls;
   const maxOutputTokens = overrides.maxOutputTokens ?? baseRequest.maxOutputTokens;
   const journalRoot = await mkdtemp(join(tmpdir(), "beacon-provider-budget-"));
+  const grant = await ExecutionBudgetAuthorityGrant.issue({
+    adrRef: {
+      schemaVersion: 1,
+      adrId: "0023-define-provider-neutral-execution-budget-semantics",
+      status: "accepted",
+      decisionCandidateRef: "decision-candidate-provider-adapter-test",
+    },
+    workUnitId,
+    maxModelCalls,
+    maxOutputTokens,
+    policySource: "test-fixture",
+    grantedAt: "2026-08-09T12:00:00.000Z",
+  });
   const ledger = await ExecutionBudgetLedger.create(
     authorizeExecutionBudgetLineage({
       budgetLineageId: `lineage-${crypto.randomUUID()}`,
-      workUnitId,
-      maxModelCalls,
-      maxOutputTokens,
-      authorizedAt: "2026-08-09T12:00:00.000Z",
-      authorizedBy: "provider-adapter-test",
-      authorizationEvidenceId: "test-authority",
+      grant,
     }),
-    new AppendOnlyNdjsonExecutionBudgetEvidenceStore(
-      join(journalRoot, "execution-budget-ledgers.ndjson"),
-    ),
+    new AppendOnlyNdjsonExecutionBudgetEvidenceStore(journalRoot),
   );
   return {
     ...baseRequest,
@@ -115,22 +142,20 @@ function clock() {
 
 describe("provider-neutral live adapters", () => {
   it("normalizes a Claude response", async () => {
-    const adapter = new ClaudeAdapter(
-      new FixtureTransport({
-        id: "msg_1",
-        type: "message",
-        model: "claude-test",
-        stop_reason: "end_turn",
-        usage: {
-          input_tokens: 10,
-          cache_read_input_tokens: 5,
-          cache_creation_input_tokens: 2,
-          output_tokens: 3,
-        },
-        content: [{ type: "text", text: "ready" }],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "msg_1",
+      type: "message",
+      model: "claude-test",
+      stop_reason: "end_turn",
+      usage: {
+        input_tokens: 10,
+        cache_read_input_tokens: 5,
+        cache_creation_input_tokens: 2,
+        output_tokens: 3,
+      },
+      content: [{ type: "text", text: "ready" }],
+    });
+    const adapter = new ClaudeAdapter(transport, clock());
     const result = await adapter.execute(await executionRequest());
     expect(result.outputText).toBe("ready");
     expect(result.providerRun).toMatchObject({
@@ -149,30 +174,28 @@ describe("provider-neutral live adapters", () => {
   });
 
   it("normalizes a Codex/OpenAI response and tool evidence", async () => {
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_1",
-        status: "completed",
-        model: "codex-test",
-        usage: {
-          input_tokens: 20,
-          input_tokens_details: { cached_tokens: 8 },
-          output_tokens: 6,
-          output_tokens_details: { reasoning_tokens: 2 },
-          total_tokens: 26,
+    const { transport } = trustedTransport({
+      id: "resp_1",
+      status: "completed",
+      model: "codex-test",
+      usage: {
+        input_tokens: 20,
+        input_tokens_details: { cached_tokens: 8 },
+        output_tokens: 6,
+        output_tokens_details: { reasoning_tokens: 2 },
+        total_tokens: 26,
+      },
+      output: [
+        { type: "message", content: [{ type: "output_text", text: "ready" }] },
+        {
+          type: "function_call",
+          call_id: "call_1",
+          name: "read_file",
+          arguments: '{"path":"src/a.ts"}',
         },
-        output: [
-          { type: "message", content: [{ type: "output_text", text: "ready" }] },
-          {
-            type: "function_call",
-            call_id: "call_1",
-            name: "read_file",
-            arguments: '{"path":"src/a.ts"}',
-          },
-        ],
-      }),
-      clock(),
-    );
+      ],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     const result = await adapter.execute(await executionRequest());
     expect(result.providerRun.usage).toMatchObject({
       totalInputTokens: 20,
@@ -184,8 +207,6 @@ describe("provider-neutral live adapters", () => {
   });
 
   it("makes Claude direct HTTP budget-compliant before invocation", async () => {
-    let invocationCount = 0;
-    let payload: Record<string, unknown> = {};
     const response = {
       id: "msg_budget",
       type: "message",
@@ -194,22 +215,14 @@ describe("provider-neutral live adapters", () => {
       usage: { input_tokens: 4, output_tokens: 7 },
       content: [{ type: "text", text: "ready" }],
     };
-    const fetchImplementation = (async (_input: unknown, init?: RequestInit) => {
-      invocationCount += 1;
-      payload = JSON.parse(String(init?.body)) as Record<string, unknown>;
-      return new Response(JSON.stringify(response), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    }) as typeof fetch;
-    const transport = new HttpProviderTransport(
-      { anthropicApiKey: "synthetic-anthropic-key" },
-      fetchImplementation,
-    );
+    const { transport, invocations } = trustedTransport(response);
     const providerRequest = await executionRequest();
     const result = await new ClaudeAdapter(transport, clock()).execute(providerRequest);
-    expect(invocationCount).toBe(1);
-    expect(payload.max_tokens).toBe(100);
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0]?.max_tokens).toBe(100);
+    // M1 fix: Anthropic's Messages API documents only metadata.user_id -- Beacon
+    // must not send an undocumented work_unit_id field.
+    expect(invocations[0]?.metadata).toBeUndefined();
     expect(providerRequest.budgetLedger.snapshot()).toMatchObject({
       modelCallsInitiated: 1,
       observedOutputTokens: 7,
@@ -231,8 +244,6 @@ describe("provider-neutral live adapters", () => {
   });
 
   it("makes Codex direct HTTP reasoning-inclusive output budget-compliant", async () => {
-    let invocationCount = 0;
-    let payload: Record<string, unknown> = {};
     const response = {
       id: "resp_budget",
       status: "completed",
@@ -246,22 +257,11 @@ describe("provider-neutral live adapters", () => {
       },
       output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
     };
-    const fetchImplementation = (async (_input: unknown, init?: RequestInit) => {
-      invocationCount += 1;
-      payload = JSON.parse(String(init?.body)) as Record<string, unknown>;
-      return new Response(JSON.stringify(response), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      });
-    }) as typeof fetch;
-    const transport = new HttpProviderTransport(
-      { openaiApiKey: "synthetic-openai-key" },
-      fetchImplementation,
-    );
+    const { transport, invocations } = trustedTransport(response);
     const providerRequest = await executionRequest();
     const result = await new CodexAdapter(transport, clock()).execute(providerRequest);
-    expect(invocationCount).toBe(1);
-    expect(payload).toMatchObject({
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0]).toMatchObject({
       max_output_tokens: 100,
       reasoning: { effort: "medium" },
     });
@@ -278,16 +278,14 @@ describe("provider-neutral live adapters", () => {
 
   it("charges missing terminal usage conservatively without fabricating observation", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_missing_usage",
-        status: "completed",
-        model: "codex-test",
-        usage: { input_tokens: 4 },
-        output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "resp_missing_usage",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 4 },
+      output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "invalid-response",
       retryable: false,
@@ -301,17 +299,15 @@ describe("provider-neutral live adapters", () => {
 
   it("charges malformed terminal usage conservatively", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new ClaudeAdapter(
-      new FixtureTransport({
-        id: "msg_invalid_usage",
-        type: "message",
-        model: "claude-test",
-        stop_reason: "end_turn",
-        usage: { input_tokens: 4, output_tokens: -1 },
-        content: [{ type: "text", text: "ready" }],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "msg_invalid_usage",
+      type: "message",
+      model: "claude-test",
+      stop_reason: "end_turn",
+      usage: { input_tokens: 4, output_tokens: -1 },
+      content: [{ type: "text", text: "ready" }],
+    });
+    const adapter = new ClaudeAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "invalid-response",
     });
@@ -323,16 +319,14 @@ describe("provider-neutral live adapters", () => {
 
   it("charges unsupported provider usage units conservatively", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_unsupported_unit",
-        status: "completed",
-        model: "codex-test",
-        usage: { input_tokens: 4, output_tokens: 2, total_tokens: 6, unit: "characters" },
-        output: [{ type: "message", content: [{ type: "output_text", text: "ok" }] }],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "resp_unsupported_unit",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 4, output_tokens: 2, total_tokens: 6, unit: "characters" },
+      output: [{ type: "message", content: [{ type: "output_text", text: "ok" }] }],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "invalid-response",
     });
@@ -356,7 +350,7 @@ describe("provider-neutral live adapters", () => {
   });
 
   it("binds the live request to the lineage WorkUnit before invocation", async () => {
-    const transport = new FixtureTransport({});
+    const { transport, invocations } = trustedTransport({});
     const providerRequest = await executionRequest();
     await expect(
       new CodexAdapter(transport).execute({
@@ -364,12 +358,12 @@ describe("provider-neutral live adapters", () => {
         workUnitId: "different-work-unit",
       }),
     ).rejects.toMatchObject({ category: "policy", retryable: false });
-    expect(transport.invocations).toHaveLength(0);
+    expect(invocations).toHaveLength(0);
     expect(providerRequest.budgetLedger.snapshot().reservations).toHaveLength(0);
   });
 
   it("preserves distinct model-call and output-token denial reasons", async () => {
-    const modelCallTransport = new FixtureTransport({
+    const { transport: modelCallTransport, invocations: modelCallInvocations } = trustedTransport({
       id: "resp_model_call_limit",
       status: "completed",
       model: "codex-test",
@@ -389,9 +383,9 @@ describe("provider-neutral live adapters", () => {
       retryable: false,
       stopReason: "model-call-budget-exhausted",
     });
-    expect(modelCallTransport.invocations).toHaveLength(1);
+    expect(modelCallInvocations).toHaveLength(1);
 
-    const outputTransport = new FixtureTransport({
+    const { transport: outputTransport, invocations: outputInvocations } = trustedTransport({
       id: "resp_output_limit",
       status: "completed",
       model: "codex-test",
@@ -408,27 +402,32 @@ describe("provider-neutral live adapters", () => {
       retryable: false,
       stopReason: "output-token-budget-exhausted",
     });
-    expect(outputTransport.invocations).toHaveLength(1);
+    expect(outputInvocations).toHaveLength(1);
   });
 
   it("fails live execution closed when the ledger is process-only", async () => {
-    const transport = new FixtureTransport({
+    const { transport, invocations } = trustedTransport({
       id: "resp_process_only",
       status: "completed",
       model: "codex-test",
       usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
       output: [],
     });
+    const grant = await ExecutionBudgetAuthorityGrant.issue({
+      adrRef: {
+        schemaVersion: 1,
+        adrId: "0023-define-provider-neutral-execution-budget-semantics",
+        status: "accepted",
+        decisionCandidateRef: "decision-candidate-provider-adapter-test",
+      },
+      workUnitId: baseRequest.workUnitId,
+      maxModelCalls: 2,
+      maxOutputTokens: 100,
+      policySource: "test-fixture",
+      grantedAt: "2026-08-09T12:00:00.000Z",
+    });
     const processLedger = await ExecutionBudgetLedger.create(
-      authorizeExecutionBudgetLineage({
-        budgetLineageId: "lineage-process-only",
-        workUnitId: baseRequest.workUnitId,
-        maxModelCalls: 2,
-        maxOutputTokens: 100,
-        authorizedAt: "2026-08-09T12:00:00.000Z",
-        authorizedBy: "provider-adapter-test",
-        authorizationEvidenceId: "test-authority",
-      }),
+      authorizeExecutionBudgetLineage({ budgetLineageId: "lineage-process-only", grant }),
       new InMemoryExecutionBudgetEvidenceStore(),
     );
     const durableRequest = await executionRequest();
@@ -439,21 +438,19 @@ describe("provider-neutral live adapters", () => {
         budgetLedger: processLedger,
       }),
     ).rejects.toMatchObject({ category: "policy", retryable: false });
-    expect(transport.invocations).toHaveLength(0);
+    expect(invocations).toHaveLength(0);
   });
 
   it("records cap-breach usage as VIOLATION and blocks the lineage", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_violation",
-        status: "completed",
-        model: "codex-test",
-        usage: { input_tokens: 1, output_tokens: 101, total_tokens: 102 },
-        output: [],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "resp_violation",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 1, output_tokens: 101, total_tokens: 102 },
+      output: [],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "policy",
       retryable: false,
@@ -473,7 +470,13 @@ describe("provider-neutral live adapters", () => {
 
   it("preserves conservative failure evidence when no ProviderRun can be created", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new CodexAdapter(new ThrowingTransport({}), clock());
+    const transport = new HttpProviderTransport(
+      { openaiApiKey: "synthetic-openai-key" },
+      async () => {
+        throw new TypeError("network unavailable");
+      },
+    );
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "transient",
       retryable: true,
@@ -482,23 +485,6 @@ describe("provider-neutral live adapters", () => {
       modelCallsInitiated: 1,
       observedOutputTokens: null,
       policyChargedOutputTokens: 100,
-    });
-  });
-
-  it("fails opaque multiplicity closed before transport invocation", async () => {
-    const providerRequest = await executionRequest();
-    const transport = new FixtureTransport(
-      {},
-      { kind: "opaque", reason: "generation multiplicity is unavailable" },
-    );
-    await expect(new CodexAdapter(transport).execute(providerRequest)).rejects.toMatchObject({
-      category: "policy",
-      retryable: false,
-    });
-    expect(transport.invocations).toHaveLength(0);
-    expect(providerRequest.budgetLedger.snapshot()).toMatchObject({
-      modelCallsReserved: 0,
-      modelCallsInitiated: 0,
     });
   });
 
@@ -538,10 +524,8 @@ describe("provider-neutral live adapters", () => {
   });
 
   it("normalizes malformed provider data into an invalid-response error", async () => {
-    const adapter = new CodexAdapter(
-      new FixtureTransport({ status: "completed", usage: {}, output: [] }),
-      clock(),
-    );
+    const { transport } = trustedTransport({ status: "completed", usage: {}, output: [] });
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(await executionRequest())).rejects.toMatchObject({
       category: "invalid-response",
       retryable: false,
@@ -550,15 +534,13 @@ describe("provider-neutral live adapters", () => {
 
   it("retains authoritative budget evidence when result normalization later fails", async () => {
     const providerRequest = await executionRequest();
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_missing_model",
-        status: "completed",
-        usage: { input_tokens: 4, output_tokens: 2, total_tokens: 6 },
-        output: [],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "resp_missing_model",
+      status: "completed",
+      usage: { input_tokens: 4, output_tokens: 2, total_tokens: 6 },
+      output: [],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     await expect(adapter.execute(providerRequest)).rejects.toMatchObject({
       category: "invalid-response",
       retryable: false,
@@ -599,22 +581,20 @@ describe("provider-neutral live adapters", () => {
       searchTerms: ["ready"],
       candidates: [],
     });
-    const adapter = new CodexAdapter(
-      new FixtureTransport({
-        id: "resp_2",
-        status: "completed",
-        model: "codex-test",
-        usage: {
-          input_tokens: 4,
-          input_tokens_details: { cached_tokens: 0 },
-          output_tokens: 1,
-          output_tokens_details: { reasoning_tokens: 0 },
-          total_tokens: 5,
-        },
-        output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
-      }),
-      clock(),
-    );
+    const { transport } = trustedTransport({
+      id: "resp_2",
+      status: "completed",
+      model: "codex-test",
+      usage: {
+        input_tokens: 4,
+        input_tokens_details: { cached_tokens: 0 },
+        output_tokens: 1,
+        output_tokens_details: { reasoning_tokens: 0 },
+        total_tokens: 5,
+      },
+      output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
+    });
+    const adapter = new CodexAdapter(transport, clock());
     const budgetRequest = await executionRequest();
     const result = await executeLiveWorkUnit(
       {
@@ -656,9 +636,154 @@ describe("provider-neutral live adapters", () => {
     ).toContain("agent-run-1");
   });
 
+  it("reports AgentRun.context.usage as a truthful total across a retry's two ProviderRuns", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-live-slice-retry-"));
+    const contextPackage = runContextPreflight({
+      workUnitId: baseRequest.workUnitId,
+      objective: "Return ready",
+      agentRole: "code-writer",
+      riskClass: "risk-1",
+      contractSha256: "d".repeat(64),
+      maxContextTokens: 1000,
+      allowedPaths: ["src"],
+      allowedTools: ["Read"],
+      acceptanceCriteria: ["Output is ready"],
+      searchTerms: ["ready"],
+      candidates: [],
+    });
+    const budgetRequest = await executionRequest({ maxModelCalls: 2 });
+    const dependencies = (adapter: CodexAdapter) => ({
+      adapter,
+      budgetLedger: budgetRequest.budgetLedger,
+      telemetrySink: createLocalTelemetrySink(root, "required"),
+      validate: async () => ({ passed: true, evidenceId: "qa-1", summary: "ok" }),
+      review: async () => ({
+        passed: true,
+        evidenceId: "review-1",
+        summary: "ok",
+        provider: "claude" as const,
+        sessionId: "review-session-1",
+        blockerCount: 0,
+        majorCount: 0,
+      }),
+      now: clock(),
+    });
+    const { transport: firstTransport } = trustedTransport({
+      id: "resp_first",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 4, output_tokens: 10, total_tokens: 14 },
+      output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
+    });
+    const first = await executeLiveWorkUnit(
+      {
+        ...baseRequest,
+        providerRunId: "retry-run-1",
+        contextPackage,
+        agentRole: "code-writer",
+        contractVersion: "1",
+        contractSha256: "d".repeat(64),
+      },
+      dependencies(new CodexAdapter(firstTransport, clock())),
+    );
+    const { transport: secondTransport } = trustedTransport({
+      id: "resp_second",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 4, output_tokens: 6, total_tokens: 10 },
+      output: [{ type: "message", content: [{ type: "output_text", text: "ready" }] }],
+    });
+    const second = await executeLiveWorkUnit(
+      {
+        ...baseRequest,
+        providerRunId: "retry-run-2",
+        modelCallKind: "retry",
+        contextPackage,
+        agentRole: "code-writer",
+        contractVersion: "1",
+        contractSha256: "d".repeat(64),
+        priorProviderRunUsages: [first.providerResult.providerRun.usage],
+      },
+      dependencies(new CodexAdapter(secondTransport, clock())),
+    );
+    expect(second.agentRun.providerRunIds).toEqual(["retry-run-1", "retry-run-2"]);
+    expect(second.agentRun.execution.turns).toBe(2);
+    // Truthful total: 10 + 6 = 16, never just the second call's 6.
+    expect(second.agentRun.context.usage.outputTokens).toBe(16);
+  });
+
   it("exposes normalized provider error categories without credentials", () => {
     expect(
       new ProviderExecutionError("codex", "capacity", "rate limited", true, 429),
     ).toMatchObject({ category: "capacity", retryable: true, statusCode: 429 });
+  });
+});
+
+describe("B3 fix: transport self-certification is rejected", () => {
+  it("rejects an arbitrary self-certifying ProviderTransport before any invocation", async () => {
+    const transport = new UntrustedFixtureTransport({
+      id: "resp_untrusted",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
+      output: [],
+    });
+    const providerRequest = await executionRequest();
+    await expect(new CodexAdapter(transport).execute(providerRequest)).rejects.toMatchObject({
+      category: "policy",
+      retryable: false,
+    });
+    expect(transport.invocations).toHaveLength(0);
+    expect(providerRequest.budgetLedger.snapshot().reservations).toHaveLength(0);
+  });
+
+  it("rejects an untrusted transport even when it claims a fully compliant contract", async () => {
+    const transport = new UntrustedFixtureTransport(
+      {},
+      {
+        kind: "single-generation",
+        generationBranchesPerInvoke: 1,
+        automaticRetries: false,
+        hardOutputTokenCap: "openai-max-output-tokens",
+        authoritativeTerminalUsage: true,
+        streaming: false,
+      },
+    );
+    const providerRequest = await executionRequest();
+    await expect(new CodexAdapter(transport).execute(providerRequest)).rejects.toMatchObject({
+      category: "policy",
+      retryable: false,
+    });
+    expect(transport.invocations).toHaveLength(0);
+  });
+
+  it("rejects a subclass of the trusted transport that overrides invoke", async () => {
+    class SpoofedHttpTransport extends HttpProviderTransport {
+      invokeCount = 0;
+      override async invoke(): Promise<Record<string, unknown>> {
+        this.invokeCount += 1;
+        return { id: "spoofed", model: "codex-test", status: "completed", usage: {}, output: [] };
+      }
+    }
+    const spoofed = new SpoofedHttpTransport({ openaiApiKey: "synthetic-openai-key" });
+    const providerRequest = await executionRequest();
+    await expect(new CodexAdapter(spoofed).execute(providerRequest)).rejects.toMatchObject({
+      category: "policy",
+      retryable: false,
+    });
+    expect(spoofed.invokeCount).toBe(0);
+  });
+
+  it("accepts the real, certified HttpProviderTransport instance", async () => {
+    const { transport, invocations } = trustedTransport({
+      id: "resp_trusted",
+      status: "completed",
+      model: "codex-test",
+      usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
+      output: [],
+    });
+    const providerRequest = await executionRequest();
+    await new CodexAdapter(transport, clock()).execute(providerRequest);
+    expect(invocations).toHaveLength(1);
   });
 });

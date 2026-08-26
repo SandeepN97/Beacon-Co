@@ -9,6 +9,10 @@
     "revision",
     "recordedAt",
     "lineage",
+    "writerLeaseId",
+    "writerFence",
+    "previousContentHash",
+    "contentHash",
     "modelCallsReserved",
     "modelCallsInitiated",
     "outputTokensReserved",
@@ -25,6 +29,12 @@
     "revision": { "$ref": "#/$defs/count" },
     "recordedAt": { "$ref": "#/$defs/timestamp" },
     "lineage": { "$ref": "#/$defs/lineage" },
+    "writerLeaseId": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "writerFence": { "$ref": "#/$defs/positiveCount" },
+    "previousContentHash": {
+      "anyOf": [{ "type": "string", "pattern": "^[a-f0-9]{64}$" }, { "type": "null" }]
+    },
+    "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "modelCallsReserved": { "$ref": "#/$defs/count" },
     "modelCallsInitiated": { "$ref": "#/$defs/count" },
     "outputTokensReserved": { "$ref": "#/$defs/count" },

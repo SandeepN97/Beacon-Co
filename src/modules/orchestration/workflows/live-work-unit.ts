@@ -3,12 +3,14 @@ import { validateAgentRun, type AgentRole, type AgentRun } from "../domain/agent
 import type { ContextPackage } from "../domain/context-package.ts";
 import type { EvidenceRecord } from "../domain/evidence.ts";
 import type { ProviderId } from "../domain/provider.ts";
+import type { NormalizedTokenUsage } from "../domain/provider-run.ts";
 import {
   resolveProviderModelCallLimit,
   type ExecutionBudgetLedger,
   type ModelCallKind,
 } from "../execution-budget/execution-budget.ts";
 import type { ProviderAdapter, ProviderExecutionResult } from "../providers/provider-adapter.ts";
+import { aggregateNormalizedTokenUsage } from "../telemetry/normalize-usage.ts";
 import type { AppendOnlyNdjsonTelemetrySink } from "../telemetry/sink.ts";
 
 export interface ValidationOutcome {
@@ -43,6 +45,14 @@ export interface LiveWorkUnitInput {
   modelCallKind?: ModelCallKind;
   providerTransitionFrom?: ProviderId | null;
   handoffFrom?: string | null;
+  /**
+   * M2 fix: usage from any earlier ProviderRun already recorded under this same
+   * agentRunId (a retry, a provider switch, a prior model-reentry). Required so
+   * `AgentRun.context.usage` can be a truthful execution-total instead of only
+   * reflecting the ProviderRun this call produces, while `providerRunIds` and
+   * `execution.turns` already report the full aggregate from the ledger.
+   */
+  priorProviderRunUsages?: readonly NormalizedTokenUsage[];
 }
 
 export interface LiveWorkUnitDependencies {
@@ -157,7 +167,10 @@ export async function executeLiveWorkUnit(
     context: {
       contextBytes: input.contextPackage.contextBytes,
       estimatedInputTokens: input.contextPackage.estimatedInputTokens,
-      usage: providerResult.providerRun.usage,
+      usage: aggregateNormalizedTokenUsage([
+        ...(input.priorProviderRunUsages ?? []),
+        providerResult.providerRun.usage,
+      ]),
       referencedFiles: input.contextPackage.inventory.map((entry) => ({
         path: entry.path,
         sha256: entry.sha256,
