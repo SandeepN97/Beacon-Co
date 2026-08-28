@@ -22,20 +22,20 @@ actions:
     release: v8.0.1
   actions/attest:
     major: 4
-    sha: a1948c3f048ba23858d222213b7c278aabede763
-    release: v4.1.1
+    sha: 1e69f48acb82d1966a394da916b4c1698aa569d6
+    release: v4.2.2
   actions/dependency-review-action:
     major: 5
     sha: a1d282b36b6f3519aa1f3fc636f609c47dddb294
     release: v5.0.0
   github/codeql-action/init:
     major: 4
-    sha: ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
-    release: v4.37.7
+    sha: db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28
+    release: v4.37.8
   github/codeql-action/analyze:
     major: 4
-    sha: ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd
-    release: v4.37.7
+    sha: db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28
+    release: v4.37.8
   cloudflare/wrangler-action:
     major: 4
     sha: ebbaa1584979971c8614a24965b4405ff95890e0
