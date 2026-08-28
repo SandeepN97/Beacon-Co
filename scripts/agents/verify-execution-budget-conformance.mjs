@@ -54,7 +54,8 @@ const REQUIRED_SCENARIOS = [
   "fails Codex CLI closed before the subprocess can execute",
   "reports AgentRun.context.usage as a truthful total across a retry's two ProviderRuns",
   "commits neither reservation when durable admission evidence cannot be written",
-  "recovers PENDING as cancelled and INVOKED as a full conservative charge",
+  "blocks automatic provider re-execution when recover sees unresolved INVOKED",
+  "reuses remaining capacity after recovery only when remote invocation is durably TERMINAL",
   // Added after an independent rereview of candidate
   // 225384030a4a30d66c946bdbc0d577a057a8a0c6 found three working exploits
   // against the round-1 fixes above (lineage forgery via the exported
@@ -65,6 +66,15 @@ const REQUIRED_SCENARIOS = [
   "rejects a fabricated journal snapshot appended without a matching writer lease",
   "keeps a lease alive across a slow in-flight call via heartbeat, so a concurrent takeover cannot race it",
   "rejects a plain object with a spoofed prototype and shadowed own-property methods",
+  // Round 3 -- final adversarial fencing review of candidate b6f4743 found
+  // remote-execution/accounting conflation plus heartbeat and append TOCTOU.
+  // These are executed scenarios, not source-name matches.
+  "keeps the actual executeBudgetedProviderCall path at one invocation when an in-flight call exceeds the lease TTL",
+  "allows N heartbeat, rejects N after N+1 takeover, and advances monotonically to N+2",
+  "keeps writer fences monotonically increasing when heartbeat fence N races with takeover fence N+1",
+  "prevents a stale writer append racing with takeover from becoming authoritative history",
+  "rejects a stale writer evidence append after takeover",
+  "rejects impossible writer-fence regression during recovery",
 ];
 
 function sha256(content) {

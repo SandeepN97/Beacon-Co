@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, rm, rmdir, writeFile } from "node:fs/promises";
 import { hostname } from "node:os";
 import { join } from "node:path";
 import { z } from "astro/zod";
@@ -45,16 +45,13 @@ import { z } from "astro/zod";
  * must only ever be invoked by an explicit, human-initiated recovery operation.
  */
 
-// B1 rereview fix (independent rereview of PR #83, candidate
-// 225384030a4a30d66c946bdbc0d577a057a8a0c6): 60s was shorter than realistic
-// provider latency for a system whose own CodexCliTransport allows subprocess
-// calls up to 120s and whose HttpProviderTransport places no timeout on
-// fetch() at all. Combined with heartbeat() now being called on every
-// mutation and immediately before invocation (see execution-budget.ts), this
-// bounds how long a lineage can go without activity before another process
-// may treat it as abandoned, rather than bounding a single call's latency.
+// A long default reduces accidental takeovers, but it is never treated as
+// proof that a remote request terminated. Round 3 preserves unresolved remote
+// invocation state across any eventual takeover and blocks re-execution.
 const DEFAULT_TTL_MS = 600_000;
 const MAX_ACQUIRE_ATTEMPTS = 8;
+const AUTHORITY_OPERATION_LOCK = "authority-operation.lock";
+const MAX_OPERATION_LOCK_ATTEMPTS = 100;
 
 const WriterLeasePointerSchema = z
   .object({
@@ -69,6 +66,11 @@ const WriterLeasePointerSchema = z
   })
   .strict();
 export type WriterLeasePointer = z.infer<typeof WriterLeasePointerSchema>;
+
+export interface ExecutionBudgetWriterLeaseTestHooks {
+  /** Deterministic race barrier used only by adversarial tests. */
+  beforeHeartbeatPointerWrite?(): Promise<void>;
+}
 
 export class ExecutionBudgetWriterFenceError extends Error {
   constructor(message: string) {
@@ -138,6 +140,80 @@ async function writePointerAtomically(
   await rename(tmpPath, pointerPath);
 }
 
+/**
+ * Serializes every read/modify/write of writer authority with every evidence
+ * append for this lineage. `rename()` makes one replacement atomic, but it is
+ * not compare-and-swap; this mkdir lock supplies the missing filesystem-safe
+ * critical section. A crashed holder intentionally leaves the directory in
+ * place and blocks automatic progress until governed recovery.
+ */
+export async function withWriterAuthorityLock<T>(
+  writerDir: string,
+  operation: () => Promise<T>,
+): Promise<T> {
+  await mkdir(writerDir, { recursive: true, mode: 0o700 });
+  const lockDir = join(writerDir, AUTHORITY_OPERATION_LOCK);
+  let acquired = false;
+  for (let attempt = 0; attempt < MAX_OPERATION_LOCK_ATTEMPTS; attempt += 1) {
+    try {
+      await mkdir(lockDir, { mode: 0o700 });
+      acquired = true;
+      break;
+    } catch (error) {
+      if (!hasCode(error, "EEXIST")) {
+        throw new ExecutionBudgetWriterLeaseUnavailableError(
+          "Unable to acquire the execution-budget writer authority lock.",
+        );
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    }
+  }
+  if (!acquired) {
+    throw new ExecutionBudgetWriterLeaseUnavailableError(
+      "The execution-budget writer authority lock is unavailable. Failing closed; " +
+        "a possibly crashed holder requires explicit governed recovery.",
+    );
+  }
+  let result!: T;
+  let operationError: unknown;
+  try {
+    result = await operation();
+  } catch (error) {
+    operationError = error;
+  }
+  let releaseError: unknown;
+  try {
+    await rmdir(lockDir);
+  } catch (error) {
+    releaseError = error;
+  }
+  if (operationError) throw operationError;
+  if (releaseError) {
+    throw new ExecutionBudgetWriterLeaseUnavailableError(
+      `Unable to release the execution-budget writer authority lock: ${releaseError instanceof Error ? releaseError.message : "unknown filesystem failure"}`,
+    );
+  }
+  return result;
+}
+
+async function highestClaimedFence(dir: string): Promise<number> {
+  let entries: string[];
+  try {
+    entries = await readdir(dir);
+  } catch (error) {
+    if (hasCode(error, "ENOENT")) return 0;
+    throw new ExecutionBudgetWriterLeaseUnavailableError(
+      "Unable to inspect claimed execution-budget writer fences.",
+    );
+  }
+  return entries.reduce((highest, entry) => {
+    const match = /^fence-(\d+)$/.exec(entry);
+    if (!match) return highest;
+    const fence = Number(match[1]);
+    return Number.isSafeInteger(fence) && fence > highest ? fence : highest;
+  }, 0);
+}
+
 function isExpired(pointer: WriterLeasePointer, nowMs: number): boolean {
   const heartbeatMs = Date.parse(pointer.heartbeatAt);
   if (Number.isNaN(heartbeatMs)) return true;
@@ -150,6 +226,7 @@ export class ExecutionBudgetWriterLease {
   readonly fence: number;
   private readonly ttlMs: number;
   private readonly now: () => Date;
+  private readonly testHooks: ExecutionBudgetWriterLeaseTestHooks;
 
   private constructor(
     dir: string,
@@ -157,12 +234,14 @@ export class ExecutionBudgetWriterLease {
     fence: number,
     ttlMs: number,
     now: () => Date,
+    testHooks: ExecutionBudgetWriterLeaseTestHooks,
   ) {
     this.dir = dir;
     this.writerLeaseId = writerLeaseId;
     this.fence = fence;
     this.ttlMs = ttlMs;
     this.now = now;
+    this.testHooks = testHooks;
   }
 
   private get pointerPath(): string {
@@ -180,12 +259,12 @@ export class ExecutionBudgetWriterLease {
     dir: string;
     ttlMs?: number;
     now?: () => Date;
+    testHooks?: ExecutionBudgetWriterLeaseTestHooks;
   }): Promise<ExecutionBudgetWriterLease> {
     const ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
     const now = options.now ?? (() => new Date());
     await mkdir(options.dir, { recursive: true, mode: 0o700 });
-
-    for (let attempt = 0; attempt < MAX_ACQUIRE_ATTEMPTS; attempt += 1) {
+    return withWriterAuthorityLock(options.dir, async () => {
       const existing = await readPointer(this.pointerPathFor(options.dir));
       if (existing && !isExpired(existing, now().getTime())) {
         throw new ExecutionBudgetWriterLeaseUnavailableError(
@@ -194,44 +273,54 @@ export class ExecutionBudgetWriterLease {
             "double provider execution is not.",
         );
       }
-      const nextFence = existing ? existing.fence + 1 : 1;
-      const fenceDir = join(options.dir, `fence-${nextFence}`);
-      try {
-        await mkdir(fenceDir, { mode: 0o700 });
-      } catch (error) {
-        if (hasCode(error, "EEXIST")) continue; // lost this fence slot; re-read and retry
-        throw new ExecutionBudgetWriterLeaseUnavailableError(
-          "Unable to claim a writer-lease fence slot atomically.",
+      const claimedFence = await highestClaimedFence(options.dir);
+      for (let attempt = 0; attempt < MAX_ACQUIRE_ATTEMPTS; attempt += 1) {
+        const nextFence = Math.max(existing?.fence ?? 0, claimedFence) + attempt + 1;
+        const fenceDir = join(options.dir, `fence-${nextFence}`);
+        try {
+          await mkdir(fenceDir, { mode: 0o700 });
+        } catch (error) {
+          if (hasCode(error, "EEXIST")) continue;
+          throw new ExecutionBudgetWriterLeaseUnavailableError(
+            "Unable to claim a writer-lease fence slot atomically.",
+          );
+        }
+        const writerLeaseId = `writer-lease-${randomUUID()}`;
+        const pointer: WriterLeasePointer = {
+          schemaVersion: 1,
+          writerLeaseId,
+          fence: nextFence,
+          hostId: hostname(),
+          pid: process.pid,
+          acquiredAt: now().toISOString(),
+          heartbeatAt: now().toISOString(),
+          ttlMs,
+        };
+        await writePointerAtomically(options.dir, this.pointerPathFor(options.dir), pointer);
+        const confirmed = await readPointer(this.pointerPathFor(options.dir));
+        if (
+          !confirmed ||
+          confirmed.writerLeaseId !== writerLeaseId ||
+          confirmed.fence !== nextFence
+        ) {
+          throw new ExecutionBudgetWriterLeaseUnavailableError(
+            "Writer-lease acquisition could not be confirmed from durable storage.",
+          );
+        }
+        return new ExecutionBudgetWriterLease(
+          options.dir,
+          writerLeaseId,
+          nextFence,
+          ttlMs,
+          now,
+          options.testHooks ?? {},
         );
       }
-      const writerLeaseId = `writer-lease-${randomUUID()}`;
-      const pointer: WriterLeasePointer = {
-        schemaVersion: 1,
-        writerLeaseId,
-        fence: nextFence,
-        hostId: hostname(),
-        pid: process.pid,
-        acquiredAt: now().toISOString(),
-        heartbeatAt: now().toISOString(),
-        ttlMs,
-      };
-      await writePointerAtomically(options.dir, this.pointerPathFor(options.dir), pointer);
-      const confirmed = await readPointer(this.pointerPathFor(options.dir));
-      if (
-        !confirmed ||
-        confirmed.writerLeaseId !== writerLeaseId ||
-        confirmed.fence !== nextFence
-      ) {
-        throw new ExecutionBudgetWriterLeaseUnavailableError(
-          "Writer-lease acquisition could not be confirmed from durable storage.",
-        );
-      }
-      return new ExecutionBudgetWriterLease(options.dir, writerLeaseId, nextFence, ttlMs, now);
-    }
-    throw new ExecutionBudgetWriterLeaseUnavailableError(
-      "Could not acquire the writer-lease fence after repeated contention. Failing closed; " +
-        "this requires explicit governed recovery, not automatic retry.",
-    );
+      throw new ExecutionBudgetWriterLeaseUnavailableError(
+        "Could not acquire a fresh monotonic writer-lease fence. Failing closed; " +
+          "this requires explicit governed recovery, not automatic retry.",
+      );
+    });
   }
 
   private static pointerPathFor(dir: string): string {
@@ -257,20 +346,32 @@ export class ExecutionBudgetWriterLease {
     }
   }
 
-  /** Extends the TTL window so a live, working writer is never mistaken for stale. */
+  /** Atomically refreshes this writer without allowing a stale fence to be restored. */
   async heartbeat(): Promise<void> {
-    await this.assertOwnership();
-    const pointer: WriterLeasePointer = {
-      schemaVersion: 1,
-      writerLeaseId: this.writerLeaseId,
-      fence: this.fence,
-      hostId: hostname(),
-      pid: process.pid,
-      acquiredAt: (await readPointer(this.pointerPath))?.acquiredAt ?? this.now().toISOString(),
-      heartbeatAt: this.now().toISOString(),
-      ttlMs: this.ttlMs,
-    };
-    await writePointerAtomically(this.dir, this.pointerPath, pointer);
+    await withWriterAuthorityLock(this.dir, async () => {
+      const current = await readPointer(this.pointerPath);
+      if (
+        !current ||
+        current.writerLeaseId !== this.writerLeaseId ||
+        current.fence !== this.fence
+      ) {
+        throw new ExecutionBudgetWriterFenceError(
+          "This process's execution-budget writer lease is no longer current; refusing to refresh stale authority.",
+        );
+      }
+      const pointer: WriterLeasePointer = {
+        schemaVersion: 1,
+        writerLeaseId: this.writerLeaseId,
+        fence: this.fence,
+        hostId: hostname(),
+        pid: process.pid,
+        acquiredAt: current.acquiredAt,
+        heartbeatAt: this.now().toISOString(),
+        ttlMs: this.ttlMs,
+      };
+      await this.testHooks.beforeHeartbeatPointerWrite?.();
+      await writePointerAtomically(this.dir, this.pointerPath, pointer);
+    });
   }
 
   /**
@@ -281,6 +382,10 @@ export class ExecutionBudgetWriterLease {
    * automatic one, and no code path in this repository invokes it.
    */
   static async dangerouslyResetForGovernedRecovery(dir: string): Promise<void> {
-    await rm(dir, { recursive: true, force: true });
+    // Preserve every fence-N directory as a permanent monotonic watermark.
+    // Only the potentially abandoned operation lock and current pointer are
+    // cleared; the next acquisition scans the retained claims and mints N+1.
+    await rm(join(dir, AUTHORITY_OPERATION_LOCK), { recursive: true, force: true });
+    await rm(this.pointerPathFor(dir), { force: true });
   }
 }

@@ -9,6 +9,8 @@ import {
   ExecutionBudgetWriterLease,
   ExecutionBudgetWriterLeaseUnavailableError,
   readCurrentWriterPointer,
+  withWriterAuthorityLock,
+  type ExecutionBudgetWriterLeaseTestHooks,
 } from "./writer-lease.ts";
 
 export { ExecutionBudgetWriterFenceError, ExecutionBudgetWriterLeaseUnavailableError };
@@ -36,6 +38,9 @@ export const ExecutionBudgetReservationStateSchema = z.enum([
   "VIOLATION",
 ]);
 export type ExecutionBudgetReservationState = z.infer<typeof ExecutionBudgetReservationStateSchema>;
+
+export const RemoteInvocationStateSchema = z.enum(["NOT_STARTED", "UNRESOLVED", "TERMINAL"]);
+export type RemoteInvocationState = z.infer<typeof RemoteInvocationStateSchema>;
 
 export const ModelCallKindSchema = z.enum([
   "initial",
@@ -176,6 +181,8 @@ const ExecutionBudgetReservationSchema = z
     providerTransitionFrom: z.enum(["claude", "codex"]).nullable(),
     handoffFrom: IdentifierSchema.nullable(),
     state: ExecutionBudgetReservationStateSchema,
+    /** Accounting settlement and remote provider termination are independent facts. */
+    remoteInvocationState: RemoteInvocationStateSchema,
     observedOutputTokens: NonNegativeIntegerSchema.nullable(),
     policyChargedOutputTokens: NonNegativeIntegerSchema,
     latestCumulativeOutputTokens: NonNegativeIntegerSchema.nullable(),
@@ -316,9 +323,25 @@ async function assertNotSymlink(path: string): Promise<void> {
 export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBudgetEvidenceStore {
   readonly durability = "fsync-journal" as const;
   readonly rootDir: string;
-  private readonly writerLeaseOptions: { ttlMs?: number; now?: () => Date };
+  private readonly writerLeaseOptions: {
+    ttlMs?: number;
+    now?: () => Date;
+    testHooks?: ExecutionBudgetWriterLeaseTestHooks & {
+      /** Deterministic race barrier used only by adversarial tests. */
+      beforeAppendJournalWrite?(snapshot: ExecutionBudgetLedgerSnapshot): Promise<void>;
+    };
+  };
 
-  constructor(rootDir: string, writerLeaseOptions: { ttlMs?: number; now?: () => Date } = {}) {
+  constructor(
+    rootDir: string,
+    writerLeaseOptions: {
+      ttlMs?: number;
+      now?: () => Date;
+      testHooks?: ExecutionBudgetWriterLeaseTestHooks & {
+        beforeAppendJournalWrite?(snapshot: ExecutionBudgetLedgerSnapshot): Promise<void>;
+      };
+    } = {},
+  ) {
     this.rootDir = rootDir;
     this.writerLeaseOptions = writerLeaseOptions;
   }
@@ -336,6 +359,7 @@ export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBu
       dir: join(this.lineageDir(budgetLineageId), "writer"),
       ttlMs: this.writerLeaseOptions.ttlMs,
       now: this.writerLeaseOptions.now,
+      testHooks: this.writerLeaseOptions.testHooks,
     });
   }
 
@@ -343,50 +367,53 @@ export class AppendOnlyNdjsonExecutionBudgetEvidenceStore implements ExecutionBu
     const snapshot = ExecutionBudgetLedgerSnapshotSchema.parse(input);
     const dir = this.lineageDir(snapshot.lineage.budgetLineageId);
     const path = this.journalPath(snapshot.lineage.budgetLineageId);
-    // The store itself -- not only ExecutionBudgetLedger -- refuses to record
-    // a snapshot that does not carry the currently active writer's exact
-    // identity. This closes the path where code holding (or constructing) a
-    // store instance appends fabricated history without ever holding a real
-    // lease (independent rereview of PR #83, candidate 225384030a4a30d66c946bdbc0d577a057a8a0c6).
-    const currentPointer = await readCurrentWriterPointer(join(dir, "writer"));
-    if (
-      !currentPointer ||
-      currentPointer.writerLeaseId !== snapshot.writerLeaseId ||
-      currentPointer.fence !== snapshot.writerFence
-    ) {
-      throw new ExecutionBudgetEvidencePersistenceError(
-        `Refusing to append a snapshot for ${snapshot.lineage.budgetLineageId} whose writer identity does not match the currently active lease.`,
-        new ExecutionBudgetWriterFenceError("append() fence mismatch"),
-      );
-    }
-    let handle;
-    let writeError: unknown;
     try {
       await mkdir(dir, { recursive: true, mode: 0o700 });
-      await assertNotSymlink(path);
-      handle = await open(path, "a", 0o600);
-      await handle.writeFile(`${JSON.stringify(snapshot)}\n`, { encoding: "utf8" });
-      await handle.sync();
+      await withWriterAuthorityLock(join(dir, "writer"), async () => {
+        // Fence validation and the fsync-backed append are one indivisible
+        // authority operation. A takeover therefore happens wholly before
+        // this append (which rejects) or wholly after it (when it was still
+        // authoritative), never between the check and write.
+        const currentPointer = await readCurrentWriterPointer(join(dir, "writer"));
+        if (
+          !currentPointer ||
+          currentPointer.writerLeaseId !== snapshot.writerLeaseId ||
+          currentPointer.fence !== snapshot.writerFence
+        ) {
+          throw new ExecutionBudgetEvidencePersistenceError(
+            `Refusing to append a snapshot for ${snapshot.lineage.budgetLineageId} whose writer identity does not match the currently active lease.`,
+            new ExecutionBudgetWriterFenceError("append() fence mismatch"),
+          );
+        }
+        await assertNotSymlink(path);
+        await this.writerLeaseOptions.testHooks?.beforeAppendJournalWrite?.(snapshot);
+        const handle = await open(path, "a", 0o600);
+        let writeError: unknown;
+        try {
+          await handle.writeFile(`${JSON.stringify(snapshot)}\n`, { encoding: "utf8" });
+          await handle.sync();
+        } catch (error) {
+          writeError = error;
+        }
+        let closeError: unknown;
+        try {
+          await handle.close();
+        } catch (error) {
+          closeError = error;
+        }
+        if (writeError) throw writeError;
+        if (closeError) {
+          throw new ExecutionBudgetEvidencePersistenceError(
+            `Unable to durably close the execution-budget journal at ${path}; treating as an uncertain write.`,
+            closeError,
+          );
+        }
+      });
     } catch (error) {
-      writeError = error;
-    }
-    let closeError: unknown;
-    try {
-      await handle?.close();
-    } catch (error) {
-      closeError = error;
-    }
-    if (writeError) {
-      if (writeError instanceof ExecutionBudgetEvidencePersistenceError) throw writeError;
+      if (error instanceof ExecutionBudgetEvidencePersistenceError) throw error;
       throw new ExecutionBudgetEvidencePersistenceError(
         `Unable to persist execution-budget evidence to ${path}.`,
-        writeError,
-      );
-    }
-    if (closeError) {
-      throw new ExecutionBudgetEvidencePersistenceError(
-        `Unable to durably close the execution-budget journal at ${path}; treating as an uncertain write.`,
-        closeError,
+        error,
       );
     }
   }
@@ -450,6 +477,16 @@ export class ExecutionBudgetStateError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ExecutionBudgetStateError";
+  }
+}
+
+export class ExecutionBudgetUnresolvedRemoteInvocationError extends ExecutionBudgetStateError {
+  constructor() {
+    super(
+      "An unresolved remote invocation remains on this execution-budget lineage; " +
+        "automatic provider re-execution is blocked pending governed handling.",
+    );
+    this.name = "ExecutionBudgetUnresolvedRemoteInvocationError";
   }
 }
 
@@ -648,6 +685,8 @@ export class ExecutionBudgetLedger {
       );
     }
     let previousHash: string | null = null;
+    let previousWriterFence = 0;
+    let previousWriterLeaseId: string | null = null;
     for (const revision of revisions) {
       const record = byRevision.get(revision);
       if (!record) {
@@ -666,7 +705,32 @@ export class ExecutionBudgetLedger {
           `Budget lineage ${lineage.budgetLineageId} revision ${revision} content hash does not match its recorded content; refusing to trust tampered evidence.`,
         );
       }
+      if (record.writerFence < previousWriterFence) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} writer fence regressed at revision ${revision}; refusing impossible authoritative history.`,
+        );
+      }
+      if (
+        revision > 0 &&
+        record.writerFence === previousWriterFence &&
+        record.writerLeaseId !== previousWriterLeaseId
+      ) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} changed writer identity without increasing its fence at revision ${revision}.`,
+        );
+      }
+      if (
+        revision > 0 &&
+        record.writerFence > previousWriterFence &&
+        record.writerLeaseId === previousWriterLeaseId
+      ) {
+        throw new ExecutionBudgetStateError(
+          `Budget lineage ${lineage.budgetLineageId} increased its fence without minting a new writer identity at revision ${revision}.`,
+        );
+      }
       previousHash = contentHash;
+      previousWriterFence = record.writerFence;
+      previousWriterLeaseId = record.writerLeaseId;
     }
     const latest = byRevision.get(revisions.at(-1) ?? -1);
     if (!latest || JSON.stringify(latest.lineage) !== JSON.stringify(lineage)) {
@@ -710,6 +774,8 @@ export class ExecutionBudgetLedger {
         reservation.terminalReason = "recovery-proved-invocation-not-started";
         recovered = true;
       } else if (reservation.state === "INVOKED") {
+        // Accounting is conservatively closed, but UNRESOLVED is deliberately
+        // preserved: full charging does not prove the remote provider stopped.
         reservation.state = "SETTLED_CONSERVATIVE";
         reservation.policyChargedOutputTokens = reservation.outputTokenAllowance;
         reservation.settledAt = ledger.now().toISOString();
@@ -750,17 +816,11 @@ export class ExecutionBudgetLedger {
    * writer-lease concept (i.e. the in-memory store), since that store cannot
    * be observed outside this one process.
    *
-   * B1 rereview fix (independent rereview of PR #83, candidate
-   * 225384030a4a30d66c946bdbc0d577a057a8a0c6): this used to only *check* the
-   * fence, never refresh it, while the default TTL (60s) was shorter than
-   * realistic provider latency (HttpProviderTransport's fetch has no
-   * timeout; CodexCliTransport's own subprocess timeout is 120s). A
-   * legitimate, still-running writer could be treated as stale and taken
-   * over by another process while its real HTTP call was still in flight.
-   * Calling `heartbeat()` here re-validates ownership exactly as before AND
-   * extends the lease's TTL window starting at the moment invocation
-   * actually begins, so a takeover cannot occur while this specific call is
-   * outstanding (see also the increased DEFAULT_TTL_MS in writer-lease.ts).
+   * Heartbeat reduces accidental expiry but does not prove remote execution
+   * stopped, and an invocation may outlive any finite TTL. If takeover later
+   * occurs, durable UNRESOLVED state blocks another generation independently
+   * of accounting settlement. Heartbeat itself is serialized with takeover,
+   * so a superseded fence can never overwrite and resurrect its pointer.
    */
   async assertWriterAuthority(): Promise<void> {
     if (this.poisoned) {
@@ -871,6 +931,13 @@ export class ExecutionBudgetLedger {
       if (draft.violation) {
         return { changed: false, value: { kind: "violation-blocked" } };
       }
+      if (
+        [...draft.reservations.values()].some(
+          (reservation) => reservation.remoteInvocationState === "UNRESOLVED",
+        )
+      ) {
+        throw new ExecutionBudgetUnresolvedRemoteInvocationError();
+      }
       const before = this.projectFromDraft(draft);
       const requestedCalls = inputs.length;
       const requestedTokens = sum(inputs.map((input) => input.requestedOutputTokenAllowance));
@@ -910,6 +977,7 @@ export class ExecutionBudgetLedger {
           providerTransitionFrom: input.providerTransitionFrom ?? null,
           handoffFrom: input.handoffFrom ?? null,
           state: "PENDING",
+          remoteInvocationState: "NOT_STARTED",
           observedOutputTokens: null,
           policyChargedOutputTokens: 0,
           latestCumulativeOutputTokens: null,
@@ -977,7 +1045,29 @@ export class ExecutionBudgetLedger {
         );
       }
       reservation.state = "INVOKED";
+      reservation.remoteInvocationState = "UNRESOLVED";
       reservation.invokedAt = this.now().toISOString();
+      return { changed: true, value: undefined };
+    });
+  }
+
+  /**
+   * Records the only terminal proof currently available to the direct HTTP
+   * adapters: their exact trusted transport returned a complete response.
+   * A timeout, abort, network error, crash, or lease expiry never calls this.
+   */
+  async markRemoteInvocationTerminal(budgetReservationId: string): Promise<void> {
+    await this.runMutation((draft) => {
+      const reservation = requireReservation(draft, budgetReservationId);
+      if (reservation.remoteInvocationState === "TERMINAL") {
+        return { changed: false, value: undefined };
+      }
+      if (reservation.state !== "INVOKED" || reservation.remoteInvocationState !== "UNRESOLVED") {
+        throw new ExecutionBudgetStateError(
+          `Reservation ${budgetReservationId} cannot prove remote terminal execution from ${reservation.state}/${reservation.remoteInvocationState}.`,
+        );
+      }
+      reservation.remoteInvocationState = "TERMINAL";
       return { changed: true, value: undefined };
     });
   }
@@ -1041,6 +1131,11 @@ export class ExecutionBudgetLedger {
   ): Promise<ExecutionBudgetReservationState> {
     return this.runMutation((draft) => {
       const reservation = requireReservation(draft, budgetReservationId);
+      if (reservation.remoteInvocationState !== "TERMINAL") {
+        throw new ExecutionBudgetStateError(
+          `Reservation ${budgetReservationId} cannot accept authoritative terminal usage while its remote invocation is ${reservation.remoteInvocationState}.`,
+        );
+      }
       if (!Number.isInteger(observedOutputTokens) || Number(observedOutputTokens) < 0) {
         return settleConservativeOnDraft(
           draft,

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -21,6 +22,34 @@ import {
   type ExecutionBudgetLedgerSnapshot,
   type ModelCallAdmission,
 } from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
+import { readCurrentWriterPointer } from "../../src/modules/orchestration/execution-budget/writer-lease.ts";
+
+function deferred() {
+  let resolve!: () => void;
+  const promise = new Promise<void>((resolvePromise) => {
+    resolve = resolvePromise;
+  });
+  return { promise, resolve };
+}
+
+function controlledClock() {
+  let nowMs = Date.UTC(2026, 7, 24, 12, 0, 0);
+  return {
+    now: () => new Date(nowMs),
+    advance: (milliseconds: number) => {
+      nowMs += milliseconds;
+    },
+  };
+}
+
+function rehashSnapshot(
+  snapshot: Omit<ExecutionBudgetLedgerSnapshot, "contentHash">,
+): ExecutionBudgetLedgerSnapshot {
+  return {
+    ...snapshot,
+    contentHash: createHash("sha256").update(JSON.stringify(snapshot)).digest("hex"),
+  };
+}
 
 function clock() {
   let tick = 0;
@@ -109,6 +138,7 @@ async function invokeAndSettle(
 ) {
   const reservation = await budget.admitModelCall(admission(input));
   await budget.markInvoked(reservation.budgetReservationId);
+  await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
   await budget.settleAuthoritative(reservation.budgetReservationId, outputTokens);
   return reservation;
 }
@@ -392,6 +422,7 @@ describe("reservation lifecycle and settlement", () => {
       admission({ requestedOutputTokenAllowance: 800, providerHardCap: 800 }),
     );
     await budget.markInvoked(reservation.budgetReservationId);
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await budget.settleAuthoritative(reservation.budgetReservationId, 250);
     expect(budget.snapshot()).toMatchObject({
       outputTokensReserved: 0,
@@ -406,6 +437,7 @@ describe("reservation lifecycle and settlement", () => {
       const { ledger: budget } = await ledger({ maxModelCalls: 1, maxOutputTokens: 100 });
       const reservation = await budget.admitModelCall(admission());
       await budget.markInvoked(reservation.budgetReservationId);
+      await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
       await budget.settleAuthoritative(reservation.budgetReservationId, usage);
       expect(budget.snapshot()).toMatchObject({
         observedOutputTokens: null,
@@ -419,6 +451,7 @@ describe("reservation lifecycle and settlement", () => {
     const { ledger: budget, store } = await ledger();
     const reservation = await budget.admitModelCall(admission());
     await budget.markInvoked(reservation.budgetReservationId);
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await budget.settleAuthoritative(reservation.budgetReservationId, 25);
     const revision = budget.snapshot().revision;
     const writes = store.snapshots.length;
@@ -432,6 +465,7 @@ describe("reservation lifecycle and settlement", () => {
     const { ledger: budget } = await ledger({ maxModelCalls: 2, maxOutputTokens: 100 });
     const reservation = await budget.admitModelCall(admission());
     await budget.markInvoked(reservation.budgetReservationId);
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await budget.settleAuthoritative(reservation.budgetReservationId, 25);
     await budget.settleAuthoritative(reservation.budgetReservationId, 30);
     expect(budget.snapshot()).toMatchObject({
@@ -448,6 +482,7 @@ describe("reservation lifecycle and settlement", () => {
     const { ledger: budget } = await ledger({ maxModelCalls: 2, maxOutputTokens: 200 });
     const reservation = await budget.admitModelCall(admission());
     await budget.markInvoked(reservation.budgetReservationId);
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     expect(await budget.settleAuthoritative(reservation.budgetReservationId, 101)).toBe(
       "VIOLATION",
     );
@@ -582,6 +617,7 @@ describe("streaming-equivalent and crash recovery semantics", () => {
       policyChargedOutputTokens: 0,
       reservations: [{ latestCumulativeOutputTokens: 120 }],
     });
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await budget.settleAuthoritative(reservation.budgetReservationId, 120);
     await budget.settleAuthoritative(reservation.budgetReservationId, 120);
     expect(budget.snapshot()).toMatchObject({
@@ -609,7 +645,7 @@ describe("streaming-equivalent and crash recovery semantics", () => {
     });
   });
 
-  it("recovers PENDING as cancelled and INVOKED as a full conservative charge", async () => {
+  it("blocks automatic provider re-execution when recover sees unresolved INVOKED", async () => {
     const store = new InMemoryExecutionBudgetEvidenceStore();
     const authority = await lineage({ maxModelCalls: 2, maxOutputTokens: 300 });
     const original = await ExecutionBudgetLedger.create(authority, store, {
@@ -644,6 +680,50 @@ describe("streaming-equivalent and crash recovery semantics", () => {
       "CANCELLED_BEFORE_INVOCATION",
       "SETTLED_CONSERVATIVE",
     ]);
+    expect(
+      recovered.snapshot().reservations.map(({ remoteInvocationState }) => remoteInvocationState),
+    ).toEqual(["NOT_STARTED", "UNRESOLVED"]);
+    await expect(
+      recovered.admitModelCall(
+        admission({
+          providerRunId: "must-not-reexecute",
+          requestedOutputTokenAllowance: 50,
+          providerHardCap: 50,
+        }),
+      ),
+    ).rejects.toThrow("unresolved remote invocation");
+  });
+
+  it("reuses remaining capacity after recovery only when remote invocation is durably TERMINAL", async () => {
+    const store = new InMemoryExecutionBudgetEvidenceStore();
+    const authority = await lineage({ maxModelCalls: 2, maxOutputTokens: 300 });
+    const original = await ExecutionBudgetLedger.create(authority, store, {
+      now: clock(),
+      reservationId: idFactory("terminal-recovery"),
+    });
+    const invoked = await original.admitModelCall(
+      admission({
+        providerRunId: "terminal-before-crash",
+        requestedOutputTokenAllowance: 100,
+        providerHardCap: 100,
+      }),
+    );
+    await original.markInvoked(invoked.budgetReservationId);
+    await original.markRemoteInvocationTerminal(invoked.budgetReservationId);
+
+    const recovered = await ExecutionBudgetLedger.recover(authority, store, { now: clock() });
+    expect(recovered.snapshot().reservations).toMatchObject([
+      { state: "SETTLED_CONSERVATIVE", remoteInvocationState: "TERMINAL" },
+    ]);
+    await expect(
+      recovered.admitModelCall(
+        admission({
+          providerRunId: "safe-after-terminal-proof",
+          requestedOutputTokenAllowance: 50,
+          providerHardCap: 50,
+        }),
+      ),
+    ).resolves.toMatchObject({ state: "PENDING", remoteInvocationState: "NOT_STARTED" });
   });
 
   it("persists only bounded metadata in a per-lineage fsync-backed NDJSON journal", async () => {
@@ -666,6 +746,177 @@ describe("streaming-equivalent and crash recovery semantics", () => {
 });
 
 describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durability", () => {
+  it("allows N heartbeat, rejects N after N+1 takeover, and advances monotonically to N+2", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-fence-progression-"));
+    const controlled = controlledClock();
+    const store = () =>
+      new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+        ttlMs: 50,
+        now: controlled.now,
+      });
+    const fenceN = await store().acquireWriterLease("fence-progression-lineage");
+    await expect(fenceN.heartbeat()).resolves.toBeUndefined();
+    controlled.advance(100);
+    const fenceNPlusOne = await store().acquireWriterLease("fence-progression-lineage");
+    expect(fenceNPlusOne.fence).toBe(fenceN.fence + 1);
+    await expect(fenceN.heartbeat()).rejects.toBeInstanceOf(ExecutionBudgetWriterFenceError);
+    controlled.advance(100);
+    const fenceNPlusTwo = await store().acquireWriterLease("fence-progression-lineage");
+    expect(fenceNPlusTwo.fence).toBe(fenceNPlusOne.fence + 1);
+  });
+
+  it("keeps writer fences monotonically increasing when heartbeat fence N races with takeover fence N+1", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-heartbeat-race-"));
+    const clock = controlledClock();
+    const heartbeatEntered = deferred();
+    const releaseHeartbeat = deferred();
+    const firstStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: clock.now,
+      testHooks: {
+        async beforeHeartbeatPointerWrite() {
+          heartbeatEntered.resolve();
+          await releaseHeartbeat.promise;
+        },
+      },
+    });
+    const first = await firstStore.acquireWriterLease("heartbeat-race-lineage");
+    const heartbeat = first.heartbeat();
+    await heartbeatEntered.promise;
+    clock.advance(100);
+
+    let takeoverCompletedBeforeRelease = false;
+    const takeover = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: clock.now,
+    })
+      .acquireWriterLease("heartbeat-race-lineage")
+      .then((lease) => {
+        takeoverCompletedBeforeRelease = true;
+        return lease;
+      });
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(takeoverCompletedBeforeRelease).toBe(false);
+    releaseHeartbeat.resolve();
+
+    const [, takeoverResult] = await Promise.allSettled([heartbeat, takeover]);
+    const pointer = await readCurrentWriterPointer(
+      join(root, hashLineagePath("heartbeat-race-lineage"), "writer"),
+    );
+    expect(pointer?.fence).toBe(
+      takeoverResult.status === "fulfilled" ? takeoverResult.value.fence : first.fence,
+    );
+  });
+
+  it("prevents a stale writer append racing with takeover from becoming authoritative history", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-append-race-"));
+    const clock = controlledClock();
+    const appendEntered = deferred();
+    const releaseAppend = deferred();
+    const authority = await lineage({ budgetLineageId: "append-race-lineage" });
+    const firstStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: clock.now,
+      testHooks: {
+        async beforeAppendJournalWrite(snapshot) {
+          if (snapshot.revision !== 1) return;
+          appendEntered.resolve();
+          await releaseAppend.promise;
+        },
+      },
+    });
+    const first = await ExecutionBudgetLedger.create(authority, firstStore);
+    const staleAppend = first.admitModelCall(admission());
+    await appendEntered.promise;
+    clock.advance(100);
+
+    let takeoverCompletedBeforeRelease = false;
+    const takeover = ExecutionBudgetLedger.recover(
+      authority,
+      new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+        ttlMs: 50,
+        now: clock.now,
+      }),
+    ).then((recovered) => {
+      takeoverCompletedBeforeRelease = true;
+      return recovered;
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+    expect(takeoverCompletedBeforeRelease).toBe(false);
+    releaseAppend.resolve();
+
+    const [appendResult, takeoverResult] = await Promise.allSettled([staleAppend, takeover]);
+    expect(appendResult.status).toBe("fulfilled");
+    expect(takeoverResult.status).toBe("fulfilled");
+    if (takeoverResult.status !== "fulfilled") return;
+    await takeoverResult.value.admitModelCall(
+      admission({
+        providerRunId: "new-writer-run",
+        requestedOutputTokenAllowance: 50,
+        providerHardCap: 50,
+      }),
+    );
+    const history = await firstStore.load(authority.budgetLineageId);
+    expect(new Set(history.map(({ revision }) => revision)).size).toBe(history.length);
+    expect(history.map(({ writerFence }) => writerFence)).toEqual(
+      [...history.map(({ writerFence }) => writerFence)].sort((left, right) => left - right),
+    );
+  });
+
+  it("rejects a stale writer evidence append after takeover", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-stale-append-"));
+    const controlled = controlledClock();
+    const authority = await lineage({ budgetLineageId: "stale-append-lineage" });
+    const staleStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: controlled.now,
+    });
+    await ExecutionBudgetLedger.create(authority, staleStore);
+    const [staleSnapshot] = await staleStore.load(authority.budgetLineageId);
+    if (!staleSnapshot) throw new Error("missing stale snapshot fixture");
+    controlled.advance(100);
+    const takeover = await new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: controlled.now,
+    }).acquireWriterLease(authority.budgetLineageId);
+    expect(takeover.fence).toBe(staleSnapshot.writerFence + 1);
+    await expect(staleStore.append(staleSnapshot)).rejects.toBeInstanceOf(
+      ExecutionBudgetEvidencePersistenceError,
+    );
+  });
+
+  it("rejects impossible writer-fence regression during recovery", async () => {
+    const authority = await lineage({ budgetLineageId: "regressed-history-lineage" });
+    const seedStore = new InMemoryExecutionBudgetEvidenceStore();
+    await ExecutionBudgetLedger.create(authority, seedStore, { now: clock() });
+    const initial = seedStore.snapshots[0];
+    if (!initial) throw new Error("missing initial snapshot");
+    const { contentHash: _initialHash, ...initialWithoutHash } = initial;
+    const fenceTwo = rehashSnapshot({
+      ...initialWithoutHash,
+      writerLeaseId: "writer-fence-2",
+      writerFence: 2,
+    });
+    const { contentHash: _fenceTwoHash, ...fenceTwoWithoutHash } = fenceTwo;
+    const regressed = rehashSnapshot({
+      ...fenceTwoWithoutHash,
+      revision: 1,
+      recordedAt: "2026-08-24T12:00:01.000Z",
+      writerLeaseId: "writer-fence-1",
+      writerFence: 1,
+      previousContentHash: fenceTwo.contentHash,
+    });
+    const regressedStore: ExecutionBudgetEvidenceStore = {
+      durability: "process-only",
+      async append() {},
+      async load() {
+        return [fenceTwo, regressed];
+      },
+    };
+    await expect(ExecutionBudgetLedger.recover(authority, regressedStore)).rejects.toThrow(
+      "writer fence regressed",
+    );
+  });
   it("allows only one of two simultaneous create() calls for the same lineage", async () => {
     const root = await mkdtemp(join(tmpdir(), "beacon-budget-fencing-"));
     const authority = await lineage({ budgetLineageId: "concurrent-create-lineage" });
@@ -785,7 +1036,9 @@ describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durabilit
       durability: "fsync-journal",
       async append(snapshot) {
         appendCount += 1;
-        if (appendCount > 3) {
+        // create, admission, INVOKED, and remote TERMINAL proof succeed;
+        // the following VIOLATION settlement is the uncertain write.
+        if (appendCount > 4) {
           throw new ExecutionBudgetEvidencePersistenceError(
             "Synthetic journal failure.",
             new Error("io"),
@@ -804,6 +1057,7 @@ describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durabilit
     );
     const reservation = await budget.admitModelCall(admission());
     await budget.markInvoked(reservation.budgetReservationId);
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await expect(
       budget.settleAuthoritative(reservation.budgetReservationId, 999),
     ).rejects.toBeInstanceOf(ExecutionBudgetEvidencePersistenceError);
@@ -821,6 +1075,7 @@ describe("B1/B4/B5 fix: cross-process writer/fencing and transactional durabilit
     await budget.observeStreamingCumulativeUsage(reservation.budgetReservationId, 120);
     // A terminal settlement racing behind the streaming observation must never
     // charge less than what was already durably observed (B5).
+    await budget.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await budget.settleAuthoritative(reservation.budgetReservationId, 40);
     expect(budget.snapshot()).toMatchObject({
       policyChargedOutputTokens: 500,
@@ -955,6 +1210,7 @@ describe("rereview fix: lineage/constructor/journal cannot be forged", () => {
       ),
     ).rejects.toBeInstanceOf(ExecutionBudgetWriterLeaseUnavailableError);
     // The original writer can still settle its own call.
+    await slowWriter.markRemoteInvocationTerminal(reservation.budgetReservationId);
     await expect(slowWriter.settleAuthoritative(reservation.budgetReservationId, 10)).resolves.toBe(
       "SETTLED_AUTHORITATIVE",
     );

@@ -27,6 +27,14 @@ import {
 import { createLocalTelemetrySink } from "../../src/modules/orchestration/telemetry/sink.ts";
 import { executeLiveWorkUnit } from "../../src/modules/orchestration/workflows/live-work-unit.ts";
 
+function deferred() {
+  let resolve!: () => void;
+  const promise = new Promise<void>((resolvePromise) => {
+    resolve = resolvePromise;
+  });
+  return { promise, resolve };
+}
+
 /**
  * B3 fix (independent security review of PR #83, candidate
  * e895f60e72f912221b7bf9d001d8aa49bdd993eb): live provider execution now only
@@ -141,6 +149,90 @@ function clock() {
 }
 
 describe("provider-neutral live adapters", () => {
+  it("keeps the actual executeBudgetedProviderCall path at one invocation when an in-flight call exceeds the lease TTL", async () => {
+    const root = await mkdtemp(join(tmpdir(), "beacon-provider-unresolved-"));
+    let leaseNowMs = Date.UTC(2026, 7, 24, 12, 0, 0);
+    const leaseNow = () => new Date(leaseNowMs);
+    const grant = await ExecutionBudgetAuthorityGrant.issue({
+      adrRef: {
+        schemaVersion: 1,
+        adrId: "0023-define-provider-neutral-execution-budget-semantics",
+        status: "accepted",
+        decisionCandidateRef: "decision-candidate-provider-adapter-test",
+      },
+      workUnitId: baseRequest.workUnitId,
+      maxModelCalls: 2,
+      maxOutputTokens: 100,
+      policySource: "test-fixture",
+      grantedAt: "2026-08-09T12:00:00.000Z",
+    });
+    const authority = authorizeExecutionBudgetLineage({
+      budgetLineageId: "lineage-in-flight-over-ttl",
+      grant,
+    });
+    const firstStore = new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+      ttlMs: 50,
+      now: leaseNow,
+    });
+    const firstLedger = await ExecutionBudgetLedger.create(authority, firstStore);
+    const fetchEntered = deferred();
+    const releaseResponse = deferred();
+    let invocationCount = 0;
+    const transport = new HttpProviderTransport(
+      { anthropicApiKey: "synthetic-anthropic-key" },
+      (async () => {
+        invocationCount += 1;
+        fetchEntered.resolve();
+        await releaseResponse.promise;
+        return new Response(
+          JSON.stringify({
+            id: "msg_unresolved",
+            type: "message",
+            model: "claude-test",
+            stop_reason: "end_turn",
+            usage: { input_tokens: 1, output_tokens: 1 },
+            content: [{ type: "text", text: "ready" }],
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }) as typeof fetch,
+    );
+    const request: ProviderExecutionRequest = {
+      ...baseRequest,
+      budgetLineageId: authority.budgetLineageId,
+      budgetLedger: firstLedger,
+      modelCallKind: "initial",
+    };
+    const adapter = new ClaudeAdapter(transport, clock());
+    const firstInvocation = adapter.execute(request);
+    await fetchEntered.promise;
+    leaseNowMs += 100;
+
+    const recovered = await ExecutionBudgetLedger.recover(
+      authority,
+      new AppendOnlyNdjsonExecutionBudgetEvidenceStore(root, {
+        ttlMs: 50,
+        now: leaseNow,
+      }),
+    );
+    expect(recovered.snapshot().reservations).toMatchObject([
+      { state: "SETTLED_CONSERVATIVE", remoteInvocationState: "UNRESOLVED" },
+    ]);
+    const secondInvocation = adapter.execute({
+      ...request,
+      providerRunId: "provider-run-competing-recovery",
+      budgetLedger: recovered,
+    });
+    await expect(secondInvocation).rejects.toMatchObject({
+      category: "policy",
+      retryable: false,
+      stopReason: null,
+    });
+    expect(invocationCount).toBe(1);
+    releaseResponse.resolve();
+    await expect(firstInvocation).rejects.toMatchObject({ category: "policy" });
+    expect(invocationCount).toBe(1);
+  });
   it("normalizes a Claude response", async () => {
     const { transport } = trustedTransport({
       id: "msg_1",
@@ -228,6 +320,7 @@ describe("provider-neutral live adapters", () => {
       observedOutputTokens: 7,
       policyChargedOutputTokens: 7,
       outputTokensRemaining: 93,
+      reservations: [{ remoteInvocationState: "TERMINAL" }],
     });
     expect(result.providerRun).toMatchObject({
       turns: 1,
@@ -294,6 +387,7 @@ describe("provider-neutral live adapters", () => {
       modelCallsInitiated: 1,
       observedOutputTokens: null,
       policyChargedOutputTokens: 100,
+      reservations: [{ remoteInvocationState: "TERMINAL" }],
     });
   });
 
@@ -485,6 +579,7 @@ describe("provider-neutral live adapters", () => {
       modelCallsInitiated: 1,
       observedOutputTokens: null,
       policyChargedOutputTokens: 100,
+      reservations: [{ remoteInvocationState: "UNRESOLVED" }],
     });
   });
 

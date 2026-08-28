@@ -119,6 +119,7 @@
         "providerTransitionFrom",
         "handoffFrom",
         "state",
+        "remoteInvocationState",
         "observedOutputTokens",
         "policyChargedOutputTokens",
         "latestCumulativeOutputTokens",
@@ -165,6 +166,9 @@
             "SETTLED_CONSERVATIVE",
             "VIOLATION"
           ]
+        },
+        "remoteInvocationState": {
+          "enum": ["NOT_STARTED", "UNRESOLVED", "TERMINAL"]
         },
         "observedOutputTokens": { "$ref": "#/$defs/nullableCount" },
         "policyChargedOutputTokens": { "$ref": "#/$defs/count" },

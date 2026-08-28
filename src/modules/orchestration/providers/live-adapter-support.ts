@@ -7,6 +7,7 @@ import {
   ExecutionBudgetPoisonedError,
   ExecutionBudgetStateError,
   ExecutionBudgetWriterFenceError,
+  ExecutionBudgetWriterLeaseUnavailableError,
   resolveProviderModelCallLimit,
   type ExecutionBudgetReservation,
 } from "../execution-budget/execution-budget.ts";
@@ -207,6 +208,7 @@ export function buildProviderResult(options: {
         observedOutputTokens: reservation.observedOutputTokens,
         policyChargedOutputTokens: reservation.policyChargedOutputTokens,
         reservationState: reservation.state,
+        remoteInvocationState: reservation.remoteInvocationState,
         enforcementOwner: reservation.enforcementOwner,
       },
     },
@@ -241,7 +243,8 @@ function asProviderExecutionError(provider: ProviderId, error: unknown): Provide
     error instanceof ExecutionBudgetStateError ||
     error instanceof ExecutionBudgetEvidencePersistenceError ||
     error instanceof ExecutionBudgetPoisonedError ||
-    error instanceof ExecutionBudgetWriterFenceError
+    error instanceof ExecutionBudgetWriterFenceError ||
+    error instanceof ExecutionBudgetWriterLeaseUnavailableError
   ) {
     return new ProviderExecutionError(
       provider,
@@ -394,6 +397,15 @@ export async function executeBudgetedProviderCall(options: {
     } catch (settlementError) {
       throw asProviderExecutionError(provider, settlementError);
     }
+    throw asProviderExecutionError(provider, error);
+  }
+
+  try {
+    // A returned response is the only terminal signal the current trusted
+    // direct-HTTP transport actually has. Local timeout/abort/network failure
+    // paths never reach this durable transition and remain UNRESOLVED.
+    await request.budgetLedger.markRemoteInvocationTerminal(reservation.budgetReservationId);
+  } catch (error) {
     throw asProviderExecutionError(provider, error);
   }
 
