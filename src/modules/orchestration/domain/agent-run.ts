@@ -61,6 +61,15 @@ export const AgentRunSchema = z
       .object({
         contextBytes: z.number().int().nonnegative(),
         estimatedInputTokens: z.number().int().nonnegative().nullable(),
+        /**
+         * M2 fix (independent security review of PR #83, candidate
+         * e895f60e72f912221b7bf9d001d8aa49bdd993eb): this is the EXECUTION-TOTAL
+         * usage across every ProviderRun named in `providerRunIds`, not only the
+         * most recently completed one -- see executeLiveWorkUnit's
+         * `priorProviderRunUsages` and telemetry/normalize-usage.ts's
+         * `aggregateNormalizedTokenUsage`. It must never contradict
+         * `execution.turns`/`providerRunIds` by under-reporting total usage.
+         */
         usage: NormalizedTokenUsageSchema,
         referencedFiles: z.array(ReferencedFileSchema).max(500),
         readFileCount: z.number().int().nonnegative(),

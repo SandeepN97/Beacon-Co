@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "authority": "ADR-0023",
+  "correction": "PHASE15_BUDGET_SEMANTICS_GAP",
+  "observedAt": "2026-08-25",
+  "note": "Independent security review of PR #83 (candidate e895f60e72f912221b7bf9d001d8aa49bdd993eb) found this file's schemaVersion-1 predecessor materially self-asserted (M3): a static JSON declaring its own implementation.executionBudgetLineage/executionBudgetLedger/atomicAdmission/durableFailureEvidence/concurrencySafe booleans, and predeclaring providerVerdicts.claudeDirectHttp/codexDirectHttp as COMPLIANT, with nothing that actually verified those claims. This file no longer carries those booleans or predeclared verdicts and is no longer read by scripts/agents/audit-phase-1.5.mjs at all. It is kept only as a dated historical record of the correction; do not restore the self-asserted fields.",
+  "evidenceBinding": "candidate-tree-via-ci-prepublish",
+  "deterministicEvidenceSource": "npm run execution-budget:conformance (scripts/agents/verify-execution-budget-conformance.mjs)",
+  "persistenceBoundary": "existing-metadata-only-append-only-ndjson, per-lineage journal with writer-lease fencing",
+  "scope": {
+    "providerExpansion": false,
+    "routingChange": false,
+    "roleBudgetChange": false,
+    "gateway": false,
+    "deployment": false,
+    "release": false
+  },
+  "deterministicEvidence": [
+    "scripts/agents/verify-execution-budget-conformance.mjs",
+    "tests/orchestration/execution-budget.test.ts",
+    "tests/orchestration/provider-adapters.test.ts",
+    "tests/orchestration/codex-cli-transport.test.ts",
+    "agent-platform/telemetry/execution-budget-ledger.schema.json"
+  ]
+}

@@ -4,10 +4,10 @@ description: "Phase 1.5 agent-platform completion scope, verified repository sta
 section: "plans"
 order: 301
 status: "approved"
-lastReviewed: "2026-08-11"
+lastReviewed: "2026-08-28"
 owners: ["Knowledge Manager"]
-sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content"]
+sourceFiles: ["AGENTS.md","agent-platform/agent-contracts.yml","agent-platform/context-policy.yml","agent-platform/model-policy.yml","agent-platform/risk-policy.yml","agent-platform/completion-gates.yml","agent-platform/baselines/external-controls-observation-2026-08-09.json","agent-platform/baselines/live-codex-representative-2026-08-09.json","agent-platform/baselines/live-codex-multiscenario-2026-08-09.json","agent-platform/baselines/execution-budget-conformance-2026-08-25.json","src/modules/orchestration/context/preflight.ts","src/modules/orchestration/policy/tool-policy.ts","src/modules/orchestration/providers/provider-adapter.ts","src/modules/orchestration/execution-budget/execution-budget.ts","scripts/agents/audit-phase-1.5.mjs","scripts/ci/prepublish.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md","docs/roadmap.md","docs/current-state.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0015-adopt-secure-cicd-control-model","0016-token-auditor-pilot","0017-complete-agent-platform-before-business-expansion","0018-bind-prepublication-evidence-to-tree-content","0023-define-provider-neutral-execution-budget-semantics"]
 relatedPages: ["architecture/overview","architecture/secure-cicd-architecture","security/ai-agent-security-standard","plans/phase-1-5-completion-audit","plans/phase-1-6-master-spec"]
 tags: ["roadmap","phase","agents","phase-1-5"]
 truthState: "current"
@@ -49,6 +49,14 @@ The publication manifest supplies the required PR title/body structure. One poli
 ## Simulated orchestration boundary
 
 The orchestration module remains a simulation for the business broker. The engineering-agent platform now has credential-gated HTTP adapters and a read-only ephemeral Codex CLI transport for controlled evals, but no persistent worker or autonomous production executor. Provider transports have no deployment authority.
+
+## Execution-budget conformance correction
+
+The bounded frozen-contract correction authorized by approved ADR-0023 is implemented at the controlled provider boundary. An immutable `ExecutionBudgetLineage` and metadata-only `ExecutionBudgetLedger` now own cumulative `maxModelCalls` and `maxOutputTokens` enforcement across requests, retries, model re-entry, provider transitions, and failure paths. Atomic reservations are written to the existing append-only local/CI evidence boundary before direct provider invocation; uncertain invocation is charged conservatively, while authoritative terminal usage releases only unused token capacity. Accounting settlement is tracked separately from remote-invocation termination: an invocation without a durably proven terminal response remains `UNRESOLVED` and blocks automatic provider re-execution even after lease takeover and conservative accounting.
+
+Writer heartbeat, takeover, and journal append share one lineage-local filesystem authority lock. Fence claims are retained as monotonic watermarks, a stale heartbeat cannot restore superseded authority, stale append attempts fail closed, and recovery rejects impossible fence regression.
+
+The exact Claude Messages HTTP and OpenAI Responses HTTP paths are conformant because each performs one visible request with no hidden transport retry, receives a hard admitted `max_tokens` or reasoning-inclusive `max_output_tokens` cap, and settles from authoritative usage. Codex CLI remains noncompliant and now fails with a non-retryable policy error before subprocess execution. This correction adds no provider, routing behavior, role-budget change, gateway, harness registration, deployment, or release authority; OpenCode/Groq execution remains outside this runtime and fail-closed.
 
 ## Authorized Phase 1.5 scope
 

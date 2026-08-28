@@ -6,6 +6,13 @@ import { readFile } from "node:fs/promises";
 import { compilePromptContext } from "../../src/modules/orchestration/context/compiler.ts";
 import { runContextPreflight } from "../../src/modules/orchestration/context/preflight.ts";
 import { EvalResultSchema } from "../../src/modules/orchestration/domain/eval-result.ts";
+import {
+  authorizeExecutionBudgetLineage,
+  createCiExecutionBudgetEvidenceStore,
+  createLocalExecutionBudgetEvidenceStore,
+  ExecutionBudgetAuthorityGrant,
+  ExecutionBudgetLedger,
+} from "../../src/modules/orchestration/execution-budget/execution-budget.ts";
 import { ClaudeAdapter } from "../../src/modules/orchestration/providers/claude/claude-adapter.ts";
 import { CodexAdapter } from "../../src/modules/orchestration/providers/codex/codex-adapter.ts";
 import { CodexCliTransport } from "../../src/modules/orchestration/providers/codex/codex-cli-transport.ts";
@@ -70,6 +77,27 @@ if (
     sinkMode === "ci"
       ? createCiTelemetrySink(root, "required")
       : createLocalTelemetrySink(root, "required");
+  const executionBudgetStore =
+    sinkMode === "ci"
+      ? createCiExecutionBudgetEvidenceStore(root)
+      : createLocalExecutionBudgetEvidenceStore(root);
+  const grant = await ExecutionBudgetAuthorityGrant.issue({
+    adrRef: {
+      schemaVersion: 1,
+      adrId: "0023-define-provider-neutral-execution-budget-semantics",
+      status: "accepted",
+      decisionCandidateRef: `run-live-work-unit:${workUnitId}`,
+    },
+    workUnitId,
+    maxModelCalls: 1,
+    maxOutputTokens: 32,
+    policySource: "scripts/agents/run-live-work-unit.mjs",
+    grantedAt: new Date().toISOString(),
+  });
+  const budgetLedger = await ExecutionBudgetLedger.create(
+    authorizeExecutionBudgetLineage({ grant }),
+    executionBudgetStore,
+  );
   const result = await executeLiveWorkUnit(
     {
       agentRunId: `agent-${randomUUID()}`,
@@ -84,10 +112,12 @@ if (
       resolvedModelId: model,
       requestedEffort: "low",
       maxOutputTokens: 32,
+      maxModelCalls: 1,
       maxTurns: 1,
     },
     {
       adapter,
+      budgetLedger,
       telemetrySink,
       validate: async (providerResult) => ({
         passed:

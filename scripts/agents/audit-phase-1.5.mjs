@@ -21,6 +21,7 @@ const requiredFiles = [
   "agent-platform/risk-policy.yml",
   "agent-platform/telemetry/agent-run.schema.json",
   "agent-platform/telemetry/provider-run.schema.json",
+  "agent-platform/telemetry/execution-budget-ledger.schema.json",
   "agent-platform/telemetry/eval-result.schema.json",
   "src/modules/orchestration/context/preflight.ts",
   "src/modules/orchestration/context/compiler.ts",
@@ -28,6 +29,8 @@ const requiredFiles = [
   "src/modules/orchestration/policy/council-policy.ts",
   "src/modules/orchestration/providers/claude/claude-adapter.ts",
   "src/modules/orchestration/providers/codex/codex-adapter.ts",
+  "src/modules/orchestration/execution-budget/execution-budget.ts",
+  "tests/orchestration/execution-budget.test.ts",
   ".github/workflows/agent-platform-checks.yml",
   ".github/workflows/live-agent-evals.yml",
   ".github/workflows/rollback-production.yml",
@@ -47,6 +50,49 @@ const observation = JSON.parse(
   await readFile("agent-platform/baselines/external-controls-observation-2026-08-09.json", "utf8"),
 );
 const modelPolicy = parse(await readFile("agent-platform/model-policy.yml", "utf8"));
+
+/**
+ * M3/M4 fix (independent security review of PR #83, candidate
+ * e895f60e72f912221b7bf9d001d8aa49bdd993eb): this gate no longer trusts a
+ * static JSON file's self-asserted booleans. It actually RUNS
+ * scripts/agents/verify-execution-budget-conformance.mjs against the current
+ * working tree -- which itself runs the adversarial execution-budget test
+ * suites and checks a fixed list of named security-critical scenarios -- and
+ * only accepts the result if it is bound to THIS exact candidate SHA/tree and
+ * reports success. A hand-authored "concurrencySafe": true (or a predeclared
+ * provider "COMPLIANT" verdict) in a checked-in JSON file can no longer make
+ * this gate pass by itself.
+ */
+const executionBudgetConformanceEvidence = await (async () => {
+  try {
+    const stdout = execFileSync(
+      "node",
+      [
+        "--disable-warning=ExperimentalWarning",
+        "--experimental-strip-types",
+        "scripts/agents/verify-execution-budget-conformance.mjs",
+      ],
+      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+    );
+    return JSON.parse(stdout);
+  } catch (error) {
+    try {
+      return JSON.parse(error.stdout ?? "");
+    } catch {
+      return null;
+    }
+  }
+})();
+const candidateShaForConformance = execFileSync("git", ["rev-parse", "HEAD"], {
+  encoding: "utf8",
+}).trim();
+const candidateTreeForConformance = execFileSync("git", ["rev-parse", "HEAD^{tree}"], {
+  encoding: "utf8",
+}).trim();
+const executionBudgetConformanceValid =
+  executionBudgetConformanceEvidence?.success === true &&
+  executionBudgetConformanceEvidence?.candidateSha === candidateShaForConformance &&
+  executionBudgetConformanceEvidence?.candidateTree === candidateTreeForConformance;
 const repeatedBaselinePath = "agent-platform/baselines/live-codex-multiscenario-2026-08-09.json";
 const repeatedBaselineValid = await (async () => {
   try {
@@ -108,6 +154,7 @@ const state = {
     "deterministic-eval-harness": localReady,
     "tool-policy-gateway": localReady,
     "provider-adapter-contracts": localReady,
+    "execution-budget-conformance": localReady && executionBudgetConformanceValid,
     "risk-council-engine": localReady,
     "evidence-gated-tuning": localReady,
     "publication-evidence-gate": localReady,

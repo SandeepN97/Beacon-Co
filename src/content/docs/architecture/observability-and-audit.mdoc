@@ -1,13 +1,13 @@
 ---
 title: "Observability and audit"
-description: "Current provider-neutral AgentRun/ProviderRun telemetry foundation and the remaining live audit boundary."
+description: "Current provider-neutral execution-budget ledger, AgentRun/ProviderRun projections, and audit evidence boundary."
 section: "architecture"
 order: 410
 status: "approved"
-lastReviewed: "2026-08-09"
+lastReviewed: "2026-08-28"
 owners: ["Knowledge Manager"]
-sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/telemetry/normalize-usage.ts","src/modules/orchestration/telemetry/redaction.ts","src/modules/orchestration/telemetry/sink.ts","src/modules/orchestration/workflows/live-work-unit.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","scripts/agents/run-live-work-unit.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
-relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion"]
+sourceFiles: ["agent-platform/telemetry/agent-run.schema.json","agent-platform/telemetry/provider-run.schema.json","agent-platform/telemetry/execution-budget-ledger.schema.json","agent-platform/telemetry/eval-result.schema.json","src/modules/orchestration/domain/agent-run.ts","src/modules/orchestration/domain/provider-run.ts","src/modules/orchestration/execution-budget/execution-budget.ts","src/modules/orchestration/telemetry/normalize-usage.ts","src/modules/orchestration/telemetry/redaction.ts","src/modules/orchestration/telemetry/sink.ts","src/modules/orchestration/workflows/live-work-unit.ts","src/modules/orchestration/providers/codex/codex-cli-transport.ts","scripts/agents/run-live-work-unit.mjs","BEACON_COMPLETE_EXECUTION_PROMPT.md"]
+relatedAdrs: ["0003-record-architecture-evolution-and-source-atlas","0007-use-central-broker","0008-stable-roles-dynamic-models","0014-use-provider-adapter-boundary","0017-complete-agent-platform-before-business-expansion","0023-define-provider-neutral-execution-budget-semantics"]
 relatedPages: ["governance/audit-policy","governance/evidence-policy","governance/privacy-and-data-classification","plans/capability-map"]
 tags: ["architecture","broker","telemetry","evidence"]
 truthState: "current"
@@ -19,11 +19,17 @@ Beacon now has strict provider-neutral runtime and JSON contracts for `AgentRun`
 
 Anthropic usage maps uncached input, cache-read input, cache-write input, output, and exposed reasoning into the common token model. OpenAI usage maps input, cached-input detail, output, and reasoning-output detail into the same fields. Domain consumers use only the Beacon fields; bounded redacted `providerMetadata` is an escape hatch, not a domain dependency.
 
+## Execution-budget enforcement evidence
+
+`ExecutionBudgetLedger` is the authoritative enforcement state for one immutable `budgetLineageId`; `ProviderRun` and `AgentRun` remain projections. The ledger records configured ceilings, atomic per-branch reservations, initiated calls, active allowances, observed output, policy-charged output, provider/model identity, transition provenance, accounting settlement state, independent remote-invocation state, terminal budget reason, and violations. It never stores prompts, responses, hidden reasoning, credentials, or customer content.
+
+Ledger snapshots use the existing metadata-only append-only NDJSON evidence boundary and are fsync'd before a direct provider boundary is crossed. Recovery cancels a durable `PENDING` reservation because invocation was not recorded, and conservatively charges a durable `INVOKED` reservation lacking terminal evidence. Conservative charging closes accounting only: if the trusted transport did not return a terminal response, the remote invocation remains `UNRESOLVED` and the lineage blocks automatic provider re-execution pending governed handling. Writer heartbeat, takeover, and evidence append share one filesystem authority lock; fences are monotonic and stale append attempts fail closed. This provides failure-path truth even when adapter normalization throws and no `ProviderRun` is created. Transports that cannot prove multiplicity, retries, hard caps, and settlement fail closed before execution.
+
 ## Privacy and persistence
 
 The schemas contain no raw prompt, transcript, tool output, secret value, environment value, or customer-content field. File evidence stores repository-relative paths, hashes, classifications, and counts rather than contents. Provider metadata is recursively redacted by sensitive key and value patterns, depth, string length, array length, object key count, and total node budget before validation and persistence.
 
-Local records append as NDJSON under ignored `.beacon/telemetry/`. Controlled CI/eval workflows can write the same redacted contracts beneath ignored `evidence/telemetry/` for bounded-retention artifact upload. Only reviewed sanitized aggregates may later be committed under `agent-platform/baselines/`.
+Local run and execution-budget records append as NDJSON under ignored `.beacon/telemetry/`. Controlled CI/eval workflows can write the same redacted contracts beneath ignored `evidence/telemetry/` for bounded-retention artifact upload. Only reviewed sanitized aggregates may later be committed under `agent-platform/baselines/`.
 
 ## Provider population path
 
@@ -35,4 +41,4 @@ Adapter contract tests and a synthetic end-to-end slice pass. One authorized Cod
 
 Malformed or privacy-unsafe events fail schema validation. A local best-effort storage failure returns an observable `telemetry-write-failed` result without invalidating an otherwise correct agent result. A controlled eval or release caller can select required mode, where the same persistence failure blocks evidence completion.
 
-Provider transports are implemented but credential-gated. Real representative run records, repeated live benchmark aggregates, durable production audit, and retention operations remain external evidence work. The completion audit treats their absence as blocking.
+Provider transports are credential-gated. Claude and Codex direct HTTP execution now require the ADR-0023 ledger contract; Codex CLI fails closed before execution because its internal generation multiplicity, retries, cumulative cap, and settlement cannot be proven. Historical representative run and deployment records remain historical evidence and are not rewritten by this correction.

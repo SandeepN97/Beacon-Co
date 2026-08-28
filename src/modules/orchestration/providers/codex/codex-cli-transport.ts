@@ -1,6 +1,20 @@
 import { execFile } from "node:child_process";
 import { ProviderExecutionError, type ProviderTransport } from "../provider-adapter.ts";
 
+/** See http-provider-transport.ts's identical comment: this WeakSet and its
+ * sole `.add()` call site (this file's own constructor) are both private to
+ * this module -- there is no export capable of adding to it. */
+const certifiedCodexCliTransports = new WeakSet<object>();
+
+export function isTrustedCodexCliTransport(transport: unknown): transport is CodexCliTransport {
+  return (
+    typeof transport === "object" &&
+    transport !== null &&
+    Object.getPrototypeOf(transport) === CodexCliTransport.prototype &&
+    certifiedCodexCliTransports.has(transport)
+  );
+}
+
 type ExecFile = (
   file: string,
   args: string[],
@@ -41,6 +55,15 @@ export class CodexCliTransport implements ProviderTransport {
   constructor(repositoryRoot: string, execute: ExecFile = defaultExecFile) {
     this.repositoryRoot = repositoryRoot;
     this.execute = execute;
+    certifiedCodexCliTransports.add(this);
+  }
+
+  executionBudgetContract() {
+    return {
+      kind: "opaque" as const,
+      reason:
+        "Codex CLI cannot prove generation multiplicity, hidden retries, hard cumulative output, or settlement before subprocess execution.",
+    };
   }
 
   async invoke(

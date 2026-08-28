@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "title": "Phase 1.5: enforce ADR-0023 execution budgets",
+  "summary": [
+    "Correct the frozen Phase 1.5 provider contract under approved ADR-0023 by adding one immutable execution-budget lineage and authoritative ledger per authorized execution.",
+    "Atomically reserve one model-generation branch and its cumulative output allowance before direct provider invocation, persist failure-safe settlement evidence, and derive run telemetry from ledger state.",
+    "Certify the exact Claude Messages HTTP and OpenAI Responses HTTP paths; fail Codex CLI closed before subprocess execution because its multiplicity, retries, cumulative cap, and settlement remain opaque.",
+    "Corrects an independent security review (CHANGES_REQUIRED) of this same PR's prior candidate: an exclusive per-lineage writer/fencing primitive (cross-process safety), a real Decision-OS-backed authorization grant (no caller-minted capacity), non-forgeable exact-transport certification, transactional/poison-on-uncertainty ledger persistence, and an atomic re-check that closes the streaming/settlement race. See Candidate-bound evidence below for the full finding-by-finding mapping.",
+    "Round 3 corrects candidate b6f474373a1e673f1f4e029d4b456136c5fdcb76: accounting settlement no longer implies remote termination, unresolved INVOKED recovery blocks automatic re-execution, heartbeat/takeover and append/takeover share a filesystem authority lock, durable fence history cannot regress, and the real executeBudgetedProviderCall plus trusted HTTP fixture proves one invocation across over-TTL recovery."
+  ],
+  "risk": [
+    "Medium: this is a security-relevant frozen-contract correction at the live provider boundary, with conservative charging on uncertainty and fail-closed behavior on unprovable transports and unproven writer ownership.",
+    "No provider, routing, role-budget, gateway, harness, deployment, release, business-runtime, or product capability is added."
+  ],
+  "testEvidence": [
+    "The adversarial execution-budget suite covers lineage continuity, exact maxTurns mapping, atomic/concurrent admission, retries, provider switch, model re-entry, fan-out, streaming-style settlement, invalid/missing usage, duplicate settlement, violations, recovery, and projections.",
+    "Exact adapter-plus-transport fixtures prove one HTTP generation, hard provider caps, reasoning-inclusive OpenAI usage, conservative failures, and Codex CLI rejection before subprocess execution.",
+    "New adversarial coverage: simultaneous cross-process create()/recover() (verified additionally with real separate OS processes, not only in-process concurrency), a stale writer failing closed immediately before invocation after a governed takeover, ledger poisoning on uncertain persistence (including mid-VIOLATION), the streaming-cumulative-vs-terminal-settlement race, providerRunId reuse rejection, fabricated/unaccepted-ADR authorization rejection, and untrusted/spoofed-subclass transport rejection.",
+    "Round-3 adversarial coverage deterministically executes unresolved INVOKED recovery blocking, a real in-flight trusted HTTP invocation beyond lease TTL, normal/stale/racing N-to-N+1 heartbeat behavior, N+2 fence progression, append/takeover serialization, post-takeover stale append rejection, and recovery rejection of impossible fence regression.",
+    "npm run execution-budget:conformance (scripts/agents/verify-execution-budget-conformance.mjs) actually runs these suites, requires a fixed list of named security-critical scenarios to be present and passing, and binds its result to the exact candidate SHA/tree; audit-phase-1.5.mjs's execution-budget-conformance gate now runs it fresh instead of trusting a static JSON's self-asserted booleans.",
+    "The authoritative npm run ci:prepublish result is bound to the final candidate tree and appended to the published draft PR body; GitHub independently reruns protected checks on the exact head."
+  ],
+  "documentationImpact": [
+    "Update only canonical Phase 1.5 current-state, completion-audit, observability, README, generated indexes, and bounded conformance attestation material required by ADR-0023.",
+    "Approved ADR-0023 remains byte-for-byte unchanged; PR #74 and PR #76 are untouched."
+  ],
+  "rollback": [
+    "Revert this bounded correction through the protected pull-request workflow before any direct provider path is re-enabled without the ADR-0023 contract.",
+    "No database, queue, cloud service, deployment topology, provider credential, production data, or irreversible migration is introduced."
+  ],
+  "allowedPathPrefixes": [
+    "README.md",
+    "package.json",
+    ".github/workflows/pr-prepublish.yml",
+    "agent-platform/baselines/execution-budget-conformance-2026-08-25.json",
+    "agent-platform/completion-gates.yml",
+    "agent-platform/publication/phase-1.5-execution-budget-conformance.json",
+    "agent-platform/telemetry/agent-run.schema.json",
+    "agent-platform/telemetry/execution-budget-ledger.schema.json",
+    "agent-platform/telemetry/provider-run.schema.json",
+    "public/search-index.json",
+    "scripts/agents/audit-phase-1.5.mjs",
+    "scripts/agents/run-live-baseline.mjs",
+    "scripts/agents/run-live-work-unit.mjs",
+    "scripts/agents/validate-telemetry-schemas.mjs",
+    "scripts/agents/verify-execution-budget-conformance.mjs",
+    "src/content/docs/architecture/observability-and-audit.mdoc",
+    "src/content/docs/plans/current-phase.mdoc",
+    "src/content/docs/plans/phase-1-5-completion-audit.mdoc",
+    "src/data/document-catalog.json",
+    "src/modules/orchestration/domain/agent-run.ts",
+    "src/modules/orchestration/domain/provider-run.ts",
+    "src/modules/orchestration/execution-budget",
+    "src/modules/orchestration/providers/claude/claude-adapter.ts",
+    "src/modules/orchestration/providers/codex/codex-adapter.ts",
+    "src/modules/orchestration/providers/codex/codex-cli-transport.ts",
+    "src/modules/orchestration/providers/http-provider-transport.ts",
+    "src/modules/orchestration/providers/live-adapter-support.ts",
+    "src/modules/orchestration/providers/provider-adapter.ts",
+    "src/modules/orchestration/telemetry/normalize-usage.ts",
+    "src/modules/orchestration/workflows/live-work-unit.ts",
+    "tests/orchestration/execution-budget.test.ts",
+    "tests/orchestration/provider-adapters.test.ts"
+  ]
+}

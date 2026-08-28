@@ -9,6 +9,7 @@ localGates:
   - deterministic-eval-harness
   - tool-policy-gateway
   - provider-adapter-contracts
+  - execution-budget-conformance
   - risk-council-engine
   - evidence-gated-tuning
   - publication-evidence-gate

@@ -1,6 +1,32 @@
 import type { ProviderId } from "../domain/provider.ts";
 import { ProviderExecutionError, type ProviderTransport } from "./provider-adapter.ts";
 
+/**
+ * B3 rereview fix (independent rereview of PR #83, candidate
+ * 225384030a4a30d66c946bdbc0d577a057a8a0c6): the previous correction shared a
+ * single `certifyTransportInstance` export across transport files. Exporting
+ * the WeakSet-populating function at all let any code call it directly on a
+ * hand-built object, and (combined with `Object.setPrototypeOf`) a reviewer
+ * confirmed a fully forged transport could reach live invocation.
+ *
+ * This WeakSet, and the only code that ever calls `.add()` on it (this
+ * file's own constructor), are both private to this module -- there is no
+ * export, anywhere, capable of adding to it. `isTrustedHttpProviderTransport`
+ * is safe to export: checking membership cannot be used to forge membership.
+ */
+const certifiedHttpProviderTransports = new WeakSet<object>();
+
+export function isTrustedHttpProviderTransport(
+  transport: unknown,
+): transport is HttpProviderTransport {
+  return (
+    typeof transport === "object" &&
+    transport !== null &&
+    Object.getPrototypeOf(transport) === HttpProviderTransport.prototype &&
+    certifiedHttpProviderTransports.has(transport)
+  );
+}
+
 export interface ProviderCredentials {
   anthropicApiKey?: string;
   openaiApiKey?: string;
@@ -50,6 +76,36 @@ export class HttpProviderTransport implements ProviderTransport {
   constructor(credentials: ProviderCredentials, fetchImplementation: typeof fetch = fetch) {
     this.credentials = credentials;
     this.fetchImplementation = fetchImplementation;
+    // Only this real constructor ever runs this line; there is no exported
+    // way for other code to add itself to certifiedHttpProviderTransports.
+    certifiedHttpProviderTransports.add(this);
+  }
+
+  executionBudgetContract(provider: ProviderId) {
+    return {
+      kind: "single-generation" as const,
+      generationBranchesPerInvoke: 1 as const,
+      automaticRetries: false as const,
+      hardOutputTokenCap:
+        provider === "claude"
+          ? ("anthropic-max-tokens" as const)
+          : ("openai-max-output-tokens" as const),
+      authoritativeTerminalUsage: true as const,
+      streaming: false as const,
+    };
+  }
+
+  validateBeforeInvocation(provider: ProviderId): void {
+    const apiKey =
+      provider === "claude" ? this.credentials.anthropicApiKey : this.credentials.openaiApiKey;
+    if (!apiKey) {
+      throw new ProviderExecutionError(
+        provider,
+        "authentication",
+        "Provider credential is unavailable.",
+        false,
+      );
+    }
   }
 
   async invoke(
@@ -58,6 +114,7 @@ export class HttpProviderTransport implements ProviderTransport {
   ): Promise<Record<string, unknown>> {
     const isClaude = provider === "claude";
     const apiKey = isClaude ? this.credentials.anthropicApiKey : this.credentials.openaiApiKey;
+    this.validateBeforeInvocation(provider);
     if (!apiKey) {
       throw new ProviderExecutionError(
         provider,
